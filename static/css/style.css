@@ -1,0 +1,26 @@
+header {
+    background-color: #04bafc; /* Já existente */
+    display: flex;
+    justify-content: space-between; /* Espaço entre o título e o menu */
+    align-items: center; /* Alinha verticalmente ao centro */
+    padding: 0 20px;
+}
+
+nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex; /* Faz os itens ficarem em linha */
+    gap: 15px; /* Espaço entre os itens */
+}
+
+nav ul li {
+    /* Remove marcador e pode estilizar individualmente */
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: black; /* Ajuste a cor conforme desejar */
+    font-weight: bold;
+}
+

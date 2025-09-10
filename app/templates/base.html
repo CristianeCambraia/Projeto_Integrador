@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>
+         INSUMED
+
+    </title>
+    <!-- Link CSS ajustado para funcionar com Django -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <header>
+        <img src="media/insumed_icon.png" alt="insumed_icon">
+        <h1>INSUMED</h1>
+
+        <nav>
+            <ul>
+                <li><a href="">Home</a></li>
+                <li><a href="{% url 'fornecedores' %}">Cadastros</a></li>
+                <li><a href="">Orçamentos</a></li>
+                <li><a href="">Relatórios</a></li>
+                <li><a href="">Sair</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        <p>Redes Sociais</p>
+        <ul>
+            <li><a href="#"></a></li>
+            <li><a href="#"></a></li>
+            <li><a href="#"></a></li>
+        </ul>
+        <p>Todos os direitos reservados &copy;</p>
+        <p>Develop By: Bessa, Cristiane, Eduardo, Leonardo, Lucas</p>
+        <p>Telefone - (35) 99877-8346</p>
+        <ul>
+            <li><a href="#"></a></li>
+            <li><a href="#"></a></li>
+        </ul>
+    </footer>
+</body>
+</html>
