@@ -24,3 +24,67 @@ nav ul li a {
     font-weight: bold;
 }
 
+.form-container, .lista-container {
+    width: 500px;
+    margin: 30px auto;
+    background: #fff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
+}
+
+.titulo {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 22px;
+    font-weight: bold;
+    color: #333;
+}
+
+.form-grid p {
+    margin-bottom: 15px;
+}
+
+.form-grid input, 
+.form-grid select, 
+.form-grid textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+
+.botoes {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.btn-salvar {
+    background: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-cancelar {
+    background: #f44336;
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 8px;
+}
+
+.lista {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0;
+}
+
+.lista li {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}

@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="lista-container">
+    <h2 class="titulo">Fornecedores Cadastrados</h2>
+
+    <ul class="lista">
+        {% for f in fornecedores %}
+            <li>{{ f.nome }} - {{ f.email }}</li>
+        {% empty %}
+            <li>Nenhum fornecedor cadastrado.</li>
+        {% endfor %}
+    </ul>
+
+    <a href="{% url 'fornecedores' %}" class="btn-salvar">Novo Fornecedor</a>
+</div>
+{% endblock %}
