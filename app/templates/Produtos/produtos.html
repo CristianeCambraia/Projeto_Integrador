@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="form-container">
-    <h2 class="titulo">Cadastro de Produto</h2>
+    <h2 class="titulo">{{ titulo_pagina }}</h2>
 
     <form method="post" action="{% url 'salvar_produto' %}">
         {% csrf_token %}

@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from .models import Fornecedor, Produto
 from .forms import FornecedorForm, ProdutoForm
 
@@ -50,4 +50,19 @@ def salvar_produto(request):
 
 def lista_produtos(request):
     produtos = Produto.objects.all()
-    return render(request, 'lista_produtos.html', {'produtos': produtos})
+    return render(request, 'Produtos/lista_produtos.html', {'produtos': produtos})
+
+
+def cadastrar(request):
+    if request.method == "POST":
+        form = ProdutoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('lista_produtos')
+    else:
+        form = ProdutoForm()
+    return render(request, 'produtos/cadastrar_produto.html', {'form': form, 'titulo_pagina': 'Cadastro de Produto'})
+
+
+
+

@@ -4,10 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <title>
-         INSUMED
-
+        {% if titulo_pagina %}
+            {{ titulo_pagina }} | INSUMED
+        {% else %}
+            INSUMED
+        {% endif %}
     </title>
-    <!-- Link CSS ajustado para funcionar com Django -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
@@ -17,17 +19,18 @@
 
         <nav>
             <ul>
-                <li><a href="">Home</a></li>
+                <li><a href="/">Home</a></li>
                 <li><a href="{% url 'fornecedores' %}">Cadastros</a></li>
-                <li><a href="">Orçamentos</a></li>
-                <li><a href="">Relatórios</a></li>
-                <li><a href="">Sair</a></li>
+                <li><a href="#">Orçamentos</a></li>
+                <li><a href="#">Relatórios</a></li>
+                <li><a href="#">Sair</a></li>
             </ul>
         </nav>
     </header>
 
     <main>
-        {% block content %}{% endblock %}
+        {% block content %}
+        {% endblock %}
     </main>
 
     <footer>

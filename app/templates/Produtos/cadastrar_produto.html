@@ -2,9 +2,9 @@
 
 {% block content %}
 <div class="form-container">
-    <h2 class="titulo">Cadastro de Fornecedor</h2>
+    <h2 class="titulo">{{ titulo_pagina }}</h2>
 
-    <form method="post" action="{% url 'salvar_fornecedor' %}">
+    <form method="post" action="{% url 'cadastrar_produto' %}">
         {% csrf_token %}
         <div class="form-grid">
             {{ form.as_p }}
@@ -12,9 +12,7 @@
 
         <div class="botoes">
             <button type="submit" class="btn-salvar">Salvar</button>
-            <a href="{% url 'lista_fornecedores' %}" class="btn-cancelar">Cancelar</a>
-            <a href="{% url 'cadastrar_produto' %}" class="btn-cadastrar-produto">➕ Cadastrar Produto</a>
-
+            <a href="{% url 'lista_produtos' %}" class="btn-cancelar">Cancelar</a>
         </div>
     </form>
 </div>
