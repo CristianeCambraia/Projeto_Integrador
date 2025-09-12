@@ -32,10 +32,25 @@ def lista_fornecedores(request):
 
 
 # ----- PRODUTOS -----
-def abrir_produto(request):
-    form = ProdutoForm()
-    return render(request, 'produtos.html', {'form': form, 'titulo_pagina': 'Novo Produto'})
+def cadastrar(request):
+    if request.method == "POST":
+        form = ProdutoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('lista_produtos')
+    else:
+        form = ProdutoForm()
+    return render(request, 'produtos/cadastrar_produto.html', {
+        'form': form,
+        'titulo_pagina': 'Cadastro de Produto'
+    })
 
+
+def lista_produtos(request):
+    produtos = Produto.objects.all()
+    return render(request, 'produtos/lista_produtos.html', {
+        'produtos': produtos
+    })
 
 def salvar_produto(request):
     if request.method == "POST":
@@ -45,24 +60,5 @@ def salvar_produto(request):
             return redirect('lista_produtos')
     else:
         form = ProdutoForm()
-    return render(request, 'produtos.html', {'form': form, 'titulo_pagina': 'Novo Produto'})
-
-
-def lista_produtos(request):
-    produtos = Produto.objects.all()
-    return render(request, 'Produtos/lista_produtos.html', {'produtos': produtos})
-
-
-def cadastrar(request):
-    if request.method == "POST":
-        form = ProdutoForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('lista_produtos')
-    else:
-        form = ProdutoForm()
-    return render(request, 'produtos/cadastrar_produto.html', {'form': form, 'titulo_pagina': 'Cadastro de Produto'})
-
-
-
+    return render(request, 'produtos/cadastrar_produto.html', {'form': form, 'titulo_pagina': 'Novo Produto'})
 
