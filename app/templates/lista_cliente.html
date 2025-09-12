@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="lista-container">
+    <h2 class="titulo">Clientes Cadastrados</h2>
+
+    <ul class="lista">
+        {% for f in clientes %}
+            <li>{{ f.nome }} - {{ f.email }}</li>
+        {% empty %}
+            <li>Nenhum cliente cadastrado.</li>
+        {% endfor %}
+    </ul>
+
+    <a href="{% url 'clientes' %}" class="btn-salvar">Novo Cliente</a>
+</div>
+{% endblock %}
