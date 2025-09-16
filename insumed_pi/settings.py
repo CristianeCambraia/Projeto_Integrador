@@ -51,7 +51,7 @@ WSGI_APPLICATION = 'insumed_pi.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'bibliotecafacil_db',
+        'NAME': 'insumed_pi',
         'USER': 'root',
         'PASSWORD': 'q1w2e3',
         'HOST': 'localhost',
