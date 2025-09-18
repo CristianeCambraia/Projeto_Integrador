@@ -129,11 +129,26 @@ nav ul li a {
 }
 
 footer{
-    display: inline-flex;
-    background-color: #fc0467;
+    display:flex;
+    justify-content: space-between;
+    background-color: #04bafc;
     margin-top: 40px;
     padding: 15px 0;
     width: 100%;
     clear: both;
 
 }
+
+footer ul{
+    list-style: none;
+    display: flex;
+    gap: 5px;
+    padding: 0;
+    margin: 0;
+}
+
+footer p {
+    margin: 0 20px;
+    font-size: 14px;
+}
+
