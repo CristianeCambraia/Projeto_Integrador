@@ -8,7 +8,7 @@ header {
     display: flex;
     justify-content: space-between; /* Espaço entre o título e o menu */
     align-items: center; /* Alinha verticalmente ao centro */
-    padding: 0px;
+    padding: 12px;
 }
 
 nav ul {
@@ -129,8 +129,10 @@ nav ul li a {
 }
 
 footer{
-    background-color: #04bafc;
+    display: inline-flex;
+    background-color: #fc0467;
     margin-top: 40px;
+    padding: 15px 0;
     width: 100%;
     clear: both;
 
