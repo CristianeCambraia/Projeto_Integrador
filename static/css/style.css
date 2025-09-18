@@ -1,7 +1,7 @@
 body{
     margin: 0;
     font-family: Arial, sans-serif;
-    background-image: linear-gradient(to right, #013e6a ,#43d1ff , #013e6a ,#419ad6, #01186a);
+    background-image: linear-gradient(to top right, #013e6a ,#43d1ff , #013e6a ,#419ad6, #01186a);
 }
 
 header {
@@ -28,6 +28,10 @@ nav ul li a {
     text-decoration: none;
     color: black; /* Ajuste a cor conforme desejar */
     font-weight: bold;
+}
+
+main{
+    min-height: 100vh
 }
 
 .form-container, .lista-container {
