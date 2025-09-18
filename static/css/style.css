@@ -1,9 +1,14 @@
+body{
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
 header {
     background-color: #04bafc; /* Já existente */
     display: flex;
     justify-content: space-between; /* Espaço entre o título e o menu */
     align-items: center; /* Alinha verticalmente ao centro */
-    padding: 0 20px;
+    padding: 0px;
 }
 
 nav ul {
@@ -121,4 +126,12 @@ nav ul li a {
 
 .btn-cadastrar-produto:hover {
     background-color: #218838;
+}
+
+footer{
+    background-color: #04bafc;
+    margin-top: 40px;
+    width: 100%;
+    clear: both;
+
 }
