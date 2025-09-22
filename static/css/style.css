@@ -154,3 +154,21 @@ div p, div ul{
     display: inline;
     margin-right: 15px;
 }
+
+/* por favor mexer so com certeza */
+.logo{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 500px;
+}
+
+/* por favor mexer so com certeza */
+.logo-img {
+    align-items: center;
+    width: 200px;
+    height: 200px;
+    border-radius: 20px;
+    overflow: hidden;
+    object-fit: cover;
+}
