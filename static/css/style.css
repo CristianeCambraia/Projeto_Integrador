@@ -160,7 +160,8 @@ div p, div ul{
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 500px;
+    height: 500px; 
+    row-gap: 50px;
 }
 
 /* por favor mexer so com certeza */

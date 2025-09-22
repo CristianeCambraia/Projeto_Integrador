@@ -1,6 +1,9 @@
 from django.shortcuts import render, redirect
 from .models import Fornecedor, Produto, Cliente
 from .forms import FornecedorForm, ProdutoForm, ClienteForm
+from .models import Orcamento
+from django.utils.dateparse import parse_date
+from django.http import HttpResponseBadRequest
 
 
 # Página inicial (exibe primeiro fornecedor só como exemplo)
@@ -103,5 +106,65 @@ def salvar_cliente(request):
 def lista_cliente(request):
     clientes = Cliente.objects.all()
     return render(request, 'lista_cliente.html', {'clientes': clientes})
+
+# ----- ORÇAMENTOS ----
+
+def emitir_orcamento(request):
+    return render(request, 'emitir_orcamento.html', {
+        'range_3': range(1, 4)  # vai gerar 1, 2, 3
+    })
+
+
+# Salvar orçamento no banco de dados
+def salvar_orcamento(request):
+    if request.method == "POST":
+        cliente = request.POST.get('cliente', '').strip()
+        cnpj = request.POST.get('cnpj', '').strip()
+        endereco = request.POST.get('endereco', '').strip()
+        cidade = request.POST.get('cidade', '').strip()
+        telefone = request.POST.get('telefone', '').strip()
+        email = request.POST.get('email', '').strip()
+        data = request.POST.get('data', '').strip()
+
+        # Validação simples
+        if not cliente or not data:
+            return HttpResponseBadRequest("Cliente e Data são obrigatórios")
+
+        try:
+            data_obj = parse_date(data)
+            if data_obj is None:
+                raise ValueError()
+        except ValueError:
+            return HttpResponseBadRequest("Data inválida")
+
+        orcamento = Orcamento(
+            cliente=cliente,
+            cnpj=cnpj,
+            endereco=endereco,
+            cidade=cidade,
+            telefone=telefone,
+            email=email,
+            data=data_obj
+        )
+        orcamento.save()
+        return redirect('orcamentos_emitidos')
+    else:
+        return redirect('emitir_orcamento')
+
+# Listar orçamentos emitidos
+def orcamentos_emitidos(request):
+    orcamentos = Orcamento.objects.all().order_by('-data')
+    return render(request, 'lista_orcamentos.html', {'orcamentos': orcamentos})
+
+# Rota para novo orçamento (redirecionar para emitir_orcamento)
+def novo_orcamento(request):
+    return redirect('emitir_orcamento')
+
+# Rota para voltar (exemplo, redirecionar para home ou outra)
+def voltar(request):
+    return redirect('cadastros')  # ou para a página inicial que você desejar
+
+
+
 
 
