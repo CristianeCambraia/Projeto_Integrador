@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Orçamentos Emitidos</h2>
+
+<ul>
+    {% for o in orcamentos %}
+        <li>{{ o.cliente }} - {{ o.data }}</li>
+    {% empty %}
+        <li>Nenhum orçamento emitido.</li>
+    {% endfor %}
+</ul>
+
+<a href="{% url 'emitir_orcamento' %}">Emitir Novo Orçamento</a>
+{% endblock %}

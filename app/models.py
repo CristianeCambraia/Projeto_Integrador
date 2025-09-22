@@ -41,3 +41,18 @@ class Cliente(models.Model):
 
     def __str__(self):
         return self.nome
+    
+class Orcamento(models.Model):
+    cliente = models.CharField(max_length=100)
+    cnpj = models.CharField(max_length=20, blank=True)
+    endereco = models.CharField(max_length=200, blank=True)
+    cidade = models.CharField(max_length=50, blank=True)
+    telefone = models.CharField(max_length=20, blank=True)
+    email = models.EmailField(blank=True)
+    data = models.DateField(auto_now_add=True)
+
+    # Exemplo simples: itens podem ser implementados em outra tabela relacionada (não obrigatório agora)
+    # Para começar, pode deixar só esses dados básicos
+
+    def __str__(self):
+        return f'Orçamento para {self.cliente} em {self.data}'
