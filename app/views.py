@@ -11,6 +11,9 @@ def cadastros(request):
     fornecedor = Fornecedor.objects.first()
     return render(request, 'base.html', {'fornecedor': fornecedor})
 
+def pagina_home(request):
+    return render(request, 'home.html')
+
 
 # ----- FORNECEDORES -----
 def abrir_fornecedor(request):

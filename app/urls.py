@@ -3,8 +3,9 @@ from . import views
 
 urlpatterns = [
     # Página inicial
-    path('', views.cadastros, name='cadastros'),
+    #path('', views.cadastros, name='cadastros'),
 
+    path('', views.pagina_home, name='home'),
     # ----- FORNECEDORES -----
     path('fornecedores/', views.abrir_fornecedor, name='fornecedores'),
     path('fornecedores/salvar/', views.salvar_fornecedor, name='salvar_fornecedor'),

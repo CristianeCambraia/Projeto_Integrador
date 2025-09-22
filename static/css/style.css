@@ -1,7 +1,7 @@
 body{
     margin: 0;
     font-family: Arial, sans-serif;
-    background-image: linear-gradient(to top right, #013e6a ,#43d1ff , #013e6a ,#419ad6, #01186a);
+    background-image: linear-gradient(to right, #013e6a ,#43d1ff , #013e6a ,#419ad6, #01186a);
 }
 
 header {
@@ -28,10 +28,6 @@ nav ul li a {
     text-decoration: none;
     color: black; /* Ajuste a cor conforme desejar */
     font-weight: bold;
-}
-
-main{
-    min-height: 100vh
 }
 
 .form-container, .lista-container {
@@ -134,7 +130,6 @@ main{
 }
 
 footer{
-    color: white;
     font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-weight: bold;
     display: flex;
@@ -148,7 +143,6 @@ footer{
 }
 
 div p, div ul{
-    
     display: inline-flex;
     justify-content: space-between;
     margin-right: 15px;
@@ -161,23 +155,10 @@ div p, div ul{
     margin-right: 15px;
 }
 
-.emitir-orcamento-container{
-    max-width: 1200px;
-    margin: 40px auto;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    font-family: Arial, Helvetica, sans-serif;
-    color: #333;
-}
-
-.emitir-orcamento-container h2.titulo{
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-.emitir-orcamento-container form{
+/* por favor mexer so com certeza */
+.logo{
     display: flex;
+<<<<<<< HEAD
     flex-direction: column;
 }
 
@@ -221,28 +202,24 @@ tr th {
     margin-top: 20px;
     display: flex;
     gap: 10px;
+=======
+>>>>>>> 316b89ce284465d4248ba99317e4f6104c8f3830
     justify-content: center;
+    align-items: center;
+    height: 500px; 
+    row-gap: 50px;
 }
 
-.botoes button, .botoes a {
-    padding: 10px 20px;
-    background-color: #2c7be5;
-    color: white;
-    text-decoration: none;
-    border-radius: 4px;
-    border: none;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.3s ease;
+/* por favor mexer so com certeza */
+.logo-img {
+    align-items: center;
+    width: 200px;
+    height: 200px;
+    border-radius: 20px;
+    overflow: hidden;
+    object-fit: cover;
 }
 
-.botoes button:hover, .botoes a:hover {
-    background-color: #1a5bb8;
-}
-
-.container-text{
-    padding: 40px;
-}
 
 
 
