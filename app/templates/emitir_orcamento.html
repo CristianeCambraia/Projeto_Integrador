@@ -4,7 +4,7 @@
 <div class="emitir-orcamento-container">
     <h2 class="titulo">Emitir Orçamentos</h2>
 
-    <form method="post" action="{% url 'salvar_orcamento' %}">
+    <form class="container-text"  method="post" action="{% url 'salvar_orcamento' %}">
         {% csrf_token %}
 
         <div class="cliente-dados">
