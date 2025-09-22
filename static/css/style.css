@@ -197,7 +197,7 @@ div p, div ul{
 
 .itens-orcamento {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse:separate;
     margin-top: 20px;
 }
 
@@ -206,6 +206,12 @@ div p, div ul{
     padding: 8px;
     text-align: left;
 }
+
+tr th {
+    text-align: center;
+    align-items: center;
+}
+    
 
 .itens-orcamento th {
     background-color: #f4f4f4;
