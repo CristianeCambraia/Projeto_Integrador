@@ -64,8 +64,17 @@ class Orcamento(models.Model):
     email = models.EmailField(blank=True)
     data = models.DateField(auto_now_add=True)
 
-    # Exemplo simples: itens podem ser implementados em outra tabela relacionada (não obrigatório agora)
-    # Para começar, pode deixar só esses dados básicos
-
     def __str__(self):
         return f'Orçamento para {self.cliente} em {self.data}'
+
+class Usuario(models.Model):
+    nome = models.CharField(max_length=200)
+    email = models.EmailField(max_length=200, unique=True)
+    cpf = models.CharField(max_length=20, unique=True)
+    endereco = models.CharField(max_length=200)
+    telefone = models.CharField(max_length=20)
+    data_nascimento = models.DateField()
+    senha = models.CharField(max_length=128)
+
+    def __str__(self):
+        return self.nome
