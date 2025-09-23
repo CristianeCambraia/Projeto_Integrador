@@ -29,6 +29,16 @@ nav ul li a {
     color: black; /* Ajuste a cor conforme desejar */
     font-weight: bold;
 }
+.logo{
+    padding-top: 40px;
+    align-items: center;
+}
+img.logo-img{
+    gap: 50px;
+    height: 800px;
+    width: 800px;
+    align-items: center;
+}
 
 .form-container, .lista-container {
     width: 500px;
@@ -207,6 +217,11 @@ tr th {
     text-align: center;
     background-color: #f4f4f4;
 }
+
+.itens-orcamento tbody input{
+    align-items: center;
+}
+   
 
 .botoes {
     margin-top: 20px;
