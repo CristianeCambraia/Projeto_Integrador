@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 *.pyc
+=======
+app/forms.py
+>>>>>>> eefbede (WIP: alterações locais antes do rebase)
