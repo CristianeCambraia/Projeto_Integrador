@@ -29,7 +29,12 @@ urlpatterns = [
     path('orcamentos_emitidos/', views.orcamentos_emitidos, name='orcamentos_emitidos'),
     path('novo_orcamento/', views.novo_orcamento, name='novo_orcamento'),
     path('voltar/', views.voltar, name='voltar'),
+<<<<<<< HEAD
 
     # Sobre nós
     path('sobre_nos/', views.sobre_nos, name='sobre_nos'),
+=======
+    path('sobre_nos/',views.sobre_nos,name='sobre_nois')
+
+>>>>>>> 8b3d8cb (Arrumando header e centralizando placeholder)
 ]

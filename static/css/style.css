@@ -12,6 +12,13 @@ header {
     padding: 12px;
 }
 
+h1{
+    font-family:Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 2em;
+    color: white;
+    padding-right: 1225px;
+}
+
 nav ul {
     list-style: none;
     margin: 0;
@@ -26,9 +33,10 @@ nav ul li {
 
 nav ul li a {
     text-decoration: none;
-    color: black; /* Ajuste a cor conforme desejar */
+    color: rgb(255, 255, 255); /* Ajuste a cor conforme desejar */
     font-weight: bold;
 }
+
 .logo{
     padding-top: 40px;
     align-items: center;
@@ -210,6 +218,12 @@ div p, div ul{
 tr th {
     text-align: center;
     align-items: center;
+}
+
+td input{
+    width: 95%;
+    align-items: center;
+    
 }
     
 
