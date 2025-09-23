@@ -1,5 +1,14 @@
 from django import forms
-from .models import Fornecedor, Produto, Cliente
+from .models import Fornecedor, Produto, Cliente,Suporte
+
+class SuporteForm(forms.ModelForm):
+    class Meta:
+        model = Suporte
+        fields = ["nome", "telefone", "email", "descreva"]
+
+
+
+
 
 # Formulário de Fornecedor
 class FornecedorForm(forms.ModelForm):

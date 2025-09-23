@@ -4,7 +4,9 @@ from django.urls import path, include
 
 urlpatterns = [
     # Inclui as urls do app principal
+    #path('', include('app.urls')),
     path('', include('app.urls')),
+
 ]
 
 if settings.DEBUG:

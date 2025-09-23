@@ -1,10 +1,9 @@
 from django.shortcuts import render, redirect
 from .models import Fornecedor, Produto, Cliente
-from .forms import FornecedorForm, ProdutoForm, ClienteForm
+from .forms import FornecedorForm, ProdutoForm, ClienteForm,SuporteForm
 from .models import Orcamento
 from django.utils.dateparse import parse_date
 from django.http import HttpResponseBadRequest
-
 
 # Página inicial (exibe primeiro fornecedor só como exemplo)
 
@@ -171,5 +170,17 @@ def voltar(request):
 
 
 
+
+
+def criar_suporte(request):
+    if request.method == "POST":
+        form = SuporteForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect("criar_suporte")  # redireciona para o próprio form
+    else:
+        form = SuporteForm()
+
+    return render(request, "suporte_form.html", {"form": form})
 
 

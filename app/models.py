@@ -1,5 +1,18 @@
 from django.db import models
 
+
+class Suporte(models.Model):
+    nome = models.CharField(max_length=200)
+    telefone = models.CharField(max_length=20)
+    email = models.EmailField(max_length=200)
+    descreva = models.CharField(max_length=1000)
+
+    def __str__(self):
+        return self.nome
+
+
+
+
 class Fornecedor(models.Model):
     nome = models.CharField(max_length=200)
     cnpj = models.CharField(max_length=20)  # Usar CharField pois pode conter caracteres especiais
