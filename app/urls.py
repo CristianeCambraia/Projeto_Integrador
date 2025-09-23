@@ -31,6 +31,8 @@ urlpatterns = [
     path('voltar/', views.voltar, name='voltar'),
 
 
-    path('sobre_nos/',views.sobre_nos,name='sobre_nois')
+    path('sobre_nos/',views.sobre_nos,name='sobre_nois'),
 
+    # ----- RELATÓRIOS -----
+    path('relatorio-estoque/', views.relatorio_estoque, name='relatorio_estoque')
 ]

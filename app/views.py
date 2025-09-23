@@ -53,9 +53,10 @@ def cadastrar(request):
         form = ProdutoForm()
     return render(request, 'produtos/cadastrar_produto.html', {
         'form': form,
-        'titulo_pagina': 'Cadastro de Produto'
+        'titulo_pagina': 'Cadastro de Produto' 
     })
 
+    
 
 def lista_produtos(request):
     produtos = Produto.objects.all()
@@ -77,18 +78,6 @@ def salvar_produto(request):
 def lista_produtos(request):
     produtos = Produto.objects.all()
     return render(request, 'Produtos/lista_produtos.html', {'produtos': produtos})
-
-
-def cadastrar(request):
-    if request.method == "POST":
-        form = ProdutoForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('lista_produtos')
-    else:
-        form = ProdutoForm()
-    return render(request, 'produtos/cadastrar_produto.html', {'form': form, 'titulo_pagina': 'Cadastro de Produto'})
-
 
 # ----- CLIENTES -----
 
@@ -169,7 +158,14 @@ def novo_orcamento(request):
 def voltar(request):
     return redirect('cadastros')  # ou para a página inicial que você desejar
 
-
+# ----- RELATÓRIOS -----
+def relatorio_estoque(request):
+    busca = request.GET.get('q')
+    if busca:
+        produtos = Produto.objects.filter(nome__icontains=busca)
+    else:
+        produtos = Produto.objects.all()
+    return render(request, 'relatorio_estoque.html', {'produtos': produtos})
 
 
 

@@ -253,5 +253,54 @@ tr th {
 }
 
 
+/* Container principal do relatório */
+.estoque-container {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Barra de pesquisa */
+.barra-pesquisa {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+.barra-pesquisa input {
+    padding: 8px;
+    width: 50%;
+    border: 1px solid #ccc;
+    border-radius: 10px 0 0 10px;
+    outline: none;
+}
+.btn-pesquisar {
+    padding: 8px 15px;
+    border: none;
+    background: #04bafc;
+    color: white;
+    border-radius: 0 10px 10px 0;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* Tabela do estoque */
+.tabela-estoque {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+.tabela-estoque th {
+    background: #e6f7ff;
+    padding: 10px;
+    border: 1px solid #ccc;
+}
+.tabela-estoque td {
+    padding: 10px;
+    border: 1px solid #ccc;
+    text-align: center;
+}
 
 
