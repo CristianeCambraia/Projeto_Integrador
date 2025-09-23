@@ -7,6 +7,8 @@ from django.http import HttpResponseBadRequest
 
 
 # Página inicial (exibe primeiro fornecedor só como exemplo)
+
+
 def cadastros(request):
     fornecedor = Fornecedor.objects.first()
     return render(request, 'base.html', {'fornecedor': fornecedor})
@@ -14,6 +16,9 @@ def cadastros(request):
 def pagina_home(request):
     return render(request, 'home.html')
 
+
+def sobre_nos(request):
+    return render(request,'sobre_nos.html')
 
 # ----- FORNECEDORES -----
 def abrir_fornecedor(request):
