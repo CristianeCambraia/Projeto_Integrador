@@ -1,4 +1,6 @@
 from django.db import models
+from django.utils import timezone
+
 
 
 class Suporte(models.Model):
@@ -31,11 +33,18 @@ class Fornecedor(models.Model):
 
 
 class Produto(models.Model):
-    nome = models.CharField(max_length=100)
+    UNIDADE_CHOICES = [
+        ('Unidades', 'Unidades'),
+        ('Caixa', 'Caixa'),
+    ]
+    
+    nome = models.CharField(max_length=100, unique=True)
     preco = models.DecimalField(max_digits=10, decimal_places=2)
     descricao = models.TextField(blank=True, null=True)
     fornecedor = models.ForeignKey(Fornecedor, on_delete=models.CASCADE, related_name="produtos")
-
+    data_hora = models.DateTimeField(default=timezone.now)
+    unidade = models.CharField(max_length=50, choices=UNIDADE_CHOICES, default="Unidades")
+    quantidade = models.IntegerField(default=1)
     def __str__(self):
         return f"{self.nome} - R${self.preco}"
 

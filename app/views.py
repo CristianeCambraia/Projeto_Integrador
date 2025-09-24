@@ -53,15 +53,38 @@ def cadastrar(request):
         form = ProdutoForm()
     return render(request, 'produtos/cadastrar_produto.html', {
         'form': form,
-        'titulo_pagina': 'Cadastro de Produto'
+        'titulo_pagina': 'Cadastro de Produto' 
     })
+
+    
+
+def lista_produtos(request):
+    produtos = Produto.objects.all()
+<<<<<<< HEAD
+    return render(request, 'produtos/lista_produtos.html', {'produtos': produtos})
+
+
+=======
+    return render(request, 'produtos/lista_produtos.html', {
+        'produtos': produtos
+    })
+
+def salvar_produto(request):
+    if request.method == "POST":
+        form = ProdutoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('lista_produtos')
+    else:
+        form = ProdutoForm()
+    return render(request, 'produtos.html', {'form': form, 'titulo_pagina': 'Novo Produto'})
 
 
 def lista_produtos(request):
     produtos = Produto.objects.all()
-    return render(request, 'produtos/lista_produtos.html', {'produtos': produtos})
+    return render(request, 'Produtos/lista_produtos.html', {'produtos': produtos})
 
-
+>>>>>>> origin/Lucas-Branch
 # ----- CLIENTES -----
 def abrir_cliente(request):
     form = ClienteForm()
@@ -136,7 +159,14 @@ def novo_orcamento(request):
 def voltar(request):
     return redirect('home')  # alterei para 'home', que existe
 
-
+# ----- RELATÓRIOS -----
+def relatorio_estoque(request):
+    busca = request.GET.get('q')
+    if busca:
+        produtos = Produto.objects.filter(nome__icontains=busca)
+    else:
+        produtos = Produto.objects.all()
+    return render(request, 'relatorio_estoque.html', {'produtos': produtos})
 
 def criar_suporte(request):
     if request.method == "POST":

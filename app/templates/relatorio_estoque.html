@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="estoque-container">
+    <h2 class="titulo">Relatório de Estoque</h2>
+
+    <!-- Barra de pesquisa -->
+    <form method="GET" class="barra-pesquisa">
+        <input type="text" name="q" placeholder="Buscar produto" value="{{ request.GET.q }}">
+        <button type="submit" class="btn-pesquisar">Pesquisar</button>
+    </form>
+
+    <!-- Tabela -->
+    <table class="tabela-estoque">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Quantidade</th>
+                <th>Unidade</th>
+                <th>Preço</th>
+                <th>Data/Hora</th>
+                <th>Descrição</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for produto in produtos %}
+            <tr>
+                <td>{{ produto.nome }}</td>
+                <td>{{ produto.quantidade }}</td>
+                <td>{{ produto.unidade }}</td>
+                <td>{{ produto.preco }}</td>
+                <td>{{ produto.data_hora|date:"d/m/Y H:i" }}</td>
+                <td>{{ produto.descricao }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="6">Nenhum produto encontrado</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+
+    <!-- Botões -->
+    <div class="botoes">
+        <a href="{% url 'relatorio_estoque' %}" class="btn estoque">Relatório de Estoque</a>
+        <a href="#" class="btn entrada">Relatório de Entrada</a>
+        <a href="#" class="btn saida">Relatório de Saída</a>
+    </div>
+</div>
+{% endblock %}
