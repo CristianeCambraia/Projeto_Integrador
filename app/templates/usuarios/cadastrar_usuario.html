@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <title>{{ titulo_pagina }}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+    <div class="form-container">
+        <div class="titulo">{{ titulo_pagina }}</div>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-grid">
+                {% for field in form %}
+                    <p>
+                        {{ field.label_tag }}
+                        {{ field }}
+                        {% if field.errors %}
+                            <span style="color: red;">{{ field.errors.0 }}</span>
+                        {% endif %}
+                    </p>
+                {% endfor %}
+            </div>
+
+            <div class="botoes">
+                <button type="submit" class="btn-salvar">Cadastrar</button>
+                <a href="{% url 'home' %}" class="btn-cancelar">Cancelar</a>
+            </div>
+        </form>
+    </div>
+
+</body>
+</html>
