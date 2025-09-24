@@ -29,15 +29,7 @@ urlpatterns = [
     path('orcamentos_emitidos/', views.orcamentos_emitidos, name='orcamentos_emitidos'),
     path('novo_orcamento/', views.novo_orcamento, name='novo_orcamento'),
     path('voltar/', views.voltar, name='voltar'),
-<<<<<<< HEAD
-
-
-    path('sobre_nos/',views.sobre_nos,name='sobre_nois'),
-    path("suporte/novo/", views.criar_suporte, name="criar_suporte")
-=======
- 
-    # Sobre nós
     path('sobre_nos/', views.sobre_nos, name='sobre_nos'),
->>>>>>> f43fe5a8121e518fe564ec0318248f449d992e6b
+    path("suporte/novo/", views.criar_suporte, name="criar_suporte"),
 ]
  

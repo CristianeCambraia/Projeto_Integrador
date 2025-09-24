@@ -1,27 +1,16 @@
 from django.shortcuts import render, redirect
-<<<<<<< HEAD
-from .models import Fornecedor, Produto, Cliente
-from .forms import FornecedorForm, ProdutoForm, ClienteForm,SuporteForm
-from .models import Orcamento
+from .models import Fornecedor, Produto, Cliente, Usuario, Orcamento
+from .forms import FornecedorForm, ProdutoForm, ClienteForm, UsuarioForm, SuporteForm
 from django.utils.dateparse import parse_date
 from django.http import HttpResponseBadRequest
 
 # Página inicial (exibe primeiro fornecedor só como exemplo)
-
-
 def cadastros(request):
     fornecedor = Fornecedor.objects.first()
     return render(request, 'base.html', {'fornecedor': fornecedor})
 
-=======
-from .models import Fornecedor, Produto, Cliente, Usuario, Orcamento
-from .forms import FornecedorForm, ProdutoForm, ClienteForm, UsuarioForm
-from django.utils.dateparse import parse_date
-from django.http import HttpResponseBadRequest
-
 
 # Página inicial
->>>>>>> f43fe5a8121e518fe564ec0318248f449d992e6b
 def pagina_home(request):
     return render(request, 'home.html')
 
@@ -148,7 +137,7 @@ def voltar(request):
     return redirect('home')  # alterei para 'home', que existe
 
 
-<<<<<<< HEAD
+
 def criar_suporte(request):
     if request.method == "POST":
         form = SuporteForm(request.POST)
@@ -161,7 +150,6 @@ def criar_suporte(request):
     return render(request, "suporte_form.html", {"form": form})
 
 
-=======
 # ----- USUÁRIO -----
 def cadastrar_usuario(request):
     if request.method == "POST":
@@ -175,4 +163,4 @@ def cadastrar_usuario(request):
         'form': form,
         'titulo_pagina': 'Cadastro de Usuário'
     })
->>>>>>> f43fe5a8121e518fe564ec0318248f449d992e6b
+

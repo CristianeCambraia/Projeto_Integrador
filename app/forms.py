@@ -1,18 +1,10 @@
 from django import forms
-<<<<<<< HEAD
-from .models import Fornecedor, Produto, Cliente,Suporte
+from .models import Fornecedor, Produto, Cliente, Usuario, Suporte
 
 class SuporteForm(forms.ModelForm):
     class Meta:
         model = Suporte
         fields = ["nome", "telefone", "email", "descreva"]
-
-
-
-
-=======
-from .models import Fornecedor, Produto, Cliente, Usuario
->>>>>>> f43fe5a8121e518fe564ec0318248f449d992e6b
 
 # Formulário de Fornecedor
 class FornecedorForm(forms.ModelForm):

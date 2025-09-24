@@ -1,15 +1,32 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>Orçamentos Emitidos</h2>
+<div class="container-lista-orcamentos">
+  <h2>Orçamentos Emitidos</h2>
 
-<ul>
+  <ul class="lista-orcamentos">
     {% for o in orcamentos %}
-        <li>{{ o.cliente }} - {{ o.data }}</li>
+      <li class="item-orcamento">
+        <div class="linha-dados">
+          <span><strong>Cliente:</strong> {{ o.cliente }}</span>
+          <span><strong>Data:</strong> {{ o.data|date:"d/m/Y" }}</span>
+        </div>
+        <div class="linha-dados">
+          <span><strong>CNPJ:</strong> {{ o.cnpj }}</span>
+          <span><strong>Telefone:</strong> {{ o.telefone }}</span>
+        </div>
+        <div class="linha-dados">
+          <span><strong>E-mail:</strong> {{ o.email }}</span>
+        </div>
+      </li>
     {% empty %}
-        <li>Nenhum orçamento emitido.</li>
+      <li>Nenhum orçamento emitido.</li>
     {% endfor %}
-</ul>
+  </ul>
 
-<a href="{% url 'emitir_orcamento' %}">Emitir Novo Orçamento</a>
+  <div class="botoes-orcamento">
+    <a href="{% url 'emitir_orcamento' %}" class="btn-padrao">Novo Orçamento ➕</a>
+    <a href="{% url 'voltar' %}" class="btn-padrao voltar">Voltar ⤴</a>
+  </div>
+</div>
 {% endblock %}
