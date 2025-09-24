@@ -1,0 +1,71 @@
+*   [33mf80535a[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain2[m[33m)[m Remove arquivos .pyc e adiciona ao .gitignore
+[31m|[m[32m\[m  
+[31m|[m * [33me16ea38[m[33m ([m[1;31morigin/Lucas-Branch[m[33m)[m criando uma branch
+[31m|[m * [33ma6bcfcd[m criação da tela de relatorio_estoque
+[31m|[m [32m|[m * [33meb88ffc[m[33m ([m[1;35mrefs/stash[m[33m)[m WIP on main2: e4ac3be Ultima_atualização
+[31m|[m [32m|[m[31m/[m[34m|[m 
+[31m|[m[31m/[m[32m|[m [34m|[m 
+[31m|[m [32m|[m * [33maf1c9fc[m index on main2: e4ac3be Ultima_atualização
+[31m|[m [32m|[m[31m/[m  
+[31m|[m[31m/[m[32m|[m   
+* [32m|[m [33me4ac3be[m[33m ([m[1;31morigin/main2[m[33m)[m Ultima_atualização
+* [32m|[m [33m2dca2f3[m ATUALIZADO
+* [32m|[m [33m649297d[m Coloquei a senha  MySql setting.py
+* [32m|[m [33me296c42[m lista_orcamentos atualizando
+* [32m|[m   [33m5c3c59b[m Resolvido conflito de merge entre local e remoto
+[35m|[m[36m\[m [32m\[m  
+[35m|[m * [32m|[m [33mf43fe5a[m ATUALIZADO
+[35m|[m * [32m|[m   [33m6d76451[m Remover .pyc com conflito e finalizar merge
+[35m|[m [1;31m|[m[1;32m\[m [32m\[m  
+[35m|[m [1;31m|[m * [32m|[m [33m684ff39[m WIP: alterações locais antes do rebase
+[35m|[m [1;31m|[m * [32m|[m [33m9ca55a9[m Arrumando header e centralizando placeholder
+[35m|[m * [1;32m|[m [32m|[m [33m16eada8[m Remover arquivos .pyc e corrigir .gitignore
+[35m|[m [1;32m|[m[1;32m/[m [32m/[m  
+[35m|[m * [32m/[m [33m07028af[m codigo arrumado
+[35m|[m [32m|[m[32m/[m  
+* [32m/[m [33mfe02b25[m Alterações locais do arquivo
+[32m|[m[32m/[m  
+[32m|[m * [33m8b3d8cb[m[33m ([m[1;31morigin/Leo-Branch[m[33m)[m Arrumando header e centralizando placeholder
+[32m|[m[32m/[m  
+* [33mffa4030[m tela sobre nos
+* [33md8328f8[m Home_img_atualizada
+* [33m84d27bb[m Tela_Orcamento_fixxer
+* [33m28d84fb[m Azul
+*   [33m6f9e7f5[m Merge branch 'main2' of https://github.com/CristianeCambraia/Projeto_Integrador into main2
+[1;34m|[m[1;35m\[m  
+[1;34m|[m *   [33m316b89c[m fix
+[1;34m|[m [1;36m|[m[31m\[m  
+[1;34m|[m * [31m\[m   [33m3252b22[m Finalizar merge e remover arquivos .pyc
+[1;34m|[m [32m|[m[33m\[m [31m\[m  
+[1;34m|[m * [33m|[m [31m|[m [33mf5014f5[m tela_home
+* [33m|[m [33m|[m [31m|[m [33mb5f8626[m Teste
+[31m|[m [33m|[m[31m_[m[33m|[m[31m/[m  
+[31m|[m[31m/[m[33m|[m [33m|[m   
+* [33m|[m [33m|[m [33m6a6ac91[m Nova tela Orçamento
+[33m|[m [33m|[m[33m/[m  
+[33m|[m[33m/[m[33m|[m   
+* [33m|[m [33m35334ea[m Orçamentos_emitidos.
+* [33m|[m   [33mf70e426[m Merge branch 'main2' of https://github.com/CristianeCambraia/Projeto_Integrador into main2
+[34m|[m[35m\[m [33m\[m  
+[34m|[m * [33m|[m [33mbbb12ce[m Remove arquivos pyc do repositório
+[34m|[m [33m|[m[33m/[m  
+* [33m/[m [33m1709930[m tela atualizada com cor e footer
+[33m|[m[33m/[m  
+* [33m292019e[m Atualização de cor
+[35m|[m * [33m8f10ae3[m[33m ([m[1;31morigin/master[m[33m)[m Footer atualizando da master
+[35m|[m[35m/[m  
+* [33m102d95c[m Cor Rosa
+* [33me4d0280[m Footer atualizada
+* [33m3e938c7[m Atualização com alteração de banco de dados
+* [33m927d601[m atualizacao da master
+* [33m16b0ae1[m bug resolvido
+*   [33mecca995[m Merge branch 'cadastro' of https://github.com/CristianeCambraia/Projeto_Integrador
+[1;31m|[m[1;32m\[m  
+[1;31m|[m * [33meed4f03[m[33m ([m[1;31morigin/cadastro[m[33m)[m tela de cadastro de cliente
+* [1;32m|[m [33mbe5bd46[m arrumando conflitos
+* [1;32m|[m [33m14dda49[m "Tela de cadastro produto voltando para anterior"
+[1;32m|[m[1;32m/[m  
+* [33me3fc2b5[m "Telas prontas de Cadastro de produtos + Produtos cadastrados"
+* [33m9f7ab04[m "cadastro fornecedor ok + imagem navbar"
+* [33mbf3ad87[m  primeiro commit
+* [33m05d1148[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m Initial commit

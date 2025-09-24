@@ -60,11 +60,11 @@ def cadastrar(request):
 
 def lista_produtos(request):
     produtos = Produto.objects.all()
-<<<<<<< HEAD
+
     return render(request, 'produtos/lista_produtos.html', {'produtos': produtos})
 
 
-=======
+
     return render(request, 'produtos/lista_produtos.html', {
         'produtos': produtos
     })
@@ -84,7 +84,7 @@ def lista_produtos(request):
     produtos = Produto.objects.all()
     return render(request, 'Produtos/lista_produtos.html', {'produtos': produtos})
 
->>>>>>> origin/Lucas-Branch
+
 # ----- CLIENTES -----
 def abrir_cliente(request):
     form = ClienteForm()
