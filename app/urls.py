@@ -30,10 +30,6 @@ urlpatterns = [
     path('novo_orcamento/', views.novo_orcamento, name='novo_orcamento'),
     path('voltar/', views.voltar, name='voltar'),
     path('sobre_nos/', views.sobre_nos, name='sobre_nos'),
-<<<<<<< Updated upstream
     path("suporte/novo/", views.criar_suporte, name="criar_suporte"),
 ]
  
-=======
-]
->>>>>>> Stashed changes
