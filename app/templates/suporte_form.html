@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="suporte-container">
+    <div class="suporte-form">
+        <h2>Suporte</h2>
+        <form method="post">
+            {% csrf_token %}
+            <div class="campo-form">
+                {{ form.nome.label_tag }}
+                {{ form.nome }}
+            </div>
+            <div class="campo-form">
+                {{ form.email.label_tag }}
+                {{ form.email }}
+            </div>
+            <div class="campo-form">
+                {{ form.telefone.label_tag }}
+                {{ form.telefone }}
+            </div>
+            <div class="campo-form">
+                {{ form.descreva.label_tag }}
+                {{ form.descreva }}
+            </div>
+            <button type="submit" class="suporte-btn">Salvar</button>
+        </form>
+    </div>
+
+    <div class="suporte-imagem">
+        <img src="{% static 'images/suporte.png' %}" alt="Atendente Suporte">
+        <p class="suporte-slogan">Sua satisfação é nossa prioridade!</p>
+        <p class="suporte-msg">Fique tranquilo, em breve um de nossos consultores entrarão em contato com você.</p>
+    </div>
+</div>
+{% endblock %}

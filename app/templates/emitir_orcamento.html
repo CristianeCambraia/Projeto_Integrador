@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="emitir-orcamento-container">
+    <h2 class="titulo">Emitir Orçamentos</h2>
+
+    <form class="container-text"  method="post" action="{% url 'salvar_orcamento' %}">
+        {% csrf_token %}
+
+        <div class="cliente-dados">
+            <label><strong>Cliente:</strong></label>
+            <input type="text" name="cliente" required>
+                    
+            <label><strong>Data:</strong></label>
+            <input type="date" name="data" required>
+                    
+            <label><strong>CNPJ:</strong></label>
+            <input type="text" name="cnpj" required>
+                    
+            <label><strong>Endereço:</strong></label>
+            <input type="text" name="endereco">
+                    
+            <label><strong>Cidade:</strong></label>
+            <input type="text" name="cidade">
+                    
+            <label><strong>Telefone:</strong></label>
+            <input type="tel" name="telefone">
+                    
+            <label><strong>E-mail:</strong></label>
+            <input type="email" name="email">
+
+        </div>
+
+        <table class="itens-orcamento">
+            <thead>
+                <tr>
+                    <th>Descrição</th>
+                    <th>Quantidade</th>
+                    <th>Valor</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for i in range_3 %}
+                <tr>
+                    <td><input type="text" name="descricao_{{ i }}"></td>
+                    <td><input type="number" name="quantidade_{{ i }}" min="1"></td>
+                    <td><input type="text" name="valor_{{ i }}"></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="botoes">
+            <button type="submit" class="btn-salvar">Salvar 💾</button>
+            <a href="{% url 'orcamentos_emitidos' %}" class="btn-emitidos">Orçamentos Emitidos ➕</a>
+            <a href="{% url 'novo_orcamento' %}" class="btn-novo">Novo Orçamento ➕</a>
+            <a href="javascript:history.back()" class="btn-voltar">Voltar ⤴</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

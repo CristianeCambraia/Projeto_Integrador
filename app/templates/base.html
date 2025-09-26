@@ -21,8 +21,8 @@
             <ul>
                 <li><a href="/">Home</a></li>
                 <li><a href="{% url 'fornecedores' %}">Cadastros</a></li>
-                <li><a href="#">Orçamentos</a></li>
-                <li><a href="#">Relatórios</a></li>
+                <li><a href="{% url 'emitir_orcamento' %}">Orçamentos</a></li>
+                <li><a href="{% url 'relatorio_estoque' %}">Relatórios</a></li>
                 <li><a href="#">Sair</a></li>
             </ul>
         </nav>
@@ -34,18 +34,20 @@
     </main>
 
     <footer>
-        <p>Redes Sociais</p>
-        <ul>
-            <li><a href="#">Zap</a></li>
-            <li><a href="#">Instagram</a></li>
-            <li><a href="#">Facebook</a></li>
-        </ul>
-        <p>Todos os direitos reservados &copy; <br>
-        Develop By: Bessa, Cristiane, Eduardo, Leonardo, Lucas</p>
+        <div>
+            <p>Redes Sociais</p>
+            <ul class="social-media">
+                <li><a href="#">WhatsApp</a></li>
+                <li><a href="#">Instagram</a></li>
+                <li><a href="#">Facebook</a></li>
+            </ul>
+        </div>
+        <p>Todos os direitos reservados &copy; <br> Develop By: Bessa, Cristiane, Eduardo, Leonardo, Lucas.</p>
         <p>Telefone - (35) 99877-8346</p>
-        <ul>
-            <li><a href="#">Suporte</a></li>
-            <li><a href="#"></a>Sobre nós</li>
+
+        <ul class="contact">
+            <li><a href="{% url 'sobre_nos' %}">Sobre nós</a></li>
+            <li><a href="{% url 'criar_suporte' %}">Contato</a></li>
         </ul>
     </footer>
 </body>

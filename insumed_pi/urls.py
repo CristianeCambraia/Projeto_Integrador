@@ -3,10 +3,10 @@ from django.conf.urls.static import static
 from django.urls import path, include
 
 urlpatterns = [
-    # Inclui as urls do app principal
     path('', include('app.urls')),
 ]
 
 if settings.DEBUG:
-    # Servir arquivos de mídia durante o desenvolvimento
+    # Servir arquivos de mídia e estáticos durante o desenvolvimento
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0])
