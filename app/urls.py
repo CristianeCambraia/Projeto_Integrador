@@ -37,7 +37,8 @@ urlpatterns = [
     path('sobre_nos/',views.sobre_nos,name='sobre_nois'),
 
     # ----- RELATÓRIOS -----
-    path('relatorio-estoque/', views.relatorio_estoque, name='relatorio_estoque')
-
+    path('relatorio-estoque/', views.relatorio_estoque, name='relatorio_estoque'),
+    path('relatorio-entrada/', views.relatorio_entrada, name='relatorio_entrada'),
+    path('relatorio-saida/', views.relatorio_saida, name='relatorio_saida'),
 ]
  

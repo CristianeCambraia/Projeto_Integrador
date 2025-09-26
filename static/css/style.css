@@ -643,3 +643,15 @@ footer p {
     font-size: 14px;
 }
 
+.form-grid_E p {
+    margin-bottom: 15px;
+}
+
+.form-grid_E input, 
+.form-grid_E select, 
+.form-grid_E textarea {
+    width: 95%;
+    padding: 4px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}

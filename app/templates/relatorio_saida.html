@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% if messages %}
+<script>
+    {% for message in messages %}
+        alert("{{ message|escapejs }}");
+    {% endfor %}
+</script> 
+{% endif %}
+<div class="estoque-container">
+    <h2 class="text-center mb-4">Relatório de Saída</h2>
+
+    <!-- Formulário -->
+    <form method="post">
+        {% csrf_token %}
+        <table class="tabela-estoque">
+            <thead class="table-light">
+                <tr>
+                    <th>Nome</th>
+                    <th>Adicionar Quantidade Retirada</th>
+                    <th>Unidade</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for produto in produtos %}
+                <tr>
+                    <td>{{ produto.nome }}</td>
+                    <td>
+                        <div class="form-grid_E">
+                        <input type="number" name="quantidade_{{ produto.id }}" min="0" value="0" class="form-control">
+                        </div>
+                    </td>
+                    <td>{{ produto.unidade }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="botoes">
+            <button type="submit" class="btn btn-primary px-5">Confirmar</button>
+        </div>
+    </form>
+
+    <!-- Botões de navegação -->
+    <div class="botoes">
+        <a href="{% url 'relatorio_estoque' %}" class="btn btn-info">Relatório de Estoque</a>
+        <a href="{% url 'relatorio_entrada' %}" class="btn btn-info">Relatório de Entrada</a>
+        <a href="{% url 'relatorio_saida' %}" class="btn btn-dark">Relatório de Saída</a>
+    </div>
+</div>
+{% endblock %}

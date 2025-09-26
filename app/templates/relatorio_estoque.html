@@ -43,8 +43,8 @@
     <!-- Botões -->
     <div class="botoes">
         <a href="{% url 'relatorio_estoque' %}" class="btn estoque">Relatório de Estoque</a>
-        <a href="#" class="btn entrada">Relatório de Entrada</a>
-        <a href="#" class="btn saida">Relatório de Saída</a>
+        <a href="{% url 'relatorio_entrada' %}" class="btn entrada">Relatório de Entrada</a>
+        <a href="{% url 'relatorio_saida'%}" class="btn saida">Relatório de Saída</a>
     </div>
 </div>
 {% endblock %}

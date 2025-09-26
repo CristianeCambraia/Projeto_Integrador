@@ -3,6 +3,8 @@ from .models import Fornecedor, Produto, Cliente, Usuario, Orcamento
 from .forms import FornecedorForm, ProdutoForm, ClienteForm, UsuarioForm, SuporteForm
 from django.utils.dateparse import parse_date
 from django.http import HttpResponseBadRequest
+from django.utils import timezone
+from django.contrib import messages
 
 # Página inicial (exibe primeiro fornecedor só como exemplo)
 def cadastros(request):
@@ -168,6 +170,42 @@ def relatorio_estoque(request):
         produtos = Produto.objects.all()
     return render(request, 'relatorio_estoque.html', {'produtos': produtos})
 
+def relatorio_entrada(request):
+    produtos = Produto.objects.all()
+
+    if request.method == "POST":
+        for produto in produtos:
+            qtd_recebida = request.POST.get(f"quantidade_{produto.id}")
+            if qtd_recebida and qtd_recebida.isdigit():
+                produto.quantidade += int(qtd_recebida)
+                produto.data_hora = timezone.now()  # atualiza data/hora
+                produto.save()
+        return redirect('relatorio_entrada')  # recarrega a página
+
+    return render(request, 'relatorio_entrada.html', {'produtos': produtos})
+
+
+def relatorio_saida(request):
+    produtos = Produto.objects.all()
+
+    if request.method == "POST":
+        for produto in produtos:
+            qtd_retirada = request.POST.get(f"quantidade_{produto.id}")
+            if qtd_retirada:
+                qtd_retirada = int(qtd_retirada)
+
+                # 🔹 Impede que a quantidade fique negativa
+                if produto.quantidade - qtd_retirada >= 0:
+                    produto.quantidade -= qtd_retirada
+                    produto.save()
+                else:
+                    messages.error(request, f"O produto {produto.nome} não pode sofrer de retirada por falta de estoque!")
+
+        return redirect("relatorio_saida")
+
+    return render(request, "relatorio_saida.html", {"produtos": produtos})
+
+# ----- SUPORTE -----
 def criar_suporte(request):
     if request.method == "POST":
         form = SuporteForm(request.POST)
