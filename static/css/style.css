@@ -1,42 +1,71 @@
-body{
+body {
     margin: 0;
     font-family: Arial, sans-serif;
     background-image: linear-gradient(to left top, #013e6a ,#43d1ff , #013e6a ,#419ad6, #01186a);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
     display: flex;
     flex-direction: column;
+    min-height: 100vh;
 }
 
+
 header {
-    background-color: #04bafc; /* Já existente */
+    width: 100%;
+    background-color: #04bafc;
     display: flex;
-    justify-content: space-between; /* Espaço entre o título e o menu */
-    align-items: center; /* Alinha verticalmente ao centro */
-    padding: 12px;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+header img {
+    height: 50px;
+    width: auto;
+    margin-right: 10px;
 }
 
 .insumed{
     font-family:Verdana, Geneva, Tahoma, sans-serif;
     font-size: 2em;
     color: white;
-    padding-right: 1225px;
+    margin: 0;
+    flex-shrink: 0;
+}
+
+.logo-header {
+    display: flex;
+    align-items: center;
+}
+
+nav {
+    overflow: hidden;
 }
 
 nav ul {
     list-style: none;
     margin: 0;
     padding: 0;
-    display: flex; /* Faz os itens ficarem em linha */
-    gap: 15px; /* Espaço entre os itens */
-}
-
-nav ul li {
-    /* Remove marcador e pode estilizar individualmente */
+    display: flex;
+    gap: 15px;
+    white-space: nowrap;
 }
 
 nav ul li a {
     text-decoration: none;
-    color: rgb(255, 255, 255); /* Ajuste a cor conforme desejar */
+    color: white;
     font-weight: bold;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+nav ul li a:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
 }
 
 .logo{
@@ -156,31 +185,68 @@ main {
     flex: 1;
 }
 
-footer{
+/*Footer aqui*/
+
+footer {
     color: white;
-    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-weight: bold;
     display: flex;
     justify-content: space-between;
-    margin-top: auto;
-    padding: 15px 0;
+    flex-wrap: wrap;
+    padding: 15px 20px;
     width: 100%;
-    clear: both;
+    box-sizing: border-box;
+    margin-top: auto;
 }
 
-
-
-div > p {
-    display: inline-flex;
-    justify-content: space-between;
-    margin: 0 15px;
-    gap: 30px;
+footer a {
+    color: #4fc3f7;
+    text-decoration: none;
+    transition: color 0.3s ease;
 }
 
+footer a:hover {
+    color: #81c784;
+    text-decoration: underline;
+}
+
+footer a:visited {
+    color: #ce93d8;
+}
+
+.social-media {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 15px;
+}
+
+.social-media li {
+    display: inline;
+}
+
+.social-media img {
+    width: 32px;
+    height: 32px;
+    transition: transform 0.3s ease;
+}
+
+.social-media img:hover {
+    transform: scale(1.2);
+}
+
+.contact {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 15px;
+}
 
 .contact li {
     display: inline;
-    margin-right: 15px;
 }
 
 
@@ -426,6 +492,55 @@ td input{
     color: #2b5167;
 }
 
+.filtro-orcamentos {
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.filtro-orcamentos form {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    align-items: center;
+}
+
+.filtro-orcamentos input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 200px;
+    font-size: 16px;
+}
+
+.btn-filtrar {
+    padding: 10px 20px;
+    background-color: #00bcd4;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.btn-filtrar:hover {
+    background-color: #00a5bb;
+}
+
+.btn-limpar {
+    padding: 10px 20px;
+    background-color: #888;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.btn-limpar:hover {
+    background-color: #666;
+}
+
 
 h2 {
     text-align: center;
@@ -565,19 +680,19 @@ h2 {
 }
 
 
-footer ul{
+footer ul {
     list-style: none;
     display: flex;
-    gap: 5px;
+    flex-wrap: wrap;
+    gap: 10px;
     padding: 0;
     margin: 0;
 }
 
 footer p {
-    margin: 0 20px;
+    margin: 5px 15px;
     font-size: 14px;
 }
-
 .form-grid_E p {
     margin-bottom: 15px;
 }

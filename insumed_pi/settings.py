@@ -53,7 +53,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'insumed_pi',
         'USER': 'root',
-        'PASSWORD': 'q1w2e3',
+        'PASSWORD': '1234',
         'HOST': 'localhost',
         'PORT': '3306',
     }

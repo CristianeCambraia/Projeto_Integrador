@@ -3,12 +3,23 @@
 {% block content %}
 <div class="container-lista-orcamentos">
   <h2>Orçamentos Emitidos</h2>
+  
+  <div class="filtro-orcamentos">
+    <form method="GET">
+      <input type="number" name="filtro_id" placeholder="Filtrar por ID" value="{{ filtro_id }}">
+      <button type="submit" class="btn-filtrar">Filtrar</button>
+      <a href="{% url 'orcamentos_emitidos' %}" class="btn-limpar">Limpar</a>
+    </form>
+  </div>
 
   <ul class="lista-orcamentos">
     {% for o in orcamentos %}
       <li class="item-orcamento">
         <div class="linha-dados">
+          <span><strong>ID:</strong> {{ o.id }}</span>
           <span><strong>Cliente:</strong> {{ o.cliente }}</span>
+        </div>
+        <div class="linha-dados">
           <span><strong>Data:</strong> {{ o.data|date:"d/m/Y" }}</span>
         </div>
         <div class="linha-dados">

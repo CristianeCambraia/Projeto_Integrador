@@ -150,8 +150,20 @@ def salvar_orcamento(request):
 
 
 def orcamentos_emitidos(request):
-    orcamentos = Orcamento.objects.all().order_by('-data')
-    return render(request, 'lista_orcamentos.html', {'orcamentos': orcamentos})
+    filtro_id = request.GET.get('filtro_id')
+    
+    if filtro_id:
+        try:
+            orcamentos = Orcamento.objects.filter(id=filtro_id).order_by('-data')
+        except ValueError:
+            orcamentos = Orcamento.objects.none()
+    else:
+        orcamentos = Orcamento.objects.all().order_by('-data')
+    
+    return render(request, 'lista_orcamentos.html', {
+        'orcamentos': orcamentos,
+        'filtro_id': filtro_id
+    })
 
 
 def novo_orcamento(request):
