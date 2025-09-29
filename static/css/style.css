@@ -2,7 +2,6 @@ body{
     margin: 0;
     font-family: Arial, sans-serif;
     background-image: linear-gradient(to left top, #013e6a ,#43d1ff , #013e6a ,#419ad6, #01186a);
-    min-height: 100vh;
     display: flex;
     flex-direction: column;
 }
@@ -15,7 +14,7 @@ header {
     padding: 12px;
 }
 
-h1{
+.insumed{
     font-family:Verdana, Geneva, Tahoma, sans-serif;
     font-size: 2em;
     color: white;
@@ -485,7 +484,7 @@ h2 {
     background-color: #00bcd4;
     color: white;
     font-size: 18px;
-    font-weight: 600;
+    font-weight: 60px;
     border-radius: 25px;
     text-decoration: none;
     box-shadow: 0 5px 15px rgba(0, 188, 212, 0.5);
@@ -517,25 +516,23 @@ h2 {
     padding: 40px;
 }
 
-.sobre-nos-imagem {
-    width: 100%;
-    height: 600px;
-    object-fit: cover;
-    border-radius: 15px;
-}
 
 .sobre-nos-texto {
+    right: 90px;
+    text-align: center;
     position: absolute;
-    top: 80px;
-    right: 70px;
+    font-size: 24px;
+    top: 20%;
+    text-align: center;
     max-width: 300px;
     color: white;
     text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+    padding-right: 0px;
 }
 
-.sobre-nos-texto h1 {
-    font-size: 1.5em;
-    margin-bottom: 10px;
+.titulo_sobrenos h1 {
+    display: inline-block;
+
 }
 
 .sobre-nos-texto h2 {
@@ -548,87 +545,25 @@ h2 {
     line-height: 1.3;
 }
 
-.sobre-nos-texto {
-    position: absolute;
-    top: 50px;
-    right: 30px;
-    max-width: 300px;
-    color: white;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
-}
-
-.sobre-nos-texto h1 {
-    font-size: 1.5em;
-    margin-bottom: 10px;
-}
-
-.sobre-nos-texto h2 {
-    font-size: 1em;
-    margin-bottom: 10px;
-}
-
-.sobre-nos-texto p {
-    font-size: 0.8em;
-    line-height: 1.3;
-}
-
-.sobre-nos-imagem {
-    width: 400px;
-    height: 300px;
-    object-fit: cover;
-    border-radius: 10px;
-}
 
 .sobre-nos-conteudo {
     max-width: 300px;
     color: white;
 }
 
-.sobre-nos-conteudo h1 {
-    font-size: 1.8em;
-    margin-bottom: 10px;
-}
-
-.sobre-nos-conteudo h2 {
-    font-size: 1.2em;
-    margin-bottom: 10px;
-}
-
-.sobre-nos-conteudo p {
-    font-size: 0.9em;
-    line-height: 1.4;
-}
-
 .sobre-nos-imagem {
-    width: 500px;
-    height: 400px;
+    width: 100%;
+    height: 80%;
     object-fit: cover;
     border-radius: 15px;
     flex-shrink: 0;
 }
 
 .sobre-nos-conteudo {
-    flex: 1;
+    flex: 0;
     color: white;
 }
 
-.sobre-nos-conteudo h1 {
-    font-size: 2.5em;
-    margin-bottom: 20px;
-    color: #04bafc;
-}
-
-.sobre-nos-conteudo h2 {
-    font-size: 1.5em;
-    margin-bottom: 20px;
-    color: #43d1ff;
-}
-
-.sobre-nos-conteudo p {
-    font-size: 1.1em;
-    line-height: 1.6;
-    text-align: justify;
-}
 
 footer ul{
     list-style: none;
