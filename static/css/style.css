@@ -171,13 +171,13 @@ footer{
 
 
 
-div p, div ul{
+div > p {
     display: inline-flex;
     justify-content: space-between;
-    margin-right: 15px;
-    margin-left: 15px;
+    margin: 0 15px;
     gap: 30px;
 }
+
 
 .contact li {
     display: inline;
