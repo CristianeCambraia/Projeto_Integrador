@@ -51,13 +51,14 @@ WSGI_APPLICATION = 'insumed_pi.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'insumed_pi',
+        'NAME': 'insumed_pi',  # seu banco
         'USER': 'root',
-        'PASSWORD': '1234',
-        'HOST': 'localhost',
+        'PASSWORD': 'q1w2e3',  # senha que você configurou
+        'HOST': '127.0.0.1',   # importante usar 127.0.0.1 em vez de localhost
         'PORT': '3306',
     }
 }
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',},
