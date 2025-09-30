@@ -22,6 +22,14 @@ header {
     overflow: hidden;
 }
 
+header.cadastro_usuario {
+    background-color: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+}
+
+
+
 header img {
     height: 50px;
     width: auto;
@@ -653,21 +661,21 @@ h2 {
     margin-bottom: 20px;
     font-weight: bold;
     text-align: center;
-    color: #2B2B2B;
+    color:#474545;
 }
 
 .sobre-nos-texto h2 {
     font-size: 1.4em;
     margin-bottom: 20px;
     font-weight: 600;
-    color: #3D3D3D;
+    color: #474545;
 }
 
 .sobre-nos-texto p {
     font-size: 1.1em;
     line-height: 1.6;
     font-weight: 500;
-    color: #4F4F4F;
+    color: #474545;
 }
 
 
@@ -1026,4 +1034,5 @@ footer p {
   .btn:hover {
     filter: brightness(0.9);
   }
+
 

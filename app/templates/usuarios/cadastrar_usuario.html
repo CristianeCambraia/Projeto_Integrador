@@ -7,6 +7,13 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
+    <header class="cadastro_usuario">
+        <div class="logo-header">
+            <img src="{% static 'images/insumed_icon.png' %}" alt="insumed_icon">
+            <h1 class="insumed">INSUMED</h1>
+        </div>
+        
+    </header>
 
     <div class="form-container">
         <div class="titulo">{{ titulo_pagina }}</div>
@@ -32,5 +39,24 @@
         </form>
     </div>
 
+    <footer>
+        <div>
+            <p>Redes Sociais</p>
+            <ul class="social-media">
+                <li><a href="https://wa.me/5535997548034" target="_blank"><img src="{% static 'images/whatsapp.svg' %}" alt="WhatsApp"></a></li>
+                <li><a href="https://instagram.com/insumed" target="_blank"><img src="{% static 'images/instagram.svg' %}" alt="Instagram"></a></li>
+                <li><a href="https://facebook.com/insumed" target="_blank"><img src="{% static 'images/facebook.svg' %}" alt="Facebook"></a></li>
+            </ul>
+        </div>
+        <p>Todos os direitos reservados &copy; <br> Develop By: Bessa, Cristiane, Eduardo, Leonardo, Lucas.</p>
+        <p>Telefone - (35) 99877-8346</p>
+
+        <ul class="contact">
+            <li><a href="{% url 'sobre_nos' %}">Sobre nós</a></li>
+            <li><a href="{% url 'criar_suporte' %}">Contato</a></li>
+        </ul>
+    </footer>
+
 </body>
 </html>
+
