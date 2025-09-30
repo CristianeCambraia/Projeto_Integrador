@@ -12,6 +12,7 @@ body {
 
 
 header {
+    background-color: #04bafc;
     width: 100%;
     display: flex;
     justify-content: space-between;
@@ -710,7 +711,7 @@ footer p {
 }
 
 .btn {
-    background: #007bff;
+    background:#4ed4f7;
     color: white;
     padding: 10px 20px;
     text-decoration: none;
@@ -758,3 +759,271 @@ footer p {
     cursor: pointer;
     font-weight: bold;
 }
+
+
+
+/* Container geral */
+.container {
+  max-width: 900px;
+  margin: 40px auto;
+  font-family: 'Arial', sans-serif;
+}
+
+
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.menu {
+  display: flex;
+  gap: 30px;
+  font-weight: bold;
+}
+
+.menu-item {
+  color: white;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.btn-sair {
+  background: #0091cc;
+  padding: 8px 18px;
+  border-radius: 10px;
+  color: white;
+  font-weight: bold;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* Box do formulário */
+.form-box {
+  background: #e8e8e8;
+  border-radius: 30px;
+  padding: 30px 40px;
+  color: #026a84;
+}
+
+.form-title {
+  text-align: center;
+  font-weight: 700;
+  margin-bottom: 25px;
+  font-size: 22px;
+}
+
+/* Grid do formulário */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px 40px;
+}
+
+/* Cada grupo de campo */
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #02778b;
+}
+
+.form-group input,
+.form-group select {
+  height: 40px;
+  padding: 6px 12px;
+  border-radius: 15px;
+  border: none;
+  font-size: 16px;
+  outline: none;
+  box-sizing: border-box;
+}
+
+/* Botões */
+.form-buttons {
+  margin-top: 35px;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.btn {
+  flex: 1;
+  font-weight: 700;
+  font-size: 18px;
+  padding: 12px 0;
+  border-radius: 25px;
+  border: none;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  color: white;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.btn-cancelar {
+  background: #4ed4f7;
+}
+
+.btn-salvar {
+  background: #4ed4f7;
+}
+
+.btn-voltar {
+  background: #4ed4f7;
+}
+
+/* Efeito hover para botões */
+.btn:hover {
+  filter: brightness(0.9);
+}
+
+
+ .form-container {
+    background-color: white !important;
+    border-radius: 30px;
+    padding: 25px 40px 40px;
+    max-width: 900px;
+    margin: 40px auto;
+  }
+
+  .header-form {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    justify-content: center; /* centraliza horizontalmente */
+    position: relative;
+    margin-bottom: 30px;
+  }
+
+  .titulo {
+    color: #0e7287;
+    font-size: 26px;
+    font-weight: 700;
+    margin: 0;
+  }
+
+  /* Busca topo */
+  .search-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .search-input {
+    border-radius: 15px;
+    border: none;
+    padding: 8px 14px;
+    width: 180px;
+    font-size: 16px;
+    color: #999;
+  }
+
+  .search-input::placeholder {
+    color: #ccc;
+  }
+
+  .search-button {
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: #0ec9f4;
+    cursor: pointer;
+  }
+
+  /* Botão Editar */
+  .btn-editar {
+    background-color: #4ed4f7;
+    color: white;
+    font-weight: 700;
+    font-size: 18px;
+    border-radius: 20px;
+    padding: 10px 25px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  /* Form grid */
+  .form-grid p {
+    margin-bottom: 20px;
+  }
+
+  .form-grid label {
+    color: #0e7287;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .form-grid input,
+  .form-grid textarea,
+  .form-grid select {
+    width: 100%;
+    padding: 10px 15px;
+    border-radius: 15px;
+    border: none;
+    background-color: #fafafa;
+    font-size: 16px;
+    color: #999;
+    box-sizing: border-box;
+  }
+
+  textarea {
+    min-height: 110px;
+    resize: vertical;
+  }
+
+  /* Botões inferiores */
+  .form-buttons {
+    margin-top: 30px;
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+  }
+
+  .btn {
+    flex: 1;
+    font-weight: 700;
+    font-size: 18px;
+    padding: 12px 0;
+    border-radius: 25px;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    color: white;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-width: 140px;
+    box-sizing: border-box;
+  }
+
+  .btn-cancelar {
+    background: #4ed4f7;
+  }
+
+  .btn-salvar {
+    background: #4ed4f7;
+  }
+
+  .btn-voltar {
+    background: #4ed4f7;
+  }
+
+  .btn:hover {
+    filter: brightness(0.9);
+  }
+

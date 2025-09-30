@@ -1,21 +1,84 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="form-container">
-    <h2 class="titulo">Cadastro de Fornecedor</h2>
+<div class="container">
+
+
+
+  <section class="form-box">
+    <h2 class="form-title">Cadastro de Fornecedores</h2>
 
     <form method="post" action="{% url 'salvar_fornecedor' %}">
-        {% csrf_token %}
-        <div class="form-grid">
-            {{ form.as_p }}
+      {% csrf_token %}
+      <div class="form-grid">
+
+        <div class="form-group">
+          <label for="id_nome">Nome</label>
+          {{ form.nome }}
         </div>
 
-        <div class="botoes">
-            <button type="submit" class="btn-salvar">Salvar</button>
-            <a href="{% url 'lista_fornecedores' %}" class="btn-cancelar">Cancelar</a>
-            <a href="{% url 'cadastrar_produto' %}" class="btn-cadastrar-produto">➕ Cadastrar Produto</a>
-            <a href="{% url 'clientes' %}" class="btn-cadastrar-produto">➕ Cadastrar Cliente</a>
+        <div class="form-group">
+          <label for="id_data_nascimento">Data de Nascimento</label>
+          {{ form.data_nascimento }}
         </div>
+
+        <div class="form-group">
+          <label for="id_cnpj">CNPJ</label>
+          {{ form.cnpj }}
+        </div>
+
+        <div class="form-group">
+          <label for="id_cidade">Cidade</label>
+          {{ form.cidade }}
+        </div>
+
+        <div class="form-group">
+          <label for="id_endereco">Endereço</label>
+          {{ form.endereco }}
+        </div>
+
+        <div class="form-group">
+          <label for="id_uf">UF</label>
+          {{ form.uf }}
+        </div>
+
+        <div class="form-group">
+          <label for="id_bairro">Bairro</label>
+          {{ form.bairro }}
+        </div>
+
+        <div class="form-group">
+          <label for="id_cep">CEP</label>
+          {{ form.cep }}
+        </div>
+
+        <div class="form-group">
+          <label for="id_complemento">Complemento</label>
+          {{ form.complemento }}
+        </div>
+
+        <div class="form-group">
+          <label for="id_email">E-mail</label>
+          {{ form.email }}
+        </div>
+
+        <div class="form-group">
+          <label for="id_telefone">Telefone</label>
+          {{ form.telefone }}
+        </div>
+
+      </div>
+
+      <div class="form-buttons">
+        <a href="{% url 'lista_fornecedores' %}" class="btn btn-cancelar">Cancelar</a>
+        <button type="submit" class="btn btn-salvar">Salvar</button>
+        <a href="#" class="btn btn-voltar">Voltar</a>
+        <a href="{% url 'cadastrar_produto' %}" class="btn btn-cadastrar-produto">Cadastrar Produto<a>
+        <a href="{% url 'clientes' %}" class="btn btn-cadastrar-cliente"> Cadastrar Cliente</a>
+      </div>
+
     </form>
+  </section>
+
 </div>
 {% endblock %}
