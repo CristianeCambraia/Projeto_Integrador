@@ -1035,4 +1035,109 @@ footer p {
     filter: brightness(0.9);
   }
 
+  .login-container {
+   background-color: #ececec;
+   width: 60%;
+   height:10%;;
+   margin: 10% 20%;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   padding: 20px;
+   gap: 120px;  /* espaço entre imagem e box */
+   border-radius: 20px;
+   font-size: 1em;
+   font-weight: bold;
 
+}
+
+/* lado da imagem */
+.login-side {
+  flex: 1;  /* pode crescer */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-side .logo-side {
+  max-width: 100%;
+  height: 500px;
+  border-radius: 20px;
+  /* se quiser limitar um pouco: */
+  object-fit: contain;
+}
+
+/* caixa de login ocupa espaço fixo ou proporcional menor */
+.login-box {
+  flex: 1;
+  max-width: 400px;
+  background-color: #3b8fa8;
+  color: white;
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+.form-group input, .form-group select {
+    margin: 10px;
+    height: 40px;
+    padding: 6px 12px;
+    border-radius: 15px;
+    border: none;
+    font-size: 16px;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.btn-login{
+    font-size: 1.0em;
+    color: white;
+    background-color: #04bafc;
+    width: 50%;
+    height: 35px;
+    border-radius: 8px;
+    font-weight: bold;
+}
+
+
+.form-group.form-check {
+  display: flex;
+  align-items: center;  /* Alinha checkbox e texto verticalmente no meio */
+  justify-content: flex-start; /* Alinha tudo à esquerda */
+  gap: 8px; /* Espaço entre checkbox e texto */
+  margin-left: 0; /* Remove qualquer margem que empurre para a direita */
+}
+
+.form-group.form-check input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  flex-shrink: 0;
+}
+
+.form-group.form-check label {
+    padding-bottom: 10px;
+    margin: 0;
+    cursor: pointer;
+    color: white;
+  /* Mantém display padrão inline para o texto */
+}
+
+.form-group.form-check {
+  text-align: left; /* força o texto ficar alinhado à esquerda */
+}
+
+
+
+/* restante do CSS já definido antes... os inputs, botões etc */
+
+/* Para telas pequenas, empilha verticalmente */
+@media (max-width: 768px) {
+  .login-container {
+    flex-direction: column;
+  }
+  .login-side {
+    margin-bottom: 20px;
+  }
+}
