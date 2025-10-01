@@ -25,7 +25,18 @@
                 <li><a href="{% url 'fornecedores' %}">Cadastros</a></li>
                 <li><a href="{% url 'emitir_orcamento' %}">Orçamentos</a></li>
                 <li><a href="{% url 'relatorio_estoque' %}">Relatórios</a></li>
-                <li><a href="#">Sair</a></li>
+                {% if request and request.path == '/' %}
+                   <li><a href="{% url 'cadastrar_usuario' %}">Cadastrar Usuário</a></li>
+                   <li><a href="#">Login</a></li>
+                {% endif %}
+                {% if request and request.path != '/' and request.user.is_authenticated %}
+                   <li><a href="{% url 'logout' %}">Sair</a></li>
+                {% endif %}
+
+
+                
+
+
             </ul>
         </nav>
     </header>
