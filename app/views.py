@@ -5,6 +5,9 @@ from django.utils.dateparse import parse_date
 from django.http import HttpResponseBadRequest
 from django.utils import timezone
 from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
+from .forms import LoginForm
+from django.contrib.auth.decorators import login_required
 
 # Página inicial (exibe primeiro fornecedor só como exemplo)
 def cadastros(request):
@@ -246,4 +249,44 @@ def cadastrar_usuario(request):
     
 
 
+
+def login_view(request):
+    # se já estiver autenticado, redireciona a página principal ou dashboard
+    if request.user.is_authenticated:
+        return redirect('login')
+
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            senha = form.cleaned_data['senha']
+            remember = form.cleaned_data.get('remember', False)
+
+            # supondo que a autenticação use email como username
+            user = authenticate(request, username=email, password=senha)
+            if user is not None:
+                login(request, user)
+                if remember:
+                    # expira em 30 dias, por exemplo
+                    request.session.set_expiry(60 * 60 * 24 * 30)
+                else:
+                    # expira quando o navegador fechar
+                    request.session.set_expiry(0)
+
+                return redirect('login')
+            else:
+                form.add_error(None, "Usuário ou senha inválidos")
+    else:
+        form = LoginForm()
+
+    return render(request, 'login.html', {'form': form, 'titulo_pagina': 'Login'})
+
+@login_required
+def dashboard(request):
+    return render(request, 'login.html', {'titulo_pagina': 'login'})
+
+def logout_view(request):
+    logout(request)
+    return redirect('login')
+ 
 

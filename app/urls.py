@@ -46,4 +46,9 @@ urlpatterns = [
     
     # ---- LOGOUT -----
     path('logout/', LogoutView.as_view(next_page='/'), name='logout'),
+    path('login/', views.login_view, name='login'),
+    path('logout/', views.logout_view, name='logout'),
+    path('dashboard/', views.dashboard, name='dashboard'),
+    # outras rotas (cadastro de usuário, fornecedores etc.)
+
 ]
