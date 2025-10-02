@@ -1102,30 +1102,28 @@ footer p {
 
 
 .form-group.form-check {
-  display: flex;
-  align-items: center;  /* Alinha checkbox e texto verticalmente no meio */
-  justify-content: flex-start; /* Alinha tudo à esquerda */
-  gap: 8px; /* Espaço entre checkbox e texto */
-  margin-left: 0; /* Remove qualquer margem que empurre para a direita */
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 8px !important;
+  margin-left: 10px !important;
+  text-align: left !important;
+  flex-direction: row !important;
 }
 
 .form-group.form-check input[type="checkbox"] {
-  width: 20px;
-  height: 20px;
-  margin: 0;
-  flex-shrink: 0;
+  width: 20px !important;
+  height: 20px !important;
+  margin: 0 !important;
+  flex-shrink: 0 !important;
 }
 
 .form-group.form-check label {
-    padding-bottom: 10px;
-    margin: 0;
-    cursor: pointer;
-    color: white;
-  /* Mantém display padrão inline para o texto */
-}
-
-.form-group.form-check {
-  text-align: left; /* força o texto ficar alinhado à esquerda */
+    padding-bottom: 0 !important;
+    margin: 0 !important;
+    cursor: pointer !important;
+    color: white !important;
+    display: inline !important;
 }
 
 
@@ -1140,4 +1138,19 @@ footer p {
   .login-side {
     margin-bottom: 20px;
   }
+}
+.form-check {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.form-check input[type="checkbox"] {
+    width: auto !important;
+    margin: 0;
+}
+
+.form-check label {
+    margin: 0;
+    cursor: pointer;
 }
