@@ -1250,3 +1250,61 @@ footer p {
 .contact a {
     color: white !important;
 }
+#theme-toggle {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.2em;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+#theme-toggle:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+body.dark-theme {
+    background: linear-gradient(to left top, #1a1a1a, #2d2d2d, #1a1a1a, #333, #0d0d0d);
+}
+
+body.dark-theme .form-container,
+body.dark-theme .lista-container,
+body.dark-theme .estoque-container {
+    background: #333;
+    color: white;
+}
+
+body.dark-theme input,
+body.dark-theme select,
+body.dark-theme textarea {
+    background: #444;
+    color: white;
+    border-color: #555;
+}
+#theme-toggle {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    color: white !important;
+    font-size: 1.2em !important;
+    cursor: pointer !important;
+    padding: 8px 12px !important;
+    border-radius: 20px !important;
+    transition: all 0.3s ease !important;
+    outline: none !important;
+}
+
+#theme-toggle:hover {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+    transform: scale(1.05) !important;
+}
+
+#theme-toggle:focus {
+    outline: none !important;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3) !important;
+}
+#theme-toggle {
+    padding: 4px 8px !important;
+    font-size: 1em !important;
+}

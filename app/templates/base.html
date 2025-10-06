@@ -26,10 +26,12 @@
                 <li><a href="{% url 'emitir_orcamento' %}">Orçamentos</a></li>
                 <li><a href="{% url 'relatorio_estoque' %}">Relatórios</a></li>
                 {% if usuario_logado %}
+                    <li><button id="theme-toggle" onclick="toggleTheme()">☾</button></li>
                     <li><a href="{% url 'logout' %}">Sair</a></li>
                 {% else %}
                     <li><a href="{% url 'cadastrar_usuario' %}">Cadastrar Usuário</a></li>
                     <li><a href="{% url 'login' %}">Login</a></li>
+                    <li><button id="theme-toggle" onclick="toggleTheme()">☾</button></li>
                 {% endif %}
             </ul>
         </nav>
@@ -60,5 +62,34 @@
             <li><a href="{% url 'criar_suporte' %}">Contato</a></li>
         </ul>
     </footer>
+<script>
+function toggleTheme() {
+    const body = document.body;
+    const themeToggle = document.getElementById('theme-toggle');
+    
+    body.classList.toggle('dark-theme');
+    
+    if (body.classList.contains('dark-theme')) {
+        themeToggle.textContent = '☀';
+        localStorage.setItem('theme', 'dark');
+    } else {
+        themeToggle.textContent = '☾';
+        localStorage.setItem('theme', 'light');
+    }
+}
+
+// Carregar tema salvo
+window.addEventListener('load', function() {
+    const savedTheme = localStorage.getItem('theme');
+    const themeToggle = document.getElementById('theme-toggle');
+    
+    if (savedTheme === 'dark') {
+        document.body.classList.add('dark-theme');
+        themeToggle.textContent = '☀';
+    } else {
+        themeToggle.textContent = '☾';
+    }
+});
+</script>
 </body>
 </html>
