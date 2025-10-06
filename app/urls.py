@@ -41,14 +41,8 @@ urlpatterns = [
     path('relatorio-entrada/', views.relatorio_entrada, name='relatorio_entrada'),
     path('relatorio-saida/', views.relatorio_saida, name='relatorio_saida'),
     
-    # ----- CADASTRAR -----
-     path('usuarios/cadastrar/', views.cadastrar_usuario, name='cadastrar_usuario'),
-    
-    # ---- LOGOUT -----
-    path('logout/', LogoutView.as_view(next_page='/'), name='logout'),
+    # ----- LOGIN/LOGOUT -----
     path('login/', views.login_view, name='login'),
-    path('logout/', views.logout_view, name='logout'),
-    path('dashboard/', views.dashboard, name='dashboard'),
-    # outras rotas (cadastro de usuário, fornecedores etc.)
+    path('logout/', views.logout_view, name='logout')
 
 ]

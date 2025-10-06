@@ -1154,3 +1154,99 @@ footer p {
     margin: 0;
     cursor: pointer;
 }
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        padding: 10px;
+    }
+    
+    nav ul {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+    }
+    
+    .form-container, .lista-container, .estoque-container {
+        width: 95%;
+        margin: 20px auto;
+        padding: 15px;
+    }
+    
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .form-buttons {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .botoes {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .sobre-nos-container {
+        height: auto;
+        width: 100%;
+    }
+    
+    .sobre-nos-texto {
+        position: static;
+        transform: none;
+        max-width: 100%;
+        padding: 20px;
+        background: rgba(0,0,0,0.7);
+        margin-top: -100px;
+    }
+    
+    .login-container {
+        flex-direction: column;
+        width: 95%;
+        margin: 5% auto;
+        gap: 20px;
+    }
+    
+    .tabela-estoque {
+        font-size: 12px;
+    }
+    
+    .tabela-estoque th, .tabela-estoque td {
+        padding: 5px;
+    }
+}
+.error {
+    color: #ff4444;
+    background: rgba(255, 68, 68, 0.1);
+    padding: 10px;
+    border-radius: 5px;
+    margin: 10px 0;
+    text-align: center;
+}
+.message {
+    padding: 15px;
+    margin: 20px auto;
+    border-radius: 8px;
+    text-align: center;
+    max-width: 500px;
+    font-weight: bold;
+}
+
+.message.success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+.message {
+    font-size: 2em;
+}
+.message.success {
+    color: white;
+}
+.message.success {
+    color: #155724;
+}
+.contact a {
+    color: white !important;
+}

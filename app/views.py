@@ -7,7 +7,7 @@ from django.utils import timezone
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from .forms import LoginForm
-from django.contrib.auth.decorators import login_required
+from .decorators import login_required_custom
 
 # Página inicial (exibe primeiro fornecedor só como exemplo)
 def cadastros(request):
@@ -26,11 +26,13 @@ def sobre_nos(request):
 
 
 # ----- FORNECEDORES -----
+@login_required_custom
 def abrir_fornecedor(request):
     form = FornecedorForm()
     return render(request, 'fornecedores.html', {'form': form, 'titulo_pagina': 'Novo Fornecedor'})
 
 
+@login_required_custom
 def salvar_fornecedor(request):
     if request.method == "POST":
         form = FornecedorForm(request.POST)
@@ -42,12 +44,14 @@ def salvar_fornecedor(request):
     return render(request, 'fornecedores.html', {'form': form, 'titulo_pagina': 'Novo Fornecedor'})
 
 
+@login_required_custom
 def lista_fornecedores(request):
     fornecedores = Fornecedor.objects.all()
     return render(request, 'lista_fornecedores.html', {'fornecedores': fornecedores})
 
 
 # ----- PRODUTOS -----
+@login_required_custom
 def cadastrar(request):
     if request.method == "POST":
         form = ProdutoForm(request.POST)
@@ -91,6 +95,7 @@ def lista_produtos(request):
 
 
 # ----- CLIENTES -----
+@login_required_custom
 def abrir_cliente(request):
     form = ClienteForm()
     return render(request, 'clientes.html', {'form': form, 'titulo_pagina': 'Novo Cliente'})
@@ -113,6 +118,7 @@ def lista_cliente(request):
 
 
 # ----- ORÇAMENTOS ----
+@login_required_custom
 def emitir_orcamento(request):
     return render(request, 'emitir_orcamento.html', {'range_3': range(1, 4)})
 
@@ -177,6 +183,7 @@ def voltar(request):
     return redirect('home')  # alterei para 'home', que existe
 
 # ----- RELATÓRIOS -----
+@login_required_custom
 def relatorio_estoque(request):
     busca = request.GET.get('q')
     if busca:
@@ -251,42 +258,37 @@ def cadastrar_usuario(request):
 
 
 def login_view(request):
-    # se já estiver autenticado, redireciona a página principal ou dashboard
-    if request.user.is_authenticated:
-        return redirect('login')
-
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
             email = form.cleaned_data['email']
             senha = form.cleaned_data['senha']
-            remember = form.cleaned_data.get('remember', False)
-
-            # supondo que a autenticação use email como username
-            user = authenticate(request, username=email, password=senha)
-            if user is not None:
-                login(request, user)
+            
+            try:
+                usuario = Usuario.objects.get(email=email, senha=senha)
+                request.session['usuario_logado'] = usuario.id
+                
+                remember = form.cleaned_data.get('remember', False)
                 if remember:
-                    # expira em 30 dias, por exemplo
-                    request.session.set_expiry(60 * 60 * 24 * 30)
+                    request.session.set_expiry(None)  # Não expira
                 else:
-                    # expira quando o navegador fechar
-                    request.session.set_expiry(0)
-
-                return redirect('login')
-            else:
-                form.add_error(None, "Usuário ou senha inválidos")
+                    request.session.set_expiry(1800)  # 30 minutos
+                    
+                messages.success(request, f'Bem-vindo, {usuario.nome}!')
+                return redirect('home')
+            except Usuario.DoesNotExist:
+                messages.error(request, 'Email ou senha incorretos')
     else:
         form = LoginForm()
+    
+    return render(request, 'login.html', {'form': form})
 
-    return render(request, 'login.html', {'form': form, 'titulo_pagina': 'Login'})
-
-@login_required
 def dashboard(request):
     return render(request, 'login.html', {'titulo_pagina': 'login'})
 
 def logout_view(request):
-    logout(request)
+    if 'usuario_logado' in request.session:
+        del request.session['usuario_logado']
     return redirect('login')
  
 

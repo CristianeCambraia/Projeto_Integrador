@@ -2,11 +2,13 @@
 {% load static %}
 
 {% block content %}
+{% if messages %}
+  {% for message in messages %}
+    <div class="message {{ message.tags }}">{{ message }}</div>
+  {% endfor %}
+{% endif %}
+
 <div class="logo">
-
     <img src="{% static 'images/logo_insumed.png' %}" alt="Logo Insumed" class="logo-img">
-
 </div>
-
-
 {% endblock %}
