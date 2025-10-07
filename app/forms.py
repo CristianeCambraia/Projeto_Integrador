@@ -59,6 +59,10 @@ class ProdutoForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
             field.label = ''
+        # Tornar fornecedor opcional se não houver fornecedores
+        if not Fornecedor.objects.exists():
+            self.fields['fornecedor'].required = False
+            self.fields['fornecedor'].empty_label = 'Nenhum fornecedor cadastrado'
 
 
 # Formulário de Cliente

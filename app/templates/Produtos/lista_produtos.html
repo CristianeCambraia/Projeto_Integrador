@@ -6,7 +6,10 @@
     
     <ul class="lista">
         {% for p in produtos %}
-            <li>{{ p.nome }} - R$ {{ p.preco }}</li>
+            <li>
+                {{ p.nome }} - R$ {{ p.preco }}
+                <a href="{% url 'editar_produto' p.id %}" class="btn-editar">Editar</a>
+            </li>
         {% empty %}
             <li>Nenhum produto cadastrado.</li>
         {% endfor %}

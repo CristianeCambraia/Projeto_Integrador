@@ -16,6 +16,7 @@ urlpatterns = [
     path('produtos/', views.cadastrar, name='produtos'),  # abrir form + salvar produto
     path('produtos/lista/', views.lista_produtos, name='lista_produtos'),
     path('produtos/cadastrar/', views.cadastrar, name='cadastrar_produto'),
+    path('produtos/editar/<int:produto_id>/', views.editar_produto, name='editar_produto'),
 
     # ----- CLIENTES -----
     path('clientes/', views.abrir_cliente, name='clientes'),

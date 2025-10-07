@@ -41,7 +41,7 @@ class Produto(models.Model):
     nome = models.CharField(max_length=100, unique=True)
     preco = models.DecimalField(max_digits=10, decimal_places=2)
     descricao = models.TextField(blank=True, null=True)
-    fornecedor = models.ForeignKey(Fornecedor, on_delete=models.CASCADE, related_name="produtos")
+    fornecedor = models.ForeignKey(Fornecedor, on_delete=models.CASCADE, related_name="produtos", null=True, blank=True)
     data_hora = models.DateTimeField(default=timezone.now)
     unidade = models.CharField(max_length=50, choices=UNIDADE_CHOICES, default="Unidades")
     quantidade = models.IntegerField(default=1)
