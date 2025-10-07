@@ -1337,3 +1337,60 @@ body.dark-theme textarea {
         max-height: 300px;
     }
 }
+@media (max-width: 768px) {
+    body {
+        padding: 0;
+        margin: 0;
+    }
+    
+    .form-container, .lista-container, .estoque-container {
+        width: 100% !important;
+        margin: 10px 0 !important;
+        padding: 20px !important;
+        box-sizing: border-box;
+    }
+    
+    .emitir-orcamento-container {
+        width: 100% !important;
+        margin: 10px 0 !important;
+        padding: 20px !important;
+    }
+    
+    .suporte-container {
+        width: 100% !important;
+        margin: 10px 0 !important;
+        padding: 20px !important;
+        flex-direction: column;
+    }
+    
+    .container-lista-orcamentos {
+        width: 100% !important;
+        margin: 10px 0 !important;
+        padding: 20px !important;
+    }
+    
+    .login-container {
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 20px !important;
+    }
+    
+    .logo {
+        padding: 20px !important;
+        margin: 20px 0 !important;
+    }
+    
+    input, select, textarea, button {
+        width: 100% !important;
+        box-sizing: border-box;
+        font-size: 16px !important;
+        padding: 12px !important;
+    }
+    
+    .form-buttons .btn, .botoes .btn, .botoes button, .botoes a {
+        width: 100% !important;
+        margin: 5px 0 !important;
+        padding: 15px !important;
+        font-size: 16px !important;
+    }
+}
