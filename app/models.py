@@ -38,7 +38,7 @@ class Produto(models.Model):
         ('Caixa', 'Caixa'),
     ]
     
-    nome = models.CharField(max_length=100, unique=True)
+    nome = models.CharField(max_length=100)
     preco = models.DecimalField(max_digits=10, decimal_places=2)
     descricao = models.TextField(blank=True, null=True)
     fornecedor = models.ForeignKey(Fornecedor, on_delete=models.CASCADE, related_name="produtos", null=True, blank=True)
