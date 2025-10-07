@@ -7,7 +7,7 @@
     <ul class="lista">
         {% for p in produtos %}
             <li>
-                {{ p.nome }} - R$ {{ p.preco }}
+                {{ p.nome }} - R$ {{ p.preco }} - {{ p.quantidade }} {{ p.unidade }}
                 <a href="{% url 'editar_produto' p.id %}" class="btn-editar">Editar</a>
             </li>
         {% empty %}
