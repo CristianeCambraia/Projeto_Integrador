@@ -233,6 +233,7 @@ def criar_suporte(request):
         form = SuporteForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Solicitação enviada com sucesso!')
             return redirect("criar_suporte")  # redireciona para o próprio form
     else:
         form = SuporteForm()

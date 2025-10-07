@@ -2,6 +2,12 @@
 {% load static %}
 
 {% block content %}
+{% if messages %}
+  {% for message in messages %}
+    <div class="message {{ message.tags }}">{{ message }}</div>
+  {% endfor %}
+{% endif %}
+
 <div class="suporte-container">
     <div class="suporte-form">
         <h2>Suporte</h2>

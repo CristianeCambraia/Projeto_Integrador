@@ -1308,3 +1308,32 @@ body.dark-theme textarea {
     padding: 4px 8px !important;
     font-size: 1em !important;
 }
+@media (max-width: 768px) {
+    .logo-img {
+        width: 90% !important;
+        height: auto !important;
+        max-width: 300px;
+    }
+    
+    header img {
+        height: 40px;
+    }
+    
+    .sobre-nos-imagem {
+        width: 100% !important;
+        height: auto !important;
+        min-height: 250px;
+    }
+    
+    .suporte-imagem img {
+        width: 100%;
+        height: auto;
+        max-height: 200px;
+    }
+    
+    .login-side .logo-side {
+        width: 100%;
+        height: auto;
+        max-height: 300px;
+    }
+}
