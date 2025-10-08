@@ -579,6 +579,45 @@ h2 {
     gap: 12px;               /* espaçamento entre os campos */
 }
 
+/* layout duas colunas para lista de orçamentos */
+.row-two-col {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+}
+.col-left, .col-right {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.col-left {
+    width: 55%;
+}
+.col-right {
+    width: 45%;
+    align-items: flex-start; /* alinhar itens no mesmo início para que fiquem alinhados sob a descrição */
+}
+.col-right .field {
+    text-align: left; /* garantir que telefone e e-mail fiquem alinhados à esquerda sob a descrição */
+}
+.field strong {
+    color: #00bcd4;
+    display: inline-block;
+    min-width: 100px;
+}
+
+@media (max-width: 768px) {
+    .row-two-col {
+        flex-direction: column;
+    }
+    .col-right {
+        align-items: flex-start;
+    }
+    .col-right .field {
+        text-align: left;
+    }
+}
+
 
 .linha-dados {
     display: flex;
@@ -595,6 +634,71 @@ h2 {
     color: #00bcd4;
     display: inline-block;
     min-width: 100px;
+}
+
+/* descrição alinhada à direita na lista de orçamentos */
+.linha-top {
+    align-items: center;
+}
+.linha-top .left-info {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+.descricao-right {
+    width: 40%;
+    text-align: right;
+    font-weight: 500;
+    color: #333;
+}
+
+@media (max-width: 768px) {
+    .descricao-right {
+        width: 100%;
+        text-align: left;
+        margin-top: 6px;
+    }
+    .linha-top .left-info {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+/* Right stack: cliente, descricao, telefone empilhados à direita */
+.right-stack {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+    width: 45%;
+}
+.right-stack .right-item {
+    text-align: right;
+    font-weight: 500;
+}
+.right-stack .right-item strong {
+    color: #00bcd4;
+    display: inline-block;
+    min-width: 100px;
+}
+.left-id strong {
+    color: #00bcd4;
+    display: inline-block;
+    min-width: 100px;
+}
+.left-id {
+    width: 48%;
+}
+
+@media (max-width: 768px) {
+    .right-stack {
+        width: 100%;
+        align-items: flex-start;
+    }
+    .left-id {
+        width: 100%;
+        margin-bottom: 8px;
+    }
 }
 
 .botoes-orcamento {

@@ -175,6 +175,22 @@ def orcamentos_emitidos(request):
     })
 
 
+@login_required_custom
+def editar_descricao(request, orcamento_id):
+    try:
+        orc = Orcamento.objects.get(id=orcamento_id)
+    except Orcamento.DoesNotExist:
+        return redirect('orcamentos_emitidos')
+
+    if request.method == 'POST':
+        desc = request.POST.get('descricao', '').strip()
+        orc.descricao = desc
+        orc.save()
+        return redirect('orcamentos_emitidos')
+
+    return render(request, 'editar_descricao.html', {'orcamento': orc})
+
+
 def novo_orcamento(request):
     return redirect('emitir_orcamento')
 

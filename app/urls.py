@@ -30,6 +30,7 @@ urlpatterns = [
     path('emitir_orcamento/', views.emitir_orcamento, name='emitir_orcamento'),
     path('salvar_orcamento/', views.salvar_orcamento, name='salvar_orcamento'),
     path('orcamentos_emitidos/', views.orcamentos_emitidos, name='orcamentos_emitidos'),
+    path('orcamento/<int:orcamento_id>/editar_descricao/', views.editar_descricao, name='editar_descricao'),
     path('novo_orcamento/', views.novo_orcamento, name='novo_orcamento'),
     path('voltar/', views.voltar, name='voltar'),
 

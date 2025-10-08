@@ -15,19 +15,18 @@
   <ul class="lista-orcamentos">
     {% for o in orcamentos %}
       <li class="item-orcamento">
-        <div class="linha-dados">
-          <span><strong>ID:</strong> {{ o.id }}</span>
-          <span><strong>Cliente:</strong> {{ o.cliente }}</span>
-        </div>
-        <div class="linha-dados">
-          <span><strong>Data:</strong> {{ o.data|date:"d/m/Y" }}</span>
-        </div>
-        <div class="linha-dados">
-          <span><strong>CNPJ:</strong> {{ o.cnpj }}</span>
-          <span><strong>Telefone:</strong> {{ o.telefone }}</span>
-        </div>
-        <div class="linha-dados">
-          <span><strong>E-mail:</strong> {{ o.email }}</span>
+        <div class="row-two-col">
+          <div class="col-left">
+            <div class="field"><strong>ID:</strong> {{ o.id }}</div>
+            <div class="field"><strong>Cliente:</strong> {{ o.cliente }}</div>
+            <div class="field"><strong>Data:</strong> {{ o.data|date:"d/m/Y" }}</div>
+            <div class="field"><strong>CNPJ:</strong> {{ o.cnpj }}</div>
+          </div>
+          <div class="col-right">
+            <div class="field"><strong>Descrição:</strong> {{ o.descricao|default:"(Sem descrição)" }}</div>
+            <div class="field"><strong>Telefone:</strong> {{ o.telefone }}</div>
+            <div class="field"><strong>E-mail:</strong> {{ o.email }}</div>
+          </div>
         </div>
       </li>
     {% empty %}

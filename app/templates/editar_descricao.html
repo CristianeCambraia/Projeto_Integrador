@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="form-container">
+  <h2 class="titulo">Editar Descrição do Orçamento #{{ orcamento.id }}</h2>
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-group">
+      <label for="descricao">Descrição</label>
+      <textarea name="descricao" id="descricao" rows="6" maxlength="1000">{{ orcamento.descricao }}</textarea>
+    </div>
+    <div class="form-buttons">
+      <button type="submit" class="btn btn-salvar">Salvar</button>
+      <a href="{% url 'orcamentos_emitidos' %}" class="btn btn-voltar">Cancelar</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
