@@ -56,7 +56,43 @@ def cadastrar(request):
     if request.method == "POST":
         form = ProdutoForm(request.POST)
         if form.is_valid():
-            form.save()
+            # Se já existir produto com mesmo nome (case-insensitive), somar quantitades
+            nome = form.cleaned_data.get('nome', '').strip()
+            quantidade_nova = form.cleaned_data.get('quantidade') or 0
+            try:
+                quantidade_nova = int(quantidade_nova)
+            except (TypeError, ValueError):
+                quantidade_nova = 0
+
+            preco_novo = form.cleaned_data.get('preco')
+            descricao_nova = form.cleaned_data.get('descricao')
+            if descricao_nova is None:
+                descricao_nova = ''
+            descricao_nova = descricao_nova.strip()
+            fornecedor_novo = form.cleaned_data.get('fornecedor')
+            unidade_nova = form.cleaned_data.get('unidade')
+
+            # Somar apenas se nome (case-insensitive), descricao (trim) e preco coincidirem
+            existente = None
+            try:
+                existente = Produto.objects.filter(
+                    nome__iexact=nome,
+                    descricao__iexact=descricao_nova,
+                    preco=preco_novo
+                ).first()
+            except Exception:
+                # Em caso de qualquer problema com a query (ex: preco None), garantir que existente seja None
+                existente = None
+
+            if existente:
+                existente.quantidade = (existente.quantidade or 0) + quantidade_nova
+                existente.data_hora = timezone.now()
+                existente.save()
+                messages.success(request, f'Produto "{existente.nome}" atualizado: quantidade somada.')
+            else:
+                form.save()
+                messages.success(request, 'Produto cadastrado com sucesso.')
+
             return redirect('lista_produtos')
     else:
         form = ProdutoForm()
