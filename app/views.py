@@ -142,6 +142,13 @@ def salvar_orcamento(request):
                 raise ValueError()
         except ValueError:
             return HttpResponseBadRequest("Data inválida")
+        # Agrega as descrições dos itens (descricao_1..descricao_3) vindas do formulário
+        descricoes = []
+        for i in range(1, 4):
+            d = request.POST.get(f'descricao_{i}', '').strip()
+            if d:
+                descricoes.append(d)
+        descricao_agregada = ' / '.join(descricoes)
 
         orcamento = Orcamento(
             cliente=cliente,
@@ -150,6 +157,7 @@ def salvar_orcamento(request):
             cidade=cidade,
             telefone=telefone,
             email=email,
+            descricao=descricao_agregada,
             data=data_obj
         )
         orcamento.save()
