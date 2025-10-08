@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="emitir-orcamento-container">
+  <h2 class="titulo">Orçamento #{{ orcamento.id }}</h2>
+
+  <form class="container-text"  method="post" action="#">
+    {% csrf_token %}
+
+    <div class="cliente-dados">
+      <label><strong>Cliente:</strong></label>
+      <input type="text" name="cliente" value="{{ orcamento.cliente }}" disabled>
+                    
+      <label><strong>Data:</strong></label>
+      <input type="date" name="data" value="{{ orcamento.data|date:'Y-m-d' }}" disabled>
+                    
+      <label><strong>CNPJ:</strong></label>
+      <input type="text" name="cnpj" value="{{ orcamento.cnpj }}" disabled>
+                    
+      <label><strong>Endereço:</strong></label>
+      <input type="text" name="endereco" value="{{ orcamento.endereco }}" disabled>
+                    
+      <label><strong>Cidade:</strong></label>
+      <input type="text" name="cidade" value="{{ orcamento.cidade }}" disabled>
+                    
+      <label><strong>Telefone:</strong></label>
+      <input type="tel" name="telefone" value="{{ orcamento.telefone }}" disabled>
+                    
+      <label><strong>E-mail:</strong></label>
+      <input type="email" name="email" value="{{ orcamento.email }}" disabled>
+
+    </div>
+
+    <table class="itens-orcamento">
+      <thead>
+        <tr>
+          <th>Descrição</th>
+          <th>Quantidade</th>
+          <th>Valor</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for linha in linhas %}
+        <tr>
+          <td><input type="text" name="descricao_{{ forloop.counter }}" value="{{ linha.descricao }}" disabled></td>
+          <td><input type="number" name="quantidade_{{ forloop.counter }}" min="1" value="{{ linha.quantidade }}" disabled></td>
+          <td><input type="text" name="valor_{{ forloop.counter }}" value="{{ linha.valor }}" disabled></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <div class="botoes">
+      <button type="button" onclick="window.print()" class="btn-salvar">Imprimir 💾</button>
+      <a href="{% url 'orcamentos_emitidos' %}" class="btn-voltar">Voltar ⤴</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

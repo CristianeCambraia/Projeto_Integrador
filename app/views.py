@@ -142,13 +142,21 @@ def salvar_orcamento(request):
                 raise ValueError()
         except ValueError:
             return HttpResponseBadRequest("Data inválida")
-        # Agrega as descrições dos itens (descricao_1..descricao_3) vindas do formulário
+        # Agrega as descrições, quantidades e valores dos itens (1..3) vindos do formulário
         descricoes = []
+        quantidades = []
+        valores = []
         for i in range(1, 4):
             d = request.POST.get(f'descricao_{i}', '').strip()
-            if d:
-                descricoes.append(d)
-        descricao_agregada = ' / '.join(descricoes)
+            q = request.POST.get(f'quantidade_{i}', '').strip()
+            v = request.POST.get(f'valor_{i}', '').strip()
+            descricoes.append(d)
+            quantidades.append(q)
+            valores.append(v)
+
+        descricao_agregada = ' / '.join([x for x in descricoes if x])
+        quantidades_agregadas = ' / '.join([x for x in quantidades if x])
+        valores_agregados = ' / '.join([x for x in valores if x])
 
         orcamento = Orcamento(
             cliente=cliente,
@@ -158,6 +166,8 @@ def salvar_orcamento(request):
             telefone=telefone,
             email=email,
             descricao=descricao_agregada,
+            itens_quantidades=quantidades_agregadas,
+            itens_valores=valores_agregados,
             data=data_obj
         )
         orcamento.save()
@@ -197,6 +207,42 @@ def editar_descricao(request, orcamento_id):
         return redirect('orcamentos_emitidos')
 
     return render(request, 'editar_descricao.html', {'orcamento': orc})
+
+
+@login_required_custom
+def abrir_orcamento(request, orcamento_id):
+    try:
+        orc = Orcamento.objects.get(id=orcamento_id)
+    except Orcamento.DoesNotExist:
+        return redirect('orcamentos_emitidos')
+
+    # Aqui podemos formatar os itens se houver necessidade
+    # dividir a descricao agregada em até 3 itens (se foi salva como ' / ')
+    # construir listas de descricoes, quantidades e valores (mantendo 3 posições)
+    descrs = [''] * 3
+    qts = [''] * 3
+    vals = [''] * 3
+    if orc.descricao:
+        parts = [p.strip() for p in orc.descricao.split(' / ')]
+        for i, p in enumerate(parts[:3]):
+            descrs[i] = p
+    if orc.itens_quantidades:
+        parts_q = [p.strip() for p in orc.itens_quantidades.split(' / ')]
+        for i, p in enumerate(parts_q[:3]):
+            qts[i] = p
+    if orc.itens_valores:
+        parts_v = [p.strip() for p in orc.itens_valores.split(' / ')]
+        for i, p in enumerate(parts_v[:3]):
+            vals[i] = p
+
+    linhas = []
+    for i in range(3):
+        linhas.append({'descricao': descrs[i], 'quantidade': qts[i], 'valor': vals[i]})
+
+    return render(request, 'abrir_orcamento.html', {
+        'orcamento': orc,
+        'linhas': linhas,
+    })
 
 
 def novo_orcamento(request):

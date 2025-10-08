@@ -72,6 +72,8 @@ class Orcamento(models.Model):
     telefone = models.CharField(max_length=20, blank=True)
     email = models.EmailField(blank=True)
     descricao = models.TextField(blank=True, null=True)
+    itens_quantidades = models.TextField(blank=True, null=True)
+    itens_valores = models.TextField(blank=True, null=True)
     data = models.DateField(auto_now_add=True)
 
     def __str__(self):
