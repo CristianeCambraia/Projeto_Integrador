@@ -18,6 +18,7 @@
             <thead class="table-light">
                 <tr>
                     <th>Nome</th>
+                    <th>Estoque Atual</th>
                     <th>Adicionar Quantidade Retirada</th>
                     <th>Unidade</th>
                 </tr>
@@ -26,6 +27,7 @@
                 {% for produto in produtos %}
                 <tr>
                     <td>{{ produto.nome }}</td>
+                    <td><strong>{{ produto.quantidade }}</strong></td>
                     <td>
                         <div class="form-grid_E">
                         <input type="number" name="quantidade_{{ produto.id }}" min="0" value="0" class="form-control">
