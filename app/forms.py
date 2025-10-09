@@ -151,3 +151,19 @@ class LoginForm(forms.Form):
         })
     )
  
+# Formulário para editar produto (sem preço, quantidade e unidade)
+class EditarProdutoForm(forms.ModelForm):
+    class Meta:
+        model = Produto
+        fields = ['nome', 'descricao', 'fornecedor']
+
+        widgets = {
+            'nome': forms.TextInput(attrs={'placeholder': 'Nome do Produto'}),
+            'descricao': forms.Textarea(attrs={'placeholder': 'Descrição', 'rows': 3}),
+            'fornecedor': forms.Select(attrs={'placeholder': 'Selecione o Fornecedor'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.label = ''

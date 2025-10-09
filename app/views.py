@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
-from .models import Fornecedor, Produto, Cliente, Usuario, Orcamento
-from .forms import FornecedorForm, ProdutoForm, ClienteForm, UsuarioForm, SuporteForm
+from .models import Fornecedor, Produto, Cliente, Usuario, Orcamento, MovimentacaoEstoque
+from .forms import FornecedorForm, ProdutoForm, ClienteForm, UsuarioForm, SuporteForm, EditarProdutoForm
 from django.utils.dateparse import parse_date
 from django.http import HttpResponseBadRequest
 from django.utils import timezone
@@ -304,11 +304,19 @@ def relatorio_entrada(request):
     if request.method == "POST":
         for produto in produtos:
             qtd_recebida = request.POST.get(f"quantidade_{produto.id}")
-            if qtd_recebida and qtd_recebida.isdigit():
-                produto.quantidade += int(qtd_recebida)
-                produto.data_hora = timezone.now()  # atualiza data/hora
+            if qtd_recebida and qtd_recebida.isdigit() and int(qtd_recebida) > 0:
+                qtd = int(qtd_recebida)
+                produto.quantidade += qtd
+                produto.data_hora = timezone.now()
                 produto.save()
-        return redirect('relatorio_entrada')  # recarrega a página
+                
+                # Registrar movimentação
+                MovimentacaoEstoque.objects.create(
+                    produto=produto,
+                    tipo='ENTRADA',
+                    quantidade=qtd
+                )
+        return redirect('relatorio_entrada')
 
     return render(request, 'relatorio_entrada.html', {'produtos': produtos})
 
@@ -319,13 +327,19 @@ def relatorio_saida(request):
     if request.method == "POST":
         for produto in produtos:
             qtd_retirada = request.POST.get(f"quantidade_{produto.id}")
-            if qtd_retirada:
+            if qtd_retirada and int(qtd_retirada) > 0:
                 qtd_retirada = int(qtd_retirada)
 
-                # 🔹 Impede que a quantidade fique negativa
                 if produto.quantidade - qtd_retirada >= 0:
                     produto.quantidade -= qtd_retirada
                     produto.save()
+                    
+                    # Registrar movimentação
+                    MovimentacaoEstoque.objects.create(
+                        produto=produto,
+                        tipo='SAIDA',
+                        quantidade=qtd_retirada
+                    )
                 else:
                     messages.error(request, f"O produto {produto.nome} não pode sofrer de retirada por falta de estoque!")
 
@@ -403,12 +417,12 @@ def logout_view(request):
 def editar_produto(request, produto_id):
     produto = Produto.objects.get(id=produto_id)
     if request.method == "POST":
-        form = ProdutoForm(request.POST, instance=produto)
+        form = EditarProdutoForm(request.POST, instance=produto)
         if form.is_valid():
             form.save()
             return redirect('lista_produtos')
     else:
-        form = ProdutoForm(instance=produto)
+        form = EditarProdutoForm(instance=produto)
     return render(request, 'produtos/editar_produto.html', {
         'form': form,
         'produto': produto,
@@ -445,3 +459,12 @@ def editar_cliente(request, cliente_id):
         'cliente': cliente,
         'titulo_pagina': 'Editar Cliente'
     })
+@login_required_custom
+def relatorio_movimentacao_entrada(request):
+    movimentacoes = MovimentacaoEstoque.objects.filter(tipo='ENTRADA').order_by('-data_hora')
+    return render(request, 'relatorio_movimentacao_entrada.html', {'movimentacoes': movimentacoes})
+
+@login_required_custom
+def relatorio_movimentacao_saida(request):
+    movimentacoes = MovimentacaoEstoque.objects.filter(tipo='SAIDA').order_by('-data_hora')
+    return render(request, 'relatorio_movimentacao_saida.html', {'movimentacoes': movimentacoes})

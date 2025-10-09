@@ -1498,3 +1498,16 @@ body.dark-theme textarea {
         font-size: 16px !important;
     }
 }
+footer p {
+    font-size: 16px !important;
+}
+
+footer {
+    font-size: 16px !important;
+}
+nav ul li a {
+    font-size: 18px !important;
+}
+.botoes .btn {
+    white-space: nowrap !important;
+}

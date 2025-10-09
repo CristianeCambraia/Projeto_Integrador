@@ -9,7 +9,7 @@
 </script> 
 {% endif %}
 <div class="estoque-container">
-    <h2 class="text-center mb-4">Relatório de Saída</h2>
+    <h2 class="text-center mb-4">Lançamento de Saída</h2>
 
     <!-- Formulário -->
     <form method="post">
@@ -44,9 +44,10 @@
 
     <!-- Botões de navegação -->
     <div class="botoes">
-        <a href="{% url 'relatorio_estoque' %}" class="btn btn-info">Relatório de Estoque</a>
-        <a href="{% url 'relatorio_entrada' %}" class="btn btn-info">Relatório de Entrada</a>
-        <a href="{% url 'relatorio_saida' %}" class="btn btn-dark">Relatório de Saída</a>
+        <a href="{% url 'relatorio_estoque' %}" class="btn">Relatório de Estoque</a>
+        <a href="{% url 'relatorio_entrada' %}" class="btn">Lançamento de Entrada</a>
+        <a href="{% url 'relatorio_saida' %}" class="btn ativo">Lançamento de Saída</a>
+        <a href="{% url 'relatorio_movimentacao_saida' %}" class="btn">Ver Histórico</a>
     </div>
 </div>
 {% endblock %}

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="estoque-container">
+    <h2 class="titulo">Relatório de Movimentações - Saída</h2>
+
+    <table class="tabela-estoque">
+        <thead>
+            <tr>
+                <th>Data/Hora</th>
+                <th>Produto</th>
+                <th>Quantidade</th>
+                <th>Preço</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for mov in movimentacoes %}
+            <tr>
+                <td>{{ mov.data_hora|date:"d/m/Y H:i" }}</td>
+                <td>{{ mov.produto.nome }}</td>
+                <td>{{ mov.quantidade }}</td>
+                <td>R$ {{ mov.produto.preco }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4">Nenhuma movimentação de saída registrada</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="botoes">
+        <a href="{% url 'relatorio_saida' %}" class="btn">Voltar para Lançamento</a>
+        <a href="{% url 'relatorio_movimentacao_entrada' %}" class="btn">Ver Entradas</a>
+    </div>
+</div>
+{% endblock %}

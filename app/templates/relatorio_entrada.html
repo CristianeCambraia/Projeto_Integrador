@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="estoque-container">
-    <h2 class="titulo">Relatório de Entrada</h2>
+    <h2 class="titulo">Lançamento de Entrada</h2>
 
     <form method="post">
         {% csrf_token %}
@@ -35,8 +35,9 @@
 
     <div class="botoes">
         <a href="{% url 'relatorio_estoque' %}" class="btn">Relatório de Estoque</a>
-        <a href="{% url 'relatorio_entrada' %}" class="btn ativo">Relatório de Entrada</a>
-        <a href="{% url 'relatorio_saida'%}" class="btn">Relatório de Saída</a>
+        <a href="{% url 'relatorio_entrada' %}" class="btn ativo">Lançamento de Entrada</a>
+        <a href="{% url 'relatorio_saida'%}" class="btn">Lançamento de Saída</a>
+        <a href="{% url 'relatorio_movimentacao_entrada' %}" class="btn">Ver Histórico</a>
     </div>
 </div>
 {% endblock %}

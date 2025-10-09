@@ -91,4 +91,21 @@ class Usuario(models.Model):
     def __str__(self):
         return self.nome
 
+class MovimentacaoEstoque(models.Model):
+    TIPO_CHOICES = [
+        ('ENTRADA', 'Entrada'),
+        ('SAIDA', 'Saída'),
+    ]
+    
+    produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
+    tipo = models.CharField(max_length=10, choices=TIPO_CHOICES)
+    quantidade = models.IntegerField()
+    data_hora = models.DateTimeField(default=timezone.now)
+    
+    def __str__(self):
+        return f'{self.tipo} - {self.produto.nome} - {self.quantidade}'
+    
+    class Meta:
+        ordering = ['-data_hora']
+
 

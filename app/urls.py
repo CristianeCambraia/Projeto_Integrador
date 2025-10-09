@@ -45,6 +45,8 @@ urlpatterns = [
     path('relatorio-estoque/', views.relatorio_estoque, name='relatorio_estoque'),
     path('relatorio-entrada/', views.relatorio_entrada, name='relatorio_entrada'),
     path('relatorio-saida/', views.relatorio_saida, name='relatorio_saida'),
+    path('relatorio-movimentacao-entrada/', views.relatorio_movimentacao_entrada, name='relatorio_movimentacao_entrada'),
+    path('relatorio-movimentacao-saida/', views.relatorio_movimentacao_saida, name='relatorio_movimentacao_saida'),
     
     # ----- LOGIN/LOGOUT -----
     path('login/', views.login_view, name='login'),
