@@ -1518,3 +1518,9 @@ nav ul li a {
 .botoes .btn {
     white-space: nowrap !important;
 }
+  .form-buttons .btn {
+    flex: 0 1 auto;
+    min-width: 100px;
+    font-size: 14px;
+    padding: 10px 15px;
+  }

@@ -10,11 +10,11 @@
             {{ form.as_p }}
         </div>
 
-        <div class="botoes">
-            <button type="submit" class="btn-salvar">Salvar</button>
-            <a href="{% url 'lista_cliente' %}" class="btn-cancelar">Cancelar</a>
-            <a href="{% url 'cadastrar_produto' %}" class="btn-cadastrar-produto">➕ Cadastrar Produto</a>
-
+        <div class="form-buttons">
+            <a href="{% url 'lista_cliente' %}" class="btn btn-editar">Ver</a>
+            <button type="submit" class="btn btn-salvar">Salvar</button>
+            <a href="{% url 'home' %}" class="btn btn-voltar">Voltar</a>
+            <a href="{% url 'cadastrar_produto' %}" class="btn btn-cadastrar-produto">Produto</a>
         </div>
     </form>
 </div>
