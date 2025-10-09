@@ -3,3 +3,6 @@
 =======
 app/forms.py
 >>>>>>> eefbede (WIP: alterações locais antes do rebase)
+# Ignore Python cache files
+__pycache__/
+*.pyc
