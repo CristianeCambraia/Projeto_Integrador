@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block titulo_pagina %}Verificar Código{% endblock titulo_pagina %}
+
+{% block content %}
+<div class="login-container">
+    <div class="login-side">
+        <img src="{% static 'images/logo_insumed.png' %}" alt="Logo Insumed" class="logo-side">
+    </div>
+
+    <div class="login-box">
+        <h1>Verificar Código</h1>
+        <p>Digite o código de 6 dígitos enviado para <strong>{{ email }}</strong></p>
+        
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                {{ form.codigo }}
+                {% if form.codigo.errors %}
+                  <div class="error">
+                    {% for erro in form.codigo.errors %}
+                      <div>{{ erro }}</div>
+                    {% endfor %}
+                  </div>
+                {% endif %}
+            </div>
+
+            {% if form.non_field_errors %}
+              <div class="error general-errors">
+                {% for erro in form.non_field_errors %}
+                  <div>{{ erro }}</div>
+                {% endfor %}
+              </div>
+            {% endif %}
+            
+            {% if messages %}
+              {% for message in messages %}
+                <div class="{% if message.tags == 'error' %}error{% else %}success{% endif %}">{{ message }}</div>
+              {% endfor %}
+            {% endif %}
+
+            <button class="btn-login" type="submit">Verificar Código</button>
+        </form>
+
+        <p><a href="{% url 'recuperar_senha' %}">Solicitar novo código</a></p>
+    </div>
+</div>
+{% endblock content %}

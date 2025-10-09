@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
-from .models import Fornecedor, Produto, Cliente, Usuario, Orcamento, MovimentacaoEstoque
-from .forms import FornecedorForm, ProdutoForm, ClienteForm, UsuarioForm, SuporteForm, EditarProdutoForm
+from .models import Fornecedor, Produto, Cliente, Usuario, Orcamento, MovimentacaoEstoque, RecuperacaoSenha
+from .forms import FornecedorForm, ProdutoForm, ClienteForm, UsuarioForm, SuporteForm, EditarProdutoForm, RecuperarSenhaForm, VerificarCodigoForm, NovaSenhaForm
 from django.utils.dateparse import parse_date
 from django.http import HttpResponseBadRequest
 from django.utils import timezone
@@ -468,3 +468,108 @@ def relatorio_movimentacao_entrada(request):
 def relatorio_movimentacao_saida(request):
     movimentacoes = MovimentacaoEstoque.objects.filter(tipo='SAIDA').order_by('-data_hora')
     return render(request, 'relatorio_movimentacao_saida.html', {'movimentacoes': movimentacoes})
+import random
+import string
+from django.core.mail import send_mail
+from django.conf import settings
+from .models import RecuperacaoSenha
+from .forms import RecuperarSenhaForm, VerificarCodigoForm, NovaSenhaForm
+from datetime import timedelta
+
+def recuperar_senha(request):
+    if request.method == 'POST':
+        form = RecuperarSenhaForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            
+            # Verificar se o email existe
+            try:
+                usuario = Usuario.objects.get(email=email)
+                
+                # Gerar código de 6 dígitos
+                codigo = ''.join(random.choices(string.digits, k=6))
+                
+                # Salvar código no banco
+                RecuperacaoSenha.objects.create(email=email, codigo=codigo)
+                
+                # Enviar email (simulado - você precisa configurar SMTP)
+                try:
+                    send_mail(
+                        'Código de Recuperação - INSUMED',
+                        f'Seu código de recuperação é: {codigo}',
+                        settings.DEFAULT_FROM_EMAIL,
+                        [email],
+                        fail_silently=False,
+                    )
+                    messages.success(request, 'Código enviado para seu email!')
+                    request.session['email_recuperacao'] = email
+                    return redirect('verificar_codigo')
+                except:
+                    messages.error(request, 'Erro ao enviar email. Tente novamente.')
+                    request.session['email_recuperacao'] = email
+                    return redirect('verificar_codigo')
+                    
+            except Usuario.DoesNotExist:
+                messages.error(request, 'Email não encontrado')
+    else:
+        form = RecuperarSenhaForm()
+    
+    return render(request, 'recuperar_senha.html', {'form': form})
+
+def verificar_codigo(request):
+    email = request.session.get('email_recuperacao')
+    if not email:
+        return redirect('recuperar_senha')
+    
+    if request.method == 'POST':
+        form = VerificarCodigoForm(request.POST)
+        if form.is_valid():
+            codigo = form.cleaned_data['codigo']
+            
+            # Verificar código (válido por 30 minutos)
+            try:
+                recuperacao = RecuperacaoSenha.objects.get(
+                    email=email,
+                    codigo=codigo,
+                    usado=False,
+                    criado_em__gte=timezone.now() - timedelta(minutes=30)
+                )
+                request.session['codigo_valido'] = True
+                return redirect('nova_senha')
+            except RecuperacaoSenha.DoesNotExist:
+                messages.error(request, 'Código inválido ou expirado')
+    else:
+        form = VerificarCodigoForm()
+    
+    return render(request, 'verificar_codigo.html', {'form': form, 'email': email})
+
+def nova_senha(request):
+    email = request.session.get('email_recuperacao')
+    codigo_valido = request.session.get('codigo_valido')
+    
+    if not email or not codigo_valido:
+        return redirect('recuperar_senha')
+    
+    if request.method == 'POST':
+        form = NovaSenhaForm(request.POST)
+        if form.is_valid():
+            nova_senha = form.cleaned_data['nova_senha']
+            
+            # Atualizar senha do usuário
+            usuario = Usuario.objects.get(email=email)
+            usuario.senha = nova_senha
+            usuario.save()
+            
+            # Marcar código como usado
+            RecuperacaoSenha.objects.filter(email=email, usado=False).update(usado=True)
+            
+            # Limpar sessão
+            del request.session['email_recuperacao']
+            del request.session['codigo_valido']
+            
+            messages.success(request, 'Senha alterada com sucesso!')
+            return redirect('login')
+    else:
+        form = NovaSenhaForm()
+    
+    return render(request, 'nova_senha.html', {'form': form})

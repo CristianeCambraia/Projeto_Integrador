@@ -85,3 +85,12 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Email INSUMED configurado
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'insumed.sistema2025@gmail.com'
+EMAIL_HOST_PASSWORD = 'xhvw voek xsqd amif'
+DEFAULT_FROM_EMAIL = 'INSUMED <insumed.sistema2025@gmail.com>'

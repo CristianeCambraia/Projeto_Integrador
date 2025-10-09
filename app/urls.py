@@ -50,6 +50,11 @@ urlpatterns = [
     
     # ----- LOGIN/LOGOUT -----
     path('login/', views.login_view, name='login'),
-    path('logout/', views.logout_view, name='logout')
+    path('logout/', views.logout_view, name='logout'),
+    
+    # ----- RECUPERAÇÃO DE SENHA -----
+    path('recuperar-senha/', views.recuperar_senha, name='recuperar_senha'),
+    path('verificar-codigo/', views.verificar_codigo, name='verificar_codigo'),
+    path('nova-senha/', views.nova_senha, name='nova_senha')
 
 ]

@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block titulo_pagina %}Login{% endblock titulo_pagina %}
+{% block titulo_pagina %}Nova Senha{% endblock titulo_pagina %}
 
 {% block content %}
 <div class="login-container">
@@ -10,15 +10,17 @@
     </div>
 
     <div class="login-box">
-        <h1>Login</h1>
+        <h1>Nova Senha</h1>
+        <p>Digite sua nova senha</p>
+        
         <form method="post">
             {% csrf_token %}
             
             <div class="form-group">
-                {{ form.email }}
-                {% if form.email.errors %}
+                {{ form.nova_senha }}
+                {% if form.nova_senha.errors %}
                   <div class="error">
-                    {% for erro in form.email.errors %}
+                    {% for erro in form.nova_senha.errors %}
                       <div>{{ erro }}</div>
                     {% endfor %}
                   </div>
@@ -26,22 +28,10 @@
             </div>
 
             <div class="form-group">
-                {{ form.senha }}
-                {% if form.senha.errors %}
+                {{ form.confirmar_senha }}
+                {% if form.confirmar_senha.errors %}
                   <div class="error">
-                    {% for erro in form.senha.errors %}
-                      <div>{{ erro }}</div>
-                    {% endfor %}
-                  </div>
-                {% endif %}
-            </div>
-
-            <div class="form-group form-check">
-                {{ form.remember }}
-                <label for="{{ form.remember.id_for_label }}">Manter‑me conectado</label>
-                {% if form.remember.errors %}
-                  <div class="error">
-                    {% for erro in form.remember.errors %}
+                    {% for erro in form.confirmar_senha.errors %}
                       <div>{{ erro }}</div>
                     {% endfor %}
                   </div>
@@ -58,15 +48,12 @@
             
             {% if messages %}
               {% for message in messages %}
-                <div class="error">{{ message }}</div>
+                <div class="{% if message.tags == 'error' %}error{% else %}success{% endif %}">{{ message }}</div>
               {% endfor %}
             {% endif %}
 
-            <button class="btn-login" type="submit">Login</button>
+            <button class="btn-login" type="submit">Alterar Senha</button>
         </form>
-
-        <p><a href="{% url 'recuperar_senha' %}">Esqueci minha senha</a></p>
-        <p>Não possui uma conta? <a href="{% url 'cadastrar_usuario' %}">Cadastre‑se</a></p>
     </div>
 </div>
 {% endblock content %}

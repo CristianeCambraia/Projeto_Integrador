@@ -167,3 +167,44 @@ class EditarProdutoForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
             field.label = ''
+
+class RecuperarSenhaForm(forms.Form):
+    email = forms.EmailField(
+        widget=forms.EmailInput(attrs={
+            'placeholder': 'Digite seu e-mail',
+            'class': 'form-control'
+        })
+    )
+
+class VerificarCodigoForm(forms.Form):
+    codigo = forms.CharField(
+        max_length=6,
+        widget=forms.TextInput(attrs={
+            'placeholder': 'Digite o código de 6 dígitos',
+            'class': 'form-control'
+        })
+    )
+
+class NovaSenhaForm(forms.Form):
+    nova_senha = forms.CharField(
+        widget=forms.PasswordInput(attrs={
+            'placeholder': 'Nova senha',
+            'class': 'form-control'
+        })
+    )
+    confirmar_senha = forms.CharField(
+        widget=forms.PasswordInput(attrs={
+            'placeholder': 'Confirme a nova senha',
+            'class': 'form-control'
+        })
+    )
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        nova_senha = cleaned_data.get('nova_senha')
+        confirmar_senha = cleaned_data.get('confirmar_senha')
+        
+        if nova_senha and confirmar_senha and nova_senha != confirmar_senha:
+            raise forms.ValidationError('As senhas não coincidem')
+        
+        return cleaned_data

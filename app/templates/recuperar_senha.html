@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block titulo_pagina %}Recuperar Senha{% endblock titulo_pagina %}
+
+{% block content %}
+<div class="login-container">
+    <div class="login-side">
+        <img src="{% static 'images/logo_insumed.png' %}" alt="Logo Insumed" class="logo-side">
+    </div>
+
+    <div class="login-box">
+        <h1>Recuperar Senha</h1>
+        <p>Digite seu e-mail para receber o código de recuperação</p>
+        
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                {{ form.email }}
+                {% if form.email.errors %}
+                  <div class="error">
+                    {% for erro in form.email.errors %}
+                      <div>{{ erro }}</div>
+                    {% endfor %}
+                  </div>
+                {% endif %}
+            </div>
+
+            {% if form.non_field_errors %}
+              <div class="error general-errors">
+                {% for erro in form.non_field_errors %}
+                  <div>{{ erro }}</div>
+                {% endfor %}
+              </div>
+            {% endif %}
+            
+            {% if messages %}
+              {% for message in messages %}
+                <div class="{% if message.tags == 'error' %}error{% else %}success{% endif %}">{{ message }}</div>
+              {% endfor %}
+            {% endif %}
+
+            <button class="btn-login" type="submit">Solicitar Código</button>
+        </form>
+
+        <p><a href="{% url 'login' %}">Voltar ao Login</a></p>
+    </div>
+</div>
+{% endblock content %}
