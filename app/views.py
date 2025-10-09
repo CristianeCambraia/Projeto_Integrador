@@ -414,3 +414,34 @@ def editar_produto(request, produto_id):
         'produto': produto,
         'titulo_pagina': 'Editar Produto'
     })
+@login_required_custom
+def editar_fornecedor(request, fornecedor_id):
+    fornecedor = Fornecedor.objects.get(id=fornecedor_id)
+    if request.method == "POST":
+        form = FornecedorForm(request.POST, instance=fornecedor)
+        if form.is_valid():
+            form.save()
+            return redirect('lista_fornecedores')
+    else:
+        form = FornecedorForm(instance=fornecedor)
+    return render(request, 'editar_fornecedor.html', {
+        'form': form,
+        'fornecedor': fornecedor,
+        'titulo_pagina': 'Editar Fornecedor'
+    })
+
+@login_required_custom
+def editar_cliente(request, cliente_id):
+    cliente = Cliente.objects.get(id=cliente_id)
+    if request.method == "POST":
+        form = ClienteForm(request.POST, instance=cliente)
+        if form.is_valid():
+            form.save()
+            return redirect('lista_cliente')
+    else:
+        form = ClienteForm(instance=cliente)
+    return render(request, 'editar_cliente.html', {
+        'form': form,
+        'cliente': cliente,
+        'titulo_pagina': 'Editar Cliente'
+    })

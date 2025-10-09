@@ -11,6 +11,7 @@ urlpatterns = [
     path('fornecedores/', views.abrir_fornecedor, name='fornecedores'),
     path('fornecedores/salvar/', views.salvar_fornecedor, name='salvar_fornecedor'),
     path('fornecedores/lista/', views.lista_fornecedores, name='lista_fornecedores'),
+    path('fornecedores/editar/<int:fornecedor_id>/', views.editar_fornecedor, name='editar_fornecedor'),
 
     # ----- PRODUTOS -----
     path('produtos/', views.cadastrar, name='produtos'),  # abrir form + salvar produto
@@ -22,6 +23,7 @@ urlpatterns = [
     path('clientes/', views.abrir_cliente, name='clientes'),
     path('clientes/salvar/', views.salvar_cliente, name='salvar_cliente'),
     path('clientes/lista/', views.lista_cliente, name='lista_cliente'),
+    path('clientes/editar/<int:cliente_id>/', views.editar_cliente, name='editar_cliente'),
 
     # ----- USUÁRIOS -----
     path('usuarios/cadastrar/', views.cadastrar_usuario, name='cadastrar_usuario'),

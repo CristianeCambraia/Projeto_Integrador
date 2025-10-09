@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="form-container">
+  <div class="header-form">
+    <h2 class="titulo">{{ titulo_pagina }}</h2>
+    <a href="{% url 'lista_fornecedores' %}" class="btn-editar">
+      Lista &#128196;
+    </a>
+  </div>
+
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-grid">
+      {{ form.as_p }}
+    </div>
+
+    <div class="form-buttons">
+      <a href="{% url 'lista_fornecedores' %}" class="btn btn-cancelar">
+        Cancelar &#10060;
+      </a>
+      <button type="submit" class="btn btn-salvar">
+        Salvar &#128190;
+      </button>
+      <a href="{% url 'lista_fornecedores' %}" class="btn btn-voltar">
+        Voltar &#8634;
+      </a>
+    </div>
+  </form>
+</div>
+{% endblock %}
