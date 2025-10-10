@@ -138,6 +138,39 @@ img.logo-img{
     color: #666;
 }
 
+.tabela-lista {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+.tabela-lista th {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+    word-wrap: break-word;
+    background: #f8f9fa;
+    font-weight: bold;
+}
+
+.tabela-lista td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+    word-wrap: break-word;
+    color: #04bafc;
+}
+
+.tabela-lista th {
+    background: #f8f9fa;
+    font-weight: bold;
+}
+
+.descricao-cell {
+    max-width: 400px;
+    word-break: break-word;
+}
+
 .titulo {
     text-align: center;
     margin-bottom: 20px;
@@ -529,7 +562,7 @@ td input{
 }
 
 .container-lista-orcamentos {
-    max-width: 700px;
+    max-width: 1200px;
     margin: 40px auto;
     padding: 30px 40px;
     background: #ededed;
@@ -541,32 +574,36 @@ td input{
 
 .filtro-orcamentos {
     margin-bottom: 30px;
-    text-align: center;
+    margin-top: 20px;
+    text-align: right;
+    margin-left: 0;
+    margin-right: 0;
 }
 
 .filtro-orcamentos form {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 10px;
     align-items: center;
 }
 
 .filtro-orcamentos input {
-    padding: 10px;
+    padding: 8px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    width: 200px;
+    width: calc(100% - 200px);
     font-size: 16px;
 }
 
 .btn-filtrar {
-    padding: 10px 20px;
+    padding: 8px 15px;
     background-color: #00bcd4;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     font-weight: bold;
+    font-size: 14px;
     transition: background-color 0.3s ease;
 }
 
@@ -575,12 +612,13 @@ td input{
 }
 
 .btn-limpar {
-    padding: 10px 20px;
+    padding: 8px 15px;
     background-color: #888;
     color: white;
     text-decoration: none;
     border-radius: 5px;
     font-weight: bold;
+    font-size: 14px;
     transition: background-color 0.3s ease;
 }
 
@@ -591,7 +629,7 @@ td input{
 
 h2 {
     text-align: center;
-    margin-bottom: 40px;
+    margin-bottom: 30px;
     font-weight: 700;
     font-size: 28px;
     color: #2b5167;

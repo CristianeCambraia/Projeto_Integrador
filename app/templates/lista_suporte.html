@@ -2,40 +2,52 @@
 
 {% block content %}
 <div class="container-lista-orcamentos">
-    <h2>Lista de Chamadas de Suporte</h2>
-    
+    <h2 class="titulo">Lista de Chamadas de Suporte</h2>
+
+    <!-- Filtro por ID -->
     <div class="filtro-orcamentos">
         <form method="get">
-            <input type="number" name="filtro_id" placeholder="Filtrar por ID" value="{{ filtro_id }}">
+            <input type="text" name="filtro_id" placeholder="Filtrar por ID da chamada" value="{{ filtro_id }}">
             <button type="submit" class="btn-filtrar">Filtrar</button>
             <a href="{% url 'lista_suporte' %}" class="btn-limpar">Limpar</a>
         </form>
     </div>
 
-    <ul class="lista-orcamentos">
-        {% for demanda in demandas %}
-            <li class="item-orcamento">
-                <div class="linha-dados">
-                    <span class="left-id"><strong>ID:</strong> #{{ demanda.id }}</span>
-                    <span><strong>Email:</strong> {{ demanda.email }}</span>
-                </div>
-                <div class="linha-dados">
-                    <span><strong>Telefone:</strong> {{ demanda.telefone }}</span>
-                    <span><strong>Data:</strong> {{ demanda.data_criacao|date:"d/m/Y H:i" }}</span>
-                </div>
-                <div class="linha-dados">
-                    <span style="width: 100%;"><strong>Descrição:</strong> {{ demanda.descreva }}</span>
-                </div>
-            </li>
-        {% empty %}
-            <li class="item-orcamento">
-                <p>Nenhuma chamada de suporte encontrada.</p>
-            </li>
-        {% endfor %}
-    </ul>
+    {% if demandas %}
+        <div class="tabela-container">
+            <table class="tabela-lista">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome</th>
+                        <th>Email</th>
+                        <th>Telefone</th>
+                        <th>Descrição</th>
+                        <th>Data</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for demanda in demandas %}
+                    <tr>
+                        <td>#{{ demanda.id }}</td>
+                        <td>{{ demanda.nome }}</td>
+                        <td>{{ demanda.email }}</td>
+                        <td>{{ demanda.telefone }}</td>
+                        <td class="descricao-cell">{{ demanda.descreva|truncatechars:100 }}</td>
+                        <td>{{ demanda.data_criacao|date:"d/m/Y H:i" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="sem-dados">
+            <p>Nenhuma chamada de suporte encontrada.</p>
+        </div>
+    {% endif %}
 
-    <div class="botoes-orcamento">
-        <a href="{% url 'home' %}" class="btn-padrao voltar">Voltar</a>
+    <div style="text-align: right;">
+        <button type="button" onclick="location.href='{% url 'home' %}'" class="btn-filtrar">Voltar</button>
     </div>
 </div>
 {% endblock %}

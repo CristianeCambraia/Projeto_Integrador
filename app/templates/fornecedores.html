@@ -3,6 +3,7 @@
 {% block content %}
 <div class="container">
   <section class="form-box">
+    <h2 class="form-title">Cadastro de Fornecedores</h2>
 
     <form method="post" action="{% url 'salvar_fornecedor' %}">
       {% csrf_token %}
