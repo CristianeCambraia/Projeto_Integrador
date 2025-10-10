@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-lista-orcamentos">
+    <h2>Lista de Chamadas de Suporte</h2>
+    
+    <div class="filtro-orcamentos">
+        <form method="get">
+            <input type="number" name="filtro_id" placeholder="Filtrar por ID" value="{{ filtro_id }}">
+            <button type="submit" class="btn-filtrar">Filtrar</button>
+            <a href="{% url 'lista_suporte' %}" class="btn-limpar">Limpar</a>
+        </form>
+    </div>
+
+    <ul class="lista-orcamentos">
+        {% for demanda in demandas %}
+            <li class="item-orcamento">
+                <div class="linha-dados">
+                    <span class="left-id"><strong>ID:</strong> #{{ demanda.id }}</span>
+                    <span><strong>Email:</strong> {{ demanda.email }}</span>
+                </div>
+                <div class="linha-dados">
+                    <span><strong>Telefone:</strong> {{ demanda.telefone }}</span>
+                    <span><strong>Data:</strong> {{ demanda.data_criacao|date:"d/m/Y H:i" }}</span>
+                </div>
+                <div class="linha-dados">
+                    <span style="width: 100%;"><strong>Descrição:</strong> {{ demanda.descreva }}</span>
+                </div>
+            </li>
+        {% empty %}
+            <li class="item-orcamento">
+                <p>Nenhuma chamada de suporte encontrada.</p>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <div class="botoes-orcamento">
+        <a href="{% url 'home' %}" class="btn-padrao voltar">Voltar</a>
+    </div>
+</div>
+{% endblock %}

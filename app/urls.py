@@ -40,6 +40,7 @@ urlpatterns = [
     # ----- SOBRE E SUPORTE -----
     path('sobre_nos/', views.sobre_nos, name='sobre_nos'),
     path('suporte/novo/', views.criar_suporte, name='criar_suporte'),
+    path('suporte/lista/', views.lista_suporte, name='lista_suporte'),
 
     # ----- RELATÓRIOS -----
     path('relatorio-estoque/', views.relatorio_estoque, name='relatorio_estoque'),

@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="lista-container">
+    <h2 class="titulo">Painel de Suporte</h2>
+    
+    <div class="suporte-stats">
+        <div class="stat-card">
+            <h3>📧 Solicitações Recebidas</h3>
+            <p>Todas as solicitações são enviadas automaticamente por email</p>
+        </div>
+        
+        <div class="stat-card">
+            <h3>📞 Contato Direto</h3>
+            <p>Telefone: (35) 99877-8346</p>
+            <p>Email: suporte@insumed.com</p>
+        </div>
+        
+        <div class="stat-card">
+            <h3>🕒 Horário de Atendimento</h3>
+            <p>Segunda a Sexta: 8h às 18h</p>
+            <p>Sábado: 8h às 12h</p>
+        </div>
+    </div>
+
+    <a href="{% url 'home' %}" class="btn-salvar">Voltar</a>
+</div>
+{% endblock %}

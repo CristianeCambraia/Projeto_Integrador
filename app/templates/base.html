@@ -26,6 +26,7 @@
                 <li><a href="{% url 'emitir_orcamento' %}">Orçamentos</a></li>
                 <li><a href="{% url 'relatorio_estoque' %}">Relatórios</a></li>
                 {% if usuario_logado %}
+                    <li><a href="{% url 'lista_suporte' %}">Suporte</a></li>
                     <li><a href="{% url 'logout' %}">Sair</a></li>
                 {% else %}
                     <li><a href="{% url 'cadastrar_usuario' %}">Cadastrar Usuário</a></li>

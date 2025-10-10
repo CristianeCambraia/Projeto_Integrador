@@ -4,7 +4,7 @@
 {% block content %}
 {% if messages %}
   {% for message in messages %}
-    <div class="message {{ message.tags }}">{{ message }}</div>
+    <div class="message success-message">{{ message }}</div>
   {% endfor %}
 {% endif %}
 
@@ -29,7 +29,7 @@
                 {{ form.descreva.label_tag }}
                 {{ form.descreva }}
             </div>
-            <button type="submit" class="suporte-btn">Salvar</button>
+            <button type="submit" class="suporte-btn">Enviar</button>
         </form>
     </div>
 

@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="lista-container">
+    <h2 class="titulo">Suporte Técnico</h2>
+    
+    <div class="suporte-info">
+        <p><strong>Entre em contato conosco:</strong></p>
+        <p>📧 Email: suporte@insumed.com</p>
+        <p>📞 Telefone: (35) 99877-8346</p>
+        <p>🕒 Horário: Segunda a Sexta, 8h às 18h</p>
+    </div>
+
+    <a href="{% url 'home' %}" class="btn-salvar">Voltar</a>
+</div>
+{% endblock %}

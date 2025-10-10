@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import Fornecedor, Produto, Cliente, Usuario, Orcamento, MovimentacaoEstoque, RecuperacaoSenha
+from .models import Fornecedor, Produto, Cliente, Usuario, Orcamento, MovimentacaoEstoque, RecuperacaoSenha, Suporte
 from .forms import FornecedorForm, ProdutoForm, ClienteForm, UsuarioForm, SuporteForm, EditarProdutoForm, RecuperarSenhaForm, VerificarCodigoForm, NovaSenhaForm
 from django.utils.dateparse import parse_date
 from django.http import HttpResponseBadRequest
@@ -8,6 +8,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from .forms import LoginForm
 from .decorators import login_required_custom
+from django.conf import settings
 
 # Página inicial (exibe primeiro fornecedor só como exemplo)
 def cadastros(request):
@@ -352,13 +353,44 @@ def criar_suporte(request):
     if request.method == "POST":
         form = SuporteForm(request.POST)
         if form.is_valid():
-            form.save()
-            messages.success(request, 'Solicitação enviada com sucesso!')
-            return redirect("criar_suporte")  # redireciona para o próprio form
+            suporte = form.save()
+            
+            # Enviar email real
+            try:
+                from django.core.mail import send_mail
+                send_mail(
+                    f'Nova Solicitação de Suporte - #{suporte.id}',
+                    f'Nome: {suporte.nome}\nEmail: {suporte.email}\nTelefone: {suporte.telefone}\nDescrição: {suporte.descreva}',
+                    settings.DEFAULT_FROM_EMAIL,
+                    ['insumed.sistema2025@gmail.com'],
+                    fail_silently=False,
+                )
+            except Exception as e:
+                messages.warning(request, 'Solicitação salva, mas houve problema no envio do email.')
+            
+            messages.success(request, 'Solicitação enviada por email com sucesso!')
+            return redirect("criar_suporte")
     else:
         form = SuporteForm()
 
     return render(request, "suporte_form.html", {"form": form})
+
+@login_required_custom
+def lista_suporte(request):
+    filtro_id = request.GET.get('filtro_id')
+    
+    if filtro_id:
+        try:
+            demandas = Suporte.objects.filter(id=filtro_id).order_by('-data_criacao')
+        except ValueError:
+            demandas = Suporte.objects.none()
+    else:
+        demandas = Suporte.objects.all().order_by('-data_criacao')
+    
+    return render(request, 'lista_suporte.html', {
+        'demandas': demandas,
+        'filtro_id': filtro_id
+    })
 
 
 # ----- USUÁRIO -----

@@ -8,9 +8,10 @@ class Suporte(models.Model):
     telefone = models.CharField(max_length=20)
     email = models.EmailField(max_length=200)
     descreva = models.CharField(max_length=1000)
+    data_criacao = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return self.nome
+        return f"#{self.id} - {self.nome}"
 
 
 
