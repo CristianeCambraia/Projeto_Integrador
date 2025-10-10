@@ -1435,13 +1435,13 @@ footer p {
     }
 }
 .error {
-    color: #ff4444;
+    color: #44ff4d;
     background: #fff;
     padding: 15px;
     border-radius: 8px;
     margin: 15px 0;
     text-align: center;
-    border: 2px solid #ff4444;
+    border: 2px solid #44ff4d;
     font-weight: bold;
     font-size: 16px;
 }
