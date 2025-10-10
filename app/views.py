@@ -9,6 +9,7 @@ from django.contrib.auth import authenticate, login, logout
 from .forms import LoginForm
 from .decorators import login_required_custom
 from django.conf import settings
+from django.db import models
 
 # Página inicial (exibe primeiro fornecedor só como exemplo)
 def cadastros(request):
@@ -377,19 +378,20 @@ def criar_suporte(request):
 
 @login_required_custom
 def lista_suporte(request):
-    filtro_id = request.GET.get('filtro_id')
+    filtro = request.GET.get('filtro')
     
-    if filtro_id:
-        try:
-            demandas = Suporte.objects.filter(id=filtro_id).order_by('-data_criacao')
-        except ValueError:
-            demandas = Suporte.objects.none()
+    if filtro:
+        demandas = Suporte.objects.filter(
+            models.Q(id__icontains=filtro) |
+            models.Q(nome__icontains=filtro) |
+            models.Q(telefone__icontains=filtro)
+        ).order_by('-data_criacao')
     else:
         demandas = Suporte.objects.all().order_by('-data_criacao')
     
     return render(request, 'lista_suporte.html', {
         'demandas': demandas,
-        'filtro_id': filtro_id
+        'filtro': filtro
     })
 
 

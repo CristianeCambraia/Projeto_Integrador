@@ -7,7 +7,7 @@
     <!-- Filtro por ID -->
     <div class="filtro-orcamentos">
         <form method="get">
-            <input type="text" name="filtro_id" placeholder="Filtrar por ID da chamada" value="{{ filtro_id }}">
+            <input type="text" name="filtro" placeholder="Filtrar por ID, Nome ou Telefone" value="{{ filtro }}">
             <button type="submit" class="btn-filtrar">Filtrar</button>
             <a href="{% url 'lista_suporte' %}" class="btn-limpar">Limpar</a>
         </form>
