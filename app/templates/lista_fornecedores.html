@@ -2,12 +2,19 @@
 
 {% block content %}
 <div class="lista-container">
-
+    <div class="filtro-orcamentos">
+        <form method="get">
+            <input type="text" name="filtro" placeholder="Filtrar por Nome ou CNPJ" value="{{ filtro }}">
+            <button type="submit" class="btn-filtrar">Filtrar</button>
+            <a href="{% url 'lista_fornecedores' %}" class="btn-limpar">Limpar</a>
+        </form>
+    </div>
 
     <ul class="lista">
         {% for f in fornecedores %}
             <li>
                 {{ f.nome }} - {{ f.email }}
+                <br>
                 <a href="{% url 'editar_fornecedor' f.id %}" class="btn-editar">Editar</a>
             </li>
         {% empty %}

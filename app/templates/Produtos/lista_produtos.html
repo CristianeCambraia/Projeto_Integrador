@@ -4,10 +4,19 @@
 <div class="lista-container">
     <h2 class="titulo">Produtos Cadastrados</h2>
     
+    <div class="filtro-orcamentos">
+        <form method="get">
+            <input type="text" name="filtro" placeholder="Filtrar por Nome ou ID" value="{{ filtro }}">
+            <button type="submit" class="btn-filtrar">Filtrar</button>
+            <a href="{% url 'lista_produtos' %}" class="btn-limpar">Limpar</a>
+        </form>
+    </div>
+    
     <ul class="lista">
         {% for p in produtos %}
             <li>
-                {{ p.nome }} - R$ {{ p.preco }} - {{ p.quantidade }} {{ p.unidade }}
+                <strong>ID:</strong> {{ p.id }} - <strong>Fornecedor:</strong> {{ p.fornecedor|default:"Não informado" }} - {{ p.nome }} - R$ {{ p.preco }} - {{ p.quantidade }} {{ p.unidade }}
+                <br>
                 <a href="{% url 'editar_produto' p.id %}" class="btn-editar">Editar</a>
             </li>
         {% empty %}

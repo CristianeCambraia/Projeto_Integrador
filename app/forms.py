@@ -70,7 +70,7 @@ class ProdutoForm(forms.ModelForm):
 class ClienteForm(forms.ModelForm):
     data_nascimento = forms.DateField(
         input_formats=['%Y-%m-%d', '%d/%m/%Y'],  # aceita formato ISO e BR
-        widget=forms.DateInput(attrs={'placeholder': 'Data de Nascimento', 'type': 'date'})
+        widget=forms.DateInput(attrs={'placeholder': 'Data de Nascimento', 'type': 'date'}, format='%Y-%m-%d')
     )
 
     class Meta:
@@ -98,6 +98,10 @@ class ClienteForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
             field.label = ''
+        
+        # Preservar valor da data de nascimento ao editar
+        if self.instance and self.instance.pk and self.instance.data_nascimento:
+            self.fields['data_nascimento'].widget.attrs['value'] = self.instance.data_nascimento.strftime('%Y-%m-%d')
 
 
 # Formulário de Usuário

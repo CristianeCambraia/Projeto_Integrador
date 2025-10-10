@@ -48,8 +48,20 @@ def salvar_fornecedor(request):
 
 @login_required_custom
 def lista_fornecedores(request):
-    fornecedores = Fornecedor.objects.all()
-    return render(request, 'lista_fornecedores.html', {'fornecedores': fornecedores})
+    filtro = request.GET.get('filtro')
+    
+    if filtro:
+        fornecedores = Fornecedor.objects.filter(
+            models.Q(nome__icontains=filtro) |
+            models.Q(cnpj__icontains=filtro)
+        ).order_by('nome')
+    else:
+        fornecedores = Fornecedor.objects.all().order_by('nome')
+    
+    return render(request, 'lista_fornecedores.html', {
+        'fornecedores': fornecedores,
+        'filtro': filtro
+    })
 
 
 # ----- PRODUTOS -----
@@ -106,14 +118,19 @@ def cadastrar(request):
     
 
 def lista_produtos(request):
-    produtos = Produto.objects.all()
-
-    return render(request, 'produtos/lista_produtos.html', {'produtos': produtos})
-
-
+    filtro = request.GET.get('filtro')
+    
+    if filtro:
+        produtos = Produto.objects.filter(
+            models.Q(nome__icontains=filtro) |
+            models.Q(id__icontains=filtro)
+        ).order_by('nome')
+    else:
+        produtos = Produto.objects.all().order_by('nome')
 
     return render(request, 'produtos/lista_produtos.html', {
-        'produtos': produtos
+        'produtos': produtos,
+        'filtro': filtro
     })
 
 def salvar_produto(request):
@@ -125,11 +142,6 @@ def salvar_produto(request):
     else:
         form = ProdutoForm()
     return render(request, 'produtos.html', {'form': form, 'titulo_pagina': 'Novo Produto'})
-
-
-def lista_produtos(request):
-    produtos = Produto.objects.all()
-    return render(request, 'Produtos/lista_produtos.html', {'produtos': produtos})
 
 
 # ----- CLIENTES -----
