@@ -28,6 +28,7 @@
             <div class="field"><strong>E-mail:</strong> {{ o.email }}</div>
              <div class="field"><strong>Quantidades:</strong> {{ o.itens_quantidades|default:"(Sem quantidades)" }}</div>
              <div class="field"><strong>Valores:</strong> {{ o.itens_valores|default:"(Sem valores)" }}</div>
+             <div class="field"><strong>Observações:</strong> {{ o.observacao|default:"(Sem observações)" }}</div>
             <div style="margin-top:10px;">
               <a href="{% url 'abrir_orcamento' o.id %}" class="btn-info">Abrir</a>
             </div>

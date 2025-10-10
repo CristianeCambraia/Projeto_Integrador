@@ -75,6 +75,7 @@ class Orcamento(models.Model):
     descricao = models.TextField(blank=True, null=True)
     itens_quantidades = models.TextField(blank=True, null=True)
     itens_valores = models.TextField(blank=True, null=True)
+    observacao = models.TextField(blank=True, null=True)
     data = models.DateField(auto_now_add=True)
 
     def __str__(self):

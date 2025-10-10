@@ -192,21 +192,28 @@ def salvar_orcamento(request):
                 raise ValueError()
         except ValueError:
             return HttpResponseBadRequest("Data inválida")
-        # Agrega as descrições, quantidades e valores dos itens (1..3) vindos do formulário
+        # Agrega as descrições, quantidades e valores dos itens vindos do formulário
         descricoes = []
         quantidades = []
         valores = []
-        for i in range(1, 4):
+        i = 1
+        while True:
             d = request.POST.get(f'descricao_{i}', '').strip()
             q = request.POST.get(f'quantidade_{i}', '').strip()
             v = request.POST.get(f'valor_{i}', '').strip()
+            
+            if not d and not q and not v:  # Se todos estão vazios, para o loop
+                break
+                
             descricoes.append(d)
             quantidades.append(q)
             valores.append(v)
+            i += 1
 
         descricao_agregada = ' / '.join([x for x in descricoes if x])
         quantidades_agregadas = ' / '.join([x for x in quantidades if x])
         valores_agregados = ' / '.join([x for x in valores if x])
+        observacao = request.POST.get('observacao', '').strip()
 
         orcamento = Orcamento(
             cliente=cliente,
@@ -218,6 +225,7 @@ def salvar_orcamento(request):
             descricao=descricao_agregada,
             itens_quantidades=quantidades_agregadas,
             itens_valores=valores_agregados,
+            observacao=observacao,
             data=data_obj
         )
         orcamento.save()
