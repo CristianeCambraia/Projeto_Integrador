@@ -17,21 +17,19 @@
         <table class="tabela-estoque">
             <thead class="table-light">
                 <tr>
-                    <th>Nome</th>
+                    <th>Nome / Descrição</th>
                     <th>Estoque Atual</th>
-                    <th>Adicionar Quantidade Retirada</th>
+                    <th>Qtd Retirada</th>
                     <th>Unidade</th>
                 </tr>
             </thead>
             <tbody>
                 {% for produto in produtos %}
                 <tr>
-                    <td>{{ produto.nome }}</td>
+                    <td>{{ produto.nome }}<br><small>{{ produto.descricao|default:"Sem descrição" }}</small></td>
                     <td><strong>{{ produto.quantidade }}</strong></td>
                     <td>
-                        <div class="form-grid_E">
-                        <input type="number" name="quantidade_{{ produto.id }}" min="0" value="0" class="form-control">
-                        </div>
+                        <input type="number" name="quantidade_{{ produto.id }}" min="0" value="0" style="width: 80px;">
                     </td>
                     <td>{{ produto.unidade }}</td>
                 </tr>

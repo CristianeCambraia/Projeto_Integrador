@@ -9,21 +9,19 @@
         <table class="tabela-estoque">
             <thead>
                 <tr>
-                    <th>Nome</th>
+                    <th>Nome / Descrição</th>
                     <th>Estoque Atual</th>
-                    <th>Adicionar Quantidade Recebida</th>
+                    <th>Qtd Recebida</th>
                     <th>Unidade</th>
                 </tr>
             </thead>
             <tbody>
                 {% for produto in produtos %}
                 <tr>
-                    <td>{{ produto.nome }}</td>
+                    <td>{{ produto.nome }}<br><small>{{ produto.descricao|default:"Sem descrição" }}</small></td>
                     <td><strong>{{ produto.quantidade }}</strong></td>
                     <td>
-                        <div class="form-grid_E">
-                        <input type="number" name="quantidade_{{ produto.id }}" placeholder="0">
-                        </div>
+                        <input type="number" name="quantidade_{{ produto.id }}" placeholder="0" style="width: 80px;">
                     </td>
                     <td>{{ produto.unidade }}</td>
                 </tr>

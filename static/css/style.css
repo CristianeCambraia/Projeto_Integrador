@@ -1465,6 +1465,12 @@ footer p {
     background: #fff;
     color: #28a745;
     border: 2px solid #28a745;
+    position: fixed;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
 
 .success-message {
@@ -1481,8 +1487,8 @@ footer p {
 }
 
 .success {
-    background: #fff;
-    color: #28a745;
+    background: #d4edda;
+    color: #155724;
     border: 2px solid #28a745;
     padding: 15px;
     border-radius: 8px;
@@ -1490,6 +1496,13 @@ footer p {
     text-align: center;
     font-weight: bold;
     font-size: 16px;
+    position: fixed;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    max-width: 500px;
 }
 .contact a {
     font-size: 1.2em;

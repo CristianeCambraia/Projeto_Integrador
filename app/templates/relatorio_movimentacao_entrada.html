@@ -8,6 +8,7 @@
         <thead>
             <tr>
                 <th>Data/Hora</th>
+                <th>Fornecedor</th>
                 <th>Produto</th>
                 <th>Quantidade</th>
                 <th>Preço</th>
@@ -17,12 +18,13 @@
             {% for mov in movimentacoes %}
             <tr>
                 <td>{{ mov.data_hora|date:"d/m/Y H:i" }}</td>
+                <td>{{ mov.produto.fornecedor.nome }}</td>
                 <td>{{ mov.produto.nome }}</td>
                 <td>{{ mov.quantidade }}</td>
                 <td>R$ {{ mov.produto.preco }}</td>
             </tr>
             {% empty %}
-            <tr><td colspan="4">Nenhuma movimentação de entrada registrada</td></tr>
+            <tr><td colspan="5">Nenhuma movimentação de entrada registrada</td></tr>
             {% endfor %}
         </tbody>
     </table>
