@@ -870,8 +870,8 @@ footer ul {
 }
 
 footer p {
-    margin: 5px 15px;
-    font-size: 14px;
+    margin: 5px 3px;
+    font-size: 1.2em;
 }
 .form-grid_E p {
     margin-bottom: 15px;
@@ -1455,6 +1455,7 @@ footer p {
     font-size: 16px;
 }
 .contact a {
+    font-size: 1.2em;
     color: white !important;
 }
 #theme-toggle {
@@ -1601,8 +1602,12 @@ body.dark-theme textarea {
         font-size: 16px !important;
     }
 }
-footer p {
-    font-size: 16px !important;
+
+
+div.Rede-social{
+    margin: 0 auto;
+    text-align: center;
+    padding: 8px;
 }
 
 footer {
