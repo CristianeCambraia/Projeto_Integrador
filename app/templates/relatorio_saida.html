@@ -17,7 +17,9 @@
         <table class="tabela-estoque">
             <thead class="table-light">
                 <tr>
-                    <th>Nome / Descrição</th>
+                    <th>Fornecedor</th>
+                    <th>Produto</th>
+                    <th>Descrição</th>
                     <th>Estoque Atual</th>
                     <th>Qtd Retirada</th>
                     <th>Unidade</th>
@@ -26,7 +28,19 @@
             <tbody>
                 {% for produto in produtos %}
                 <tr>
-                    <td>{{ produto.nome }}<br><small>{{ produto.descricao|default:"Sem descrição" }}</small></td>
+                    <td>{{ produto.fornecedor.nome }}</td>
+                    <td>{{ produto.nome }}</td>
+                    <td class="descricao-cell">
+                        {% if produto.descricao %}
+                            <span class="descricao-preview">{{ produto.descricao|truncatechars:30 }}</span>
+                            <span class="descricao-completa" style="display: none;">{{ produto.descricao }}</span>
+                            {% if produto.descricao|length > 30 %}
+                                <button type="button" class="btn-expandir-desc" onclick="toggleDescricaoTabela(this)">+</button>
+                            {% endif %}
+                        {% else %}
+                            <small>Sem descrição</small>
+                        {% endif %}
+                    </td>
                     <td><strong>{{ produto.quantidade }}</strong></td>
                     <td>
                         <input type="number" name="quantidade_{{ produto.id }}" min="0" value="0" style="width: 80px;">
@@ -50,4 +64,21 @@
         <a href="{% url 'relatorio_movimentacao_saida' %}" class="btn">Ver Histórico</a>
     </div>
 </div>
+
+<script>
+function toggleDescricaoTabela(btn) {
+    const preview = btn.parentElement.querySelector('.descricao-preview');
+    const completa = btn.parentElement.querySelector('.descricao-completa');
+    
+    if (preview.style.display === 'none') {
+        preview.style.display = 'inline';
+        completa.style.display = 'none';
+        btn.textContent = '+';
+    } else {
+        preview.style.display = 'none';
+        completa.style.display = 'inline';
+        btn.textContent = '-';
+    }
+}
+</script>
 {% endblock %}

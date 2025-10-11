@@ -15,7 +15,8 @@
     <table class="tabela-estoque">
         <thead>
             <tr>
-                <th>Fornecedor / Nome</th>
+                <th>Fornecedor</th>
+                <th>Produto</th>
                 <th>Quantidade</th>
                 <th>Unidade</th>
                 <th>Preço</th>
@@ -26,7 +27,8 @@
         <tbody>
             {% for produto in produtos %}
             <tr>
-                <td>{{ produto.fornecedor.nome }} - {{ produto.nome }}</td>
+                <td>{{ produto.fornecedor.nome }}</td>
+                <td>{{ produto.nome }}</td>
                 <td>{{ produto.quantidade }}</td>
                 <td>{{ produto.unidade }}</td>
                 <td>{{ produto.preco }}</td>
@@ -34,7 +36,7 @@
                 <td>{{ produto.descricao }}</td>
             </tr>
             {% empty %}
-            <tr><td colspan="6">Nenhum produto encontrado</td></tr>
+            <tr><td colspan="7">Nenhum produto encontrado</td></tr>
             {% endfor %}
         </tbody>
     </table>

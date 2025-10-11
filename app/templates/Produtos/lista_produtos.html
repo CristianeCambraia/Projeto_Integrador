@@ -14,15 +14,44 @@
     
     <ul class="lista">
         {% for p in produtos %}
-            <li>
-                <strong>ID:</strong> {{ p.id }} - <strong>Fornecedor:</strong> {{ p.fornecedor|default:"Não informado" }} - {{ p.nome }} - R$ {{ p.preco }} - {{ p.quantidade }} {{ p.unidade }}
-                <br>
-                <a href="{% url 'editar_produto' p.id %}" class="btn-editar">Editar</a>
+            <li class="produto-item">
+                <div class="produto-info">
+                    <strong>ID:</strong> {{ p.id }} - <strong>Fornecedor:</strong> {{ p.fornecedor|default:"Não informado" }} - {{ p.nome }} - R$ {{ p.preco }} - {{ p.quantidade }} {{ p.unidade }}
+                </div>
+                {% if p.descricao %}
+                    <div class="produto-descricao">
+                        <span class="descricao-preview">{{ p.descricao|truncatechars:50 }}</span>
+                        <span class="descricao-completa" style="display: none;">{{ p.descricao }}</span>
+                        {% if p.descricao|length > 50 %}
+                            <button class="btn-expandir" onclick="toggleDescricao(this)">Ver mais</button>
+                        {% endif %}
+                    </div>
+                {% endif %}
+                <div class="produto-acoes">
+                    <a href="{% url 'editar_produto' p.id %}" class="btn-editar">Editar</a>
+                </div>
             </li>
         {% empty %}
             <li>Nenhum produto cadastrado.</li>
         {% endfor %}
     </ul>
+
+    <script>
+    function toggleDescricao(btn) {
+        const preview = btn.parentElement.querySelector('.descricao-preview');
+        const completa = btn.parentElement.querySelector('.descricao-completa');
+        
+        if (preview.style.display === 'none') {
+            preview.style.display = 'inline';
+            completa.style.display = 'none';
+            btn.textContent = 'Ver mais';
+        } else {
+            preview.style.display = 'none';
+            completa.style.display = 'inline';
+            btn.textContent = 'Ver menos';
+        }
+    }
+    </script>
 
     <!-- Corrigido para a URL correta da view de cadastro -->
     <a href="{% url 'cadastrar_produto' %}" class="btn-salvar">Novo Produto</a>
