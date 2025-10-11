@@ -45,15 +45,16 @@ class FornecedorForm(forms.ModelForm):
 class ProdutoForm(forms.ModelForm):
     class Meta:
         model = Produto
-        fields = ['nome', 'preco', 'descricao', 'fornecedor', 'unidade', 'quantidade']
+        fields = ['nome', 'preco', 'descricao', 'fornecedor', 'unidade', 'quantidade', 'observacao']
 
         widgets = {
             'nome': forms.TextInput(attrs={'placeholder': 'Nome do Produto'}),
             'preco': forms.NumberInput(attrs={'placeholder': 'Preço'}),
-            'descricao': forms.Textarea(attrs={'placeholder': 'Descrição', 'rows': 3}),
+            'descricao': forms.Textarea(attrs={'placeholder': 'Descrição', 'rows': 4, 'style': 'width: 100%; grid-column: 1 / -1;'}),
             'fornecedor': forms.Select(attrs={'placeholder': 'Selecione o Fornecedor'}),
             'unidade': forms.Select(attrs={'placeholder': 'Selecione a Unidade'}),
-            'quantidade': forms.NumberInput(attrs={'placeholder': 'Quantidade', 'min': '0'})
+            'quantidade': forms.NumberInput(attrs={'placeholder': 'Quantidade', 'min': '0'}),
+            'observacao': forms.Textarea(attrs={'placeholder': 'Observações', 'rows': 4, 'style': 'width: 100%; grid-column: 1 / -1;'})
         }
 
     def __init__(self, *args, **kwargs):

@@ -1208,6 +1208,10 @@ footer p {
   textarea {
     min-height: 110px;
     resize: vertical;
+    width: 100% !important;
+    grid-column: 1 / -1 !important;
+    margin: 10px 0 !important;
+    box-sizing: border-box;
   }
 
   /* Botões inferiores */
@@ -1308,6 +1312,47 @@ footer p {
     box-sizing: border-box;
 }
 
+.form-group textarea {
+    width: 100% !important;
+    margin: 10px 0 !important;
+    padding: 10px;
+    border-radius: 15px;
+    border: none;
+    font-size: 16px;
+    outline: none;
+    box-sizing: border-box;
+    grid-column: 1 / -1 !important;
+}
+
+.form-grid textarea {
+    width: 100% !important;
+    grid-column: 1 / -1 !important;
+    margin: 10px 0 !important;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 15px;
+}
+
+.form-grid p:has(textarea) {
+    grid-column: 1 / -1 !important;
+    width: 100% !important;
+}
+
+.form-grid p:nth-child(4) {
+    grid-column: 1;
+}
+
+.form-grid p:nth-child(5) {
+    grid-column: 2;
+}
+
+.form-grid p:nth-child(6) {
+    grid-column: 3;
+}
+
 .btn-login{
     font-size: 1.0em;
     color: white;
@@ -1391,8 +1436,14 @@ footer p {
     }
     
     .form-grid {
-        grid-template-columns: 1fr;
-        gap: 15px;
+        grid-template-columns: 1fr !important;
+    }
+    
+
+    
+    .form-grid textarea {
+        width: 100% !important;
+        grid-column: 1 / -1 !important;
     }
     
     .form-buttons {
