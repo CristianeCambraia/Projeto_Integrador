@@ -27,18 +27,18 @@
                 {% endif %}
             </div>
 
+            {% if messages %}
+              {% for message in messages %}
+                <div class="{% if message.tags == 'error' %}error{% else %}success{% endif %}">{{ message }}</div>
+              {% endfor %}
+            {% endif %}
+
             {% if form.non_field_errors %}
               <div class="error general-errors">
                 {% for erro in form.non_field_errors %}
                   <div>{{ erro }}</div>
                 {% endfor %}
               </div>
-            {% endif %}
-            
-            {% if messages %}
-              {% for message in messages %}
-                <div class="{% if message.tags == 'error' %}error{% else %}success{% endif %}">{{ message }}</div>
-              {% endfor %}
             {% endif %}
 
             <button class="btn-login" type="submit">Solicitar Código</button>
