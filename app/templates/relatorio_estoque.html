@@ -33,7 +33,17 @@
                 <td>{{ produto.unidade }}</td>
                 <td>{{ produto.preco }}</td>
                 <td>{{ produto.data_hora|date:"d/m/Y H:i" }}</td>
-                <td>{{ produto.descricao }}</td>
+                <td class="descricao-cell">
+                    {% if produto.descricao %}
+                        <span class="descricao-preview">{{ produto.descricao|truncatechars:30 }}</span>
+                        <span class="descricao-completa" style="display: none;">{{ produto.descricao }}</span>
+                        {% if produto.descricao|length > 30 %}
+                            <button type="button" class="btn-expandir-desc" onclick="toggleDescricaoTabela(this)">+</button>
+                        {% endif %}
+                    {% else %}
+                        <small>Sem descrição</small>
+                    {% endif %}
+                </td>
             </tr>
             {% empty %}
             <tr><td colspan="7">Nenhum produto encontrado</td></tr>
@@ -50,4 +60,21 @@
         <a href="{% url 'relatorio_movimentacao_entrada' %}" class="btn">Ver Históricos</a>
     </div>
 </div>
+
+<script>
+function toggleDescricaoTabela(btn) {
+    const preview = btn.parentElement.querySelector('.descricao-preview');
+    const completa = btn.parentElement.querySelector('.descricao-completa');
+    
+    if (preview.style.display === 'none') {
+        preview.style.display = 'inline';
+        completa.style.display = 'none';
+        btn.textContent = '+';
+    } else {
+        preview.style.display = 'none';
+        completa.style.display = 'inline';
+        btn.textContent = '-';
+    }
+}
+</script>
 {% endblock %}

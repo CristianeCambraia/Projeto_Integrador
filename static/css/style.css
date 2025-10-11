@@ -1733,6 +1733,18 @@ body.dark-theme {
     margin: 8px 0;
     color: #666;
     font-style: italic;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
+    display: block;
+}
+
+.descricao-preview,
+.descricao-completa {
+    display: block;
+    width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 .btn-expandir {
