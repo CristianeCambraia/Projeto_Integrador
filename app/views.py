@@ -499,6 +499,15 @@ def editar_fornecedor(request, fornecedor_id):
     })
 
 @login_required_custom
+def alternar_status_fornecedor(request, fornecedor_id):
+    fornecedor = Fornecedor.objects.get(id=fornecedor_id)
+    fornecedor.ativo = not fornecedor.ativo
+    fornecedor.save()
+    status = "ativado" if fornecedor.ativo else "desativado"
+    messages.success(request, f'Fornecedor {fornecedor.nome} foi {status} com sucesso!')
+    return redirect('lista_fornecedores')
+
+@login_required_custom
 def editar_cliente(request, cliente_id):
     cliente = Cliente.objects.get(id=cliente_id)
     if request.method == "POST":

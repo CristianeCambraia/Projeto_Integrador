@@ -60,10 +60,11 @@ class ProdutoForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
             field.label = ''
-        # Tornar fornecedor opcional se não houver fornecedores
-        if not Fornecedor.objects.exists():
+        # Mostrar apenas fornecedores ativos
+        self.fields['fornecedor'].queryset = Fornecedor.objects.filter(ativo=True)
+        if not Fornecedor.objects.filter(ativo=True).exists():
             self.fields['fornecedor'].required = False
-            self.fields['fornecedor'].empty_label = 'Nenhum fornecedor cadastrado'
+            self.fields['fornecedor'].empty_label = 'Nenhum fornecedor ativo'
 
 
 # Formulário de Cliente
@@ -171,6 +172,8 @@ class EditarProdutoForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
             field.label = ''
+        # Mostrar apenas fornecedores ativos
+        self.fields['fornecedor'].queryset = Fornecedor.objects.filter(ativo=True)
 
 class RecuperarSenhaForm(forms.Form):
     email = forms.EmailField(

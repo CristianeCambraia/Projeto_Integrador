@@ -28,6 +28,7 @@ class Fornecedor(models.Model):
     cep = models.CharField(max_length=10)  # Também CharField por conta do formato
     email = models.EmailField(max_length=200)  # Melhor usar EmailField para validação
     telefone = models.CharField(max_length=20)
+    ativo = models.BooleanField(default=True)
 
     def __str__(self):
         return self.nome

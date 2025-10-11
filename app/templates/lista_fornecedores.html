@@ -12,10 +12,20 @@
 
     <ul class="lista">
         {% for f in fornecedores %}
-            <li>
-                {{ f.nome }} - {{ f.email }}
-                <br>
-                <a href="{% url 'editar_fornecedor' f.id %}" class="btn-editar">Editar</a>
+            <li class="fornecedor-item">
+                <div class="fornecedor-info">
+                    <span class="fornecedor-nome">{{ f.nome }}</span>
+                    <span class="status-fornecedor {% if f.ativo %}ativo{% else %}inativo{% endif %}">
+                        {% if f.ativo %}Ativo{% else %}Inativo{% endif %}
+                    </span>
+                </div>
+                <div class="fornecedor-email">{{ f.email }}</div>
+                <div class="fornecedor-acoes">
+                    <a href="{% url 'editar_fornecedor' f.id %}" class="btn-editar">Editar</a>
+                    <a href="{% url 'alternar_status_fornecedor' f.id %}" class="btn-status">
+                        {% if f.ativo %}Desativar{% else %}Ativar{% endif %}
+                    </a>
+                </div>
             </li>
         {% empty %}
             <li>Nenhum fornecedor cadastrado.</li>

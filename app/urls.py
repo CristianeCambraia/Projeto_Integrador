@@ -12,6 +12,7 @@ urlpatterns = [
     path('fornecedores/salvar/', views.salvar_fornecedor, name='salvar_fornecedor'),
     path('fornecedores/lista/', views.lista_fornecedores, name='lista_fornecedores'),
     path('fornecedores/editar/<int:fornecedor_id>/', views.editar_fornecedor, name='editar_fornecedor'),
+    path('fornecedores/alternar-status/<int:fornecedor_id>/', views.alternar_status_fornecedor, name='alternar_status_fornecedor'),
 
     # ----- PRODUTOS -----
     path('produtos/', views.cadastrar, name='produtos'),  # abrir form + salvar produto
