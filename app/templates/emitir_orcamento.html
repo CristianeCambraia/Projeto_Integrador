@@ -4,30 +4,44 @@
 <div class="emitir-orcamento-container">
     <h2 class="titulo">Emitir Orçamentos</h2>
 
-    <form class="container-text"  method="post" action="{% url 'salvar_orcamento' %}">
+    <form class="form-box"  method="post" action="{% url 'salvar_orcamento' %}">
         {% csrf_token %}
 
         <div class="cliente-dados">
-            <label><strong>Cliente:</strong></label>
-            <input type="text" name="cliente" required>
+            <div>
+                <label><strong>Cliente:</strong></label>
+                <input type="text" name="cliente" required>
+            </div>
                     
-            <label><strong>Data:</strong></label>
-            <input type="date" name="data" id="data_orcamento" required>
+            <div>
+                <label><strong>Data:</strong></label>
+                <input type="date" name="data" id="data_orcamento" required>
+            </div>
                     
-            <label><strong>CNPJ:</strong></label>
-            <input type="text" name="cnpj" maxlength="18" placeholder="XX.XXX.XXX/XXXX-XX" oninput="formatCNPJ(this)" onkeypress="return /[0-9]/.test(event.key) || event.key === 'Backspace'" required>
+            <div>
+                <label><strong>CNPJ:</strong></label>
+                <input type="text" name="cnpj" maxlength="18" placeholder="XX.XXX.XXX/XXXX-XX" oninput="formatCNPJ(this)" onkeypress="return /[0-9]/.test(event.key) || event.key === 'Backspace'" required>
+            </div>
                     
-            <label><strong>Endereço:</strong></label>
-            <input type="text" name="endereco">
+            <div>
+                <label><strong>Endereço:</strong></label>
+                <input type="text" name="endereco">
+            </div>
                     
-            <label><strong>Cidade:</strong></label>
-            <input type="text" name="cidade">
+            <div>
+                <label><strong>Cidade:</strong></label>
+                <input type="text" name="cidade">
+            </div>
                     
-            <label><strong>Telefone:</strong></label>
-            <input type="tel" name="telefone">
+            <div>
+                <label><strong>Telefone:</strong></label>
+                <input type="tel" name="telefone">
+            </div>
                     
-            <label><strong>E-mail:</strong></label>
-            <input type="email" name="email">
+            <div>
+                <label><strong>E-mail:</strong></label>
+                <input type="email" name="email">
+            </div>
 
         </div>
 

@@ -91,13 +91,17 @@ img.logo-img{
 }
 
 .form-container, .lista-container {
-    width: 500px;
-    margin: 30px auto;
-    background: #fff;
-    padding: 25px;
-    border-radius: 12px;
+    max-width: 800px;
+    margin: 40px auto;
+    background: #e8e8e8;
+    padding: 30px 40px;
+    border-radius: 30px;
     box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
+    color: #026a84;
+    font-family: Arial, sans-serif;
 }
+
+
 
 .suporte-info {
     background: #f8f9fa;
@@ -173,10 +177,10 @@ img.logo-img{
 
 .titulo {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
     font-size: 22px;
-    font-weight: bold;
-    color: #333;
+    font-weight: 700;
+    color: #026a84;
 }
 
 .form-grid p {
@@ -187,15 +191,39 @@ img.logo-img{
 .form-grid select, 
 .form-grid textarea {
     width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
+    height: 40px;
+    padding: 6px 12px;
+    border-radius: 15px;
+    border: none;
+    font-size: 16px;
+    outline: none;
+    box-sizing: border-box;
+    background-color: #fafafa;
+    color: #999;
+}
+
+.form-grid textarea {
+    height: auto;
+    min-height: 110px;
+    resize: vertical;
 }
 
 .botoes {
     display: flex;
     justify-content: space-between;
     margin-top: 20px;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.botoes .btn {
+    flex: 1;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 120px;
+    font-size: 14px;
 }
 
 .btn-salvar {
@@ -336,28 +364,43 @@ footer a:visited {
     flex-direction: column;
 }
 
+.cliente-dados {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px 40px;
+    margin-bottom: 20px;
+}
+
+.cliente-dados > div {
+    display: flex;
+    flex-direction: column;
+}
+
 .cliente-dados label {
-    display: block;
-    margin-top: 10px;
-    font-weight: bold;
-    text-transform: capitalize; /* para capitalizar as palavras */
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: #02778b;
 }
 
 .cliente-dados input {
-    width: 100%;
-    padding: 8px;
-    margin-top: 5px;
+    height: 40px;
+    padding: 6px 12px;
+    border-radius: 15px;
+    border: none;
+    font-size: 16px;
+    outline: none;
     box-sizing: border-box;
+    background-color: #fafafa;
 }
 .emitir-orcamento-container{
-    max-width: 800px;         /* largura máxima para a área */
-    margin: 40px auto;        /* centraliza horizontalmente e dá espaçamento vertical */
-    padding: 20px;
-    background-color: #fff;   /* fundo branco (opcional) */
-    border-radius: 8px;       /* cantos arredondados */
-    box-shadow: 0 0 10px rgba(0,0,0,0.1); /* sombra leve */
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 30px 40px;
+    background: #e8e8e8;
+    border-radius: 30px;
+    box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
+    color: #026a84;
     font-family: Arial, sans-serif;
-    color: #333;
 }
 
 .itens-orcamento {
@@ -450,12 +493,13 @@ td input{
 }
 
 .botoes button, .botoes a {
-    background: #4ed4f7;
-    color: white;
-    font-weight: 700;
-    font-size: 18px;
-    padding: 12px 20px;
-    border-radius: 25px;
+    margin: 5px;
+    padding: 10px 15px;
+    color: #FFFFFF;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+    background-color: #04BAFC;
+    border-radius: 8px;
     border: none;
     cursor: pointer;
     text-align: center;
@@ -470,8 +514,7 @@ td input{
 }
 
 .botoes button:hover, .botoes a:hover {
-    filter: brightness(0.9);
-    transform: translateY(-2px);
+    background: #0399d6;
 }
 
 /* por favor mexer so com certeza */
@@ -487,12 +530,14 @@ td input{
 
 /* Container principal do relatório */
 .estoque-container {
-    max-width: 1000px;
+    max-width: 800px;
     margin: 40px auto;
-    padding: 20px;
-    background: #fff;
-    border-radius: 12px;
+    padding: 30px 40px;
+    background: #e8e8e8;
+    border-radius: 30px;
     box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
+    color: #026a84;
+    font-family: Arial, sans-serif;
 }
 
 /* Barra de pesquisa */
@@ -540,11 +585,14 @@ td input{
 /* teste */
 
 .suporte-container {
-    max-width: 1100px;
+    max-width: 800px;
     margin: 40px auto;
-    padding: 30px;
-    background: #f5f5f5;
-    border-radius: 15px;
+    padding: 30px 40px;
+    background: #e8e8e8;
+    border-radius: 30px;
+    box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
+    color: #026a84;
+    font-family: Arial, sans-serif;
     display: flex;
     align-items: flex-start;
     gap: 50px;
@@ -941,10 +989,22 @@ footer p {
 .form-grid_E input, 
 .form-grid_E select, 
 .form-grid_E textarea {
-    width: 95%;
-    padding: 4px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    width: 100%;
+    height: 40px;
+    padding: 6px 12px;
+    border-radius: 15px;
+    border: none;
+    font-size: 16px;
+    outline: none;
+    box-sizing: border-box;
+    background-color: #fafafa;
+    color: #999;
+}
+
+.form-grid_E textarea {
+    height: auto;
+    min-height: 110px;
+    resize: vertical;
 }
 .btn-confirmar {
     background: #28a745;
@@ -976,8 +1036,19 @@ footer p {
     text-decoration: none;
 }
 
-.btn.ativo {
-    background: #28a745;
+.btn.ativo,
+.btn-editar.ativo,
+.btn-salvar.ativo,
+.btn-voltar.ativo,
+.btn-cancelar.ativo,
+.btn-cadastrar-produto.ativo,
+.btn-cadastrar-cliente.ativo,
+.btn-confirmar.ativo,
+.btn-filtrar.ativo,
+.btn-limpar.ativo,
+.btn-padrao.ativo,
+.btn-info.ativo {
+    background: #28a745 !important;
 }
 
 .btn-info {
@@ -1014,9 +1085,54 @@ footer p {
 
 /* Container geral */
 .container {
-  max-width: 900px;
+  max-width: 800px;
   margin: 40px auto;
   font-family: 'Arial', sans-serif;
+}
+
+/* Box do formulário */
+.form-box {
+  background: #e8e8e8;
+  border-radius: 30px;
+  padding: 30px 40px;
+  color: #026a84;
+}
+
+.form-title {
+  text-align: center;
+  font-weight: 700;
+  margin-bottom: 25px;
+  font-size: 22px;
+}
+
+/* Grid do formulário */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px 40px;
+}
+
+/* Cada grupo de campo */
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #02778b;
+}
+
+.form-group input,
+.form-group select {
+  height: 40px;
+  padding: 6px 12px;
+  border-radius: 15px;
+  border: none;
+  font-size: 16px;
+  outline: none;
+  box-sizing: border-box;
 }
 
 
@@ -1149,9 +1265,18 @@ footer p {
     display: flex;
     align-items: center;
     gap: 20px;
-    justify-content: center; /* centraliza horizontalmente */
+    justify-content: center;
     position: relative;
     margin-bottom: 30px;
+  }
+
+  .header-form .btn-editar {
+    margin: 5px;
+    padding: 10px 15px;
+    color: #FFFFFF;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+    background-color: #04BAFC;
   }
 
   .titulo {
@@ -1242,34 +1367,34 @@ footer p {
   .form-buttons {
     margin-top: 30px;
     display: flex;
-    justify-content: space-between;
-    gap: 15px;
+    justify-content: center;
+    gap: 10px;
   }
 
   .btn {
     flex: 1;
-    font-weight: 700;
-    font-size: 18px;
-    padding: 12px 20px;
-    border-radius: 25px;
+    margin: 5px;
+    padding: 10px 15px;
+    color: #FFFFFF;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+    background-color: #04BAFC;
+    border-radius: 8px;
     border: none;
     cursor: pointer;
     text-align: center;
     text-decoration: none;
-    color: white;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
     min-width: 140px;
     box-sizing: border-box;
-    background: #4ed4f7;
     transition: all 0.3s ease;
   }
 
   .btn:hover {
-    filter: brightness(0.9);
-    transform: translateY(-2px);
+    background: #0399d6;
   }
 
   .btn-editar,
@@ -1282,13 +1407,17 @@ footer p {
   .btn-filtrar,
   .btn-limpar,
   .btn-padrao,
-  .btn-info {
-    background: #4ed4f7;
-    color: white;
-    font-weight: 700;
-    font-size: 18px;
-    padding: 12px 20px;
-    border-radius: 25px;
+  .btn-info,
+  .btn-adicionar,
+  .btn-emitidos,
+  .btn-pesquisar {
+    margin: 5px;
+    padding: 10px 15px;
+    color: #FFFFFF;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+    background-color: #04BAFC;
+    border-radius: 8px;
     border: none;
     cursor: pointer;
     text-align: center;
@@ -1312,9 +1441,11 @@ footer p {
   .btn-filtrar:hover,
   .btn-limpar:hover,
   .btn-padrao:hover,
-  .btn-info:hover {
-    filter: brightness(0.9);
-    transform: translateY(-2px);
+  .btn-info:hover,
+  .btn-adicionar:hover,
+  .btn-emitidos:hover,
+  .btn-pesquisar:hover {
+    background: #0399d6;
   }
 
   .login-container {
@@ -1643,16 +1774,24 @@ footer p {
 }
 
 .btn-status {
-    background: #6c757d;
-    color: white;
-    padding: 6px 12px;
-    border-radius: 4px;
+    margin: 5px;
+    padding: 10px 15px;
+    color: #FFFFFF;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+    background-color: #6c757d;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    text-align: center;
     text-decoration: none;
-    font-size: 12px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    text-align: center;
+    gap: 10px;
+    min-width: 140px;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
 }
 
 .btn-status:hover {
@@ -1660,13 +1799,14 @@ footer p {
 }
 
 .container-lista-orcamentos {
-    width: 90%;
-    max-width: 1200px;
-    margin: 20px auto;
-    padding: 25px;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 30px 40px;
+    background: #e8e8e8;
+    border-radius: 30px;
+    box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
+    color: #026a84;
+    font-family: Arial, sans-serif;
 }
 
 .item-orcamento {
