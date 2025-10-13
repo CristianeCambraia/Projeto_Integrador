@@ -401,11 +401,17 @@ def lista_suporte(request):
     filtro = request.GET.get('filtro')
     
     if filtro:
-        demandas = Suporte.objects.filter(
-            models.Q(id__icontains=filtro) |
-            models.Q(nome__icontains=filtro) |
-            models.Q(telefone__icontains=filtro)
-        ).order_by('-data_criacao')
+        filtro = filtro.strip()
+        if filtro.isdigit():
+            demandas = Suporte.objects.filter(
+                models.Q(id=filtro) |
+                models.Q(telefone=filtro)
+            ).order_by('-data_criacao')
+        else:
+            demandas = Suporte.objects.filter(
+                models.Q(nome__icontains=filtro) |
+                models.Q(telefone__icontains=filtro)
+            ).order_by('-data_criacao')
     else:
         demandas = Suporte.objects.all().order_by('-data_criacao')
     
