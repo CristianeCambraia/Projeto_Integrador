@@ -416,18 +416,29 @@ td input{
 }
 
 .btn-adicionar {
-    background: #28a745;
+    background: #4ed4f7;
     color: white;
-    padding: 10px 20px;
+    font-weight: 700;
+    font-size: 18px;
+    padding: 12px 20px;
+    border-radius: 25px;
     border: none;
-    border-radius: 4px;
     cursor: pointer;
-    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-width: 140px;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
     margin: 10px 0;
 }
 
 .btn-adicionar:hover {
-    background: #218838;
+    filter: brightness(0.9);
+    transform: translateY(-2px);
 }
    
 
@@ -439,15 +450,28 @@ td input{
 }
 
 .botoes button, .botoes a {
-    padding: 10px 20px;
-    background-color: #2c7be5;
+    background: #4ed4f7;
     color: white;
-    text-decoration: none;
-    border-radius: 4px;
+    font-weight: 700;
+    font-size: 18px;
+    padding: 12px 20px;
+    border-radius: 25px;
     border: none;
     cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.3s ease;
+    text-align: center;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-width: 140px;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+}
+
+.botoes button:hover, .botoes a:hover {
+    filter: brightness(0.9);
+    transform: translateY(-2px);
 }
 
 /* por favor mexer so com certeza */
@@ -1226,7 +1250,7 @@ footer p {
     flex: 1;
     font-weight: 700;
     font-size: 18px;
-    padding: 12px 0;
+    padding: 12px 20px;
     border-radius: 25px;
     border: none;
     cursor: pointer;
@@ -1239,22 +1263,58 @@ footer p {
     gap: 10px;
     min-width: 140px;
     box-sizing: border-box;
-  }
-
-  .btn-cancelar {
     background: #4ed4f7;
-  }
-
-  .btn-salvar {
-    background: #4ed4f7;
-  }
-
-  .btn-voltar {
-    background: #4ed4f7;
+    transition: all 0.3s ease;
   }
 
   .btn:hover {
     filter: brightness(0.9);
+    transform: translateY(-2px);
+  }
+
+  .btn-editar,
+  .btn-salvar,
+  .btn-voltar,
+  .btn-cancelar,
+  .btn-cadastrar-produto,
+  .btn-cadastrar-cliente,
+  .btn-confirmar,
+  .btn-filtrar,
+  .btn-limpar,
+  .btn-padrao,
+  .btn-info {
+    background: #4ed4f7;
+    color: white;
+    font-weight: 700;
+    font-size: 18px;
+    padding: 12px 20px;
+    border-radius: 25px;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-width: 140px;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+  }
+
+  .btn-editar:hover,
+  .btn-salvar:hover,
+  .btn-voltar:hover,
+  .btn-cancelar:hover,
+  .btn-cadastrar-produto:hover,
+  .btn-cadastrar-cliente:hover,
+  .btn-confirmar:hover,
+  .btn-filtrar:hover,
+  .btn-limpar:hover,
+  .btn-padrao:hover,
+  .btn-info:hover {
+    filter: brightness(0.9);
+    transform: translateY(-2px);
   }
 
   .login-container {
