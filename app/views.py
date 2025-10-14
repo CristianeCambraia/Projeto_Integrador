@@ -670,3 +670,36 @@ def admin_logout(request):
     if 'admin_logado' in request.session:
         del request.session['admin_logado']
     return redirect('login')
+
+# ----- BUSCAR PRODUTO POR CÓDIGO -----
+import json
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+
+@csrf_exempt
+def buscar_produto_por_codigo(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            codigo_barras = data.get('codigo_barras', '').strip()
+            
+            if codigo_barras:
+                try:
+                    produto = Produto.objects.get(codigo_barras=codigo_barras)
+                    return JsonResponse({
+                        'encontrado': True,
+                        'nome': produto.nome,
+                        'preco': str(produto.preco),
+                        'descricao': produto.descricao or '',
+                        'fornecedor': produto.fornecedor.id if produto.fornecedor else '',
+                        'unidade': produto.unidade,
+                        'observacao': produto.observacao or ''
+                    })
+                except Produto.DoesNotExist:
+                    return JsonResponse({'encontrado': False})
+            
+            return JsonResponse({'encontrado': False})
+        except:
+            return JsonResponse({'encontrado': False})
+    
+    return JsonResponse({'encontrado': False})

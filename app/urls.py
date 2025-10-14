@@ -58,6 +58,9 @@ urlpatterns = [
     path('admin/login/', views.admin_login, name='admin_login'),
     path('admin/logout/', views.admin_logout, name='admin_logout'),
     
+    # ----- BUSCAR PRODUTO -----
+    path('buscar-produto-por-codigo/', views.buscar_produto_por_codigo, name='buscar_produto_por_codigo'),
+    
     # ----- RECUPERAÇÃO DE SENHA -----
     path('recuperar-senha/', views.recuperar_senha, name='recuperar_senha'),
     path('verificar-codigo/', views.verificar_codigo, name='verificar_codigo'),

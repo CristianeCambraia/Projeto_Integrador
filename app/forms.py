@@ -45,10 +45,11 @@ class FornecedorForm(forms.ModelForm):
 class ProdutoForm(forms.ModelForm):
     class Meta:
         model = Produto
-        fields = ['nome', 'preco', 'descricao', 'fornecedor', 'unidade', 'quantidade', 'observacao']
+        fields = ['nome', 'codigo_barras', 'preco', 'descricao', 'fornecedor', 'unidade', 'quantidade', 'observacao']
 
         widgets = {
             'nome': forms.TextInput(attrs={'placeholder': 'Nome do Produto'}),
+            'codigo_barras': forms.TextInput(attrs={'placeholder': 'Escaneie ou digite o código de barras...', 'id': 'codigo_barras', 'autocomplete': 'off'}),
             'preco': forms.NumberInput(attrs={'placeholder': 'Preço'}),
             'descricao': forms.Textarea(attrs={'placeholder': 'Descrição', 'rows': 4, 'style': 'width: 100%; grid-column: 1 / -1;'}),
             'fornecedor': forms.Select(attrs={'placeholder': 'Selecione o Fornecedor'}),

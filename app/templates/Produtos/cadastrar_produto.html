@@ -7,8 +7,24 @@
 
     <form method="post" action="{% url 'cadastrar_produto' %}">
       {% csrf_token %}
+      
+      <!-- Campo de Código de Barras Grande -->
+      <div class="barcode-field">
+        <div class="barcode-input-container">
+          {{ form.codigo_barras }}
+          <span class="barcode-icon">|||||||||||</span>
+        </div>
+      </div>
+      
+      <!-- Outros Campos -->
       <div class="form-grid">
-        {{ form.as_p }}
+        {{ form.nome }}
+        {{ form.preco }}
+        {{ form.fornecedor }}
+        {{ form.unidade }}
+        {{ form.quantidade }}
+        {{ form.descricao }}
+        {{ form.observacao }}
       </div>
 
       <div class="form-buttons">
@@ -21,4 +37,89 @@
   </section>
 </div>
 
+<style>
+.barcode-field {
+  margin-bottom: 20px;
+}
+
+.barcode-input-container {
+  position: relative;
+  max-width: 100%;
+}
+
+.barcode-input-container input {
+  width: 100%;
+  height: 50px;
+  font-size: 16px;
+  padding: 12px 60px 12px 12px;
+  border: 2px solid #ddd;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  box-sizing: border-box;
+}
+
+.barcode-icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+  color: #666;
+  pointer-events: none;
+  font-family: monospace;
+  letter-spacing: 1px;
+}
+
+.barcode-input-container input:focus {
+  border-color: #007bff;
+  background-color: #fff;
+  outline: none;
+}
+</style>
+
+<script>
+// Otimização para leitor de código de barras
+document.addEventListener('DOMContentLoaded', function() {
+    const codigoBarrasField = document.getElementById('id_codigo_barras');
+    if (codigoBarrasField) {
+        let timeout;
+        codigoBarrasField.addEventListener('input', function() {
+            clearTimeout(timeout);
+            const codigo = this.value.trim();
+            
+            if (codigo.length > 5) {
+                timeout = setTimeout(() => {
+                    // Buscar produto existente pelo código
+                    fetch('/buscar-produto-por-codigo/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                        },
+                        body: JSON.stringify({codigo_barras: codigo})
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.encontrado) {
+                            // Preencher campos com dados do produto
+                            document.getElementById('id_nome').value = data.nome;
+                            document.getElementById('id_preco').value = data.preco;
+                            if (data.descricao) document.getElementById('id_descricao').value = data.descricao;
+                            if (data.fornecedor) document.getElementById('id_fornecedor').value = data.fornecedor;
+                            document.getElementById('id_unidade').value = data.unidade;
+                            if (data.observacao) document.getElementById('id_observacao').value = data.observacao;
+                        }
+                        // Auto-focus no próximo campo
+                        document.getElementById('id_nome').focus();
+                    })
+                    .catch(() => {
+                        // Em caso de erro, apenas move o foco
+                        document.getElementById('id_nome').focus();
+                    });
+                }, 300);
+            }
+        });
+    }
+});
+</script>
 {% endblock %}
