@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
-from .models import Fornecedor, Produto, Cliente, Usuario, Orcamento, MovimentacaoEstoque, RecuperacaoSenha, Suporte
-from .forms import FornecedorForm, ProdutoForm, ClienteForm, UsuarioForm, SuporteForm, EditarProdutoForm, RecuperarSenhaForm, VerificarCodigoForm, NovaSenhaForm
+from .models import Fornecedor, Produto, Cliente, Usuario, Orcamento, MovimentacaoEstoque, RecuperacaoSenha, Suporte, Admin
+from .forms import FornecedorForm, ProdutoForm, ClienteForm, UsuarioForm, SuporteForm, EditarProdutoForm, RecuperarSenhaForm, VerificarCodigoForm, NovaSenhaForm, AdminLoginForm
 from django.utils.dateparse import parse_date
 from django.http import HttpResponseBadRequest
 from django.utils import timezone
@@ -396,8 +396,11 @@ def criar_suporte(request):
 
     return render(request, "suporte_form.html", {"form": form})
 
-@login_required_custom
 def lista_suporte(request):
+    # Verificar se é admin
+    if 'admin_logado' not in request.session:
+        messages.error(request, 'Acesso negado. Apenas administradores podem acessar o suporte.')
+        return redirect('home')
     filtro = request.GET.get('filtro')
     
     if filtro:
@@ -642,3 +645,28 @@ def nova_senha(request):
         form = NovaSenhaForm()
     
     return render(request, 'nova_senha.html', {'form': form})
+
+# ----- ADMIN -----
+def admin_login(request):
+    if request.method == 'POST':
+        form = AdminLoginForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            senha = form.cleaned_data['senha']
+            
+            try:
+                admin = Admin.objects.get(email=email, senha=senha)
+                request.session['admin_logado'] = admin.id
+                messages.success(request, f'Bem-vindo, Admin!')
+                return redirect('home')
+            except Admin.DoesNotExist:
+                messages.error(request, 'Email ou senha de admin incorretos')
+    else:
+        form = AdminLoginForm()
+    
+    return render(request, 'admin_login.html', {'form': form})
+
+def admin_logout(request):
+    if 'admin_logado' in request.session:
+        del request.session['admin_logado']
+    return redirect('login')

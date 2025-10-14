@@ -1,5 +1,5 @@
 from django import forms
-from .models import Fornecedor, Produto, Cliente, Usuario, Suporte
+from .models import Fornecedor, Produto, Cliente, Usuario, Suporte, Admin
 from django.contrib.auth.forms import AuthenticationForm
 from .models import Usuario  # ou de onde vier seu modelo de usuário
 class SuporteForm(forms.ModelForm):
@@ -216,3 +216,17 @@ class NovaSenhaForm(forms.Form):
             raise forms.ValidationError('As senhas não coincidem')
         
         return cleaned_data
+
+class AdminLoginForm(forms.Form):
+    email = forms.EmailField(
+        widget=forms.EmailInput(attrs={
+            'placeholder': 'E‑mail Admin',
+            'class': 'form-control'
+        })
+    )
+    senha = forms.CharField(
+        widget=forms.PasswordInput(attrs={
+            'placeholder': 'Senha Admin',
+            'class': 'form-control'
+        })
+    )

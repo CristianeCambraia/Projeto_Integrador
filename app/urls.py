@@ -54,6 +54,10 @@ urlpatterns = [
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
     
+    # ----- ADMIN -----
+    path('admin/login/', views.admin_login, name='admin_login'),
+    path('admin/logout/', views.admin_logout, name='admin_logout'),
+    
     # ----- RECUPERAÇÃO DE SENHA -----
     path('recuperar-senha/', views.recuperar_senha, name='recuperar_senha'),
     path('verificar-codigo/', views.verificar_codigo, name='verificar_codigo'),

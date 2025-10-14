@@ -21,16 +21,20 @@
 
         <nav>
             <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="{% url 'fornecedores' %}">Cadastros</a></li>
-                <li><a href="{% url 'emitir_orcamento' %}">Orçamentos</a></li>
-                <li><a href="{% url 'relatorio_estoque' %}">Relatórios</a></li>
-                {% if usuario_logado %}
+                {% if admin_logado %}
                     <li><a href="{% url 'lista_suporte' %}">Suporte</a></li>
-                    <li><a href="{% url 'logout' %}">Sair</a></li>
+                    <li><a href="{% url 'admin_logout' %}">Sair Admin</a></li>
                 {% else %}
-                    <li><a href="{% url 'cadastrar_usuario' %}">Cadastrar Usuário</a></li>
-                    <li><a href="{% url 'login' %}">Login</a></li>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="{% url 'fornecedores' %}">Cadastros</a></li>
+                    <li><a href="{% url 'emitir_orcamento' %}">Orçamentos</a></li>
+                    <li><a href="{% url 'relatorio_estoque' %}">Relatórios</a></li>
+                    {% if usuario_logado %}
+                        <li><a href="{% url 'logout' %}">Sair</a></li>
+                    {% else %}
+                        <li><a href="{% url 'cadastrar_usuario' %}">Cadastrar Usuário</a></li>
+                        <li><a href="{% url 'login' %}">Login</a></li>
+                    {% endif %}
                 {% endif %}
             </ul>
         </nav>
@@ -56,10 +60,12 @@
             <p>Telefone - (35) 99877-8346</p>
         </div>
 
+        {% if not admin_logado %}
         <ul class="contact">
             <li><a href="{% url 'sobre_nos' %}">Sobre nós</a></li>
             <li><a href="{% url 'criar_suporte' %}">Contato</a></li>
         </ul>
+        {% endif %}
     </footer>
 
 </body>
