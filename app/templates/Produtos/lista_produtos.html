@@ -4,8 +4,8 @@
 <div class="lista-container">
     <h2 class="titulo">Produtos Cadastrados</h2>
     
-    <div class="filtro-orcamentos">
-        <form method="get">
+    <div class="filtro-orcamentos" style="margin-left: 15px;">
+        <form method="get" style="display: flex; gap: 10px;">
             <input type="text" name="filtro" placeholder="Filtrar por Nome ou ID" value="{{ filtro }}">
             <button type="submit" class="btn-filtrar">Filtrar</button>
             <a href="{% url 'lista_produtos' %}" class="btn-limpar">Limpar</a>
@@ -32,7 +32,7 @@
                 </div>
             </li>
         {% empty %}
-            <li style="text-align: left; margin-left: 5px;">Nenhum produto cadastrado.</li>
+            <li style="text-align: left; margin-left: 10px;">Nenhum produto cadastrado.</li>
         {% endfor %}
     </ul>
 
