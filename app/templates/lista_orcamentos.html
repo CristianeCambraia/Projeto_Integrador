@@ -1,6 +1,13 @@
 {% extends 'base.html' %}
 
 {% block content %}
+{% if messages %}
+{% for message in messages %}
+<div style="text-align: center; margin: 20px 0;">
+  <div class="alert alert-{{ message.tags }}" style="display: inline-block; width: auto; padding: 10px 20px;">{{ message }}</div>
+</div>
+{% endfor %}
+{% endif %}
 <div class="container-lista-orcamentos">
   <h2>Orçamentos Emitidos</h2>
   
@@ -31,6 +38,7 @@
              <div class="field"><strong>Observações:</strong> {{ o.observacao|default:"(Sem observações)" }}</div>
             <div style="margin-top:10px;">
               <a href="{% url 'abrir_orcamento' o.id %}" class="btn-info">Abrir</a>
+              <button onclick="abrirModalEmail({{ o.id }})" class="btn-info" style="margin-left: 5px;">Enviar por Email</button>
             </div>
           </div>
         </div>
@@ -42,7 +50,70 @@
 
   <div class="botoes-orcamento">
     <a href="{% url 'emitir_orcamento' %}" class="btn-padrao">Novo Orçamento ➕</a>
+    <a href="https://www.nfse.gov.br/EmissorNacional/Login" target="_blank" class="btn-padrao">Portal NF-e 📄</a>
     <a href="{% url 'novo_orcamento' %}" class="btn-padrao voltar">Voltar ⤴</a>
   </div>
 </div>
+
+<!-- Modal para envio de email -->
+<div id="modalEmail" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5);">
+  <div style="background-color: white; margin: 15% auto; padding: 20px; border-radius: 5px; width: 400px; text-align: center;">
+    <h3>Enviar Orçamento por Email</h3>
+    <form id="formEnviarEmail">
+      {% csrf_token %}
+      <input type="hidden" id="orcamentoId" name="orcamento_id">
+      <div style="margin-bottom: 15px;">
+        <label for="emailDestino" style="display: block; margin-bottom: 5px;">Email de destino:</label>
+        <input type="email" id="emailDestino" name="email" required style="width: 80%; padding: 8px;">
+      </div>
+      <div>
+        <button type="button" onclick="fecharModalEmail()" class="btn-limpar" style="margin-right: 10px;">Cancelar</button>
+        <button type="submit" class="btn-info">Enviar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+function abrirModalEmail(orcamentoId) {
+  document.getElementById('orcamentoId').value = orcamentoId;
+  document.getElementById('modalEmail').style.display = 'block';
+  document.getElementById('emailDestino').focus();
+}
+
+function fecharModalEmail() {
+  document.getElementById('modalEmail').style.display = 'none';
+  document.getElementById('emailDestino').value = '';
+}
+
+document.getElementById('formEnviarEmail').addEventListener('submit', function(e) {
+  e.preventDefault();
+  
+  const orcamentoId = document.getElementById('orcamentoId').value;
+  const email = document.getElementById('emailDestino').value;
+  
+  fetch('/enviar_orcamento_email/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+    },
+    body: JSON.stringify({
+      orcamento_id: orcamentoId,
+      email: email
+    })
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      window.location.href = '/orcamentos_emitidos/?email_enviado=1';
+    } else {
+      alert('Erro ao enviar orçamento: ' + data.error);
+    }
+  })
+  .catch(error => {
+    alert('Erro ao enviar orçamento.');
+  });
+});
+</script>
 {% endblock %}

@@ -236,6 +236,10 @@ def salvar_orcamento(request):
 
 def orcamentos_emitidos(request):
     filtro_id = request.GET.get('filtro_id')
+    email_enviado = request.GET.get('email_enviado')
+    
+    if email_enviado:
+        messages.success(request, 'Orçamento enviado por email com sucesso!')
     
     if filtro_id:
         try:
@@ -690,6 +694,48 @@ def buscar_clientes(request):
             return JsonResponse({'clientes': resultados})
     return JsonResponse({'clientes': []})
 
+# ----- EXPORTAR PDF ORÇAMENTO -----
+from django.http import HttpResponse
+from django.template.loader import get_template
+from xhtml2pdf import pisa
+
+def exportar_pdf_orcamento(request, orcamento_id):
+    try:
+        orcamento = Orcamento.objects.get(id=orcamento_id)
+    except Orcamento.DoesNotExist:
+        return redirect('orcamentos_emitidos')
+    
+    # Processar itens do orçamento
+    descricoes = orcamento.descricao.split(' / ') if orcamento.descricao else []
+    quantidades = orcamento.itens_quantidades.split(' / ') if orcamento.itens_quantidades else []
+    valores = orcamento.itens_valores.split(' / ') if orcamento.itens_valores else []
+    
+    itens = []
+    for i in range(max(len(descricoes), len(quantidades), len(valores))):
+        itens.append({
+            'descricao': descricoes[i] if i < len(descricoes) else '',
+            'quantidade': quantidades[i] if i < len(quantidades) else '',
+            'valor': valores[i] if i < len(valores) else ''
+        })
+    
+    context = {
+        'orcamento': orcamento,
+        'itens': itens
+    }
+    
+    template = get_template('orcamento_pdf.html')
+    html = template.render(context)
+    
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="orcamento_{orcamento.id}.pdf"'
+    
+    pisa_status = pisa.CreatePDF(html, dest=response)
+    
+    if pisa_status.err:
+        return HttpResponse('Erro ao gerar PDF', status=500)
+    
+    return response
+
 # ----- BUSCAR PRODUTO POR CÓDIGO -----
 import json
 from django.http import JsonResponse
@@ -722,3 +768,64 @@ def buscar_produto_por_codigo(request):
             return JsonResponse({'encontrado': False})
     
     return JsonResponse({'encontrado': False})
+
+# ----- ENVIAR ORÇAMENTO POR EMAIL -----
+@csrf_exempt
+def enviar_orcamento_email(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            orcamento_id = data.get('orcamento_id')
+            email_destino = data.get('email')
+            
+            if not orcamento_id or not email_destino:
+                return JsonResponse({'success': False, 'error': 'Dados incompletos'})
+            
+            orcamento = Orcamento.objects.get(id=orcamento_id)
+            
+            # Gerar PDF
+            descricoes = orcamento.descricao.split(' / ') if orcamento.descricao else []
+            quantidades = orcamento.itens_quantidades.split(' / ') if orcamento.itens_quantidades else []
+            valores = orcamento.itens_valores.split(' / ') if orcamento.itens_valores else []
+            
+            itens = []
+            for i in range(max(len(descricoes), len(quantidades), len(valores))):
+                itens.append({
+                    'descricao': descricoes[i] if i < len(descricoes) else '',
+                    'quantidade': quantidades[i] if i < len(quantidades) else '',
+                    'valor': valores[i] if i < len(valores) else ''
+                })
+            
+            context = {'orcamento': orcamento, 'itens': itens}
+            template = get_template('orcamento_pdf.html')
+            html = template.render(context)
+            
+            # Criar PDF em memória
+            from io import BytesIO
+            pdf_buffer = BytesIO()
+            pisa_status = pisa.CreatePDF(html, dest=pdf_buffer)
+            
+            if pisa_status.err:
+                return JsonResponse({'success': False, 'error': 'Erro ao gerar PDF'})
+            
+            pdf_buffer.seek(0)
+            
+            # Enviar email com anexo
+            from django.core.mail import EmailMessage
+            email = EmailMessage(
+                f'Orçamento #{orcamento.id} - {orcamento.cliente}',
+                f'Segue em anexo o orçamento solicitado.\n\nCliente: {orcamento.cliente}\nData: {orcamento.data.strftime("%d/%m/%Y")}',
+                settings.DEFAULT_FROM_EMAIL,
+                [email_destino]
+            )
+            email.attach(f'orcamento_{orcamento.id}.pdf', pdf_buffer.getvalue(), 'application/pdf')
+            email.send()
+            
+            return JsonResponse({'success': True})
+            
+        except Orcamento.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Orçamento não encontrado'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+    
+    return JsonResponse({'success': False, 'error': 'Método não permitido'})

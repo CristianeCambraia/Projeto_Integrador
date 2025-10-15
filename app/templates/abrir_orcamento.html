@@ -57,6 +57,7 @@
 
     <div class="botoes">
       <button type="button" onclick="window.print()" class="btn-salvar">Imprimir 💾</button>
+      <a href="{% url 'exportar_pdf_orcamento' orcamento.id %}" class="btn-salvar">Exportar PDF 📄</a>
       <a href="{% url 'orcamentos_emitidos' %}" class="btn-voltar">Voltar ⤴</a>
     </div>
   </form>

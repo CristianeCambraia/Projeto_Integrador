@@ -10,6 +10,13 @@
 {% endif %}
 <div class="estoque-container">
     <h2 class="titulo">Lançamento de Saída</h2>
+    
+    <!-- Campo de Código de Barras -->
+    <div class="barcode-field" style="margin-bottom: 20px;">
+        <div class="barcode-input-container">
+            <input type="text" id="codigo_barras_saida" placeholder="Escaneie ou digite o código de barras..." autocomplete="off" style="width: 100%; height: 50px; font-size: 16px; padding: 12px; border: 2px solid #ddd; border-radius: 5px; background-color: #f9f9f9;">
+        </div>
+    </div>
 
     <!-- Formulário -->
     <form method="post">
@@ -80,5 +87,70 @@ function toggleDescricaoTabela(btn) {
         btn.textContent = '-';
     }
 }
+
+// Leitor de código de barras para saída
+document.addEventListener('DOMContentLoaded', function() {
+    const codigoBarrasField = document.getElementById('codigo_barras_saida');
+    if (codigoBarrasField) {
+        let timeout;
+        codigoBarrasField.addEventListener('input', function() {
+            clearTimeout(timeout);
+            const codigo = this.value.trim();
+            
+            if (codigo.length > 5) {
+                timeout = setTimeout(() => {
+                    // Buscar produto pelo código
+                    fetch('/buscar-produto-por-codigo/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                        },
+                        body: JSON.stringify({codigo_barras: codigo})
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.encontrado) {
+                            // Encontrar a linha do produto na tabela
+                            const rows = document.querySelectorAll('tbody tr');
+                            let produtoEncontrado = false;
+                            
+                            rows.forEach(row => {
+                                const produtoNome = row.cells[1].textContent.trim();
+                                if (produtoNome === data.nome) {
+                                    // Focar no campo de quantidade desta linha
+                                    const quantidadeInput = row.querySelector('input[type="number"]');
+                                    if (quantidadeInput) {
+                                        quantidadeInput.focus();
+                                        quantidadeInput.select();
+                                        // Destacar a linha
+                                        row.style.backgroundColor = '#e8f5e8';
+                                        setTimeout(() => {
+                                            row.style.backgroundColor = '';
+                                        }, 3000);
+                                        produtoEncontrado = true;
+                                    }
+                                }
+                            });
+                            
+                            if (!produtoEncontrado) {
+                                alert('Produto encontrado no sistema, mas não está na lista de saída.');
+                            }
+                        } else {
+                            alert('Produto não encontrado no sistema.');
+                        }
+                        
+                        // Limpar o campo de código
+                        codigoBarrasField.value = '';
+                    })
+                    .catch(() => {
+                        alert('Erro ao buscar produto.');
+                        codigoBarrasField.value = '';
+                    });
+                }, 300);
+            }
+        });
+    }
+});
 </script>
 {% endblock %}

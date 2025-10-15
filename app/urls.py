@@ -64,6 +64,12 @@ urlpatterns = [
     # ----- BUSCAR CLIENTES -----
     path('buscar-clientes/', views.buscar_clientes, name='buscar_clientes'),
     
+    # ----- EXPORTAR PDF -----
+    path('orcamento/<int:orcamento_id>/pdf/', views.exportar_pdf_orcamento, name='exportar_pdf_orcamento'),
+    
+    # ----- ENVIAR EMAIL -----
+    path('enviar_orcamento_email/', views.enviar_orcamento_email, name='enviar_orcamento_email'),
+    
     # ----- RECUPERAÇÃO DE SENHA -----
     path('recuperar-senha/', views.recuperar_senha, name='recuperar_senha'),
     path('verificar-codigo/', views.verificar_codigo, name='verificar_codigo'),

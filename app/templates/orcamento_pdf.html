@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Orçamento #{{ orcamento.id }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .company { font-size: 24px; font-weight: bold; color: #026a84; }
+        .info-section { margin-bottom: 20px; }
+        .info-title { font-weight: bold; color: #026a84; margin-bottom: 10px; }
+        .info-row { margin-bottom: 5px; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; font-weight: bold; }
+        .footer { margin-top: 30px; text-align: center; font-size: 12px; color: #666; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="company">INSUMED</div>
+        <div>Orçamento #{{ orcamento.id }}</div>
+    </div>
+
+    <div class="info-section">
+        <div class="info-title">Dados do Cliente:</div>
+        <div class="info-row"><strong>Nome:</strong> {{ orcamento.cliente }}</div>
+        <div class="info-row"><strong>CNPJ:</strong> {{ orcamento.cnpj|default:"Não informado" }}</div>
+        <div class="info-row"><strong>Endereço:</strong> {{ orcamento.endereco|default:"Não informado" }}</div>
+        <div class="info-row"><strong>Cidade:</strong> {{ orcamento.cidade|default:"Não informado" }}</div>
+        <div class="info-row"><strong>Telefone:</strong> {{ orcamento.telefone|default:"Não informado" }}</div>
+        <div class="info-row"><strong>E-mail:</strong> {{ orcamento.email|default:"Não informado" }}</div>
+        <div class="info-row"><strong>Data:</strong> {{ orcamento.data|date:"d/m/Y" }}</div>
+    </div>
+
+    {% if itens %}
+    <div class="info-section">
+        <div class="info-title">Itens do Orçamento:</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Descrição</th>
+                    <th>Quantidade</th>
+                    <th>Valor</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in itens %}
+                <tr>
+                    <td>{{ item.descricao|default:"" }}</td>
+                    <td>{{ item.quantidade|default:"" }}</td>
+                    <td>{{ item.valor|default:"" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+
+    {% if orcamento.observacao %}
+    <div class="info-section">
+        <div class="info-title">Observações:</div>
+        <div>{{ orcamento.observacao }}</div>
+    </div>
+    {% endif %}
+
+    <div class="footer">
+        <p>INSUMED - Todos os direitos reservados</p>
+        <p>Telefone: (35) 99877-8346</p>
+    </div>
+</body>
+</html>
