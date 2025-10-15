@@ -6,6 +6,9 @@ class SuporteForm(forms.ModelForm):
     class Meta:
         model = Suporte
         fields = ["nome", "telefone", "email", "descreva"]
+        widgets = {
+            'telefone': forms.TextInput(attrs={'onkeypress': 'return event.charCode >= 48 && event.charCode <= 57', 'oninput': 'this.value = this.value.replace(/[^0-9]/g, "")'}),
+        }
 
 # Formulário de Fornecedor
 class FornecedorForm(forms.ModelForm):
@@ -32,7 +35,7 @@ class FornecedorForm(forms.ModelForm):
             'uf': forms.TextInput(attrs={'placeholder': 'UF'}),
             'cep': forms.TextInput(attrs={'placeholder': 'CEP'}),
             'email': forms.EmailInput(attrs={'placeholder': 'E-mail'}),
-            'telefone': forms.TextInput(attrs={'placeholder': 'Telefone'}),
+            'telefone': forms.TextInput(attrs={'placeholder': 'Telefone', 'pattern': '[0-9]*', 'inputmode': 'numeric', 'onkeypress': 'return event.charCode >= 48 && event.charCode <= 57', 'oninput': 'this.value = this.value.replace(/[^0-9]/g, "")'}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -94,7 +97,7 @@ class ClienteForm(forms.ModelForm):
             'uf': forms.TextInput(attrs={'placeholder': 'UF'}),
             'cep': forms.TextInput(attrs={'placeholder': 'CEP'}),
             'email': forms.EmailInput(attrs={'placeholder': 'E-mail'}),
-            'telefone': forms.TextInput(attrs={'placeholder': 'Telefone'}),
+            'telefone': forms.TextInput(attrs={'placeholder': 'Telefone', 'onkeypress': 'return event.charCode >= 48 && event.charCode <= 57', 'oninput': 'this.value = this.value.replace(/[^0-9]/g, "")'}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -127,7 +130,7 @@ class UsuarioForm(forms.ModelForm):
             'email': forms.EmailInput(attrs={'placeholder': 'Email'}),
             'cpf': forms.TextInput(attrs={'placeholder': 'CPF'}),
             'endereco': forms.TextInput(attrs={'placeholder': 'Endereço'}),
-            'telefone': forms.TextInput(attrs={'placeholder': 'Telefone'}),
+            'telefone': forms.TextInput(attrs={'placeholder': 'Telefone', 'onkeypress': 'return event.charCode >= 48 && event.charCode <= 57', 'oninput': 'this.value = this.value.replace(/[^0-9]/g, "")'}),
             # 'data_nascimento' e 'senha' já declarados acima
         }
 

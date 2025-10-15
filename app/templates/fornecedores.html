@@ -61,7 +61,7 @@
 
         <div class="form-group">
           <label for="id_telefone">Telefone</label>
-          <input type="text" name="telefone" id="id_telefone" placeholder="Telefone" required>
+          <input type="text" name="telefone" id="id_telefone" placeholder="Telefone" onkeypress="return event.charCode >= 48 && event.charCode <= 57" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
         </div>
 
       </div>
