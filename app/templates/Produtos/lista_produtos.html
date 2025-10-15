@@ -15,7 +15,7 @@
     <ul class="lista">
         {% for p in produtos %}
             <li class="produto-item">
-                <div class="produto-info">
+                <div class="produto-info" style="margin-left: 5px;">
                     <strong>ID:</strong> {{ p.id }} - <strong>Fornecedor:</strong> {{ p.fornecedor|default:"Não informado" }} - {{ p.nome }} - R$ {{ p.preco }} - {{ p.quantidade }} {{ p.unidade }}
                 </div>
                 {% if p.descricao %}
@@ -32,7 +32,7 @@
                 </div>
             </li>
         {% empty %}
-            <li>Nenhum produto cadastrado.</li>
+            <li style="text-align: left; margin-left: 5px;">Nenhum produto cadastrado.</li>
         {% endfor %}
     </ul>
 
@@ -54,6 +54,8 @@
     </script>
 
     <!-- Corrigido para a URL correta da view de cadastro -->
-    <a href="{% url 'cadastrar_produto' %}" class="btn-salvar">Novo Produto</a>
+    <div style="margin-left: 5px;">
+        <a href="{% url 'cadastrar_produto' %}" class="btn-salvar">Novo Produto</a>
+    </div>
 </div>
 {% endblock %}

@@ -7,7 +7,7 @@
     <ul class="lista">
         {% for f in clientes %}
             <li>
-                <div>{{ f.nome }} - {{ f.email }}</div>
+                <div style="margin-left: 5px;">{{ f.nome }} - {{ f.email }}</div>
                 <div><a href="{% url 'editar_cliente' f.id %}" class="btn-editar">Editar</a></div>
             </li>
         {% empty %}
