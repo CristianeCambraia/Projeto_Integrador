@@ -671,6 +671,25 @@ def admin_logout(request):
         del request.session['admin_logado']
     return redirect('login')
 
+# ----- BUSCAR CLIENTES PARA AUTOCOMPLETE -----
+def buscar_clientes(request):
+    if request.method == 'GET':
+        termo = request.GET.get('termo', '').strip()
+        if termo:
+            clientes = Cliente.objects.filter(nome__icontains=termo)[:10]
+            resultados = []
+            for cliente in clientes:
+                resultados.append({
+                    'nome': cliente.nome,
+                    'email': cliente.email,
+                    'telefone': cliente.telefone,
+                    'endereco': cliente.endereco,
+                    'cidade': cliente.cidade,
+                    'cpf': cliente.cpf
+                })
+            return JsonResponse({'clientes': resultados})
+    return JsonResponse({'clientes': []})
+
 # ----- BUSCAR PRODUTO POR CÓDIGO -----
 import json
 from django.http import JsonResponse

@@ -61,6 +61,9 @@ urlpatterns = [
     # ----- BUSCAR PRODUTO -----
     path('buscar-produto-por-codigo/', views.buscar_produto_por_codigo, name='buscar_produto_por_codigo'),
     
+    # ----- BUSCAR CLIENTES -----
+    path('buscar-clientes/', views.buscar_clientes, name='buscar_clientes'),
+    
     # ----- RECUPERAÇÃO DE SENHA -----
     path('recuperar-senha/', views.recuperar_senha, name='recuperar_senha'),
     path('verificar-codigo/', views.verificar_codigo, name='verificar_codigo'),
