@@ -70,6 +70,8 @@ class ProdutoForm(forms.ModelForm):
         if not Fornecedor.objects.filter(ativo=True).exists():
             self.fields['fornecedor'].required = False
             self.fields['fornecedor'].empty_label = 'Nenhum fornecedor ativo'
+        else:
+            self.fields['fornecedor'].empty_label = 'Fornecedor'
 
 
 # Formulário de Cliente

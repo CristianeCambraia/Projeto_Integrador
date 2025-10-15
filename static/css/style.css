@@ -1398,7 +1398,6 @@ footer p {
   }
 
   .btn-editar,
-  .btn-salvar,
   .btn-voltar,
   .btn-cancelar,
   .btn-cadastrar-produto,
@@ -1429,6 +1428,29 @@ footer p {
     min-width: 140px;
     box-sizing: border-box;
     transition: all 0.3s ease;
+  }
+
+  .btn-salvar{
+    margin: 5px;
+    margin-left: 15px;
+    padding: 10px 15px;
+    color: #FFFFFF;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+    background-color: #04BAFC;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-width: 140px;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+
   }
 
   .btn-editar:hover,

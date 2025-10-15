@@ -25,18 +25,8 @@
         </div>
 
         <div class="form-group">
-          <label for="id_cidade">Cidade</label>
-          <input type="text" name="cidade" id="id_cidade" placeholder="Cidade" required>
-        </div>
-
-        <div class="form-group">
           <label for="id_endereco">Endereço</label>
           <input type="text" name="endereco" id="id_endereco" placeholder="Endereço" required>
-        </div>
-
-        <div class="form-group">
-          <label for="id_uf">UF</label>
-          <input type="text" name="uf" id="id_uf" placeholder="UF" maxlength="2" required>
         </div>
 
         <div class="form-group">
@@ -45,13 +35,23 @@
         </div>
 
         <div class="form-group">
-          <label for="id_cep">CEP</label>
-          <input type="text" name="cep" id="id_cep" placeholder="XXXXX-XXX" maxlength="9" oninput="formatCEP(this)" onkeypress="return /[0-9]/.test(event.key) || event.key === 'Backspace'" required>
+          <label for="id_complemento">Complemento</label>
+          <input type="text" name="complemento" id="id_complemento" placeholder="Complemento">
         </div>
 
         <div class="form-group">
-          <label for="id_complemento">Complemento</label>
-          <input type="text" name="complemento" id="id_complemento" placeholder="Complemento">
+          <label for="id_cidade">Cidade</label>
+          <input type="text" name="cidade" id="id_cidade" placeholder="Cidade" required>
+        </div>
+
+        <div class="form-group">
+          <label for="id_uf">UF</label>
+          <input type="text" name="uf" id="id_uf" placeholder="UF" maxlength="2" required>
+        </div>
+
+        <div class="form-group">
+          <label for="id_cep">CEP</label>
+          <input type="text" name="cep" id="id_cep" placeholder="XXXXX-XXX" maxlength="9" oninput="formatCEP(this)" onkeypress="return /[0-9]/.test(event.key) || event.key === 'Backspace'" required>
         </div>
 
         <div class="form-group">

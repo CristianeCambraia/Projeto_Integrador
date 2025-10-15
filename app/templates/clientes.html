@@ -12,6 +12,10 @@
                 <input type="text" name="nome" id="id_nome" placeholder="Nome" required>
             </p>
             <p>
+                <label for="id_data_nascimento">Data de nascimento:</label>
+                <input type="date" name="data_nascimento" id="id_data_nascimento" max="2006-12-31" title="Idade deve ser maior ou igual a 18 anos" onchange="validateAge(this)" required>
+            </p>
+            <p>
                 <label for="id_cpf">CPF:</label>
                 <input type="text" name="cpf" id="id_cpf" placeholder="XXX.XXX.XXX-XX" maxlength="14" pattern="[0-9]{3}\.[0-9]{3}\.[0-9]{3}-[0-9]{2}" title="Digite apenas números. Formato: XXX.XXX.XXX-XX" oninput="formatCPF(this)" onkeypress="return /[0-9]/.test(event.key) || event.key === 'Backspace'" required>
             </p>
@@ -26,10 +30,6 @@
             <p>
                 <label for="id_complemento">Complemento:</label>
                 <input type="text" name="complemento" id="id_complemento" placeholder="Complemento">
-            </p>
-            <p>
-                <label for="id_data_nascimento">Data de nascimento:</label>
-                <input type="date" name="data_nascimento" id="id_data_nascimento" max="2006-12-31" title="Idade deve ser maior ou igual a 18 anos" onchange="validateAge(this)" required>
             </p>
             <p>
                 <label for="id_cidade">Cidade:</label>

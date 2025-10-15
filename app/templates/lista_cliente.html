@@ -7,8 +7,8 @@
     <ul class="lista">
         {% for f in clientes %}
             <li>
-                {{ f.nome }} - {{ f.email }}
-                <a href="{% url 'editar_cliente' f.id %}" class="btn-editar">Editar</a>
+                <div>{{ f.nome }} - {{ f.email }}</div>
+                <div><a href="{% url 'editar_cliente' f.id %}" class="btn-editar">Editar</a></div>
             </li>
         {% empty %}
             <li>Nenhum cliente cadastrado.</li>
