@@ -25,40 +25,31 @@
         <div class="row-two-col">
           <div class="col-left">
             <div class="field"><strong>ID:</strong> {{ o.id }}</div>
-            <div class="field"><strong>Cliente:</strong> {{ o.cliente }}</div>
             <div class="field"><strong>Data:</strong> {{ o.data|date:"d/m/Y" }}</div>
-            <div class="field"><strong>CNPJ:</strong> {{ o.cnpj }}</div>
+            <div class="field field-email"><strong>E-mail:</strong> {{ o.email }}</div>
           </div>
           <div class="col-right">
-            <div class="field"><strong>Descrição:</strong> 
-              {% if o.descricao %}
-                {% if o.descricao|length > 10 %}
-                  <span class="descricao-preview-{{ o.id }}">{{ o.descricao|truncatechars:50 }}<button class="btn-expandir-obs" onclick="expandirDescricao({{ o.id }})">+</button></span>
-                  <span class="descricao-completa-{{ o.id }}" style="display: none;">{{ o.descricao }}<button class="btn-expandir-obs" onclick="recolherDescricao({{ o.id }})">-</button></span>
-                {% else %}
-                  {{ o.descricao }}
-                {% endif %}
-              {% else %}
-                (Sem descrição)
-              {% endif %}
-            </div>
+            <div class="field"><strong>Cliente:</strong> {{ o.cliente }}</div>
+            <div class="field field-cnpj"><strong>CNPJ:</strong> {{ o.cnpj }}</div>
             <div class="field"><strong>Telefone:</strong> {{ o.telefone }}</div>
-            <div class="field"><strong>E-mail:</strong> {{ o.email }}</div>
-             <div class="field"><strong>Quantidades:</strong> {{ o.itens_quantidades|default:"(Sem quantidades)" }}</div>
-             <div class="field"><strong>Valores:</strong> {{ o.itens_valores|default:"(Sem valores)" }}</div>
-             <div class="field"><strong>Observações:</strong> 
-               {% if o.observacao and o.observacao|length > 50 %}
-                 <span class="observacao-preview-{{ o.id }}">{{ o.observacao|truncatechars:50 }}<button class="btn-expandir-obs" onclick="expandirObservacao({{ o.id }})">+</button></span>
-                 <span class="observacao-completa-{{ o.id }}" style="display: none;">{{ o.observacao }}<button class="btn-expandir-obs" onclick="recolherObservacao({{ o.id }})">-</button></span>
-               {% else %}
-                 {{ o.observacao|default:"(Sem observações)" }}
-               {% endif %}
-             </div>
-            <div style="margin-top:10px;">
-              <a href="{% url 'abrir_orcamento' o.id %}" class="btn-info">Abrir</a>
-              <button onclick="abrirModalEmail({{ o.id }})" class="btn-info" style="margin-left: 5px;">Enviar por Email</button>
-            </div>
           </div>
+        </div>
+        <div class="field" style="margin-top: 10px;">
+          <strong>Descrição:</strong> 
+          {% if o.descricao %}
+            {% if o.descricao|length > 10 %}
+              <span class="descricao-preview-{{ o.id }}">{{ o.descricao|truncatechars:50 }}<button class="btn-expandir-obs" onclick="expandirDescricao({{ o.id }})">+</button></span>
+              <span class="descricao-completa-{{ o.id }}" style="display: none;">{{ o.descricao }}<button class="btn-expandir-obs" onclick="recolherDescricao({{ o.id }})">-</button></span>
+            {% else %}
+              {{ o.descricao }}
+            {% endif %}
+          {% else %}
+            (Sem descrição)
+          {% endif %}
+        </div>
+        <div style="margin-top: 15px; text-align: center;">
+          <a href="{% url 'abrir_orcamento' o.id %}" class="btn-info">Abrir</a>
+          <button onclick="abrirModalEmail({{ o.id }})" class="btn-info" style="margin-left: 10px;">Enviar por Email</button>
         </div>
       </li>
     {% empty %}
@@ -133,16 +124,6 @@ document.getElementById('formEnviarEmail').addEventListener('submit', function(e
     alert('Erro ao enviar orçamento.');
   });
 });
-
-function expandirObservacao(id) {
-  document.querySelector('.observacao-preview-' + id).style.display = 'none';
-  document.querySelector('.observacao-completa-' + id).style.display = 'inline';
-}
-
-function recolherObservacao(id) {
-  document.querySelector('.observacao-preview-' + id).style.display = 'inline';
-  document.querySelector('.observacao-completa-' + id).style.display = 'none';
-}
 
 function expandirDescricao(id) {
   document.querySelector('.descricao-preview-' + id).style.display = 'none';

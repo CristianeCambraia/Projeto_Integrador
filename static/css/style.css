@@ -1826,7 +1826,7 @@ footer p {
 }
 
 .container-lista-orcamentos {
-    max-width: 800px;
+    max-width: 1200px;
     margin: 40px auto;
     padding: 30px 40px;
     background: #e8e8e8;
@@ -1834,6 +1834,7 @@ footer p {
     box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
     color: #026a84;
     font-family: Arial, sans-serif;
+    overflow-x: auto;
 }
 
 .item-orcamento {
@@ -1850,17 +1851,64 @@ footer p {
 .row-two-col {
     display: grid;
     grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    margin-bottom: 15px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.row-three-col {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1.5fr;
     gap: 15px;
     margin-bottom: 15px;
     width: 100%;
     box-sizing: border-box;
 }
 
+.cnpj-expandido {
+    grid-column: span 2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.email-expandido {
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.field strong {
+    display: inline;
+}
+
+.field-email,
+.field-cnpj {
+    white-space: nowrap;
+    min-width: max-content;
+}
+
+.item-orcamento {
+    overflow: visible;
+    min-width: max-content;
+}
+
+.row-two-col {
+    min-width: max-content;
+}
+
+
+
+
+
 .field {
-    margin-bottom: 8px;
+    margin-bottom: 15px;
     word-wrap: break-word;
     overflow-wrap: break-word;
     max-width: 100%;
+    line-height: 1.5;
 }
 
 .field .descricao-preview-*,
