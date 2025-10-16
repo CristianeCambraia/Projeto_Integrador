@@ -1863,6 +1863,17 @@ footer p {
     max-width: 100%;
 }
 
+.field .descricao-preview-*,
+.field .descricao-completa-*,
+.field .observacao-preview-*,
+.field .observacao-completa-* {
+    display: inline-block;
+    max-width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+}
+
 .field strong {
     display: inline-block;
     min-width: 80px;
@@ -1989,6 +2000,32 @@ body.dark-theme {
 
 .btn-expandir-obs:hover {
     background: #218838;
+}
+
+.field {
+    overflow: hidden;
+    width: 100%;
+}
+
+.field span {
+    word-break: break-all;
+    overflow-wrap: break-word;
+    white-space: pre-wrap;
+    max-width: 100%;
+    display: inline-block;
+    box-sizing: border-box;
+}
+
+[class*="descricao-preview-"],
+[class*="descricao-completa-"],
+[class*="observacao-preview-"],
+[class*="observacao-completa-"] {
+    word-break: break-all;
+    overflow-wrap: break-word;
+    white-space: pre-wrap;
+    max-width: 100%;
+    display: inline-block;
+    box-sizing: border-box;
 }
 
 .estoque-container .titulo {
