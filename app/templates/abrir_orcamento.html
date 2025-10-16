@@ -50,6 +50,11 @@
       </tbody>
     </table>
 
+    <div style="margin: 20px 0; text-align: right;">
+        <label><strong>Valor Total: R$ </strong></label>
+        <input type="text" id="valorTotal" name="valor_total" readonly style="background-color: #f0f0f0; font-weight: bold; width: 150px;">
+    </div>
+
     <div class="observacao-container">
         <label><strong>Observações / Valor Total:</strong></label>
         <textarea name="observacao" rows="4" disabled>{{ orcamento.observacao }}</textarea>
@@ -62,4 +67,21 @@
     </div>
   </form>
 </div>
+
+<script>
+// Calcular valor total ao carregar a página
+document.addEventListener('DOMContentLoaded', function() {
+    let total = 0;
+    const tbody = document.querySelector('.itens-orcamento tbody');
+    const linhas = tbody.querySelectorAll('tr');
+    
+    linhas.forEach(linha => {
+        const quantidade = parseFloat(linha.querySelector('input[name*="quantidade"]').value) || 0;
+        const valor = parseFloat(linha.querySelector('input[name*="valor"]').value.replace(',', '.')) || 0;
+        total += quantidade * valor;
+    });
+    
+    document.getElementById('valorTotal').value = total.toFixed(2).replace('.', ',');
+});
+</script>
 {% endblock %}

@@ -57,13 +57,18 @@
             <tbody id="itens-tbody">
                 <tr>
                     <td><input type="text" name="descricao_1"></td>
-                    <td><input type="number" name="quantidade_1" min="1"></td>
-                    <td><input type="text" name="valor_1"></td>
+                    <td><input type="number" name="quantidade_1" min="1" oninput="calcularTotal()"></td>
+                    <td><input type="text" name="valor_1" oninput="calcularTotal()"></td>
                 </tr>
             </tbody>
         </table>
 
         <button type="button" onclick="adicionarLinha()" class="btn-adicionar">+ Adicionar Item</button>
+
+        <div style="margin: 20px 0; text-align: right;">
+            <label><strong>Valor Total: R$ </strong></label>
+            <input type="text" id="valorTotal" name="valor_total" readonly style="background-color: #f0f0f0; font-weight: bold; width: 150px;">
+        </div>
 
         <div class="observacao-container">
             <label><strong>Observações / Valor Total:</strong></label>
@@ -119,11 +124,26 @@ function adicionarLinha() {
     
     novaLinha.innerHTML = `
         <td><input type="text" name="descricao_${contadorItens}"></td>
-        <td><input type="number" name="quantidade_${contadorItens}" min="1"></td>
-        <td><input type="text" name="valor_${contadorItens}"></td>
+        <td><input type="number" name="quantidade_${contadorItens}" min="1" oninput="calcularTotal()"></td>
+        <td><input type="text" name="valor_${contadorItens}" oninput="calcularTotal()"></td>
     `;
     
     tbody.appendChild(novaLinha);
+}
+
+// Função para calcular o valor total
+function calcularTotal() {
+    let total = 0;
+    const tbody = document.getElementById('itens-tbody');
+    const linhas = tbody.querySelectorAll('tr');
+    
+    linhas.forEach(linha => {
+        const quantidade = parseFloat(linha.querySelector('input[name*="quantidade"]').value) || 0;
+        const valor = parseFloat(linha.querySelector('input[name*="valor"]').value.replace(',', '.')) || 0;
+        total += quantidade * valor;
+    });
+    
+    document.getElementById('valorTotal').value = total.toFixed(2).replace('.', ',');
 }
 
 // Autocomplete para clientes
