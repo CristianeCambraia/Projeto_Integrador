@@ -116,7 +116,8 @@ class ClienteForm(forms.ModelForm):
 class UsuarioForm(forms.ModelForm):
     data_nascimento = forms.DateField(
         input_formats=['%Y-%m-%d', '%d/%m/%Y'],
-        widget=forms.DateInput(attrs={'placeholder': 'Data de Nascimento', 'type': 'date'})
+        widget=forms.DateInput(attrs={'placeholder': 'Data de Nascimento', 'type': 'date'}),
+        label='Data de Nascimento'
     )
 
     senha = forms.CharField(
@@ -130,7 +131,7 @@ class UsuarioForm(forms.ModelForm):
         widgets = {
             'nome': forms.TextInput(attrs={'placeholder': 'Nome'}),
             'email': forms.EmailInput(attrs={'placeholder': 'Email'}),
-            'cpf': forms.TextInput(attrs={'placeholder': 'CPF'}),
+            'cpf': forms.TextInput(attrs={'placeholder': 'CPF', 'onkeypress': 'return event.charCode >= 48 && event.charCode <= 57', 'oninput': 'this.value = this.value.replace(/[^0-9]/g, "")'}),
             'endereco': forms.TextInput(attrs={'placeholder': 'Endereço'}),
             'telefone': forms.TextInput(attrs={'placeholder': 'Telefone', 'onkeypress': 'return event.charCode >= 48 && event.charCode <= 57', 'oninput': 'this.value = this.value.replace(/[^0-9]/g, "")'}),
             # 'data_nascimento' e 'senha' já declarados acima
@@ -138,8 +139,9 @@ class UsuarioForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        for field in self.fields.values():
-            field.label = ''
+        for field_name, field in self.fields.items():
+            if field_name != 'data_nascimento':
+                field.label = ''
 
 
 

@@ -2048,6 +2048,14 @@ body.dark-theme textarea {
         max-height: 300px;
     }
 }
+.form-container label {
+    text-align: center;
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #026a84;
+}
+
 @media (max-width: 768px) {
     body {
         padding: 0;
