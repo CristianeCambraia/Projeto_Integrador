@@ -121,10 +121,14 @@ def lista_produtos(request):
     filtro = request.GET.get('filtro')
     
     if filtro:
-        produtos = Produto.objects.filter(
-            models.Q(nome__icontains=filtro) |
-            models.Q(id__icontains=filtro)
-        ).order_by('nome')
+        filtro = filtro.strip()
+        if filtro.isdigit():
+            produtos = Produto.objects.filter(id=filtro).order_by('nome')
+        else:
+            produtos = Produto.objects.filter(
+                models.Q(nome__icontains=filtro) |
+                models.Q(fornecedor__nome__icontains=filtro)
+            ).order_by('nome')
     else:
         produtos = Produto.objects.all().order_by('nome')
 
