@@ -81,6 +81,7 @@ class Orcamento(models.Model):
     itens_quantidades = models.TextField(blank=True, null=True)
     itens_valores = models.TextField(blank=True, null=True)
     observacao = models.TextField(blank=True, null=True)
+    desconto = models.DecimalField(max_digits=5, decimal_places=2, default=0, blank=True, null=True)
     data = models.DateField(auto_now_add=True)
 
     def __str__(self):

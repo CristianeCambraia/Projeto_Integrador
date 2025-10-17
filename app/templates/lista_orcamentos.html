@@ -69,6 +69,19 @@
             (Nenhum item cadastrado)
           {% endif %}
         </div>
+        <div style="margin-top: 15px; text-align: right;">
+          <div style="margin-bottom: 5px;">
+            <strong>Subtotal: R$ {{ o.subtotal|default:"0,00" }}</strong>
+          </div>
+          {% if o.desconto %}
+          <div style="margin-bottom: 5px;">
+            <strong>Desconto ({{ o.desconto }}%): R$ {{ o.valor_desconto|default:"0,00" }}</strong>
+          </div>
+          {% endif %}
+          <div style="font-size: 16px;">
+            <strong>Valor Total: R$ {{ o.valor_total|default:"0,00" }}</strong>
+          </div>
+        </div>
         <div style="margin-top: 15px; text-align: center;">
           <a href="{% url 'abrir_orcamento' o.id %}" class="btn-info">Abrir</a>
           <button onclick="abrirModalEmail({{ o.id }})" class="btn-info" style="margin-left: 10px;">Enviar por Email</button>

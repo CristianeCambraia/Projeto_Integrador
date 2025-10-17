@@ -73,8 +73,18 @@
         <button type="button" onclick="adicionarLinha()" class="btn-adicionar">+ Adicionar Item</button>
 
         <div style="margin: 20px 0; text-align: right;">
-            <label><strong>Valor Total: R$ </strong></label>
-            <input type="text" id="valorTotal" name="valor_total" readonly style="background-color: #f0f0f0; font-weight: bold; width: 150px;">
+            <div style="margin-bottom: 10px;">
+                <label><strong>Subtotal: R$ </strong></label>
+                <input type="text" id="subtotal" readonly style="background-color: #f0f0f0; font-weight: bold; width: 150px;">
+            </div>
+            <div style="margin-bottom: 10px;">
+                <label><strong>Desconto (%): </strong></label>
+                <input type="number" id="desconto" name="desconto" min="0" max="100" step="0.01" placeholder="0" oninput="calcularTotal()" style="width: 100px;">
+            </div>
+            <div>
+                <label><strong>Valor Total: R$ </strong></label>
+                <input type="text" id="valorTotal" name="valor_total" readonly style="background-color: #f0f0f0; font-weight: bold; width: 150px;">
+            </div>
         </div>
 
         <div class="observacao-container">
@@ -146,17 +156,26 @@ function adicionarLinha() {
 
 // Função para calcular o valor total
 function calcularTotal() {
-    let total = 0;
+    let subtotal = 0;
     const tbody = document.getElementById('itens-tbody');
     const linhas = tbody.querySelectorAll('tr');
     
     linhas.forEach(linha => {
         const quantidade = parseFloat(linha.querySelector('input[name*="quantidade"]').value) || 0;
         const valor = parseFloat(linha.querySelector('input[name*="valor"]').value.replace(',', '.')) || 0;
-        total += quantidade * valor;
+        subtotal += quantidade * valor;
     });
     
-    document.getElementById('valorTotal').value = total.toFixed(2).replace('.', ',');
+    // Atualizar subtotal
+    document.getElementById('subtotal').value = subtotal.toFixed(2).replace('.', ',');
+    
+    // Calcular desconto
+    const desconto = parseFloat(document.getElementById('desconto').value) || 0;
+    const valorDesconto = subtotal * (desconto / 100);
+    const valorFinal = subtotal - valorDesconto;
+    
+    // Atualizar valor total
+    document.getElementById('valorTotal').value = valorFinal.toFixed(2).replace('.', ',');
 }
 
 // Autocomplete para clientes

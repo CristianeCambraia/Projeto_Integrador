@@ -222,6 +222,15 @@ def salvar_orcamento(request):
         quantidades_agregadas = ' / '.join([x for x in quantidades if x])
         valores_agregados = ' / '.join([x for x in valores if x])
         observacao = request.POST.get('observacao', '').strip()
+        desconto = request.POST.get('desconto', '').strip()
+        
+        # Converter desconto para decimal
+        desconto_decimal = 0
+        if desconto:
+            try:
+                desconto_decimal = float(desconto)
+            except ValueError:
+                desconto_decimal = 0
 
         orcamento = Orcamento(
             cliente=cliente,
@@ -235,6 +244,7 @@ def salvar_orcamento(request):
             itens_quantidades=quantidades_agregadas,
             itens_valores=valores_agregados,
             observacao=observacao,
+            desconto=desconto_decimal,
             data=data_obj
         )
         orcamento.save()
@@ -272,15 +282,35 @@ def orcamentos_emitidos(request):
         max_itens = max(len(unidades), len(descricoes), len(quantidades), len(valores))
         
         itens = []
+        subtotal = 0
         for i in range(max_itens):
+            quantidade = quantidades[i] if i < len(quantidades) else ''
+            valor = valores[i] if i < len(valores) else ''
+            
+            # Calcular subtotal
+            try:
+                qtd = float(quantidade.replace(',', '.')) if quantidade else 0
+                val = float(valor.replace(',', '.')) if valor else 0
+                subtotal += qtd * val
+            except ValueError:
+                pass
+            
             itens.append({
                 'unidade': unidades[i] if i < len(unidades) else '',
                 'descricao': descricoes[i] if i < len(descricoes) else '',
-                'quantidade': quantidades[i] if i < len(quantidades) else '',
-                'valor': valores[i] if i < len(valores) else ''
+                'quantidade': quantidade,
+                'valor': valor
             })
         
+        # Calcular desconto e valor final
+        desconto_percent = float(orc.desconto) if orc.desconto else 0
+        valor_desconto = subtotal * (desconto_percent / 100)
+        valor_total = subtotal - valor_desconto
+        
         orc.itens_processados = itens
+        orc.subtotal = f"{subtotal:.2f}".replace('.', ',')
+        orc.valor_desconto = f"{valor_desconto:.2f}".replace('.', ',')
+        orc.valor_total = f"{valor_total:.2f}".replace('.', ',')
         orcamentos_processados.append(orc)
     
     return render(request, 'lista_orcamentos.html', {
@@ -319,21 +349,43 @@ def abrir_orcamento(request, orcamento_id):
     valores = [p.strip() for p in orc.itens_valores.split(' / ')] if orc.itens_valores else []
     
     # Determinar o número máximo de itens
-    max_itens = max(len(unidades), len(descricoes), len(quantidades), len(valores))
+    max_itens = max(len(unidades), len(descricoes), len(quantidades), len(valores)) if any([unidades, descricoes, quantidades, valores]) else 0
     
-    # Criar lista de linhas com todos os itens
+    # Criar lista de linhas com todos os itens e calcular subtotal
     linhas = []
+    subtotal = 0
     for i in range(max_itens):
+        quantidade = quantidades[i] if i < len(quantidades) else ''
+        valor = valores[i] if i < len(valores) else ''
+        
+        # Calcular subtotal
+        try:
+            qtd = float(quantidade.replace(',', '.')) if quantidade else 0
+            val = float(valor.replace(',', '.')) if valor else 0
+            subtotal += qtd * val
+        except ValueError:
+            pass
+        
         linhas.append({
             'unidade': unidades[i] if i < len(unidades) else '',
             'descricao': descricoes[i] if i < len(descricoes) else '',
-            'quantidade': quantidades[i] if i < len(quantidades) else '',
-            'valor': valores[i] if i < len(valores) else ''
+            'quantidade': quantidade,
+            'valor': valor
         })
     
     # Se não houver itens, criar pelo menos uma linha vazia
     if not linhas:
-        linhas = [{'descricao': '', 'quantidade': '', 'valor': ''}]
+        linhas = [{'unidade': '', 'descricao': '', 'quantidade': '', 'valor': ''}]
+    
+    # Calcular desconto e valor final
+    desconto_percent = float(orc.desconto) if orc.desconto else 0
+    valor_desconto = subtotal * (desconto_percent / 100)
+    valor_total = subtotal - valor_desconto
+    
+    # Adicionar valores calculados ao orçamento
+    orc.subtotal_calculado = f"{subtotal:.2f}".replace('.', ',')
+    orc.valor_desconto_calculado = f"{valor_desconto:.2f}".replace('.', ',')
+    orc.valor_total_calculado = f"{valor_total:.2f}".replace('.', ',')
 
     return render(request, 'abrir_orcamento.html', {
         'orcamento': orc,

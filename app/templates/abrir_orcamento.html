@@ -53,8 +53,20 @@
     </table>
 
     <div style="margin: 20px 0; text-align: right;">
-        <label><strong>Valor Total: R$ </strong></label>
-        <input type="text" id="valorTotal" name="valor_total" readonly style="background-color: #f0f0f0; font-weight: bold; width: 150px;">
+        <div style="margin-bottom: 10px;">
+            <label><strong>Subtotal: R$ </strong></label>
+            <input type="text" id="subtotal" value="{{ orcamento.subtotal_calculado }}" readonly style="background-color: #f0f0f0; font-weight: bold; width: 150px;">
+        </div>
+        {% if orcamento.desconto %}
+        <div style="margin-bottom: 10px;">
+            <label><strong>Desconto ({{ orcamento.desconto }}%): R$ </strong></label>
+            <input type="text" id="valorDesconto" value="{{ orcamento.valor_desconto_calculado }}" readonly style="background-color: #f0f0f0; font-weight: bold; width: 150px;">
+        </div>
+        {% endif %}
+        <div>
+            <label><strong>Valor Total: R$ </strong></label>
+            <input type="text" id="valorTotal" name="valor_total" value="{{ orcamento.valor_total_calculado }}" readonly style="background-color: #f0f0f0; font-weight: bold; width: 150px;">
+        </div>
     </div>
 
     <div class="observacao-container">
@@ -70,20 +82,5 @@
   </form>
 </div>
 
-<script>
-// Calcular valor total ao carregar a página
-document.addEventListener('DOMContentLoaded', function() {
-    let total = 0;
-    const tbody = document.querySelector('.itens-orcamento tbody');
-    const linhas = tbody.querySelectorAll('tr');
-    
-    linhas.forEach(linha => {
-        const quantidade = parseFloat(linha.querySelector('input[name*="quantidade"]').value) || 0;
-        const valor = parseFloat(linha.querySelector('input[name*="valor"]').value.replace(',', '.')) || 0;
-        total += quantidade * valor;
-    });
-    
-    document.getElementById('valorTotal').value = total.toFixed(2).replace('.', ',');
-});
-</script>
+
 {% endblock %}

@@ -12,6 +12,21 @@
     </title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <style>
+        nav ul {
+            display: flex;
+            align-items: center;
+            height: 100%;
+        }
+        nav ul li {
+            display: flex;
+            align-items: center;
+        }
+        nav ul li a {
+            display: flex;
+            align-items: center;
+            height: 100%;
+            font-size: 20px;
+        }
         .notification-bell {
             position: relative;
             display: flex;
@@ -30,8 +45,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            height: 100%;
-            transform: translateY(-12px);
         }
         .bell-btn:hover {
             background-color: rgba(4, 186, 252, 0.1);
