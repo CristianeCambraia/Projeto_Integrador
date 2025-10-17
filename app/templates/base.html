@@ -11,6 +11,45 @@
         {% endif %}
     </title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        .notification-bell {
+            position: relative;
+        }
+        .bell-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            padding: 8px;
+            border-radius: 50%;
+            transition: background-color 0.3s;
+            font-size: 20px;
+            filter: hue-rotate(200deg);
+        }
+        .bell-btn:hover {
+            background-color: rgba(4, 186, 252, 0.1);
+        }
+        /* CSS preparado para contador de notificações */
+        .notification-count {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            background: #ff4444;
+            color: white;
+            border-radius: 50%;
+            min-width: 16px;
+            height: 16px;
+            font-size: 10px;
+            display: none; /* Oculto por padrão */
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        .notification-count.show {
+            display: flex;
+        }
+
+    </style>
 </head>
 <body>
     <header>
@@ -31,6 +70,13 @@
                     <li><a href="{% url 'relatorio_estoque' %}">Relatórios</a></li>
                     {% if usuario_logado %}
                         <li><a href="{% url 'logout' %}">Sair</a></li>
+                        <li class="notification-bell">
+                            <button onclick="toggleNotifications()" class="bell-btn">
+                                🔔
+                                <!-- Descomente a linha abaixo quando implementar notificações reais -->
+                                <!-- <span class="notification-count" id="notificationCount">0</span> -->
+                            </button>
+                        </li>
                     {% else %}
                         <li><a href="{% url 'cadastrar_usuario' %}">Cadastrar Usuário</a></li>
                         <li><a href="{% url 'login' %}">Login</a></li>
@@ -68,5 +114,24 @@
         {% endif %}
     </footer>
 
+    <script>
+        function toggleNotifications() {
+            // Placeholder para futuras notificações
+            console.log('Notificações clicadas - implementar dropdown aqui');
+        }
+        
+        // Função para atualizar contador de notificações (usar quando implementar)
+        function updateNotificationCount(count) {
+            const counter = document.getElementById('notificationCount');
+            if (counter) {
+                if (count > 0) {
+                    counter.textContent = count > 99 ? '99+' : count;
+                    counter.classList.add('show');
+                } else {
+                    counter.classList.remove('show');
+                }
+            }
+        }
+    </script>
 </body>
 </html>
