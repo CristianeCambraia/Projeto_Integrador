@@ -14,17 +14,24 @@
     <style>
         .notification-bell {
             position: relative;
+            display: flex;
+            align-items: center;
         }
         .bell-btn {
             background: none;
             border: none;
             cursor: pointer;
             position: relative;
-            padding: 8px;
+            padding: 4px;
             border-radius: 50%;
             transition: background-color 0.3s;
-            font-size: 20px;
+            font-size: 24px;
             filter: hue-rotate(200deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            transform: translateY(-12px);
         }
         .bell-btn:hover {
             background-color: rgba(4, 186, 252, 0.1);
