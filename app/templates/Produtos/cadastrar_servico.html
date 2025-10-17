@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+  <section class="form-box">
+    <h2 class="form-title">Cadastro de Serviço</h2>
+
+    <form method="post" action="{% url 'cadastrar_servico' %}">
+      {% csrf_token %}
+      
+      <!-- Campos -->
+      <div class="form-grid">
+        {{ form.nome }}
+        {{ form.preco }}
+        {{ form.quantidade }}
+        {{ form.unidade }}
+        {{ form.descricao }}
+        {{ form.observacao }}
+      </div>
+
+      <div class="form-buttons">
+        <a href="{% url 'lista_servicos' %}" class="btn btn-editar">Ver Serviços</a>
+        <button type="submit" class="btn btn-salvar">Salvar</button>
+        <a href="{% url 'fornecedores' %}" class="btn btn-voltar">Voltar</a>
+      </div>
+
+    </form>
+  </section>
+</div>
+
+
+{% endblock %}

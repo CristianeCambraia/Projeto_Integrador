@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% if messages %}
+{% for message in messages %}
+<div style="text-align: center; margin: 20px 0;">
+  <div class="alert alert-{{ message.tags }}" style="display: inline-block; width: auto; padding: 10px 20px;">{{ message }}</div>
+</div>
+{% endfor %}
+{% endif %}
+<div class="container-lista-orcamentos">
+  <h2>Serviços Cadastrados</h2>
+  
+  <div class="filtro-orcamentos">
+    <form method="GET">
+      <input type="text" name="filtro" placeholder="Filtrar por ID ou Nome" value="{{ filtro|default:'' }}">
+      <button type="submit" class="btn-filtrar">Filtrar</button>
+      <a href="{% url 'lista_servicos' %}" class="btn-limpar">Limpar</a>
+    </form>
+  </div>
+
+  <ul class="lista-orcamentos">
+    {% for servico in servicos %}
+      <li class="item-orcamento">
+        <div class="row-two-col">
+          <div class="col-left">
+            <div class="field"><strong>ID:</strong> {{ servico.id }}</div>
+            <div class="field"><strong>Nome:</strong> {{ servico.nome }}</div>
+            <div class="field"><strong>Unidade:</strong> {{ servico.unidade }}</div>
+          </div>
+          <div class="col-right">
+            <div class="field"><strong>Preço:</strong> R$ {{ servico.preco }}</div>
+            <div class="field"><strong>Quantidade:</strong> {{ servico.quantidade }}</div>
+            <div class="field"><strong>Data:</strong> {{ servico.data_hora|date:"d/m/Y" }}</div>
+          </div>
+        </div>
+        {% if servico.descricao %}
+        <div class="field" style="margin-top: 10px;">
+          <strong>Descrição:</strong> {{ servico.descricao }}
+        </div>
+        {% endif %}
+        {% if servico.observacao %}
+        <div class="field" style="margin-top: 10px;">
+          <strong>Observação:</strong> {{ servico.observacao }}
+        </div>
+        {% endif %}
+      </li>
+    {% empty %}
+      <li>Nenhum serviço cadastrado.</li>
+    {% endfor %}
+  </ul>
+
+  <div class="botoes-orcamento">
+    <a href="{% url 'cadastrar_servico' %}" class="btn-padrao">Novo Serviço ➕</a>
+    <a href="{% url 'fornecedores' %}" class="btn-padrao voltar">Voltar ⤴</a>
+  </div>
+</div>
+{% endblock %}

@@ -20,6 +20,10 @@ urlpatterns = [
     path('produtos/cadastrar/', views.cadastrar, name='cadastrar_produto'),
     path('produtos/editar/<int:produto_id>/', views.editar_produto, name='editar_produto'),
 
+    # ----- SERVIÇOS -----
+    path('servicos/cadastrar/', views.cadastrar_servico, name='cadastrar_servico'),
+    path('servicos/lista/', views.lista_servicos, name='lista_servicos'),
+
     # ----- CLIENTES -----
     path('clientes/', views.abrir_cliente, name='clientes'),
     path('clientes/salvar/', views.salvar_cliente, name='salvar_cliente'),

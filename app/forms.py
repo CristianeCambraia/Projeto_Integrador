@@ -1,5 +1,5 @@
 from django import forms
-from .models import Fornecedor, Produto, Cliente, Usuario, Suporte, Admin
+from .models import Fornecedor, Produto, Servico, Cliente, Usuario, Suporte, Admin
 from django.contrib.auth.forms import AuthenticationForm
 from .models import Usuario  # ou de onde vier seu modelo de usuário
 class SuporteForm(forms.ModelForm):
@@ -59,6 +59,35 @@ class ProdutoForm(forms.ModelForm):
             'unidade': forms.Select(attrs={'placeholder': 'Selecione a Unidade'}),
             'quantidade': forms.NumberInput(attrs={'placeholder': 'Quantidade', 'min': '0'}),
             'validade': forms.DateInput(attrs={'placeholder': 'Data de Validade', 'type': 'date'}),
+            'observacao': forms.Textarea(attrs={'placeholder': 'Observações', 'rows': 4, 'style': 'width: 100%; grid-column: 1 / -1;'})
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.label = ''
+        # Mostrar apenas fornecedores ativos
+        self.fields['fornecedor'].queryset = Fornecedor.objects.filter(ativo=True)
+        if not Fornecedor.objects.filter(ativo=True).exists():
+            self.fields['fornecedor'].required = False
+            self.fields['fornecedor'].empty_label = 'Nenhum fornecedor ativo'
+        else:
+            self.fields['fornecedor'].empty_label = 'Fornecedor'
+
+
+# Formulário de Serviço
+class ServicoForm(forms.ModelForm):
+    class Meta:
+        model = Servico
+        fields = ['nome', 'preco', 'descricao', 'fornecedor', 'unidade', 'quantidade', 'observacao']
+
+        widgets = {
+            'nome': forms.TextInput(attrs={'placeholder': 'Nome do Serviço'}),
+            'preco': forms.NumberInput(attrs={'placeholder': 'Preço'}),
+            'descricao': forms.Textarea(attrs={'placeholder': 'Descrição', 'rows': 4, 'style': 'width: 100%; grid-column: 1 / -1;'}),
+            'fornecedor': forms.Select(attrs={'placeholder': 'Selecione o Fornecedor'}),
+            'unidade': forms.Select(attrs={'placeholder': 'Selecione a Unidade'}),
+            'quantidade': forms.NumberInput(attrs={'placeholder': 'Quantidade', 'min': '0'}),
             'observacao': forms.Textarea(attrs={'placeholder': 'Observações', 'rows': 4, 'style': 'width: 100%; grid-column: 1 / -1;'})
         }
 

@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
-from .models import Fornecedor, Produto, Cliente, Usuario, Orcamento, MovimentacaoEstoque, RecuperacaoSenha, Suporte, Admin
-from .forms import FornecedorForm, ProdutoForm, ClienteForm, UsuarioForm, SuporteForm, EditarProdutoForm, RecuperarSenhaForm, VerificarCodigoForm, NovaSenhaForm, AdminLoginForm
+from .models import Fornecedor, Produto, Servico, Cliente, Usuario, Orcamento, MovimentacaoEstoque, RecuperacaoSenha, Suporte, Admin
+from .forms import FornecedorForm, ProdutoForm, ServicoForm, ClienteForm, UsuarioForm, SuporteForm, EditarProdutoForm, RecuperarSenhaForm, VerificarCodigoForm, NovaSenhaForm, AdminLoginForm
 from django.utils.dateparse import parse_date
 from django.http import HttpResponseBadRequest
 from django.utils import timezone
@@ -146,6 +146,78 @@ def salvar_produto(request):
     else:
         form = ProdutoForm()
     return render(request, 'produtos.html', {'form': form, 'titulo_pagina': 'Novo Produto'})
+
+
+# ----- SERVIÇOS -----
+@login_required_custom
+def cadastrar_servico(request):
+    if request.method == "POST":
+        form = ServicoForm(request.POST)
+        if form.is_valid():
+            # Se já existir serviço com mesmo nome (case-insensitive), somar quantitades
+            nome = form.cleaned_data.get('nome', '').strip()
+            quantidade_nova = form.cleaned_data.get('quantidade') or 0
+            try:
+                quantidade_nova = int(quantidade_nova)
+            except (TypeError, ValueError):
+                quantidade_nova = 0
+
+            preco_novo = form.cleaned_data.get('preco')
+            descricao_nova = form.cleaned_data.get('descricao')
+            if descricao_nova is None:
+                descricao_nova = ''
+            descricao_nova = descricao_nova.strip()
+            fornecedor_novo = form.cleaned_data.get('fornecedor')
+            unidade_nova = form.cleaned_data.get('unidade')
+
+            # Somar apenas se nome (case-insensitive), descricao (trim) e preco coincidirem
+            existente = None
+            try:
+                existente = Servico.objects.filter(
+                    nome__iexact=nome,
+                    descricao__iexact=descricao_nova,
+                    preco=preco_novo
+                ).first()
+            except Exception:
+                # Em caso de qualquer problema com a query (ex: preco None), garantir que existente seja None
+                existente = None
+
+            if existente:
+                existente.quantidade = (existente.quantidade or 0) + quantidade_nova
+                existente.data_hora = timezone.now()
+                existente.save()
+                messages.success(request, f'Serviço "{existente.nome}" atualizado: quantidade somada.')
+            else:
+                form.save()
+                messages.success(request, 'Serviço cadastrado com sucesso.')
+
+            return redirect('lista_servicos')
+    else:
+        form = ServicoForm()
+    return render(request, 'produtos/cadastrar_servico.html', {
+        'form': form,
+        'titulo_pagina': 'Cadastro de Serviço' 
+    })
+
+def lista_servicos(request):
+    filtro = request.GET.get('filtro')
+    
+    if filtro:
+        filtro = filtro.strip()
+        if filtro.isdigit():
+            servicos = Servico.objects.filter(id=filtro).order_by('nome')
+        else:
+            servicos = Servico.objects.filter(
+                models.Q(nome__icontains=filtro) |
+                models.Q(fornecedor__nome__icontains=filtro)
+            ).order_by('nome')
+    else:
+        servicos = Servico.objects.all().order_by('nome')
+
+    return render(request, 'produtos/lista_servicos.html', {
+        'servicos': servicos,
+        'filtro': filtro
+    })
 
 
 # ----- CLIENTES -----
