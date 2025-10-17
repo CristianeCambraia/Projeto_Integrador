@@ -5,107 +5,93 @@
     <title>Orçamento #{{ orcamento.id }}</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; font-size: 14px; }
-        .header { text-align: center; margin-bottom: 30px; }
-        .company { font-size: 32px; font-weight: bold; color: #026a84; }
-        .cliente-dados { margin-bottom: 25px; }
-        .cliente-dados .row { width: 100%; overflow: hidden; margin-bottom: 15px; }
-        .cliente-dados .col { float: left; width: 48%; margin-right: 4%; }
-        .cliente-dados .col:last-child { margin-right: 0; }
-        .cliente-dados label { font-weight: bold; display: block; margin-bottom: 5px; color: #333; }
-        .cliente-dados .value { padding: 8px; border: 1px solid #ddd; background-color: #f9f9f9; min-height: 20px; }
-        .info-section { margin-bottom: 20px; }
-        .info-title { font-weight: bold; color: #026a84; margin-bottom: 15px; font-size: 18px; }
-        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
-        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; font-size: 14px; }
-        th { background-color: #f2f2f2; font-weight: bold; }
-        .valores-section { text-align: right; margin: 20px 0; }
-        .valores-section div { margin-bottom: 10px; font-size: 14px; }
-        .footer { margin-top: 30px; text-align: center; font-size: 14px; color: #666; }
+        .header-linha { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .logo-empresa { display: flex; align-items: center; }
+        .logo-empresa img { width: 48px; height: 48px; margin-right: 8px; }
+        .logo-empresa .nome { font-size: 20px; color: black; font-weight: bold; }
+        .titulo { color: black; font-size: 24px; font-weight: bold; }
+        .dados-cliente { margin-bottom: 20px; }
+        .dados-cliente table { width: 100%; border-collapse: collapse; }
+        .dados-cliente td { padding: 8px; }
+        .dados-cliente .label { font-weight: bold; width: 120px; }
+        .itens-orcamento { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        .itens-orcamento th, .itens-orcamento td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+        .itens-orcamento th { background-color: #f0f0f0; color: black; font-weight: bold; vertical-align: middle; }
+        .itens-orcamento td { }
+        .valores { margin: 20px 0; text-align: right; }
+        .valores div { margin-bottom: 5px; font-weight: bold; }
+        .observacao { margin: 20px 0; }
+        .observacao .label { font-weight: bold; margin-bottom: 10px; }
+        .observacao .content { padding: 10px; border: 1px solid #ddd; background-color: #f9f9f9; min-height: 60px; }
+        .footer { margin-top: 30px; text-align: center; font-size: 12px; color: #666; border-top: 1px solid #ddd; padding-top: 15px; }
     </style>
 </head>
 <body>
-    <div class="header">
-        <div class="company">INSUMED</div>
-        <div>Orçamento #{{ orcamento.id }}</div>
+    <div class="header-linha" style="text-align: center;">
+        <h2 class="titulo">Orçamento #{{ orcamento.id }}</h2>
     </div>
 
-    <div class="cliente-dados">
-        <div class="row">
-            <div class="col">
-                <label><strong>Cliente:</strong></label>
-                <div class="value">{{ orcamento.cliente }}</div>
-            </div>
-            <div class="col">
-                <label><strong>Data:</strong></label>
-                <div class="value">{{ orcamento.data|date:"d/m/Y" }}</div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                <label><strong>CNPJ:</strong></label>
-                <div class="value">{{ orcamento.cnpj|default:"Não informado" }}</div>
-            </div>
-            <div class="col">
-                <label><strong>Endereço:</strong></label>
-                <div class="value">{{ orcamento.endereco|default:"Não informado" }}</div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                <label><strong>Cidade:</strong></label>
-                <div class="value">{{ orcamento.cidade|default:"Não informado" }}</div>
-            </div>
-            <div class="col">
-                <label><strong>Telefone:</strong></label>
-                <div class="value">{{ orcamento.telefone|default:"Não informado" }}</div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                <label><strong>E-mail:</strong></label>
-                <div class="value">{{ orcamento.email|default:"Não informado" }}</div>
-            </div>
-        </div>
-    </div>
-
-    {% if itens %}
-    <div class="info-section">
-        <div class="info-title">Itens do Orçamento:</div>
+    <div class="dados-cliente">
         <table>
-            <thead>
-                <tr>
-                    <th>Unidade</th>
-                    <th>Descrição</th>
-                    <th>Quantidade</th>
-                    <th>Valor</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in itens %}
-                <tr>
-                    <td>{{ item.unidade|default:"" }}</td>
-                    <td>{{ item.descricao|default:"" }}</td>
-                    <td>{{ item.quantidade|default:"" }}</td>
-                    <td>{{ item.valor|default:"" }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
+            <tr>
+                <td class="label">Cliente:</td>
+                <td>{{ orcamento.cliente }}</td>
+                <td class="label">Data:</td>
+                <td>{{ orcamento.data|date:"d/m/Y" }}</td>
+            </tr>
+            <tr>
+                <td class="label">CNPJ:</td>
+                <td>{{ orcamento.cnpj|default:"Não informado" }}</td>
+                <td class="label">Telefone:</td>
+                <td>{{ orcamento.telefone|default:"Não informado" }}</td>
+            </tr>
+            <tr>
+                <td class="label">Endereço:</td>
+                <td>{{ orcamento.endereco|default:"Não informado" }}</td>
+                <td class="label">Cidade:</td>
+                <td>{{ orcamento.cidade|default:"Não informado" }}</td>
+            </tr>
+            <tr>
+                <td class="label">E-mail:</td>
+                <td colspan="3">{{ orcamento.email|default:"Não informado" }}</td>
+            </tr>
+
         </table>
-        
-        <div class="valores-section">
-            <div><strong>Subtotal: R$ {{ orcamento.subtotal_calculado|default:"0,00" }}</strong></div>
-            {% if orcamento.desconto %}
-            <div><strong>Desconto ({{ orcamento.desconto }}%): R$ {{ orcamento.valor_desconto_calculado|default:"0,00" }}</strong></div>
-            {% endif %}
-            <div style="font-size: 16px; font-weight: bold;"><strong>Valor Total: R$ {{ orcamento.valor_total_calculado|default:"0,00" }}</strong></div>
-        </div>
     </div>
-    {% endif %}
+
+    <table class="itens-orcamento">
+        <thead>
+            <tr>
+                <th>Unidade</th>
+                <th>Descrição</th>
+                <th>Quantidade</th>
+                <th>Valor</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for linha in linhas %}
+            <tr>
+                <td>{{ linha.unidade|default:"Unidade" }}</td>
+                <td>{{ linha.descricao|default:"-" }}</td>
+                <td>{{ linha.quantidade|default:"-" }}</td>
+                <td>{{ linha.valor|default:"-" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="valores">
+        <div>Subtotal: R$ {{ orcamento.subtotal_calculado|default:"0,00" }}</div>
+        {% if orcamento.desconto %}
+        <div>Desconto ({{ orcamento.desconto }}%): R$ {{ orcamento.valor_desconto_calculado|default:"0,00" }}</div>
+        {% endif %}
+        <div style="font-size: 16px;">Valor Total: R$ {{ orcamento.valor_total_calculado|default:"0,00" }}</div>
+    </div>
 
     {% if orcamento.observacao %}
-    <div class="info-section">
-        <div class="info-title">Observações:</div>
-        <div>{{ orcamento.observacao }}</div>
+    <div class="observacao">
+        <div class="label">Observação:</div>
+        <div class="content">{{ orcamento.observacao }}</div>
     </div>
     {% endif %}
 

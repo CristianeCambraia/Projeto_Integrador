@@ -806,7 +806,7 @@ def exportar_pdf_orcamento(request, orcamento_id):
     
     context = {
         'orcamento': orcamento,
-        'itens': itens
+        'linhas': itens
     }
     
     template = get_template('orcamento_pdf.html')
@@ -882,7 +882,7 @@ def enviar_orcamento_email(request):
                     'valor': valores[i] if i < len(valores) else ''
                 })
             
-            context = {'orcamento': orcamento, 'itens': itens}
+            context = {'orcamento': orcamento, 'linhas': itens}
             template = get_template('orcamento_pdf.html')
             html = template.render(context)
             
