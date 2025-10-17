@@ -48,7 +48,7 @@ class FornecedorForm(forms.ModelForm):
 class ProdutoForm(forms.ModelForm):
     class Meta:
         model = Produto
-        fields = ['nome', 'codigo_barras', 'preco', 'descricao', 'fornecedor', 'unidade', 'quantidade', 'observacao']
+        fields = ['nome', 'codigo_barras', 'preco', 'descricao', 'fornecedor', 'unidade', 'quantidade', 'validade', 'observacao']
 
         widgets = {
             'nome': forms.TextInput(attrs={'placeholder': 'Nome do Produto'}),
@@ -58,6 +58,7 @@ class ProdutoForm(forms.ModelForm):
             'fornecedor': forms.Select(attrs={'placeholder': 'Selecione o Fornecedor'}),
             'unidade': forms.Select(attrs={'placeholder': 'Selecione a Unidade'}),
             'quantidade': forms.NumberInput(attrs={'placeholder': 'Quantidade', 'min': '0'}),
+            'validade': forms.DateInput(attrs={'placeholder': 'Data de Validade', 'type': 'date'}),
             'observacao': forms.Textarea(attrs={'placeholder': 'Observações', 'rows': 4, 'style': 'width: 100%; grid-column: 1 / -1;'})
         }
 

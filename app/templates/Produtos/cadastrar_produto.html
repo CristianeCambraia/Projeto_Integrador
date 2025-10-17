@@ -19,10 +19,20 @@
       <!-- Outros Campos -->
       <div class="form-grid">
         {{ form.nome }}
-        {{ form.preco }}
-        {{ form.fornecedor }}
-        {{ form.unidade }}
         {{ form.quantidade }}
+        {{ form.preco }}
+        <div style="display: flex; flex-direction: column;">
+          <label style="display: block; margin-bottom: 5px; font-weight: bold; text-align: center; visibility: hidden;">Espaço:</label>
+          {{ form.fornecedor }}
+        </div>
+        <div style="display: flex; flex-direction: column;">
+          <label style="display: block; margin-bottom: 5px; font-weight: bold; text-align: center; visibility: hidden;">Espaço:</label>
+          {{ form.unidade }}
+        </div>
+        <div>
+          <label for="id_validade" style="display: block; margin-bottom: 5px; font-weight: bold; text-align: center;">Data de Validade:</label>
+          {{ form.validade }}
+        </div>
         {{ form.descricao }}
         {{ form.observacao }}
       </div>
