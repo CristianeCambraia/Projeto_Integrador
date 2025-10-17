@@ -4,30 +4,44 @@
 <div class="emitir-orcamento-container">
   <h2 class="titulo">Orçamento #{{ orcamento.id }}</h2>
 
-  <form class="container-text"  method="post" action="#">
+  <form class="form-box"  method="post" action="#">
     {% csrf_token %}
 
     <div class="cliente-dados">
-      <label><strong>Cliente:</strong></label>
-      <input type="text" name="cliente" value="{{ orcamento.cliente }}" disabled>
+      <div>
+        <label><strong>Cliente:</strong></label>
+        <input type="text" name="cliente" value="{{ orcamento.cliente }}" disabled>
+      </div>
                     
-      <label><strong>Data:</strong></label>
-      <input type="date" name="data" value="{{ orcamento.data|date:'Y-m-d' }}" disabled>
+      <div>
+        <label><strong>Data:</strong></label>
+        <input type="date" name="data" value="{{ orcamento.data|date:'Y-m-d' }}" disabled>
+      </div>
                     
-      <label><strong>CNPJ:</strong></label>
-      <input type="text" name="cnpj" value="{{ orcamento.cnpj }}" disabled>
+      <div>
+        <label><strong>CNPJ:</strong></label>
+        <input type="text" name="cnpj" value="{{ orcamento.cnpj }}" disabled>
+      </div>
                     
-      <label><strong>Endereço:</strong></label>
-      <input type="text" name="endereco" value="{{ orcamento.endereco }}" disabled>
+      <div>
+        <label><strong>Endereço:</strong></label>
+        <input type="text" name="endereco" value="{{ orcamento.endereco }}" disabled>
+      </div>
                     
-      <label><strong>Cidade:</strong></label>
-      <input type="text" name="cidade" value="{{ orcamento.cidade }}" disabled>
+      <div>
+        <label><strong>Cidade:</strong></label>
+        <input type="text" name="cidade" value="{{ orcamento.cidade }}" disabled>
+      </div>
                     
-      <label><strong>Telefone:</strong></label>
-      <input type="tel" name="telefone" value="{{ orcamento.telefone }}" disabled>
+      <div>
+        <label><strong>Telefone:</strong></label>
+        <input type="tel" name="telefone" value="{{ orcamento.telefone }}" disabled>
+      </div>
                     
-      <label><strong>E-mail:</strong></label>
-      <input type="email" name="email" value="{{ orcamento.email }}" disabled>
+      <div>
+        <label><strong>E-mail:</strong></label>
+        <input type="email" name="email" value="{{ orcamento.email }}" disabled>
+      </div>
 
     </div>
 
@@ -76,7 +90,7 @@
 
     <div class="botoes">
       <button type="button" onclick="window.print()" class="btn-salvar">Imprimir 💾</button>
-      <a href="{% url 'exportar_pdf_orcamento' orcamento.id %}" class="btn-salvar">Exportar PDF 📄</a>
+      <a href="{% url 'exportar_pdf_orcamento' orcamento.id %}" class="btn-emitidos">Exportar PDF 📄</a>
       <a href="{% url 'orcamentos_emitidos' %}" class="btn-voltar">Voltar ⤴</a>
     </div>
   </form>
