@@ -75,6 +75,7 @@ class Orcamento(models.Model):
     cidade = models.CharField(max_length=50, blank=True)
     telefone = models.CharField(max_length=20, blank=True)
     email = models.EmailField(blank=True)
+    itens_unidades = models.TextField(blank=True, null=True)
     descricao = models.TextField(blank=True, null=True)
     itens_quantidades = models.TextField(blank=True, null=True)
     itens_valores = models.TextField(blank=True, null=True)

@@ -192,24 +192,28 @@ def salvar_orcamento(request):
                 raise ValueError()
         except ValueError:
             return HttpResponseBadRequest("Data inválida")
-        # Agrega as descrições, quantidades e valores dos itens vindos do formulário
+        # Agrega as unidades, descrições, quantidades e valores dos itens vindos do formulário
+        unidades = []
         descricoes = []
         quantidades = []
         valores = []
         i = 1
         while True:
+            u = request.POST.get(f'unidade_{i}', '').strip()
             d = request.POST.get(f'descricao_{i}', '').strip()
             q = request.POST.get(f'quantidade_{i}', '').strip()
             v = request.POST.get(f'valor_{i}', '').strip()
             
-            if not d and not q and not v:  # Se todos estão vazios, para o loop
+            if not u and not d and not q and not v:  # Se todos estão vazios, para o loop
                 break
                 
+            unidades.append(u)
             descricoes.append(d)
             quantidades.append(q)
             valores.append(v)
             i += 1
 
+        unidades_agregadas = ' / '.join([x for x in unidades if x])
         descricao_agregada = ' / '.join([x for x in descricoes if x])
         quantidades_agregadas = ' / '.join([x for x in quantidades if x])
         valores_agregados = ' / '.join([x for x in valores if x])
@@ -222,6 +226,7 @@ def salvar_orcamento(request):
             cidade=cidade,
             telefone=telefone,
             email=email,
+            itens_unidades=unidades_agregadas,
             descricao=descricao_agregada,
             itens_quantidades=quantidades_agregadas,
             itens_valores=valores_agregados,
@@ -255,15 +260,17 @@ def orcamentos_emitidos(request):
     # Processar itens de cada orçamento
     orcamentos_processados = []
     for orc in orcamentos:
+        unidades = [p.strip() for p in orc.itens_unidades.split(' / ')] if orc.itens_unidades else []
         descricoes = [p.strip() for p in orc.descricao.split(' / ')] if orc.descricao else []
         quantidades = [p.strip() for p in orc.itens_quantidades.split(' / ')] if orc.itens_quantidades else []
         valores = [p.strip() for p in orc.itens_valores.split(' / ')] if orc.itens_valores else []
         
-        max_itens = max(len(descricoes), len(quantidades), len(valores))
+        max_itens = max(len(unidades), len(descricoes), len(quantidades), len(valores))
         
         itens = []
         for i in range(max_itens):
             itens.append({
+                'unidade': unidades[i] if i < len(unidades) else '',
                 'descricao': descricoes[i] if i < len(descricoes) else '',
                 'quantidade': quantidades[i] if i < len(quantidades) else '',
                 'valor': valores[i] if i < len(valores) else ''
@@ -302,17 +309,19 @@ def abrir_orcamento(request, orcamento_id):
         return redirect('orcamentos_emitidos')
 
     # Dividir os dados agregados em listas
+    unidades = [p.strip() for p in orc.itens_unidades.split(' / ')] if orc.itens_unidades else []
     descricoes = [p.strip() for p in orc.descricao.split(' / ')] if orc.descricao else []
     quantidades = [p.strip() for p in orc.itens_quantidades.split(' / ')] if orc.itens_quantidades else []
     valores = [p.strip() for p in orc.itens_valores.split(' / ')] if orc.itens_valores else []
     
     # Determinar o número máximo de itens
-    max_itens = max(len(descricoes), len(quantidades), len(valores))
+    max_itens = max(len(unidades), len(descricoes), len(quantidades), len(valores))
     
     # Criar lista de linhas com todos os itens
     linhas = []
     for i in range(max_itens):
         linhas.append({
+            'unidade': unidades[i] if i < len(unidades) else '',
             'descricao': descricoes[i] if i < len(descricoes) else '',
             'quantidade': quantidades[i] if i < len(quantidades) else '',
             'valor': valores[i] if i < len(valores) else ''

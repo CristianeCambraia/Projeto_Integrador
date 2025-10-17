@@ -34,6 +34,7 @@
     <table class="itens-orcamento">
       <thead>
         <tr>
+          <th>Unidade</th>
           <th>Descrição</th>
           <th>Quantidade</th>
           <th>Valor</th>
@@ -42,6 +43,7 @@
       <tbody>
         {% for linha in linhas %}
         <tr>
+          <td><input type="text" name="unidade_{{ forloop.counter }}" value="{{ linha.unidade }}" disabled></td>
           <td><input type="text" name="descricao_{{ forloop.counter }}" value="{{ linha.descricao }}" disabled></td>
           <td><input type="number" name="quantidade_{{ forloop.counter }}" min="1" value="{{ linha.quantidade }}" disabled></td>
           <td><input type="text" name="valor_{{ forloop.counter }}" value="{{ linha.valor }}" disabled></td>

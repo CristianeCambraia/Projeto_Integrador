@@ -49,6 +49,7 @@
         <table class="itens-orcamento">
             <thead>
                 <tr>
+                    <th>Unidade</th>
                     <th>Descrição</th>
                     <th>Quantidade</th>
                     <th>Valor</th>
@@ -56,6 +57,12 @@
             </thead>
             <tbody id="itens-tbody">
                 <tr>
+                    <td>
+                        <select name="unidade_1">
+                            <option value="Unidade">Unidade</option>
+                            <option value="Caixa">Caixa</option>
+                        </select>
+                    </td>
                     <td><input type="text" name="descricao_1"></td>
                     <td><input type="number" name="quantidade_1" min="1" oninput="calcularTotal()"></td>
                     <td><input type="text" name="valor_1" oninput="calcularTotal()"></td>
@@ -71,7 +78,7 @@
         </div>
 
         <div class="observacao-container">
-            <label><strong>Observações / Valor Total:</strong></label>
+            <label><strong>Observação:</strong></label>
             <textarea name="observacao" rows="4" placeholder="Digite observações e o valor total do orçamento..."></textarea>
         </div>
 
@@ -123,6 +130,12 @@ function adicionarLinha() {
     const novaLinha = document.createElement('tr');
     
     novaLinha.innerHTML = `
+        <td>
+            <select name="unidade_${contadorItens}">
+                <option value="Unidade">Unidade</option>
+                <option value="Caixa">Caixa</option>
+            </select>
+        </td>
         <td><input type="text" name="descricao_${contadorItens}"></td>
         <td><input type="number" name="quantidade_${contadorItens}" min="1" oninput="calcularTotal()"></td>
         <td><input type="text" name="valor_${contadorItens}" oninput="calcularTotal()"></td>
