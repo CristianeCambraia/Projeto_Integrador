@@ -876,9 +876,16 @@ def exportar_pdf_orcamento(request, orcamento_id):
             'valor': valores[i] if i < len(valores) else ''
         })
     
+    import os
+    from django.conf import settings
+    
+    # Caminho absoluto para a imagem
+    static_root = getattr(settings, 'STATIC_ROOT', None) or os.path.join(settings.BASE_DIR, 'static')
+    
     context = {
         'orcamento': orcamento,
-        'linhas': itens
+        'linhas': itens,
+        'STATIC_ROOT': static_root
     }
     
     template = get_template('orcamento_pdf.html')
