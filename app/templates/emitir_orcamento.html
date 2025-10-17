@@ -35,13 +35,18 @@
             </div>
                     
             <div>
-                <label><strong>Telefone:</strong></label>
-                <input type="tel" name="telefone" maxlength="15" onkeypress="return event.charCode >= 48 && event.charCode <= 57" oninput="formatTelefone(this)">
+                <label><strong>UF:</strong></label>
+                <input type="text" name="uf" maxlength="2" style="text-transform: uppercase;">
             </div>
                     
             <div>
                 <label><strong>E-mail:</strong></label>
                 <input type="email" name="email">
+            </div>
+                    
+            <div>
+                <label><strong>Telefone:</strong></label>
+                <input type="tel" name="telefone" maxlength="15" onkeypress="return event.charCode >= 48 && event.charCode <= 57" oninput="formatTelefone(this)">
             </div>
 
         </div>
@@ -49,7 +54,7 @@
         <table class="itens-orcamento">
             <thead>
                 <tr>
-                    <th>Unidade</th>
+                    <th>Unidade/Serviço</th>
                     <th>Descrição</th>
                     <th>Quantidade</th>
                     <th>Valor</th>
@@ -58,9 +63,10 @@
             <tbody id="itens-tbody">
                 <tr>
                     <td>
-                        <select name="unidade_1">
+                        <select name="unidade_1" style="width: 120px;">
                             <option value="Unidade">Unidade</option>
                             <option value="Caixa">Caixa</option>
+                            <option value="Serviço">Serviço</option>
                         </select>
                     </td>
                     <td><input type="text" name="descricao_1"></td>
@@ -141,9 +147,10 @@ function adicionarLinha() {
     
     novaLinha.innerHTML = `
         <td>
-            <select name="unidade_${contadorItens}">
+            <select name="unidade_${contadorItens}" style="width: 120px;">
                 <option value="Unidade">Unidade</option>
                 <option value="Caixa">Caixa</option>
+                <option value="Serviço">Serviço</option>
             </select>
         </td>
         <td><input type="text" name="descricao_${contadorItens}"></td>

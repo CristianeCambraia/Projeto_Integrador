@@ -5,7 +5,7 @@
     <title>Orçamento #{{ orcamento.id }}</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; font-size: 14px; }
-        .header-linha { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .header-linha { text-align: center; margin-bottom: 20px; }
         .logo-empresa { display: flex; align-items: center; }
         .logo-empresa img { width: 48px; height: 48px; margin-right: 8px; }
         .logo-empresa .nome { font-size: 20px; color: black; font-weight: bold; }
@@ -27,8 +27,9 @@
     </style>
 </head>
 <body>
-    <div class="header-linha" style="text-align: center;">
-        <h2 class="titulo">Orçamento #{{ orcamento.id }}</h2>
+
+    <div class="header-linha">
+        <h2 class="titulo">INSUMED - Orçamento #{{ orcamento.id }}</h2>
     </div>
 
     <div class="dados-cliente">
@@ -48,12 +49,14 @@
             <tr>
                 <td class="label">Endereço:</td>
                 <td>{{ orcamento.endereco|default:"Não informado" }}</td>
-                <td class="label">Cidade:</td>
-                <td>{{ orcamento.cidade|default:"Não informado" }}</td>
+                <td class="label">UF:</td>
+                <td>{{ orcamento.uf|default:"Não informado" }}</td>
             </tr>
             <tr>
+                <td class="label">Cidade:</td>
+                <td>{{ orcamento.cidade|default:"Não informado" }}</td>
                 <td class="label">E-mail:</td>
-                <td colspan="3">{{ orcamento.email|default:"Não informado" }}</td>
+                <td>{{ orcamento.email|default:"Não informado" }}</td>
             </tr>
 
         </table>
@@ -62,7 +65,7 @@
     <table class="itens-orcamento">
         <thead>
             <tr>
-                <th>Unidade</th>
+                <th>Unidade/Serviço</th>
                 <th>Descrição</th>
                 <th>Quantidade</th>
                 <th>Valor</th>
