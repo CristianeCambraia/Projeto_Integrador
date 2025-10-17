@@ -235,23 +235,46 @@ def salvar_orcamento(request):
 
 
 def orcamentos_emitidos(request):
-    filtro_id = request.GET.get('filtro_id')
+    filtro = request.GET.get('filtro')
     email_enviado = request.GET.get('email_enviado')
     
     if email_enviado:
         messages.success(request, 'Orçamento enviado por email com sucesso!')
     
-    if filtro_id:
-        try:
-            orcamentos = Orcamento.objects.filter(id=filtro_id).order_by('-data')
-        except ValueError:
-            orcamentos = Orcamento.objects.none()
-    else:
-        orcamentos = Orcamento.objects.all().order_by('-data')
+    orcamentos = Orcamento.objects.all()
+    
+    if filtro:
+        filtro = filtro.strip()
+        if filtro.isdigit():
+            orcamentos = orcamentos.filter(id=filtro)
+        else:
+            orcamentos = orcamentos.filter(cliente__icontains=filtro)
+    
+    orcamentos = orcamentos.order_by('-data')
+    
+    # Processar itens de cada orçamento
+    orcamentos_processados = []
+    for orc in orcamentos:
+        descricoes = [p.strip() for p in orc.descricao.split(' / ')] if orc.descricao else []
+        quantidades = [p.strip() for p in orc.itens_quantidades.split(' / ')] if orc.itens_quantidades else []
+        valores = [p.strip() for p in orc.itens_valores.split(' / ')] if orc.itens_valores else []
+        
+        max_itens = max(len(descricoes), len(quantidades), len(valores))
+        
+        itens = []
+        for i in range(max_itens):
+            itens.append({
+                'descricao': descricoes[i] if i < len(descricoes) else '',
+                'quantidade': quantidades[i] if i < len(quantidades) else '',
+                'valor': valores[i] if i < len(valores) else ''
+            })
+        
+        orc.itens_processados = itens
+        orcamentos_processados.append(orc)
     
     return render(request, 'lista_orcamentos.html', {
-        'orcamentos': orcamentos,
-        'filtro_id': filtro_id
+        'orcamentos': orcamentos_processados,
+        'filtro': filtro
     })
 
 
@@ -278,28 +301,26 @@ def abrir_orcamento(request, orcamento_id):
     except Orcamento.DoesNotExist:
         return redirect('orcamentos_emitidos')
 
-    # Aqui podemos formatar os itens se houver necessidade
-    # dividir a descricao agregada em até 3 itens (se foi salva como ' / ')
-    # construir listas de descricoes, quantidades e valores (mantendo 3 posições)
-    descrs = [''] * 3
-    qts = [''] * 3
-    vals = [''] * 3
-    if orc.descricao:
-        parts = [p.strip() for p in orc.descricao.split(' / ')]
-        for i, p in enumerate(parts[:3]):
-            descrs[i] = p
-    if orc.itens_quantidades:
-        parts_q = [p.strip() for p in orc.itens_quantidades.split(' / ')]
-        for i, p in enumerate(parts_q[:3]):
-            qts[i] = p
-    if orc.itens_valores:
-        parts_v = [p.strip() for p in orc.itens_valores.split(' / ')]
-        for i, p in enumerate(parts_v[:3]):
-            vals[i] = p
-
+    # Dividir os dados agregados em listas
+    descricoes = [p.strip() for p in orc.descricao.split(' / ')] if orc.descricao else []
+    quantidades = [p.strip() for p in orc.itens_quantidades.split(' / ')] if orc.itens_quantidades else []
+    valores = [p.strip() for p in orc.itens_valores.split(' / ')] if orc.itens_valores else []
+    
+    # Determinar o número máximo de itens
+    max_itens = max(len(descricoes), len(quantidades), len(valores))
+    
+    # Criar lista de linhas com todos os itens
     linhas = []
-    for i in range(3):
-        linhas.append({'descricao': descrs[i], 'quantidade': qts[i], 'valor': vals[i]})
+    for i in range(max_itens):
+        linhas.append({
+            'descricao': descricoes[i] if i < len(descricoes) else '',
+            'quantidade': quantidades[i] if i < len(quantidades) else '',
+            'valor': valores[i] if i < len(valores) else ''
+        })
+    
+    # Se não houver itens, criar pelo menos uma linha vazia
+    if not linhas:
+        linhas = [{'descricao': '', 'quantidade': '', 'valor': ''}]
 
     return render(request, 'abrir_orcamento.html', {
         'orcamento': orc,

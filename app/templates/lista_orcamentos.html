@@ -13,7 +13,7 @@
   
   <div class="filtro-orcamentos">
     <form method="GET">
-      <input type="number" name="filtro_id" placeholder="Filtrar por ID" value="{{ filtro_id }}">
+      <input type="text" name="filtro" placeholder="Filtrar por ID ou Nome" value="{{ filtro|default:'' }}">
       <button type="submit" class="btn-filtrar">Filtrar</button>
       <a href="{% url 'orcamentos_emitidos' %}" class="btn-limpar">Limpar</a>
     </form>
@@ -35,16 +35,36 @@
           </div>
         </div>
         <div class="field" style="margin-top: 10px;">
-          <strong>Descrição:</strong> 
-          {% if o.descricao %}
-            {% if o.descricao|length > 10 %}
-              <span class="descricao-preview-{{ o.id }}">{{ o.descricao|truncatechars:50 }}<button class="btn-expandir-obs" onclick="expandirDescricao({{ o.id }})">+</button></span>
-              <span class="descricao-completa-{{ o.id }}" style="display: none;">{{ o.descricao }}<button class="btn-expandir-obs" onclick="recolherDescricao({{ o.id }})">-</button></span>
-            {% else %}
-              {{ o.descricao }}
-            {% endif %}
+          <strong>Itens do Orçamento:</strong>
+          {% if o.itens_processados %}
+            <div class="itens-preview-{{ o.id }}">
+              <button class="btn-expandir-obs" onclick="expandirItens({{ o.id }})">Ver Itens +</button>
+            </div>
+            <div class="itens-completos-{{ o.id }}" style="display: none; margin-top: 10px;">
+              <table style="width: 100%; border-collapse: collapse; margin-top: 5px;">
+                <thead>
+                  <tr style="background-color: #f5f5f5;">
+                    <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Descrição</th>
+                    <th style="border: 1px solid #ddd; padding: 8px; text-align: center;">Quantidade</th>
+                    <th style="border: 1px solid #ddd; padding: 8px; text-align: center;">Valor</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for item in o.itens_processados %}
+                    {% if item.descricao or item.quantidade or item.valor %}
+                      <tr>
+                        <td style="border: 1px solid #ddd; padding: 8px;">{{ item.descricao|default:"-" }}</td>
+                        <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">{{ item.quantidade|default:"-" }}</td>
+                        <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">{{ item.valor|default:"-" }}</td>
+                      </tr>
+                    {% endif %}
+                  {% endfor %}
+                </tbody>
+              </table>
+              <button class="btn-expandir-obs" onclick="recolherItens({{ o.id }})">Ocultar Itens -</button>
+            </div>
           {% else %}
-            (Sem descrição)
+            (Nenhum item cadastrado)
           {% endif %}
         </div>
         <div style="margin-top: 15px; text-align: center;">
@@ -125,14 +145,14 @@ document.getElementById('formEnviarEmail').addEventListener('submit', function(e
   });
 });
 
-function expandirDescricao(id) {
-  document.querySelector('.descricao-preview-' + id).style.display = 'none';
-  document.querySelector('.descricao-completa-' + id).style.display = 'inline';
+function expandirItens(id) {
+  document.querySelector('.itens-preview-' + id).style.display = 'none';
+  document.querySelector('.itens-completos-' + id).style.display = 'block';
 }
 
-function recolherDescricao(id) {
-  document.querySelector('.descricao-preview-' + id).style.display = 'inline';
-  document.querySelector('.descricao-completa-' + id).style.display = 'none';
+function recolherItens(id) {
+  document.querySelector('.itens-preview-' + id).style.display = 'block';
+  document.querySelector('.itens-completos-' + id).style.display = 'none';
 }
 </script>
 {% endblock %}
