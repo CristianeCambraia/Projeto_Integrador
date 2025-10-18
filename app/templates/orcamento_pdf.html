@@ -4,7 +4,13 @@
     <meta charset="UTF-8">
     <title>Orçamento #{{ orcamento.id }}</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; font-size: 14px; }
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 20px; 
+            font-size: 14px;
+            position: relative;
+        }
+
         .header-linha { text-align: center; margin-bottom: 20px; }
         .logo-empresa { display: flex; align-items: center; }
         .logo-empresa img { width: 48px; height: 48px; margin-right: 8px; }
@@ -27,11 +33,20 @@
     </style>
 </head>
 <body>
-
-    <div class="header-linha">
-        <h1 style="font-size: 48px; font-weight: bold; color: black; margin: 0px; padding: 0px;">INSUMED</h1>
-        <h2 class="titulo" style="margin-top: 10px;">Orçamento #{{ orcamento.id }}</h2>
-    </div>
+    <table style="width: 100%; margin-bottom: 20px;">
+        <tr>
+            <td style="width: 120px; vertical-align: top; padding-top: 0px;">
+                <img src="{{ STATIC_ROOT }}/images/insumed_icon.png" style="width: 100px; height: 100px; opacity: 1; filter: contrast(2.5) brightness(0.7) drop-shadow(1px 1px 2px black);" alt="Logo">
+            </td>
+            <td style="vertical-align: top; padding-left: 60px; padding-top: 15px; text-align: left;">
+                <h1 style="font-size: 48px; font-weight: bold; color: #E0E0E0; margin: 0;">INSUMED</h1>
+                <h2 class="titulo" style="margin: 10px 0 0 0; color: #444444;">Orçamento #{{ orcamento.id }}</h2>
+            </td>
+            <td style="width: 120px; vertical-align: top; padding-top: 0px; text-align: right;">
+                <img src="{{ STATIC_ROOT }}/images/insumed_icon.png" style="width: 100px; height: 100px; opacity: 1; filter: contrast(2.5) brightness(0.7) drop-shadow(1px 1px 2px black);" alt="Logo">
+            </td>
+        </tr>
+    </table>
 
     <div class="dados-cliente">
         <table>
