@@ -1,6 +1,22 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<style>
+.caixa-titulo {
+  background-color: #f9f9f9;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  text-align: center;
+}
+
+.caixa-titulo span {
+  margin: 0;
+  font-weight: bold;
+  font-size: 18px;
+}
+</style>
 <div class="emitir-orcamento-container">
     <h2 class="titulo" style="margin-bottom: 30px;">Emitir Orçamentos</h2>
 
@@ -29,26 +45,8 @@
     <form class="form-box"  method="post" action="{% url 'salvar_orcamento' %}">
         {% csrf_token %}
 
-        <div style="background-color: #f9f9f9; padding: 10px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #ddd; width: calc(100% + 320px); margin-left: -160px; box-sizing: border-box;">
-            <h4 style="margin: 0 0 10px 0; text-align: center;">Dados da Empresa INSUMED</h4>
-            <div style="display: grid; grid-template-columns: 2fr 1fr 1.2fr 0.8fr; gap: 8px; width: 100%;">
-                <div>
-                    <label style="font-size: 12px; color: #666;">Endereço:</label>
-                    <input type="text" name="endereco_insumed" value="Rua das Flores, 123 - Centro" style="width: 100%; padding: 5px; font-size: 12px; box-sizing: border-box; border-radius: 5px; border: 1px solid #ddd;">
-                </div>
-                <div>
-                    <label style="font-size: 12px; color: #666;">CNPJ:</label>
-                    <input type="text" name="cnpj_insumed" value="12.345.678/0001-90" maxlength="18" onkeypress="return /[0-9]/.test(event.key) || event.key === 'Backspace'" oninput="formatCNPJInsumed(this)" style="width: 100%; padding: 5px; font-size: 12px; box-sizing: border-box; border-radius: 5px; border: 1px solid #ddd;">
-                </div>
-                <div>
-                    <label style="font-size: 12px; color: #666;">E-mail:</label>
-                    <input type="email" name="email_insumed" value="contato@insumed.com.br" style="width: 100%; padding: 5px; font-size: 12px; box-sizing: border-box; border-radius: 5px; border: 1px solid #ddd;">
-                </div>
-                <div>
-                    <label style="font-size: 12px; color: #666;">Telefone:</label>
-                    <input type="text" name="telefone_insumed" value="(35) 98412-3236" maxlength="15" onkeypress="return /[0-9]/.test(event.key) || event.key === 'Backspace'" oninput="formatTelefoneInsumed(this)" style="width: 100%; padding: 5px; font-size: 12px; box-sizing: border-box; border-radius: 5px; border: 1px solid #ddd;">
-                </div>
-            </div>
+        <div class="caixa-titulo">
+            <span>Dados do Cliente</span>
         </div>
 
         <div class="cliente-dados">
@@ -93,6 +91,10 @@
                 <input type="tel" name="telefone" maxlength="15" onkeypress="return event.charCode >= 48 && event.charCode <= 57" oninput="formatTelefone(this)">
             </div>
 
+        </div>
+
+        <div class="caixa-titulo">
+            <span>Descrição do Serviço</span>
         </div>
 
         <table class="itens-orcamento">
