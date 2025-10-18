@@ -31,7 +31,7 @@
   <h2 class="titulo" style="margin-bottom: 30px;">Orçamento #{{ orcamento.id }}</h2>
   
   <div style="background-color: #f9f9f9; padding: 10px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #ddd; width: 100%; box-sizing: border-box;">
-      <h4 style="margin: 0 0 10px 0; text-align: center;">Dados da Empresa INSUMED</h4>
+      <h4 style="margin: 0 0 10px 0; text-align: center; font-size: 18px;">Dados da Empresa INSUMED</h4>
       <div style="display: grid; grid-template-columns: 2fr 1fr 1.2fr 0.8fr; gap: 8px; width: 100%;">
           <div>
               <label style="font-size: 12px; color: #666;">Endereço:</label>
@@ -54,6 +54,10 @@
 
   <form class="form-box"  method="post" action="#">
     {% csrf_token %}
+
+    <div style="background-color: #f9f9f9; padding: 10px; border-radius: 5px; margin-bottom: 10px; border: 1px solid #ddd; text-align: center;">
+      <span style="margin: 0; font-weight: bold; font-size: 18px;">Dados do Cliente</span>
+    </div>
 
     <div class="cliente-dados">
       <div>
@@ -96,6 +100,10 @@
         <input type="tel" name="telefone" value="{{ orcamento.telefone }}" disabled>
       </div>
 
+    </div>
+
+    <div style="background-color: #f9f9f9; padding: 10px; border-radius: 5px; margin-bottom: 10px; border: 1px solid #ddd; text-align: center;">
+      <span style="margin: 0; font-weight: bold; font-size: 18px;">Descrição do Serviço</span>
     </div>
 
     <table class="itens-orcamento">
