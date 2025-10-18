@@ -48,7 +48,26 @@
         </tr>
     </table>
 
-    <div class="dados-cliente">
+    <div class="dados-cliente" style="background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #ddd;">
+        <h4 style="margin: 0 0 15px 0; text-align: center; color: black;">Dados da Empresa INSUMED</h4>
+        <table>
+            <tr>
+                <td class="label">Endereço:</td>
+                <td>Rua das Flores, 123 - Centro</td>
+                <td class="label">CNPJ:</td>
+                <td>12.345.678/0001-90</td>
+            </tr>
+            <tr>
+                <td class="label">E-mail:</td>
+                <td>contato@insumed.com.br</td>
+                <td class="label">Telefone:</td>
+                <td>(35) 98412-3236</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="dados-cliente" style="background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #ddd;">
+        <h4 style="margin: 0 0 15px 0; text-align: center; color: black;">Dados do Cliente</h4>
         <table>
             <tr>
                 <td class="label">Cliente:</td>
@@ -74,8 +93,14 @@
                 <td class="label">E-mail:</td>
                 <td>{{ orcamento.email|default:"Não informado" }}</td>
             </tr>
-
         </table>
+    </div>
+
+    <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #ddd;">
+        <h4 style="margin: 0 0 15px 0; text-align: center; color: black;">Descrição do Serviço</h4>
+        <div style="padding: 10px; background-color: white; border-radius: 3px; min-height: 40px; text-align: justify;">
+            {{ orcamento.descricao_servico|default:"Fornecimento de materiais médicos e hospitalares conforme especificações técnicas solicitadas." }}
+        </div>
     </div>
 
     <table class="itens-orcamento">
