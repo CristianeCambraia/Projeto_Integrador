@@ -1,6 +1,32 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
+<style>
+@media print {
+  header, footer, .botoes {
+    display: none !important;
+  }
+  body {
+    margin: 0;
+    padding: 20px;
+  }
+  .print-header {
+    display: table !important;
+  }
+}
+.print-header {
+  display: none;
+}
+</style>
+
+<div class="print-header">
+  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; padding: 0 80px;">
+    <img src="{% static 'images/insumed_icon.png' %}" style="width: 100px; height: 100px;" alt="Logo">
+    <h1 style="font-size: 48px; font-weight: bold; color: rgba(0, 0, 0, 0.12); margin: 0 120px;">INSUMED</h1>
+    <img src="{% static 'images/insumed_icon.png' %}" style="width: 100px; height: 100px;" alt="Logo">
+  </div>
+</div>
 <div class="emitir-orcamento-container">
   <h2 class="titulo">Orçamento #{{ orcamento.id }}</h2>
 
