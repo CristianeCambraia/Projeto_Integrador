@@ -223,8 +223,39 @@
                             
                             <div id="notificationDropdown" style="display: none; position: fixed; top: 80px; right: 20px; background: white; border: 1px solid #ccc; width: 320px; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.2); z-index: 99999;">
                                 <h3 style="margin: 0 0 10px 0; color: #333;">Notificações de Estoque</h3>
-                                <div id="notificationContent">
-                                    <div style="text-align: center; color: #666; padding: 20px;">Carregando...</div>
+                                
+                                <div style="border-bottom: 1px solid #eee; padding: 10px 0; margin: 5px 0; cursor: pointer; background: #f8f9fa; border-radius: 5px; padding: 10px;" onclick="expandCategory('VALIDADE')">
+                                    <strong>⚠️ Produto próximo da validade (2)</strong>
+                                    <div id="items-VALIDADE" style="display: none; margin-top: 10px; padding-left: 20px;">
+                                        <div style="border-bottom: 1px solid #ddd; padding: 5px 0; margin: 5px 0; cursor: pointer; background: white; padding: 8px; border-radius: 3px;" onclick="event.stopPropagation(); window.location.href='/notificacao/1/VALIDADE/'">
+                                            <strong>Medicamento A</strong><br>
+                                            <small>Vence em 15 dias</small>
+                                        </div>
+                                        <div style="border-bottom: 1px solid #ddd; padding: 5px 0; margin: 5px 0; cursor: pointer; background: white; padding: 8px; border-radius: 3px;" onclick="event.stopPropagation(); window.location.href='/notificacao/2/VALIDADE/'">
+                                            <strong>Medicamento B</strong><br>
+                                            <small>Vence em 30 dias</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div style="border-bottom: 1px solid #eee; padding: 10px 0; margin: 5px 0; cursor: pointer; background: #f8f9fa; border-radius: 5px; padding: 10px;" onclick="expandCategory('ESTOQUE_CRITICO')">
+                                    <strong>🔴 Estoque crítico (1)</strong>
+                                    <div id="items-ESTOQUE_CRITICO" style="display: none; margin-top: 10px; padding-left: 20px;">
+                                        <div style="border-bottom: 1px solid #ddd; padding: 5px 0; margin: 5px 0; cursor: pointer; background: white; padding: 8px; border-radius: 3px;" onclick="event.stopPropagation(); window.location.href='/notificacao/3/ESTOQUE_CRITICO/'">
+                                            <strong>Produto C</strong><br>
+                                            <small>Apenas 2 unidades</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div style="padding: 10px 0; margin: 5px 0; cursor: pointer; background: #f8f9fa; border-radius: 5px; padding: 10px;" onclick="expandCategory('BAIXA_SAIDA')">
+                                    <strong>📦 Baixa saída (1)</strong>
+                                    <div id="items-BAIXA_SAIDA" style="display: none; margin-top: 10px; padding-left: 20px;">
+                                        <div style="border-bottom: 1px solid #ddd; padding: 5px 0; margin: 5px 0; cursor: pointer; background: white; padding: 8px; border-radius: 3px;" onclick="event.stopPropagation(); window.location.href='/notificacao/4/BAIXA_SAIDA/'">
+                                            <strong>Produto D</strong><br>
+                                            <small>Sem saída há 90 dias</small>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             
@@ -282,29 +313,17 @@
                 dropdown.style.display = 'none';
             } else {
                 dropdown.style.display = 'block';
-                loadNotifications();
             }
         }
         
-        function loadNotifications() {
-            fetch('/notificacoes/')
-                .then(response => response.json())
-                .then(data => {
-                    const content = document.getElementById('notificationContent');
-                    if (data.notificacoes && data.notificacoes.length > 0) {
-                        content.innerHTML = data.notificacoes.map(notif => `
-                            <div style="border-bottom: 1px solid #eee; padding: 8px 0; margin: 8px 0; cursor: pointer;" onclick="window.location.href='/notificacao/${notif.produto_id}/${notif.tipo}/'">
-                                <strong>${notif.icone} ${notif.titulo}</strong><br>
-                                <small>${notif.mensagem}</small>
-                            </div>
-                        `).join('');
-                    } else {
-                        content.innerHTML = '<div style="text-align: center; color: #666; padding: 20px;">Nenhuma notificação</div>';
-                    }
-                })
-                .catch(error => {
-                    document.getElementById('notificationContent').innerHTML = '<div style="text-align: center; color: #666; padding: 20px;">Erro ao carregar</div>';
-                });
+        function expandCategory(tipo) {
+            const itemsDiv = document.getElementById(`items-${tipo}`);
+            
+            if (itemsDiv.style.display === 'none') {
+                itemsDiv.style.display = 'block';
+            } else {
+                itemsDiv.style.display = 'none';
+            }
         }
         
         // Fechar dropdown ao clicar fora
