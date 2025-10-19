@@ -1022,7 +1022,13 @@ def detalhes_notificacao(request, produto_id, tipo):
             1: {'nome': 'Medicamento A', 'descricao': 'Medicamento para teste', 'preco': 25.50, 'quantidade': 10},
             2: {'nome': 'Medicamento B', 'descricao': 'Medicamento para teste', 'preco': 35.00, 'quantidade': 15},
             3: {'nome': 'Produto C', 'descricao': 'Produto com estoque crítico', 'preco': 45.00, 'quantidade': 2},
-            4: {'nome': 'Produto D', 'descricao': 'Produto com baixa saída', 'preco': 55.00, 'quantidade': 50}
+            4: {'nome': 'Produto D', 'descricao': 'Produto com baixa saída', 'preco': 55.00, 'quantidade': 50},
+            5: {'nome': 'Insulina Regular', 'descricao': 'Insulina para diabetes', 'preco': 85.00, 'quantidade': 8},
+            6: {'nome': 'Soro Fisiológico', 'descricao': 'Soro para hidratação', 'preco': 12.50, 'quantidade': 20},
+            7: {'nome': 'Máscara N95', 'descricao': 'Máscara de proteção', 'preco': 8.90, 'quantidade': 1},
+            8: {'nome': 'Luvas Cirúrgicas', 'descricao': 'Luvas descartáveis', 'preco': 15.00, 'quantidade': 3},
+            9: {'nome': 'Termômetro Digital', 'descricao': 'Termômetro infravermelho', 'preco': 120.00, 'quantidade': 25},
+            10: {'nome': 'Estetoscópio', 'descricao': 'Estetoscópio clínico', 'preco': 180.00, 'quantidade': 15}
         }
         
         if produto_id in produtos_teste:

@@ -29,7 +29,7 @@
 
         <div style="margin-bottom: 20px;">
             <label style="font-weight: bold; color: #666; display: block; margin-bottom: 5px;">Descrição:</label>
-            <span style="font-size: 16px;">{{ produto.descricao|default:"Sem descrição" }}</span>
+            <div style="font-size: 16px; word-wrap: break-word; word-break: break-word; overflow-wrap: break-word; max-width: 100%; line-height: 1.4;">{{ produto.descricao|default:"Sem descrição" }}</div>
         </div>
 
         {% if tipo == 'VALIDADE' %}
