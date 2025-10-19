@@ -155,4 +155,24 @@ class Admin(models.Model):
     def __str__(self):
         return self.email
 
+class Notificacao(models.Model):
+    TIPO_CHOICES = [
+        ('VALIDADE', 'Próximo da Validade'),
+        ('BAIXA_SAIDA', 'Baixa Saída'),
+        ('ESTOQUE_CRITICO', 'Estoque Crítico'),
+    ]
+    
+    produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
+    tipo = models.CharField(max_length=20, choices=TIPO_CHOICES)
+    titulo = models.CharField(max_length=200)
+    mensagem = models.TextField()
+    data_criacao = models.DateTimeField(default=timezone.now)
+    lida = models.BooleanField(default=False)
+    
+    def __str__(self):
+        return f'{self.tipo} - {self.produto.nome}'
+    
+    class Meta:
+        ordering = ['-data_criacao']
+
 

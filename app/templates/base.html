@@ -36,18 +36,8 @@
             background: none;
             border: none;
             cursor: pointer;
-            position: relative;
-            padding: 4px;
-            border-radius: 50%;
-            transition: background-color 0.3s;
             font-size: 24px;
-            filter: hue-rotate(200deg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .bell-btn:hover {
-            background-color: rgba(4, 186, 252, 0.1);
+            position: relative;
         }
         /* CSS preparado para contador de notificações */
         .notification-count {
@@ -67,6 +57,141 @@
         }
         .notification-count.show {
             display: flex;
+        }
+        
+        /* Dropdown de notificações */
+        .notification-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            width: 350px;
+            max-height: 400px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+        }
+        
+        .notification-dropdown.show {
+            display: block;
+        }
+        
+        .notification-header {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f8f9fa;
+            border-radius: 8px 8px 0 0;
+        }
+        
+        .notification-header h3 {
+            margin: 0;
+            font-size: 16px;
+            color: #333;
+        }
+        
+        .notification-filters {
+            padding: 10px 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            gap: 5px;
+        }
+        
+        .filter-btn {
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 15px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .filter-btn.active {
+            background: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+        
+        .notification-list {
+            max-height: 250px;
+            overflow-y: auto;
+        }
+        
+        .notification-item {
+            padding: 12px 15px;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .notification-item:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+        
+        .notification-content {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        
+        .notification-icon {
+            font-size: 18px;
+            margin-top: 2px;
+        }
+        
+        .notification-text {
+            flex: 1;
+        }
+        
+        .notification-title {
+            font-weight: bold;
+            font-size: 13px;
+            color: #333;
+            margin-bottom: 3px;
+        }
+        
+        .notification-message {
+            font-size: 12px;
+            color: #666;
+            line-height: 1.4;
+        }
+        
+        .notification-time {
+            font-size: 11px;
+            color: #999;
+            margin-top: 5px;
+        }
+        
+        .notification-empty {
+            padding: 30px 15px;
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .notification-actions {
+            padding: 10px 15px;
+            border-top: 1px solid #eee;
+            text-align: center;
+        }
+        
+        .mark-all-read {
+            background: none;
+            border: none;
+            color: #007bff;
+            font-size: 12px;
+            cursor: pointer;
+            text-decoration: underline;
         }
 
     </style>
@@ -90,12 +215,20 @@
                     <li><a href="{% url 'relatorio_estoque' %}">Relatórios</a></li>
                     {% if usuario_logado %}
                         <li><a href="{% url 'logout' %}">Sair</a></li>
-                        <li class="notification-bell">
-                            <button onclick="toggleNotifications()" class="bell-btn">
+                        <li style="position: relative;">
+                            <button onclick="toggleNotifications()" style="background: none; border: none; cursor: pointer; font-size: 24px; position: relative; filter: hue-rotate(200deg);">
                                 🔔
-                                <!-- Descomente a linha abaixo quando implementar notificações reais -->
-                                <!-- <span class="notification-count" id="notificationCount">0</span> -->
+                                <span style="position: absolute; top: 2px; right: 2px; background: #ff4444; color: white; border-radius: 50%; min-width: 16px; height: 16px; font-size: 10px; display: flex; align-items: center; justify-content: center; font-weight: bold;">3</span>
                             </button>
+                            
+                            <div id="notificationDropdown" style="display: none; position: fixed; top: 80px; right: 20px; background: white; border: 1px solid #ccc; width: 320px; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.2); z-index: 99999;">
+                                <h3 style="margin: 0 0 10px 0; color: #333;">Notificações de Estoque</h3>
+                                <div id="notificationContent">
+                                    <div style="text-align: center; color: #666; padding: 20px;">Carregando...</div>
+                                </div>
+                            </div>
+                            
+
                         </li>
                     {% else %}
                         <li><a href="{% url 'cadastrar_usuario' %}">Cadastrar Usuário</a></li>
@@ -135,23 +268,54 @@
     </footer>
 
     <script>
-        function toggleNotifications() {
-            // Placeholder para futuras notificações
-            console.log('Notificações clicadas - implementar dropdown aqui');
-        }
+
         
-        // Função para atualizar contador de notificações (usar quando implementar)
-        function updateNotificationCount(count) {
-            const counter = document.getElementById('notificationCount');
-            if (counter) {
-                if (count > 0) {
-                    counter.textContent = count > 99 ? '99+' : count;
-                    counter.classList.add('show');
-                } else {
-                    counter.classList.remove('show');
-                }
+
+        
+
+        
+
+        
+        function toggleNotifications() {
+            const dropdown = document.getElementById('notificationDropdown');
+            if (dropdown.style.display === 'block') {
+                dropdown.style.display = 'none';
+            } else {
+                dropdown.style.display = 'block';
+                loadNotifications();
             }
         }
+        
+        function loadNotifications() {
+            fetch('/notificacoes/')
+                .then(response => response.json())
+                .then(data => {
+                    const content = document.getElementById('notificationContent');
+                    if (data.notificacoes && data.notificacoes.length > 0) {
+                        content.innerHTML = data.notificacoes.map(notif => `
+                            <div style="border-bottom: 1px solid #eee; padding: 8px 0; margin: 8px 0; cursor: pointer;" onclick="window.location.href='/notificacao/${notif.produto_id}/${notif.tipo}/'">
+                                <strong>${notif.icone} ${notif.titulo}</strong><br>
+                                <small>${notif.mensagem}</small>
+                            </div>
+                        `).join('');
+                    } else {
+                        content.innerHTML = '<div style="text-align: center; color: #666; padding: 20px;">Nenhuma notificação</div>';
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('notificationContent').innerHTML = '<div style="text-align: center; color: #666; padding: 20px;">Erro ao carregar</div>';
+                });
+        }
+        
+        // Fechar dropdown ao clicar fora
+        document.addEventListener('click', function(event) {
+            const bell = event.target.closest('li');
+            const dropdown = document.getElementById('notificationDropdown');
+            
+            if (dropdown && !bell) {
+                dropdown.style.display = 'none';
+            }
+        });
     </script>
 </body>
 </html>

@@ -78,6 +78,13 @@ urlpatterns = [
     # ----- RECUPERAÇÃO DE SENHA -----
     path('recuperar-senha/', views.recuperar_senha, name='recuperar_senha'),
     path('verificar-codigo/', views.verificar_codigo, name='verificar_codigo'),
-    path('nova-senha/', views.nova_senha, name='nova_senha')
+    path('nova-senha/', views.nova_senha, name='nova_senha'),
+    
+    # ----- NOTIFICAÇÕES -----
+    path('notificacoes/', views.obter_notificacoes, name='obter_notificacoes'),
+    path('notificacoes/marcar-lida/', views.marcar_notificacao_lida, name='marcar_notificacao_lida'),
+    path('notificacoes/marcar-todas-lidas/', views.marcar_todas_lidas, name='marcar_todas_lidas'),
+    path('notificacoes/teste/', views.teste_notificacoes, name='teste_notificacoes'),
+    path('notificacao/<int:produto_id>/<str:tipo>/', views.detalhes_notificacao, name='detalhes_notificacao')
 
 ]

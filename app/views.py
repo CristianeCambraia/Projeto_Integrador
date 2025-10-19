@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import Fornecedor, Produto, Servico, Cliente, Usuario, Orcamento, MovimentacaoEstoque, RecuperacaoSenha, Suporte, Admin
+from .models import Fornecedor, Produto, Servico, Cliente, Usuario, Orcamento, MovimentacaoEstoque, RecuperacaoSenha, Suporte, Admin, Notificacao
 from .forms import FornecedorForm, ProdutoForm, ServicoForm, ClienteForm, UsuarioForm, SuporteForm, EditarProdutoForm, RecuperarSenhaForm, VerificarCodigoForm, NovaSenhaForm, AdminLoginForm
 from django.utils.dateparse import parse_date
 from django.http import HttpResponseBadRequest
@@ -994,3 +994,188 @@ def enviar_orcamento_email(request):
             return JsonResponse({'success': False, 'error': str(e)})
     
     return JsonResponse({'success': False, 'error': 'Método não permitido'})
+
+# ----- TESTE NOTIFICAÇÕES -----
+def teste_notificacoes(request):
+    """View de teste para verificar se as notificações estão funcionando"""
+    return JsonResponse({
+        'status': 'ok',
+        'message': 'Notificações funcionando',
+        'notificacoes': [
+            {
+                'id': 1,
+                'titulo': 'Teste',
+                'mensagem': 'Esta é uma notificação de teste',
+                'icone': '⚠️'
+            }
+        ],
+        'total': 1
+    })
+
+def detalhes_notificacao(request, produto_id, tipo):
+    """Exibe detalhes de uma notificação específica"""
+    try:
+        produto = Produto.objects.get(id=produto_id)
+        
+        context = {
+            'produto': produto,
+            'tipo': tipo,
+            'mensagem': ''
+        }
+        
+        hoje = timezone.now().date()
+        
+        if tipo == 'VALIDADE' and produto.validade:
+            dias_restantes = (produto.validade - hoje).days
+            context['dias_restantes'] = dias_restantes
+            context['mensagem'] = f'Este produto vence em {dias_restantes} dias'
+            
+        elif tipo == 'ESTOQUE_CRITICO':
+            context['mensagem'] = f'Produto com apenas {produto.quantidade} unidades em estoque'
+            
+        elif tipo == 'BAIXA_SAIDA':
+            dias_parado = (hoje - produto.data_hora.date()).days
+            context['dias_parado'] = dias_parado
+            context['mensagem'] = f'Produto sem movimentação há {dias_parado} dias'
+        
+        return render(request, 'detalhes_notificacao.html', context)
+        
+    except Produto.DoesNotExist:
+        messages.error(request, 'Produto não encontrado')
+        return redirect('lista_produtos')
+
+# ----- NOTIFICAÇÕES DE ESTOQUE -----
+from datetime import datetime, timedelta
+
+def gerar_notificacoes_estoque():
+    """Gera notificações automáticas baseadas nas regras de estoque"""
+    try:
+        # Limpar notificações antigas (mais de 30 dias)
+        Notificacao.objects.filter(data_criacao__lt=timezone.now() - timedelta(days=30)).delete()
+        
+        hoje = timezone.now().date()
+        
+        # 1. Produtos próximos da validade (60 dias)
+        produtos_validade = Produto.objects.filter(
+            validade__isnull=False,
+            validade__lte=hoje + timedelta(days=60)
+        )
+        
+        for produto in produtos_validade:
+            dias_restantes = (produto.validade - hoje).days
+            if not Notificacao.objects.filter(produto=produto, tipo='VALIDADE', lida=False).exists():
+                Notificacao.objects.create(
+                    produto=produto,
+                    tipo='VALIDADE',
+                    titulo='Produto próximo da validade',
+                    mensagem=f'O produto {produto.nome} vence em {dias_restantes} dias ({produto.validade.strftime("%d/%m/%Y")})'
+                )
+        
+        # 2. Produtos com baixa saída (90 dias sem movimentação)
+        data_limite = timezone.now() - timedelta(days=90)
+        produtos_sem_saida = Produto.objects.filter(data_hora__lt=data_limite)
+        
+        for produto in produtos_sem_saida:
+            # Verificar se teve saída recente
+            teve_saida = MovimentacaoEstoque.objects.filter(
+                produto=produto,
+                tipo='SAIDA',
+                data_hora__gte=data_limite
+            ).exists()
+            
+            if not teve_saida and not Notificacao.objects.filter(produto=produto, tipo='BAIXA_SAIDA', lida=False).exists():
+                dias_parado = (timezone.now().date() - produto.data_hora.date()).days
+                Notificacao.objects.create(
+                    produto=produto,
+                    tipo='BAIXA_SAIDA',
+                    titulo='Produto com baixa saída',
+                    mensagem=f'O produto {produto.nome} está há {dias_parado} dias sem movimentação de saída'
+                )
+        
+        # 3. Estoque crítico (quantidade <= 5)
+        produtos_criticos = Produto.objects.filter(quantidade__lte=5)
+        
+        for produto in produtos_criticos:
+            if not Notificacao.objects.filter(produto=produto, tipo='ESTOQUE_CRITICO', lida=False).exists():
+                Notificacao.objects.create(
+                    produto=produto,
+                    tipo='ESTOQUE_CRITICO',
+                    titulo='Estoque crítico',
+                    mensagem=f'O produto {produto.nome} possui apenas {produto.quantidade} unidades em estoque'
+                )
+    except Exception as e:
+        print(f'Erro ao gerar notificações: {e}')
+
+@csrf_exempt
+def obter_notificacoes(request):
+    """Retorna notificações não lidas para o usuário"""
+    try:
+        if request.method == 'GET':
+            # Gerar notificações antes de buscar
+            gerar_notificacoes_estoque()
+            
+            tipo_filtro = request.GET.get('tipo')
+            
+            notificacoes = Notificacao.objects.filter(lida=False)
+            
+            if tipo_filtro and tipo_filtro in ['VALIDADE', 'BAIXA_SAIDA', 'ESTOQUE_CRITICO']:
+                notificacoes = notificacoes.filter(tipo=tipo_filtro)
+            
+            notificacoes = notificacoes.order_by('-data_criacao')[:20]
+            
+            dados = []
+            for notif in notificacoes:
+                icone = '⚠️'
+                if notif.tipo == 'BAIXA_SAIDA':
+                    icone = '📦'
+                elif notif.tipo == 'ESTOQUE_CRITICO':
+                    icone = '🔴'
+                
+                dados.append({
+                    'id': notif.id,
+                    'tipo': notif.tipo,
+                    'titulo': notif.titulo,
+                    'mensagem': notif.mensagem,
+                    'produto_id': notif.produto.id,
+                    'produto_nome': notif.produto.nome,
+                    'data_criacao': notif.data_criacao.strftime('%d/%m/%Y %H:%M'),
+                    'icone': icone
+                })
+            
+            return JsonResponse({
+                'notificacoes': dados,
+                'total': len(dados)
+            })
+    except Exception as e:
+        return JsonResponse({
+            'notificacoes': [],
+            'total': 0,
+            'error': str(e)
+        })
+    
+    return JsonResponse({'notificacoes': [], 'total': 0})
+
+@csrf_exempt
+def marcar_notificacao_lida(request):
+    """Marca uma notificação como lida"""
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            notificacao_id = data.get('notificacao_id')
+            
+            if notificacao_id:
+                Notificacao.objects.filter(id=notificacao_id).update(lida=True)
+                return JsonResponse({'success': True})
+        except:
+            pass
+    
+    return JsonResponse({'success': False})
+
+@csrf_exempt
+def marcar_todas_lidas(request):
+    """Marca todas as notificações como lidas"""
+    if request.method == 'POST':
+        Notificacao.objects.filter(lida=False).update(lida=True)
+        return JsonResponse({'success': True})
+    
+    return JsonResponse({'success': False})
