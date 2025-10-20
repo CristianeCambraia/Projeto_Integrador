@@ -83,6 +83,13 @@
     table-layout: fixed !important;
   }
   
+  table input {
+    font-size: 12px !important;
+    padding: 5px !important;
+    border-radius: 5px !important;
+    border: 1px solid #ddd !important;
+  }
+  
   .cliente-dados {
     width: 100% !important;
     font-size: 11px !important;
@@ -93,6 +100,12 @@
     padding: 16px !important;
     text-align: left !important;
     padding-left: 30px !important;
+    width: auto !important;
+    min-width: 100% !important;
+    max-width: none !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    white-space: nowrap !important;
   }
   
   div[style*="text-align: right"] {
@@ -125,6 +138,29 @@
 .print-header {
   display: none;
 }
+
+.valores-totais input {
+  text-align: right !important;
+}
+
+.itens-orcamento input {
+  font-size: 12px !important;
+  padding: 5px !important;
+  border-radius: 5px !important;
+  border: 1px solid #ddd !important;
+  background-color: #f0f0f0 !important;
+}
+
+input:not(.valores-totais input):not(.itens-orcamento input), textarea {
+  width: auto !important;
+  min-width: 100% !important;
+  max-width: none !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  white-space: nowrap !important;
+}
+
+
 </style>
 
 <div class="print-header">
