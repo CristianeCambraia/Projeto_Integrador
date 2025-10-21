@@ -119,18 +119,36 @@ def cadastrar(request):
 
 def lista_produtos(request):
     filtro = request.GET.get('filtro')
+    periodo = request.GET.get('periodo')
     
+    produtos = Produto.objects.all()
+    
+    # Filtro por busca
     if filtro:
         filtro = filtro.strip()
-        if filtro.isdigit():
-            produtos = Produto.objects.filter(id=filtro).order_by('nome')
+        print(f"Filtro aplicado: '{filtro}'")  # Debug
+        
+        if filtro.isdigit() and len(filtro) <= 6:  # IDs normalmente são menores
+            produtos = produtos.filter(id=filtro)
+            print(f"Busca por ID: {produtos.count()} produtos encontrados")  # Debug
         else:
-            produtos = Produto.objects.filter(
+            produtos = produtos.filter(
                 models.Q(nome__icontains=filtro) |
-                models.Q(fornecedor__nome__icontains=filtro)
-            ).order_by('nome')
-    else:
-        produtos = Produto.objects.all().order_by('nome')
+                models.Q(fornecedor__nome__icontains=filtro) |
+                models.Q(codigo_barras__icontains=filtro)
+            )
+            print(f"Busca por texto: {produtos.count()} produtos encontrados")  # Debug
+    
+    # Filtro por período
+    if periodo and periodo.isdigit():
+        from datetime import timedelta
+        dias = int(periodo)
+        data_limite = timezone.now() - timedelta(days=dias)
+        produtos = produtos.filter(data_hora__gte=data_limite)
+        print(f"Filtro últimos {dias} dias: {produtos.count()} produtos")  # Debug
+    
+    produtos = produtos.order_by('nome')
+    print(f"Total final: {produtos.count()} produtos")  # Debug
 
     return render(request, 'produtos/lista_produtos.html', {
         'produtos': produtos,
@@ -558,11 +576,12 @@ def relatorio_entrada(request):
                 produto.save()
                 
                 # Registrar movimentação
-                MovimentacaoEstoque.objects.create(
+                mov = MovimentacaoEstoque.objects.create(
                     produto=produto,
                     tipo='ENTRADA',
                     quantidade=qtd
                 )
+                print(f"Movimentação criada: {mov.produto.nome} - ENTRADA - {mov.quantidade} - {mov.data_hora}")
         return redirect('relatorio_entrada')
 
     return render(request, 'relatorio_entrada.html', {'produtos': produtos_com_entrada})
@@ -601,11 +620,12 @@ def relatorio_saida(request):
                     produto.save()
                     
                     # Registrar movimentação
-                    MovimentacaoEstoque.objects.create(
+                    mov = MovimentacaoEstoque.objects.create(
                         produto=produto,
                         tipo='SAIDA',
                         quantidade=qtd_retirada
                     )
+                    print(f"Movimentação criada: {mov.produto.nome} - SAIDA - {mov.quantidade} - {mov.data_hora}")
                 else:
                     messages.error(request, f"O produto {produto.nome} não pode sofrer de retirada por falta de estoque!")
 
@@ -778,12 +798,15 @@ def editar_cliente(request, cliente_id):
     })
 @login_required_custom
 def relatorio_movimentacao_entrada(request):
-    movimentacoes = MovimentacaoEstoque.objects.filter(tipo='ENTRADA').order_by('-data_hora')
+    movimentacoes = MovimentacaoEstoque.objects.filter(tipo='ENTRADA').select_related('produto', 'produto__fornecedor').order_by('-data_hora')
+    print(f"Total de movimentações de entrada: {movimentacoes.count()}")
+    for mov in movimentacoes[:5]:  # Mostrar apenas as 5 primeiras
+        print(f"Entrada: {mov.produto.nome} - {mov.quantidade} - {mov.data_hora}")
     return render(request, 'relatorio_movimentacao_entrada.html', {'movimentacoes': movimentacoes})
 
 @login_required_custom
 def relatorio_movimentacao_saida(request):
-    movimentacoes = MovimentacaoEstoque.objects.filter(tipo='SAIDA').order_by('-data_hora')
+    movimentacoes = MovimentacaoEstoque.objects.filter(tipo='SAIDA').select_related('produto', 'produto__fornecedor').order_by('-data_hora')
     return render(request, 'relatorio_movimentacao_saida.html', {'movimentacoes': movimentacoes})
 import random
 import string
