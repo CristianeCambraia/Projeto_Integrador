@@ -24,21 +24,25 @@
     {% csrf_token %}
     
     <!-- Barra de pesquisa -->
-    <form method="GET" class="barra-pesquisa">
-        {% csrf_token %}
-        <input type="text" name="q" placeholder="Buscar por produto, fornecedor, descrição ou código de barras" value="{{ request.GET.q }}">
-        <select name="periodo" style="margin-left: 10px; padding: 8px; font-size: 12px; border: 1px solid #ddd; border-radius: 3px;">
-            <option value="">Todos</option>
-            <option value="1" {% if request.GET.periodo == '1' %}selected{% endif %}>Último dia</option>
-            <option value="7" {% if request.GET.periodo == '7' %}selected{% endif %}>Últimos 7 dias</option>
-            <option value="30" {% if request.GET.periodo == '30' %}selected{% endif %}>Últimos 30 dias</option>
-        </select>
-        <button type="submit" class="btn-pesquisar">Pesquisar</button>
-        <a href="{% url 'relatorio_estoque' %}" class="btn" style="background: #6c757d; margin-left: 10px; padding: 8px 12px; font-size: 12px;">Limpar</a>
-        <button type="button" onclick="window.print()" class="btn" style="background: #17a2b8; margin-left: 10px; padding: 8px 12px; font-size: 12px;">Imprimir</button>
-        <button type="button" onclick="enviarEmail()" class="btn" style="background: #28a745; margin-left: 10px; padding: 8px 12px; font-size: 12px;">Email</button>
-        <a href="{% url 'exportar_estoque_pdf' %}?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.periodo %}periodo={{ request.GET.periodo }}{% endif %}" class="btn" style="background: #dc3545; margin-left: 10px; padding: 8px 12px; font-size: 12px;">PDF</a>
-    </form>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <form method="GET" style="display: flex; align-items: center; gap: 10px;">
+            {% csrf_token %}
+            <input type="text" name="q" placeholder="Buscar por produto, fornecedor, descrição ou código de barras" value="{{ request.GET.q }}" style="width: 400px; padding: 8px; border: 1px solid #ddd; border-radius: 3px;">
+            <select name="periodo" style="padding: 8px; font-size: 12px; border: 1px solid #ddd; border-radius: 3px;">
+                <option value="">Todos</option>
+                <option value="1" {% if request.GET.periodo == '1' %}selected{% endif %}>Último dia</option>
+                <option value="7" {% if request.GET.periodo == '7' %}selected{% endif %}>Últimos 7 dias</option>
+                <option value="30" {% if request.GET.periodo == '30' %}selected{% endif %}>Últimos 30 dias</option>
+            </select>
+            <button type="submit" class="btn-pesquisar">Pesquisar</button>
+            <a href="{% url 'relatorio_estoque' %}" class="btn" style="background: #6c757d; padding: 8px 12px; font-size: 12px;">Limpar</a>
+        </form>
+        <div style="display: flex; gap: 10px;">
+            <button type="button" onclick="window.print()" class="btn" style="background: #17a2b8; padding: 8px 12px; font-size: 12px;">Imprimir</button>
+            <button type="button" onclick="enviarEmail()" class="btn" style="background: #28a745; padding: 8px 12px; font-size: 12px;">Email</button>
+            <a href="{% url 'exportar_estoque_pdf' %}?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.periodo %}periodo={{ request.GET.periodo }}{% endif %}" class="btn" style="background: #dc3545; padding: 8px 12px; font-size: 12px;">PDF</a>
+        </div>
+    </div>
 
     <!-- Tabela -->
     <table class="tabela-estoque">
