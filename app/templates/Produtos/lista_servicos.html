@@ -1,13 +1,6 @@
 {% extends 'base.html' %}
 
 {% block content %}
-{% if messages %}
-{% for message in messages %}
-<div style="text-align: center; margin: 20px 0;">
-  <div class="alert alert-{{ message.tags }}" style="display: inline-block; width: auto; padding: 10px 20px;">{{ message }}</div>
-</div>
-{% endfor %}
-{% endif %}
 <div class="container-lista-orcamentos">
   <h2>Serviços Cadastrados</h2>
   

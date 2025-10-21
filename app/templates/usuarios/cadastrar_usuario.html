@@ -28,9 +28,11 @@
             {% if field.name == 'email' %}
               <input type="email" name="{{ field.name }}" id="{{ field.id_for_label }}" placeholder="Digite seu email" autocomplete="off" style="width: 100%; height: 45px; padding: 12px 15px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; transition: border-color 0.3s ease; box-sizing: border-box;">
             {% elif field.name == 'telefone' %}
-              <input type="tel" name="{{ field.name }}" id="{{ field.id_for_label }}" placeholder="Digite seu telefone" autocomplete="off" style="width: 100%; height: 45px; padding: 12px 15px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; transition: border-color 0.3s ease; box-sizing: border-box;">
+              <input type="tel" name="{{ field.name }}" id="{{ field.id_for_label }}" placeholder="(XX) XXXXX-XXXX" autocomplete="off" maxlength="15" style="width: 100%; height: 45px; padding: 12px 15px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; transition: border-color 0.3s ease; box-sizing: border-box;" oninput="formatarTelefone(this)" onkeypress="return somenteNumeros(event)">
             {% elif field.name == 'senha' %}
               <input type="password" name="{{ field.name }}" id="{{ field.id_for_label }}" placeholder="Digite sua senha" autocomplete="new-password" style="width: 100%; height: 45px; padding: 12px 15px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; transition: border-color 0.3s ease; box-sizing: border-box;">
+            {% elif field.name == 'data_nascimento' %}
+              <input type="date" name="{{ field.name }}" id="{{ field.id_for_label }}" style="width: 100%; height: 45px; padding: 12px 15px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; transition: border-color 0.3s ease; box-sizing: border-box;" onchange="validarIdade(this)">
             {% else %}
               {{ field }}
             {% endif %}
@@ -46,6 +48,7 @@
         <ul style="margin: 0; padding-left: 20px; color: #666; font-size: 14px;">
           <li>Sua senha deve ter pelo menos 8 caracteres</li>
           <li>O email será usado para login no sistema</li>
+          <li>Você deve ter pelo menos 18 anos para se cadastrar</li>
           <li>Mantenha seus dados sempre atualizados</li>
         </ul>
       </div>
@@ -102,5 +105,63 @@
     box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 </style>
+
+<script>
+function somenteNumeros(event) {
+    const char = String.fromCharCode(event.which);
+    if (!/[0-9]/.test(char)) {
+        event.preventDefault();
+    }
+}
+
+function formatarTelefone(input) {
+    let valor = input.value.replace(/\D/g, '');
+    
+    if (valor.length > 11) {
+        valor = valor.substring(0, 11);
+    }
+    
+    if (valor.length <= 10) {
+        valor = valor.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
+    } else {
+        valor = valor.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+    }
+    
+    input.value = valor;
+}
+
+function validarIdade(input) {
+    const dataNascimento = new Date(input.value);
+    const hoje = new Date();
+    const idade = hoje.getFullYear() - dataNascimento.getFullYear();
+    const mesAtual = hoje.getMonth();
+    const diaAtual = hoje.getDate();
+    const mesNascimento = dataNascimento.getMonth();
+    const diaNascimento = dataNascimento.getDate();
+    
+    let idadeReal = idade;
+    if (mesAtual < mesNascimento || (mesAtual === mesNascimento && diaAtual < diaNascimento)) {
+        idadeReal--;
+    }
+    
+    if (idadeReal < 18) {
+        const errorDiv = document.createElement('div');
+        errorDiv.style.cssText = 'background-color: #f8d7da; color: #721c24; padding: 10px; border: 1px solid #f5c6cb; border-radius: 5px; margin-top: 10px; font-size: 14px;';
+        errorDiv.textContent = 'Você deve ter pelo menos 18 anos para se cadastrar.';
+        
+        const existingError = input.parentNode.querySelector('.error-message');
+        if (existingError) existingError.remove();
+        
+        errorDiv.className = 'error-message';
+        input.parentNode.appendChild(errorDiv);
+        input.value = '';
+        
+        setTimeout(() => errorDiv.remove(), 5000);
+    } else {
+        const existingError = input.parentNode.querySelector('.error-message');
+        if (existingError) existingError.remove();
+    }
+}
+</script>
 {% endblock %}
 

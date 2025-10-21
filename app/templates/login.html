@@ -56,12 +56,6 @@
       </div>
       {% endif %}
 
-      {% if messages %}
-      {% for message in messages %}
-      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-      {% endfor %}
-      {% endif %}
-
       <button class="btn-login" type="submit">Login</button>
     </form>
 

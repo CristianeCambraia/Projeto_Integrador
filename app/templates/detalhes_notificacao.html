@@ -2,7 +2,7 @@
 
 {% block content %}
 <div style="max-width: 800px; margin: 20px auto; padding: 20px;">
-    <h2 style="color: #333; margin-bottom: 20px;">📋 Detalhes da Notificação</h2>
+    <h2 style="color: white; margin-bottom: 20px;">📋 Detalhes da Notificação</h2>
     
     <div style="background: #f8f9fa; border-left: 4px solid {% if tipo == 'VALIDADE' %}#ffc107{% elif tipo == 'ESTOQUE_CRITICO' %}#dc3545{% else %}#17a2b8{% endif %}; padding: 20px; margin-bottom: 20px; border-radius: 5px;">
         <h3 style="margin: 0 0 10px 0; color: {% if tipo == 'VALIDADE' %}#856404{% elif tipo == 'ESTOQUE_CRITICO' %}#721c24{% else %}#0c5460{% endif %};">
@@ -14,7 +14,7 @@
     </div>
 
     <div style="background: white; border: 1px solid #ddd; border-radius: 8px; padding: 20px;">
-        <h4 style="margin: 0 0 15px 0; color: #333;">Informações do Produto</h4>
+        <h4 style="margin: 0 0 15px 0; color: white;">Informações do Produto</h4>
         
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
             <div>
