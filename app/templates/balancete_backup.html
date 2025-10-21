@@ -14,7 +14,8 @@
     <h2 class="titulo screen-only">Balancete Financeiro</h2>
     
     <div class="print-info" style="display: none;">
-        <h3 style="text-align: center; margin: 0; color: #026a84; font-size: 24px;">Balancete Financeiro</h3>
+        <h3 style="text-align: center; margin: 0 0 10px 0; color: #026a84; font-size: 24px;">Balancete Financeiro</h3>
+        <p style="text-align: center; margin: 0; color: #026a84;">{{ titulo_periodo }}</p>
     </div>
 
     <!-- Filtro de Período e Botões -->
@@ -38,8 +39,8 @@
 
     <!-- Resumo do Período -->
     <div style="background: #f8f9fa; padding: 20px; border-radius: 5px; margin-bottom: 30px;">
-        <h3 style="margin-top: 0; margin-bottom: 5px; color: #495057;">{{ titulo_periodo }}</h3>
-        <p style="margin: 0; color: #6c757d;">Relatório gerado em: {{ data_atual }}</p>
+        <h3 style="margin-top: 0; color: #495057;">{{ titulo_periodo }}</h3>
+        <p style="margin: 5px 0; color: #6c757d;">Relatório gerado em: {{ data_atual }}</p>
     </div>
 
     <!-- Cards de Resumo -->
@@ -198,17 +199,13 @@
         background: #e8e8e8 !important;
         padding: 15px;
         margin-bottom: 20px;
-        border-radius: 0;
-        margin-top: 160px;
+        border-radius: 5px;
+        margin-top: 130px;
     }
     .estoque-container {
         margin-top: 0 !important;
-        margin-left: 20px !important;
         padding: 20px;
         position: relative;
-    }
-    .print-info {
-        margin-left: 20px !important;
     }
     .print-header h1 {
         color: rgba(255, 255, 255, 0.3) !important;
@@ -243,19 +240,6 @@
     div[style*="grid-template-columns"] small {
         font-size: 10px !important;
     }
-    div[style*="margin-bottom: 30px"] {
-        margin-bottom: 5px !important;
-    }
-    * {
-        border-radius: 0 !important;
-    }
-    .print-info {
-        border-radius: 0 !important;
-    }
-    div {
-        border-radius: 0 !important;
-    }
-
 }
 </style>
 
