@@ -123,7 +123,24 @@ function validateAge(input) {
     }
     
     if (age < 18) {
-        alert('Erro: Por favor, insira uma data válida. A idade deve ser maior ou igual a 18 anos.');
+        // Criar mensagem de erro no padrão do sistema
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'alert alert-error';
+        messageDiv.style.cssText = 'background-color: #f8d7da; color: #721c24; padding: 10px; margin: 10px 0; border: 1px solid #f5c6cb; border-radius: 4px;';
+        messageDiv.innerHTML = 'Erro: Por favor, insira uma data válida. A idade deve ser maior ou igual a 18 anos.';
+        
+        // Inserir mensagem no topo do formulário
+        const form = input.closest('form');
+        const firstChild = form.firstElementChild;
+        form.insertBefore(messageDiv, firstChild);
+        
+        // Remover mensagem após 5 segundos
+        setTimeout(() => {
+            if (messageDiv.parentNode) {
+                messageDiv.parentNode.removeChild(messageDiv);
+            }
+        }, 5000);
+        
         input.value = '';
         input.focus();
     }
