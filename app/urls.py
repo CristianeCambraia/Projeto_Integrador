@@ -88,6 +88,10 @@ urlpatterns = [
     path('notificacao/<int:produto_id>/<str:tipo>/', views.detalhes_notificacao, name='detalhes_notificacao'),
     
     # ----- DEBUG -----
-    path('debug/produtos/', views.debug_produtos, name='debug_produtos')
+    path('debug/produtos/', views.debug_produtos, name='debug_produtos'),
+    
+    # ----- ESTOQUE PDF/EMAIL -----
+    path('estoque/pdf/', views.exportar_estoque_pdf, name='exportar_estoque_pdf'),
+    path('enviar-estoque-email/', views.enviar_estoque_email, name='enviar_estoque_email')
 
 ]

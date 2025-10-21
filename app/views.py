@@ -1324,6 +1324,132 @@ def marcar_todas_lidas(request):
     
     return JsonResponse({'success': False})
 
+# ----- EXPORTAR ESTOQUE PDF -----
+def exportar_estoque_pdf(request):
+    busca = request.GET.get('q')
+    if busca:
+        produtos = Produto.objects.filter(
+            models.Q(nome__icontains=busca) |
+            models.Q(fornecedor__nome__icontains=busca) |
+            models.Q(descricao__icontains=busca) |
+            models.Q(codigo_barras__icontains=busca)
+        )
+    else:
+        produtos = Produto.objects.all()
+    
+    produtos_com_movimentacao = []
+    for produto in produtos:
+        ultima_entrada = MovimentacaoEstoque.objects.filter(
+            produto=produto, tipo='ENTRADA'
+        ).order_by('-data_hora').first()
+        
+        ultima_saida = MovimentacaoEstoque.objects.filter(
+            produto=produto, tipo='SAIDA'
+        ).order_by('-data_hora').first()
+        
+        produto.ultima_entrada = ultima_entrada
+        produto.ultima_saida = ultima_saida
+        produtos_com_movimentacao.append(produto)
+    
+    import os
+    from datetime import datetime
+    static_root = getattr(settings, 'STATIC_ROOT', None) or os.path.join(settings.BASE_DIR, 'static')
+    
+    context = {
+        'produtos': produtos_com_movimentacao,
+        'busca': busca,
+        'data_atual': datetime.now().strftime('%d/%m/%Y %H:%M'),
+        'STATIC_ROOT': static_root
+    }
+    
+    template = get_template('estoque_pdf.html')
+    html = template.render(context)
+    
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="relatorio_estoque.pdf"'
+    
+    pisa_status = pisa.CreatePDF(html, dest=response)
+    
+    if pisa_status.err:
+        return HttpResponse('Erro ao gerar PDF', status=500)
+    
+    return response
+
+@csrf_exempt
+def enviar_estoque_email(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            email_destino = data.get('email')
+            busca = data.get('busca', '')
+            
+            if not email_destino:
+                return JsonResponse({'success': False, 'error': 'Email não informado'})
+            
+            if busca:
+                produtos = Produto.objects.filter(
+                    models.Q(nome__icontains=busca) |
+                    models.Q(fornecedor__nome__icontains=busca) |
+                    models.Q(descricao__icontains=busca) |
+                    models.Q(codigo_barras__icontains=busca)
+                )
+            else:
+                produtos = Produto.objects.all()
+            
+            produtos_com_movimentacao = []
+            for produto in produtos:
+                ultima_entrada = MovimentacaoEstoque.objects.filter(
+                    produto=produto, tipo='ENTRADA'
+                ).order_by('-data_hora').first()
+                
+                ultima_saida = MovimentacaoEstoque.objects.filter(
+                    produto=produto, tipo='SAIDA'
+                ).order_by('-data_hora').first()
+                
+                produto.ultima_entrada = ultima_entrada
+                produto.ultima_saida = ultima_saida
+                produtos_com_movimentacao.append(produto)
+            
+            import os
+            from datetime import datetime
+            static_root = getattr(settings, 'STATIC_ROOT', None) or os.path.join(settings.BASE_DIR, 'static')
+            
+            context = {
+                'produtos': produtos_com_movimentacao,
+                'busca': busca,
+                'data_atual': datetime.now().strftime('%d/%m/%Y %H:%M'),
+                'STATIC_ROOT': static_root
+            }
+            
+            template = get_template('estoque_pdf.html')
+            html = template.render(context)
+            
+            from io import BytesIO
+            pdf_buffer = BytesIO()
+            pisa_status = pisa.CreatePDF(html, dest=pdf_buffer)
+            
+            if pisa_status.err:
+                return JsonResponse({'success': False, 'error': 'Erro ao gerar PDF'})
+            
+            pdf_buffer.seek(0)
+            
+            from django.core.mail import EmailMessage
+            email = EmailMessage(
+                'Relatório de Estoque - INSUMED',
+                f'Segue em anexo o relatório de estoque.\n\nTotal de produtos: {len(produtos_com_movimentacao)}\n\nAtenciosamente,\nEquipe INSUMED',
+                settings.DEFAULT_FROM_EMAIL,
+                [email_destino]
+            )
+            email.attach('relatorio_estoque.pdf', pdf_buffer.getvalue(), 'application/pdf')
+            email.send()
+            
+            return JsonResponse({'success': True})
+            
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+    
+    return JsonResponse({'success': False, 'error': 'Método não permitido'})
+
 # ----- TESTE DEBUG -----
 def debug_produtos(request):
     """View de debug para verificar produtos"""

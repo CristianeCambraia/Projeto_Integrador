@@ -3,13 +3,29 @@
 
 {% block content %}
 <div class="estoque-container" style="max-width: 95%; width: 95%; margin: 0 auto;">
-    <h2 class="titulo">Relatório de Estoque</h2>
+    <div class="print-header" style="display: none;">
+        <div style="text-align: center; margin-bottom: 30px;">
+            <h2>INSUMED - Sistema de Gestão</h2>
+            <h3>Relatório de Estoque</h3>
+            <p id="data-geracao"></p>
+            {% if request.GET.q %}<p>Filtro aplicado: "{{ request.GET.q }}"</p>{% endif %}
+        </div>
+    </div>
+    
+    <h2 class="titulo screen-only">Relatório de Estoque</h2>
 
+    <!-- Token CSRF oculto -->
+    {% csrf_token %}
+    
     <!-- Barra de pesquisa -->
     <form method="GET" class="barra-pesquisa">
+        {% csrf_token %}
         <input type="text" name="q" placeholder="Buscar por produto, fornecedor, descrição ou código de barras" value="{{ request.GET.q }}">
         <button type="submit" class="btn-pesquisar">Pesquisar</button>
-        <a href="{% url 'relatorio_estoque' %}" class="btn" style="background: #6c757d; margin-left: 10px;">Limpar</a>
+        <a href="{% url 'relatorio_estoque' %}" class="btn" style="background: #6c757d; margin-left: 10px; padding: 8px 12px; font-size: 12px;">Limpar</a>
+        <button type="button" onclick="window.print()" class="btn" style="background: #17a2b8; margin-left: 10px; padding: 8px 12px; font-size: 12px;">Imprimir</button>
+        <button type="button" onclick="enviarEmail()" class="btn" style="background: #28a745; margin-left: 10px; padding: 8px 12px; font-size: 12px;">Email</button>
+        <a href="{% url 'exportar_estoque_pdf' %}{% if request.GET.q %}?q={{ request.GET.q }}{% endif %}" class="btn" style="background: #dc3545; margin-left: 10px; padding: 8px 12px; font-size: 12px;">PDF</a>
     </form>
 
     <!-- Tabela -->
@@ -32,7 +48,10 @@
             <tr>
                 <td>{{ produto.fornecedor.nome }}</td>
                 <td>{{ produto.nome }}</td>
-                <td>{{ produto.data_hora|date:"d/m/Y H:i" }}</td>
+                <td>
+                    {{ produto.data_hora|date:"d/m/Y H:i" }}<br>
+                    <small>({{ produto.quantidade }} inicial)</small>
+                </td>
                 <td>
                     {% if produto.ultima_entrada %}
                         {{ produto.ultima_entrada.data_hora|date:"d/m/Y H:i" }}
@@ -69,7 +88,13 @@
             {% endfor %}
         </tbody>
     </table>
-
+    
+    <div class="print-footer" style="display: none;">
+        <div style="margin-top: 30px; font-size: 12px; color: #666;">
+            <p>Total de produtos: <span id="total-produtos">{{ produtos|length }}</span></p>
+            <p>Relatório gerado automaticamente pelo Sistema INSUMED</p>
+        </div>
+    </div>
 
     <!-- Botões -->
     <div class="botoes">
@@ -96,7 +121,114 @@ function toggleDescricaoTabela(btn) {
         btn.textContent = '-';
     }
 }
+</script>
 
+<style>
+@media print {
+    * {
+        visibility: hidden;
+    }
+    .estoque-container, .estoque-container * {
+        visibility: visible;
+    }
+    .barra-pesquisa, .botoes, .screen-only {
+        display: none !important;
+    }
+    .print-header, .print-footer {
+        display: block !important;
+    }
+    .estoque-container {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        max-width: 100%;
+    }
+    body {
+        margin: 0;
+        padding: 0;
+    }
+    table {
+        font-size: 10px;
+        width: 100%;
+    }
+    th, td {
+        padding: 4px;
+    }
+}
+</style>
 
+<script>
+// Atualizar data/hora atual
+document.addEventListener('DOMContentLoaded', function() {
+    const agora = new Date();
+    const dataFormatada = agora.toLocaleString('pt-BR', {
+        day: '2-digit',
+        month: '2-digit', 
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+    const elementoData = document.getElementById('data-geracao');
+    if (elementoData) {
+        elementoData.textContent = 'Data: ' + dataFormatada;
+    }
+});
+
+function enviarEmail() {
+    const email = prompt('Digite o email de destino:');
+    if (email) {
+        const busca = new URLSearchParams(window.location.search).get('q') || '';
+        
+        // Obter CSRF token
+        let csrfToken = '';
+        const csrfInput = document.querySelector('[name=csrfmiddlewaretoken]');
+        if (csrfInput) {
+            csrfToken = csrfInput.value;
+        } else {
+            // Tentar obter do cookie
+            const cookies = document.cookie.split(';');
+            for (let cookie of cookies) {
+                const [name, value] = cookie.trim().split('=');
+                if (name === 'csrftoken') {
+                    csrfToken = value;
+                    break;
+                }
+            }
+        }
+        
+        fetch('/enviar-estoque-email/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken
+            },
+            body: JSON.stringify({email: email, busca: busca})
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Erro na requisição: ' + response.status);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                // Criar mensagem de sucesso no estilo padrão
+                const mensagem = document.createElement('div');
+                mensagem.className = 'alert alert-success';
+                mensagem.style.cssText = 'position: fixed; top: 80px; right: 20px; z-index: 9999; background: white; color: #28a745; border: 2px solid #28a745; padding: 15px 20px; border-radius: 5px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); font-weight: bold;';
+                mensagem.textContent = 'Relatório enviado por email com sucesso!';
+                document.body.appendChild(mensagem);
+                setTimeout(() => mensagem.remove(), 4000);
+            } else {
+                alert('Erro ao enviar email: ' + (data.error || 'Erro desconhecido'));
+            }
+        })
+        .catch(error => {
+            console.error('Erro:', error);
+            alert('Erro ao enviar email: ' + error.message);
+        });
+    }
+}
 </script>
 {% endblock %}
