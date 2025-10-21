@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block content %}
-<div class="estoque-container">
+<div class="estoque-container" style="max-width: 95%; width: 95%; margin: 0 auto;">
     <h2 class="titulo">Relatório de Estoque</h2>
 
     <!-- Barra de pesquisa -->
@@ -18,10 +18,12 @@
             <tr>
                 <th>Fornecedor</th>
                 <th>Produto</th>
-                <th>Quantidade</th>
+                <th>Qtd Cadastrada</th>
+                <th>Última Entrada</th>
+                <th>Última Saída</th>
+                <th>Estoque Atual</th>
                 <th>Unidade</th>
                 <th>Preço</th>
-                <th>Data/Hora</th>
                 <th>Descrição</th>
             </tr>
         </thead>
@@ -30,10 +32,26 @@
             <tr>
                 <td>{{ produto.fornecedor.nome }}</td>
                 <td>{{ produto.nome }}</td>
-                <td>{{ produto.quantidade }}</td>
-                <td>{{ produto.unidade }}</td>
-                <td>{{ produto.preco }}</td>
                 <td>{{ produto.data_hora|date:"d/m/Y H:i" }}</td>
+                <td>
+                    {% if produto.ultima_entrada %}
+                        {{ produto.ultima_entrada.data_hora|date:"d/m/Y H:i" }}
+                        <small>(+{{ produto.ultima_entrada.quantidade }})</small>
+                    {% else %}
+                        <small>Sem entrada</small>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if produto.ultima_saida %}
+                        {{ produto.ultima_saida.data_hora|date:"d/m/Y H:i" }}
+                        <small>(-{{ produto.ultima_saida.quantidade }})</small>
+                    {% else %}
+                        <small>Sem saída</small>
+                    {% endif %}
+                </td>
+                <td><strong>{{ produto.quantidade }}</strong></td>
+                <td>{{ produto.unidade }}</td>
+                <td>R$ {{ produto.preco }}</td>
                 <td class="descricao-cell">
                     {% if produto.descricao %}
                         <span class="descricao-preview">{{ produto.descricao|truncatechars:30 }}</span>
@@ -47,7 +65,7 @@
                 </td>
             </tr>
             {% empty %}
-            <tr><td colspan="7">Nenhum produto encontrado</td></tr>
+            <tr><td colspan="9">Nenhum produto encontrado</td></tr>
             {% endfor %}
         </tbody>
     </table>

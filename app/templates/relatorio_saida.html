@@ -28,6 +28,7 @@
                     <th>Produto</th>
                     <th>Descrição</th>
                     <th>Estoque Atual</th>
+                    <th>Última Saída</th>
                     <th>Qtd Retirada</th>
                     <th>Unidade</th>
                 </tr>
@@ -49,6 +50,14 @@
                         {% endif %}
                     </td>
                     <td><strong>{{ produto.quantidade }}</strong></td>
+                    <td>
+                        {% if produto.ultima_saida %}
+                            {{ produto.ultima_saida.data_hora|date:"d/m/Y H:i" }}
+                            <small>(-{{ produto.ultima_saida.quantidade }})</small>
+                        {% else %}
+                            <small>Primeira saída</small>
+                        {% endif %}
+                    </td>
                     <td>
                         <input type="number" name="quantidade_{{ produto.id }}" min="0" value="0" style="width: 80px;">
                     </td>

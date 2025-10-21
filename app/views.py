@@ -497,17 +497,38 @@ def relatorio_estoque(request):
     else:
         produtos = Produto.objects.all()
     
-    return render(request, 'relatorio_estoque.html', {'produtos': produtos})
+    # Adicionar informações de movimentação para cada produto
+    produtos_com_movimentacao = []
+    for produto in produtos:
+        ultima_entrada = MovimentacaoEstoque.objects.filter(
+            produto=produto, tipo='ENTRADA'
+        ).order_by('-data_hora').first()
+        
+        ultima_saida = MovimentacaoEstoque.objects.filter(
+            produto=produto, tipo='SAIDA'
+        ).order_by('-data_hora').first()
+        
+        produto.ultima_entrada = ultima_entrada
+        produto.ultima_saida = ultima_saida
+        produtos_com_movimentacao.append(produto)
+    
+    return render(request, 'relatorio_estoque.html', {'produtos': produtos_com_movimentacao})
 
 def relatorio_entrada(request):
     produtos = Produto.objects.all()
-    print(f"Relatório entrada: {produtos.count()} produtos carregados")  # Debug
     
-    # Debug: listar alguns produtos
-    for produto in produtos[:5]:
-        print(f"Produto entrada: {produto.id} - {produto.nome}")  # Debug
+    # Adicionar informações de última entrada
+    produtos_com_entrada = []
+    for produto in produtos:
+        ultima_entrada = MovimentacaoEstoque.objects.filter(
+            produto=produto, tipo='ENTRADA'
+        ).order_by('-data_hora').first()
+        
+        produto.ultima_entrada = ultima_entrada
+        produtos_com_entrada.append(produto)
 
     if request.method == "POST":
+        produtos = produtos_com_entrada  # Usar a lista com informações de entrada
         for produto in produtos:
             qtd_recebida = request.POST.get(f"quantidade_{produto.id}")
             if qtd_recebida and qtd_recebida.isdigit() and int(qtd_recebida) > 0:
@@ -524,18 +545,24 @@ def relatorio_entrada(request):
                 )
         return redirect('relatorio_entrada')
 
-    return render(request, 'relatorio_entrada.html', {'produtos': produtos})
+    return render(request, 'relatorio_entrada.html', {'produtos': produtos_com_entrada})
 
 
 def relatorio_saida(request):
     produtos = Produto.objects.all()
-    print(f"Relatório saída: {produtos.count()} produtos carregados")  # Debug
     
-    # Debug: listar alguns produtos
-    for produto in produtos[:5]:
-        print(f"Produto saída: {produto.id} - {produto.nome}")  # Debug
+    # Adicionar informações de última saída
+    produtos_com_saida = []
+    for produto in produtos:
+        ultima_saida = MovimentacaoEstoque.objects.filter(
+            produto=produto, tipo='SAIDA'
+        ).order_by('-data_hora').first()
+        
+        produto.ultima_saida = ultima_saida
+        produtos_com_saida.append(produto)
 
     if request.method == "POST":
+        produtos = produtos_com_saida  # Usar a lista com informações de saída
         for produto in produtos:
             qtd_retirada = request.POST.get(f"quantidade_{produto.id}")
             if qtd_retirada and int(qtd_retirada) > 0:
@@ -556,7 +583,7 @@ def relatorio_saida(request):
 
         return redirect("relatorio_saida")
 
-    return render(request, "relatorio_saida.html", {"produtos": produtos})
+    return render(request, "relatorio_saida.html", {"produtos": produtos_com_saida})
 
 # ----- SUPORTE -----
 def criar_suporte(request):
