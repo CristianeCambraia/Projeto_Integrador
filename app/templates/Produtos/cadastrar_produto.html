@@ -38,7 +38,7 @@
         </div>
         <div>
           <label for="id_validade" style="display: block; margin-bottom: 5px; font-weight: bold; text-align: center;">Data de Validade:</label>
-          {{ form.validade }}
+          <input type="date" name="validade" id="id_validade" style="width: 100%; height: 45px; padding: 12px 15px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; transition: border-color 0.3s ease; box-sizing: border-box;">
         </div>
         {{ form.descricao }}
         {{ form.observacao }}
@@ -137,6 +137,27 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Bloquear datas anteriores no calendário
+    const validadeField = document.getElementById('id_validade');
+    if (validadeField) {
+        const hoje = new Date();
+        const ano = hoje.getFullYear();
+        const mes = String(hoje.getMonth() + 1).padStart(2, '0');
+        const dia = String(hoje.getDate()).padStart(2, '0');
+        const dataHoje = `${ano}-${mes}-${dia}`;
+        
+        validadeField.min = dataHoje;
+        console.log('Data mínima definida:', dataHoje);
+        
+        // Mensagem personalizada para data inválida
+        validadeField.addEventListener('invalid', function() {
+            this.setCustomValidity('Cadastre um produto com data válida, esse está vencido!');
+        });
+        
+        validadeField.addEventListener('input', function() {
+            this.setCustomValidity('');
+        });
+    }
     const codigoBarrasField = document.getElementById('id_codigo_barras');
     const startScanBtn = document.getElementById('startScan');
     const stopScanBtn = document.getElementById('stopScan');
@@ -286,6 +307,10 @@ document.addEventListener('DOMContentLoaded', function() {
         // Manter foco para receber dados automaticamente
         setTimeout(() => this.focus(), 100);
     });
+    
+
+    
+
 });
 
 
