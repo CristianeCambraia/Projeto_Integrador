@@ -133,6 +133,18 @@
     direction: ltr !important;
     text-align: right !important;
   }
+  
+  div.emitir-orcamento-container {
+    border-radius: 0 !important;
+    border-top-left-radius: 0 !important;
+    border-top-right-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+  }
+  
+  div[style*="border-radius"] {
+    border-radius: 0 !important;
+  }
 }
 
 .print-header {
@@ -443,5 +455,11 @@ async function abrirModalEmail(orcamentoId) {
     }
 }
 </script>
+
+<style>
+.emitir-orcamento-container {
+    border-radius: 30px 30px 30px 30px !important;
+}
+</style>
 
 {% endblock %}
