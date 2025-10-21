@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="estoque-container">
+<div class="estoque-container" style="max-width: 95%; width: 95%; margin: 20px auto 0 auto;">
     <h2 class="titulo">Relatório de Movimentações - Entrada</h2>
 
     <table class="tabela-estoque">
@@ -34,4 +34,10 @@
         <a href="{% url 'relatorio_movimentacao_saida' %}" class="btn">Ver Saídas</a>
     </div>
 </div>
+
+<style>
+.estoque-container {
+    border-radius: 30px 30px 30px 30px !important;
+}
+</style>
 {% endblock %}

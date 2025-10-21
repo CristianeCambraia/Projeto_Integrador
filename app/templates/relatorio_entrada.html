@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="estoque-container">
+<div class="estoque-container" style="max-width: 95%; width: 95%; margin: 20px auto 0 auto;">
     <h2 class="titulo">Lançamento de Entrada</h2>
     
     <!-- Campo de Código de Barras -->
@@ -228,4 +228,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
+
+<style>
+.estoque-container {
+    border-radius: 30px 30px 30px 30px !important;
+}
+</style>
 {% endblock %}

@@ -27,8 +27,8 @@
     <div class="search-controls" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
         <form method="GET" style="display: flex; align-items: center; gap: 10px;">
             {% csrf_token %}
-            <input type="text" name="q" placeholder="Buscar por produto, fornecedor, descrição ou código de barras" value="{{ request.GET.q }}" style="width: 400px; padding: 12px; height: 45px; border: 1px solid #ddd; border-radius: 3px; font-size: 14px;">
-            <select name="periodo" style="padding: 12px; height: 45px; font-size: 14px; border: 1px solid #ddd; border-radius: 3px;">
+            <input type="text" name="q" placeholder="Buscar por produto, fornecedor, descrição ou código de barras" value="{{ request.GET.q }}" style="width: 450px; padding: 8px; height: 35px; border: 1px solid #ddd; border-radius: 15px; font-size: 14px;">
+            <select name="periodo" style="padding: 12px; height: 45px; font-size: 14px; border: 1px solid #ddd; border-radius: 8px;">
                 <option value="">Todos</option>
                 <option value="1" {% if request.GET.periodo == '1' %}selected{% endif %}>Último dia</option>
                 <option value="7" {% if request.GET.periodo == '7' %}selected{% endif %}>Últimos 7 dias</option>
