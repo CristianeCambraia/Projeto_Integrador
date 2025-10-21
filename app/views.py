@@ -257,8 +257,17 @@ def salvar_cliente(request):
 
 
 def lista_cliente(request):
-    clientes = Cliente.objects.all()
-    return render(request, 'lista_cliente.html', {'clientes': clientes})
+    filtro = request.GET.get('filtro')
+    
+    if filtro:
+        clientes = Cliente.objects.filter(nome__icontains=filtro).order_by('nome')
+    else:
+        clientes = Cliente.objects.all().order_by('nome')
+    
+    return render(request, 'lista_cliente.html', {
+        'clientes': clientes,
+        'filtro': filtro
+    })
 
 
 # ----- ORÇAMENTOS ----

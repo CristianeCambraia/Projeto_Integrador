@@ -14,7 +14,7 @@
                 <option value="30" {% if request.GET.periodo == '30' %}selected{% endif %}>Últimos 30 dias</option>
             </select>
             <button type="submit" class="btn-filtrar">Filtrar</button>
-            <a href="{% url 'lista_produtos' %}" class="btn-limpar">Limpar</a>
+            <a href="{% url 'lista_produtos' %}" class="btn-limpar" style="background: #6c757d;">Limpar</a>
         </form>
     </div>
     
@@ -63,8 +63,9 @@
     </script>
 
     <!-- Corrigido para a URL correta da view de cadastro -->
-    <div style="margin-left: 5px;">
+    <div style="margin-left: 5px; display: flex; gap: 10px;">
         <a href="{% url 'cadastrar_produto' %}" class="btn-salvar">Novo Produto</a>
+        <a href="{% url 'fornecedores' %}" class="btn-voltar">Voltar ⤴</a>
     </div>
 </div>
 {% endblock %}

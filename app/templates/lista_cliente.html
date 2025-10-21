@@ -2,7 +2,16 @@
 
 {% block content %}
 <div class="lista-container">
-    <h2 class="titulo">Clientes Cadastrados</h2>
+    <h2 class="titulo" style="margin-bottom: 30px;">Clientes Cadastrados</h2>
+
+    <!-- Filtro por nome -->
+    <div style="display: flex; justify-content: center; margin-bottom: 20px;">
+        <form method="GET" style="display: flex; align-items: center; gap: 10px;">
+            <input type="text" name="filtro" placeholder="Filtrar por nome do cliente" value="{{ filtro|default:'' }}" style="width: 300px; padding: 8px; border: 1px solid #ddd; border-radius: 3px;">
+            <button type="submit" class="btn" style="background: #007bff; padding: 8px 15px;">Filtrar</button>
+            <a href="{% url 'lista_cliente' %}" class="btn" style="background: #6c757d; padding: 8px 15px;">Limpar</a>
+        </form>
+    </div>
 
     <ul class="lista">
         {% for f in clientes %}
@@ -17,7 +26,7 @@
 
     <div style="display: flex; gap: 10px; justify-content: center;">
         <a href="{% url 'clientes' %}" class="btn-salvar">Novo Cliente</a>
-        <a href="{% url 'clientes' %}" class="btn-voltar">Voltar</a>
+        <a href="{% url 'fornecedores' %}" class="btn-voltar">Voltar ⤴</a>
     </div>
 </div>
 {% endblock %}

@@ -9,7 +9,7 @@
         <form method="get">
             <input type="text" name="filtro" placeholder="Filtrar por ID, Nome ou Telefone" value="{{ filtro|default:'' }}">
             <button type="submit" class="btn-filtrar">Filtrar</button>
-            <a href="{% url 'lista_suporte' %}" class="btn-limpar">Limpar</a>
+            <a href="{% url 'lista_suporte' %}" class="btn-limpar" style="background: #6c757d;">Limpar</a>
         </form>
     </div>
 
@@ -47,7 +47,7 @@
     {% endif %}
 
     <div style="text-align: right;">
-        <button type="button" onclick="location.href='{% url 'home' %}'" class="btn-filtrar">Voltar</button>
+        <button type="button" onclick="location.href='{% url 'home' %}'" class="btn-filtrar">Voltar ⤴</button>
     </div>
 </div>
 {% endblock %}

@@ -15,7 +15,7 @@
     <form method="GET">
       <input type="text" name="filtro" placeholder="Filtrar por ID ou Nome" value="{{ filtro|default:'' }}">
       <button type="submit" class="btn-filtrar">Filtrar</button>
-      <a href="{% url 'lista_servicos' %}" class="btn-limpar">Limpar</a>
+      <a href="{% url 'lista_servicos' %}" class="btn-limpar" style="background: #6c757d;">Limpar</a>
     </form>
   </div>
 

@@ -15,7 +15,7 @@
     <form method="GET">
       <input type="text" name="filtro" placeholder="Filtrar por ID, Nome ou Data (dd/mm/aaaa)" value="{{ filtro|default:'' }}">
       <button type="submit" class="btn-filtrar">Filtrar</button>
-      <a href="{% url 'orcamentos_emitidos' %}" class="btn-limpar">Limpar</a>
+      <a href="{% url 'orcamentos_emitidos' %}" class="btn-limpar" style="background: #6c757d;">Limpar</a>
     </form>
   </div>
 
@@ -83,8 +83,7 @@
           </div>
         </div>
         <div style="margin-top: 15px; text-align: center;">
-          <a href="{% url 'abrir_orcamento' o.id %}" class="btn-info">Abrir</a>
-          <button onclick="abrirModalEmail({{ o.id }})" class="btn-info" style="margin-left: 10px;">Email</button>
+          <a href="{% url 'abrir_orcamento' o.id %}" class="btn-info" style="background: #17a2b8;">Abrir</a>
         </div>
       </li>
     {% empty %}
