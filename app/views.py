@@ -489,12 +489,24 @@ def relatorio_estoque(request):
     busca = request.GET.get('q')
     if busca:
         produtos = Produto.objects.filter(nome__icontains=busca)
+        print(f"Busca '{busca}': {produtos.count()} produtos encontrados")  # Debug
     else:
         produtos = Produto.objects.all()
+        print(f"Sem busca: {produtos.count()} produtos encontrados")  # Debug
+    
+    # Debug: listar alguns produtos
+    for produto in produtos[:5]:
+        print(f"Produto: {produto.id} - {produto.nome}")  # Debug
+    
     return render(request, 'relatorio_estoque.html', {'produtos': produtos})
 
 def relatorio_entrada(request):
     produtos = Produto.objects.all()
+    print(f"Relatório entrada: {produtos.count()} produtos carregados")  # Debug
+    
+    # Debug: listar alguns produtos
+    for produto in produtos[:5]:
+        print(f"Produto entrada: {produto.id} - {produto.nome}")  # Debug
 
     if request.method == "POST":
         for produto in produtos:
@@ -518,6 +530,11 @@ def relatorio_entrada(request):
 
 def relatorio_saida(request):
     produtos = Produto.objects.all()
+    print(f"Relatório saída: {produtos.count()} produtos carregados")  # Debug
+    
+    # Debug: listar alguns produtos
+    for produto in produtos[:5]:
+        print(f"Produto saída: {produto.id} - {produto.nome}")  # Debug
 
     if request.method == "POST":
         for produto in produtos:
@@ -925,9 +942,14 @@ def buscar_produto_por_codigo(request):
             data = json.loads(request.body)
             codigo_barras = data.get('codigo_barras', '').strip()
             
+            print(f"Buscando produto com código: '{codigo_barras}'")  # Debug
+            
             if codigo_barras:
                 try:
+                    # Buscar produto pelo código de barras exato
                     produto = Produto.objects.get(codigo_barras=codigo_barras)
+                    print(f"Produto encontrado: {produto.nome}")  # Debug
+                    
                     return JsonResponse({
                         'encontrado': True,
                         'nome': produto.nome,
@@ -938,13 +960,32 @@ def buscar_produto_por_codigo(request):
                         'observacao': produto.observacao or ''
                     })
                 except Produto.DoesNotExist:
-                    return JsonResponse({'encontrado': False})
+                    print(f"Produto não encontrado com código: '{codigo_barras}'")  # Debug
+                    
+                    # Tentar buscar por código similar (caso tenha espaços ou caracteres extras)
+                    produtos_similares = Produto.objects.filter(codigo_barras__icontains=codigo_barras)
+                    if produtos_similares.exists():
+                        produto = produtos_similares.first()
+                        print(f"Produto similar encontrado: {produto.nome}")  # Debug
+                        
+                        return JsonResponse({
+                            'encontrado': True,
+                            'nome': produto.nome,
+                            'preco': str(produto.preco),
+                            'descricao': produto.descricao or '',
+                            'fornecedor': produto.fornecedor.id if produto.fornecedor else '',
+                            'unidade': produto.unidade,
+                            'observacao': produto.observacao or ''
+                        })
+                    
+                    return JsonResponse({'encontrado': False, 'erro': 'Produto não encontrado'})
             
-            return JsonResponse({'encontrado': False})
-        except:
-            return JsonResponse({'encontrado': False})
+            return JsonResponse({'encontrado': False, 'erro': 'Código vazio'})
+        except Exception as e:
+            print(f"Erro na busca: {str(e)}")  # Debug
+            return JsonResponse({'encontrado': False, 'erro': str(e)})
     
-    return JsonResponse({'encontrado': False})
+    return JsonResponse({'encontrado': False, 'erro': 'Método não permitido'})
 
 # ----- ENVIAR ORÇAMENTO POR EMAIL -----
 @csrf_exempt
@@ -1256,3 +1297,23 @@ def marcar_todas_lidas(request):
         return JsonResponse({'success': True})
     
     return JsonResponse({'success': False})
+
+# ----- TESTE DEBUG -----
+def debug_produtos(request):
+    """View de debug para verificar produtos"""
+    produtos = Produto.objects.all()
+    produtos_data = []
+    
+    for produto in produtos:
+        produtos_data.append({
+            'id': produto.id,
+            'nome': produto.nome,
+            'codigo_barras': produto.codigo_barras,
+            'fornecedor': produto.fornecedor.nome if produto.fornecedor else 'Sem fornecedor',
+            'quantidade': produto.quantidade
+        })
+    
+    return JsonResponse({
+        'total': produtos.count(),
+        'produtos': produtos_data
+    })

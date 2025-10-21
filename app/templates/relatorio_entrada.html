@@ -55,6 +55,7 @@
     </form>
 
     <div class="botoes">
+        <button onclick="location.reload()" class="btn" style="background: #007bff;">Atualizar Lista</button>
         <a href="{% url 'relatorio_estoque' %}" class="btn">Relatório de Estoque</a>
         <a href="{% url 'relatorio_entrada' %}" class="btn ativo">Lançamento de Entrada</a>
         <a href="{% url 'relatorio_saida'%}" class="btn">Lançamento de Saída</a>
@@ -87,8 +88,12 @@ document.addEventListener('DOMContentLoaded', function() {
             clearTimeout(timeout);
             const codigo = this.value.trim();
             
-            if (codigo.length > 5) {
+            console.log('Código digitado:', codigo);
+            
+            if (codigo.length > 3) {
                 timeout = setTimeout(() => {
+                    console.log('Buscando produto:', codigo);
+                    
                     // Buscar produto pelo código
                     fetch('/buscar-produto-por-codigo/', {
                         method: 'POST',
@@ -98,46 +103,105 @@ document.addEventListener('DOMContentLoaded', function() {
                         },
                         body: JSON.stringify({codigo_barras: codigo})
                     })
-                    .then(response => response.json())
+                    .then(response => {
+                        console.log('Status:', response.status);
+                        return response.json();
+                    })
                     .then(data => {
+                        console.log('Resposta:', data);
+                        
                         if (data.encontrado) {
                             // Encontrar a linha do produto na tabela
                             const rows = document.querySelectorAll('tbody tr');
                             let produtoEncontrado = false;
                             
-                            rows.forEach(row => {
+                            console.log('Procurando produto:', data.nome);
+                            
+                            rows.forEach((row, index) => {
                                 const produtoNome = row.cells[1].textContent.trim();
-                                if (produtoNome === data.nome) {
-                                    // Focar no campo de quantidade desta linha
+                                console.log(`Linha ${index}: '${produtoNome}' vs '${data.nome}'`);
+                                
+                                // Busca exata e por similaridade
+                                if (produtoNome.toLowerCase() === data.nome.toLowerCase() || 
+                                    produtoNome.toLowerCase().includes(data.nome.toLowerCase()) ||
+                                    data.nome.toLowerCase().includes(produtoNome.toLowerCase())) {
                                     const quantidadeInput = row.querySelector('input[type="number"]');
                                     if (quantidadeInput) {
                                         quantidadeInput.focus();
                                         quantidadeInput.select();
+                                        quantidadeInput.value = '1';
+                                        
                                         // Destacar a linha
                                         row.style.backgroundColor = '#e8f5e8';
+                                        row.style.border = '2px solid #28a745';
                                         setTimeout(() => {
                                             row.style.backgroundColor = '';
-                                        }, 3000);
+                                            row.style.border = '';
+                                        }, 5000);
+                                        
                                         produtoEncontrado = true;
+                                        
+                                        // Mostrar mensagem de sucesso
+                                        const mensagem = document.createElement('div');
+                                        mensagem.innerHTML = `Produto encontrado: ${data.nome}`;
+                                        mensagem.style.cssText = 'position: fixed; top: 20px; right: 20px; background: #28a745; color: white; padding: 10px 15px; border-radius: 5px; z-index: 1000; font-weight: bold; box-shadow: 0 2px 10px rgba(0,0,0,0.2);';
+                                        document.body.appendChild(mensagem);
+                                        setTimeout(() => mensagem.remove(), 4000);
+                                        
+                                        console.log('Produto encontrado na tabela!');
                                     }
                                 }
                             });
                             
                             if (!produtoEncontrado) {
-                                alert('Produto encontrado no sistema, mas não está na lista de entrada.');
+                                console.log('ERRO: Produto não encontrado na tabela');
+                                console.log('Nome do produto da API:', data.nome);
+                                console.log('Total de linhas na tabela:', rows.length);
+                                console.log('Nomes na tabela:');
+                                rows.forEach((row, i) => {
+                                    console.log(`  ${i}: '${row.cells[1].textContent.trim()}'`);
+                                });
+                                
+                                const mensagem = document.createElement('div');
+                                mensagem.innerHTML = `Produto '${data.nome}' encontrado no sistema, mas não está na lista de entrada.`;
+                                mensagem.style.cssText = 'position: fixed; top: 20px; right: 20px; background: #dc3545; color: white; padding: 10px 15px; border-radius: 5px; z-index: 1000; font-weight: bold; box-shadow: 0 2px 10px rgba(0,0,0,0.2);';
+                                document.body.appendChild(mensagem);
+                                setTimeout(() => mensagem.remove(), 6000);
                             }
                         } else {
-                            alert('Produto não encontrado no sistema.');
+                            const mensagem = document.createElement('div');
+                            mensagem.innerHTML = 'Produto não encontrado no sistema.';
+                            mensagem.style.cssText = 'position: fixed; top: 20px; right: 20px; background: #dc3545; color: white; padding: 10px 15px; border-radius: 5px; z-index: 1000; font-weight: bold; box-shadow: 0 2px 10px rgba(0,0,0,0.2);';
+                            document.body.appendChild(mensagem);
+                            setTimeout(() => mensagem.remove(), 4000);
+                            console.log('Produto não encontrado no sistema');
                         }
                         
                         // Limpar o campo de código
                         codigoBarrasField.value = '';
                     })
-                    .catch(() => {
-                        alert('Erro ao buscar produto.');
+                    .catch(error => {
+                        console.error('Erro:', error);
+                        const mensagem = document.createElement('div');
+                        mensagem.innerHTML = 'Erro ao buscar produto.';
+                        mensagem.style.cssText = 'position: fixed; top: 20px; right: 20px; background: #dc3545; color: white; padding: 10px 15px; border-radius: 5px; z-index: 1000; font-weight: bold; box-shadow: 0 2px 10px rgba(0,0,0,0.2);';
+                        document.body.appendChild(mensagem);
+                        setTimeout(() => mensagem.remove(), 4000);
                         codigoBarrasField.value = '';
                     });
-                }, 300);
+                }, 500);
+            }
+        });
+        
+        // Adicionar evento para Enter
+        codigoBarrasField.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const codigo = this.value.trim();
+                if (codigo.length > 0) {
+                    console.log('Enter pressionado, disparando busca:', codigo);
+                    this.dispatchEvent(new Event('input'));
+                }
             }
         });
     }
