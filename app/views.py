@@ -107,7 +107,7 @@ def cadastrar(request):
                 form.save()
                 messages.success(request, 'Produto cadastrado com sucesso.')
 
-            return redirect('lista_produtos')
+            return redirect('cadastrar_produto')
     else:
         form = ProdutoForm()
     return render(request, 'produtos/cadastrar_produto.html', {
