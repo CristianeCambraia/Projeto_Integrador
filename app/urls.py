@@ -92,6 +92,11 @@ urlpatterns = [
     
     # ----- ESTOQUE PDF/EMAIL -----
     path('estoque/pdf/', views.exportar_estoque_pdf, name='exportar_estoque_pdf'),
-    path('enviar-estoque-email/', views.enviar_estoque_email, name='enviar_estoque_email')
+    path('enviar-estoque-email/', views.enviar_estoque_email, name='enviar_estoque_email'),
+    
+    # ----- BALANCETE -----
+    path('balancete/', views.balancete, name='balancete'),
+    path('balancete/pdf/', views.exportar_balancete_pdf, name='exportar_balancete_pdf'),
+    path('enviar-balancete-email/', views.enviar_balancete_email, name='enviar_balancete_email')
 
 ]

@@ -1535,3 +1535,255 @@ def debug_produtos(request):
         'total': produtos.count(),
         'produtos': produtos_data
     })
+
+# ----- BALANCETE -----
+@login_required_custom
+def balancete(request):
+    periodo = request.GET.get('periodo', 'mes')
+    
+    from datetime import datetime, timedelta
+    hoje = timezone.now().date()
+    
+    # Definir período de filtro
+    if periodo == 'dia':
+        data_inicio = timezone.now().replace(hour=0, minute=0, second=0, microsecond=0)
+        data_fim = timezone.now().replace(hour=23, minute=59, second=59, microsecond=999999)
+        titulo_periodo = f"Hoje ({hoje.strftime('%d/%m/%Y')})"
+    elif periodo == 'mes':
+        data_inicio = timezone.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        data_fim = None
+        titulo_periodo = f"Este Mês ({hoje.strftime('%m/%Y')})"
+    elif periodo == 'ano':
+        data_inicio = timezone.now().replace(month=1, day=1, hour=0, minute=0, second=0, microsecond=0)
+        data_fim = None
+        titulo_periodo = f"Este Ano ({hoje.year})"
+    else:
+        data_inicio = None
+        data_fim = None
+        titulo_periodo = "Todo o Período"
+    
+    # Filtrar movimentações
+    if data_inicio:
+        if data_fim:  # Para filtro de dia
+            entradas = MovimentacaoEstoque.objects.filter(
+                tipo='ENTRADA',
+                data_hora__range=[data_inicio, data_fim]
+            ).select_related('produto')
+            saidas = MovimentacaoEstoque.objects.filter(
+                tipo='SAIDA',
+                data_hora__range=[data_inicio, data_fim]
+            ).select_related('produto')
+        else:  # Para filtros de mês e ano
+            entradas = MovimentacaoEstoque.objects.filter(
+                tipo='ENTRADA',
+                data_hora__gte=data_inicio
+            ).select_related('produto')
+            saidas = MovimentacaoEstoque.objects.filter(
+                tipo='SAIDA',
+                data_hora__gte=data_inicio
+            ).select_related('produto')
+    else:
+        entradas = MovimentacaoEstoque.objects.filter(tipo='ENTRADA').select_related('produto')
+        saidas = MovimentacaoEstoque.objects.filter(tipo='SAIDA').select_related('produto')
+    
+    print(f"Período: {periodo}, Data início: {data_inicio}, Entradas: {entradas.count()}, Saídas: {saidas.count()}")  # Debug
+    
+    # Calcular valores
+    valor_entradas = sum(mov.quantidade * mov.produto.preco for mov in entradas)
+    valor_saidas = sum(mov.quantidade * mov.produto.preco for mov in saidas)
+    lucro = valor_saidas - valor_entradas
+    
+    # Estatísticas
+    total_entradas = sum(mov.quantidade for mov in entradas)
+    total_saidas = sum(mov.quantidade for mov in saidas)
+    
+    context = {
+        'periodo': periodo,
+        'titulo_periodo': titulo_periodo,
+        'valor_entradas': valor_entradas,
+        'valor_saidas': valor_saidas,
+        'lucro': lucro,
+        'total_entradas': total_entradas,
+        'total_saidas': total_saidas,
+        'data_atual': timezone.now().strftime('%d/%m/%Y %H:%M')
+    }
+    
+    return render(request, 'balancete.html', context)
+
+# ----- BALANCETE PDF/EMAIL -----
+def exportar_balancete_pdf(request):
+    periodo = request.GET.get('periodo', 'mes')
+    
+    from datetime import datetime, timedelta
+    hoje = timezone.now().date()
+    
+    # Definir período de filtro (mesma lógica da view principal)
+    if periodo == 'dia':
+        data_inicio = timezone.now().replace(hour=0, minute=0, second=0, microsecond=0)
+        data_fim = timezone.now().replace(hour=23, minute=59, second=59, microsecond=999999)
+        titulo_periodo = f"Hoje ({hoje.strftime('%d/%m/%Y')})"
+    elif periodo == 'mes':
+        data_inicio = timezone.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        data_fim = None
+        titulo_periodo = f"Este Mês ({hoje.strftime('%m/%Y')})"
+    elif periodo == 'ano':
+        data_inicio = timezone.now().replace(month=1, day=1, hour=0, minute=0, second=0, microsecond=0)
+        data_fim = None
+        titulo_periodo = f"Este Ano ({hoje.year})"
+    else:
+        data_inicio = None
+        data_fim = None
+        titulo_periodo = "Todo o Período"
+    
+    # Filtrar movimentações (mesma lógica)
+    if data_inicio:
+        if data_fim:
+            entradas = MovimentacaoEstoque.objects.filter(
+                tipo='ENTRADA', data_hora__range=[data_inicio, data_fim]
+            ).select_related('produto')
+            saidas = MovimentacaoEstoque.objects.filter(
+                tipo='SAIDA', data_hora__range=[data_inicio, data_fim]
+            ).select_related('produto')
+        else:
+            entradas = MovimentacaoEstoque.objects.filter(
+                tipo='ENTRADA', data_hora__gte=data_inicio
+            ).select_related('produto')
+            saidas = MovimentacaoEstoque.objects.filter(
+                tipo='SAIDA', data_hora__gte=data_inicio
+            ).select_related('produto')
+    else:
+        entradas = MovimentacaoEstoque.objects.filter(tipo='ENTRADA').select_related('produto')
+        saidas = MovimentacaoEstoque.objects.filter(tipo='SAIDA').select_related('produto')
+    
+    # Calcular valores
+    valor_entradas = sum(mov.quantidade * mov.produto.preco for mov in entradas)
+    valor_saidas = sum(mov.quantidade * mov.produto.preco for mov in saidas)
+    lucro = valor_saidas - valor_entradas
+    total_entradas = sum(mov.quantidade for mov in entradas)
+    total_saidas = sum(mov.quantidade for mov in saidas)
+    
+    import os
+    static_root = getattr(settings, 'STATIC_ROOT', None) or os.path.join(settings.BASE_DIR, 'static')
+    
+    context = {
+        'titulo_periodo': titulo_periodo,
+        'valor_entradas': valor_entradas,
+        'valor_saidas': valor_saidas,
+        'lucro': lucro,
+        'total_entradas': total_entradas,
+        'total_saidas': total_saidas,
+        'data_atual': timezone.now().strftime('%d/%m/%Y %H:%M'),
+        'STATIC_ROOT': static_root
+    }
+    
+    template = get_template('balancete_pdf.html')
+    html = template.render(context)
+    
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="balancete.pdf"'
+    
+    pisa_status = pisa.CreatePDF(html, dest=response)
+    
+    if pisa_status.err:
+        return HttpResponse('Erro ao gerar PDF', status=500)
+    
+    return response
+
+@csrf_exempt
+def enviar_balancete_email(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            email_destino = data.get('email')
+            periodo = data.get('periodo', 'mes')
+            
+            if not email_destino:
+                return JsonResponse({'success': False, 'error': 'Email não informado'})
+            
+            # Mesma lógica de cálculo do PDF
+            hoje = timezone.now().date()
+            
+            if periodo == 'dia':
+                data_inicio = timezone.now().replace(hour=0, minute=0, second=0, microsecond=0)
+                data_fim = timezone.now().replace(hour=23, minute=59, second=59, microsecond=999999)
+                titulo_periodo = f"Hoje ({hoje.strftime('%d/%m/%Y')})"
+            elif periodo == 'mes':
+                data_inicio = timezone.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+                data_fim = None
+                titulo_periodo = f"Este Mês ({hoje.strftime('%m/%Y')})"
+            elif periodo == 'ano':
+                data_inicio = timezone.now().replace(month=1, day=1, hour=0, minute=0, second=0, microsecond=0)
+                data_fim = None
+                titulo_periodo = f"Este Ano ({hoje.year})"
+            else:
+                data_inicio = None
+                data_fim = None
+                titulo_periodo = "Todo o Período"
+            
+            if data_inicio:
+                if data_fim:
+                    entradas = MovimentacaoEstoque.objects.filter(
+                        tipo='ENTRADA', data_hora__range=[data_inicio, data_fim]
+                    ).select_related('produto')
+                    saidas = MovimentacaoEstoque.objects.filter(
+                        tipo='SAIDA', data_hora__range=[data_inicio, data_fim]
+                    ).select_related('produto')
+                else:
+                    entradas = MovimentacaoEstoque.objects.filter(
+                        tipo='ENTRADA', data_hora__gte=data_inicio
+                    ).select_related('produto')
+                    saidas = MovimentacaoEstoque.objects.filter(
+                        tipo='SAIDA', data_hora__gte=data_inicio
+                    ).select_related('produto')
+            else:
+                entradas = MovimentacaoEstoque.objects.filter(tipo='ENTRADA').select_related('produto')
+                saidas = MovimentacaoEstoque.objects.filter(tipo='SAIDA').select_related('produto')
+            
+            valor_entradas = sum(mov.quantidade * mov.produto.preco for mov in entradas)
+            valor_saidas = sum(mov.quantidade * mov.produto.preco for mov in saidas)
+            lucro = valor_saidas - valor_entradas
+            total_entradas = sum(mov.quantidade for mov in entradas)
+            total_saidas = sum(mov.quantidade for mov in saidas)
+            
+            import os
+            static_root = getattr(settings, 'STATIC_ROOT', None) or os.path.join(settings.BASE_DIR, 'static')
+            
+            context = {
+                'titulo_periodo': titulo_periodo,
+                'valor_entradas': valor_entradas,
+                'valor_saidas': valor_saidas,
+                'lucro': lucro,
+                'total_entradas': total_entradas,
+                'total_saidas': total_saidas,
+                'data_atual': timezone.now().strftime('%d/%m/%Y %H:%M'),
+                'STATIC_ROOT': static_root
+            }
+            
+            template = get_template('balancete_pdf.html')
+            html = template.render(context)
+            
+            from io import BytesIO
+            pdf_buffer = BytesIO()
+            pisa_status = pisa.CreatePDF(html, dest=pdf_buffer)
+            
+            if pisa_status.err:
+                return JsonResponse({'success': False, 'error': 'Erro ao gerar PDF'})
+            
+            pdf_buffer.seek(0)
+            
+            from django.core.mail import EmailMessage
+            email = EmailMessage(
+                f'Balancete Financeiro - {titulo_periodo}',
+                f'Segue em anexo o balancete financeiro.\n\nResumo:\n- Entradas: R$ {valor_entradas:.2f}\n- Saídas: R$ {valor_saidas:.2f}\n- Lucro: R$ {lucro:.2f}\n\nAtenciosamente,\nEquipe INSUMED',
+                settings.DEFAULT_FROM_EMAIL,
+                [email_destino]
+            )
+            email.attach('balancete.pdf', pdf_buffer.getvalue(), 'application/pdf')
+            email.send()
+            
+            return JsonResponse({'success': True})
+            
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+    
+    return JsonResponse({'success': False, 'error': 'Método não permitido'})

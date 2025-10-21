@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Balancete Financeiro - INSUMED</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; font-size: 12px; position: relative; }
+        h3 { margin-top: 0; color: #495057; }
+        h4 { margin-top: 0; color: #495057; }
+        
+        .resumo-periodo { 
+            background-color: #f8f9fa; 
+            padding: 20px; 
+            margin-bottom: 30px; 
+        }
+        
+        .cards-container {
+            width: 100%;
+            margin-bottom: 30px;
+        }
+        
+        .header-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .header-table td {
+            border: none;
+            padding: 0;
+        }
+        
+        .cards-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .cards-table td {
+            width: 33.33%;
+            padding: 8px;
+            text-align: center;
+            border: 2px solid #ccc;
+            vertical-align: top;
+        }
+        
+        .card-entradas { background-color: #e8f5e8; border-color: #28a745; }
+        .card-saidas { background-color: #ffe8e8; border-color: #dc3545; }
+        .card-lucro { background-color: #e8f4fd; border-color: #007bff; }
+        .card-prejuizo { background-color: #fff3cd; border-color: #ffc107; }
+        
+        .card-title { margin: 0 0 5px 0; font-size: 11px; font-weight: bold; }
+        .card-valor { font-size: 16px; font-weight: bold; margin: 5px 0; }
+        .card-detalhes { font-size: 9px; color: #666; }
+        
+        .detalhamento {
+            background-color: white;
+            border: 1px solid #dee2e6;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th { border: 1px solid #dee2e6; padding: 12px; text-align: left; background-color: #f8f9fa; font-weight: bold; }
+        td { border: 1px solid #dee2e6; padding: 12px; text-align: left; }
+        .text-right { text-align: right; }
+        .total-row { background-color: #f8f9fa; font-weight: bold; }
+        
+        .footer { 
+            margin-top: 30px; 
+            padding: 20px; 
+            background-color: #f8f9fa; 
+            text-align: center; 
+            font-size: 12px; 
+            color: #666; 
+        }
+        
+        .color-green { color: #28a745; }
+        .color-red { color: #dc3545; }
+        .color-blue { color: #007bff; }
+        .titulo { color: black; font-size: 24px; font-weight: bold; }
+        .color-yellow { color: #ffc107; }
+        
+        p { margin: 5px 0; color: #6c757d; }
+    </style>
+</head>
+<body>
+    <table class="header-table" style="width: 100%; margin-bottom: 20px;">
+        <tr>
+            <td style="width: 120px; vertical-align: top; padding-top: 0px;">
+                <img src="{{ STATIC_ROOT }}/images/insumed_icon.png" style="width: 100px; height: 100px; opacity: 1; filter: contrast(2.5) brightness(0.7) drop-shadow(1px 1px 2px black);" alt="Logo">
+            </td>
+            <td style="vertical-align: top; padding-left: 50px; padding-top: 15px; text-align: left;">
+                <h1 style="font-size: 48px; font-weight: bold; color: #E0E0E0; margin: 0;">INSUMED</h1>
+                <h2 class="titulo" style="margin: 10px 0 0 0; color: #444444;">Balancete Financeiro</h2>
+            </td>
+            <td style="width: 120px; vertical-align: top; padding-top: 0px; text-align: right;">
+                <img src="{{ STATIC_ROOT }}/images/insumed_icon.png" style="width: 100px; height: 100px; opacity: 1; filter: contrast(2.5) brightness(0.7) drop-shadow(1px 1px 2px black);" alt="Logo">
+            </td>
+        </tr>
+    </table>
+
+    <!-- Resumo do Período -->
+    <div class="resumo-periodo" style="background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #ddd;">
+        <h4 style="margin: 0 0 15px 0; text-align: center; color: black; font-size: 16px;">{{ titulo_periodo }}</h4>
+        <p style="font-size: 14px;">Relatório gerado em: {{ data_atual }}</p>
+    </div>
+
+    <!-- Cards de Resumo -->
+    <div class="cards-container">
+        <table class="cards-table">
+            <tr>
+                <td class="card-entradas">
+                    <div class="card-title color-green">💰 ENTRADAS</div>
+                    <div class="card-valor color-green">R$ {{ valor_entradas|floatformat:2 }}</div>
+                    <div class="card-detalhes">{{ total_entradas }} itens</div>
+                </td>
+                <td class="card-saidas">
+                    <div class="card-title color-red">📤 SAÍDAS</div>
+                    <div class="card-valor color-red">R$ {{ valor_saidas|floatformat:2 }}</div>
+                    <div class="card-detalhes">{{ total_saidas }} itens</div>
+                </td>
+                <td class="{% if lucro >= 0 %}card-lucro{% else %}card-prejuizo{% endif %}">
+                    <div class="card-title {% if lucro >= 0 %}color-blue{% else %}color-yellow{% endif %}">
+                        {% if lucro >= 0 %}📈 LUCRO{% else %}⚠️ PREJUÍZO{% endif %}
+                    </div>
+                    <div class="card-valor {% if lucro >= 0 %}color-blue{% else %}color-yellow{% endif %}">
+                        R$ {{ lucro|floatformat:2 }}
+                    </div>
+                    <div class="card-detalhes">
+                        {% if lucro >= 0 %}Resultado positivo{% else %}Resultado negativo{% endif %}
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Detalhamento -->
+    <div class="detalhamento">
+        <h4>📊 Detalhamento</h4>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Descrição</th>
+                    <th class="text-right">Quantidade</th>
+                    <th class="text-right">Valor (R$)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <span class="color-green">➕ Total de Entradas</span>
+                    </td>
+                    <td class="text-right">{{ total_entradas }}</td>
+                    <td class="text-right color-green">{{ valor_entradas|floatformat:2 }}</td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="color-red">➖ Total de Saídas</span>
+                    </td>
+                    <td class="text-right">{{ total_saidas }}</td>
+                    <td class="text-right color-red">{{ valor_saidas|floatformat:2 }}</td>
+                </tr>
+                <tr class="total-row">
+                    <td>
+                        <span class="{% if lucro >= 0 %}color-blue{% else %}color-yellow{% endif %}">
+                            {% if lucro >= 0 %}💰 LUCRO LÍQUIDO{% else %}⚠️ PREJUÍZO{% endif %}
+                        </span>
+                    </td>
+                    <td class="text-right">-</td>
+                    <td class="text-right {% if lucro >= 0 %}color-blue{% else %}color-yellow{% endif %}">
+                        {{ lucro|floatformat:2 }}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Rodapé do Relatório -->
+    <div class="footer">
+        <p>Relatório gerado automaticamente pelo Sistema INSUMED</p>
+        <p>Este documento apresenta o resumo financeiro das movimentações de estoque</p>
+    </div>
+</body>
+</html>
