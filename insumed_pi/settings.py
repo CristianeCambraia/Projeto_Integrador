@@ -6,7 +6,7 @@ SECRET_KEY = 'django-insecure-6k=&l#zwby=j2ta(jl&ta2sag5ear3i)*g@+kc%igvn2tr7!m3
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -94,3 +94,7 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'insumed.sistema2025@gmail.com'
 EMAIL_HOST_PASSWORD = 'xhvw voek xsqd amif'
 DEFAULT_FROM_EMAIL = 'INSUMED <insumed.sistema2025@gmail.com>'
+
+# Configurações para acesso à câmera
+SECURE_CROSS_ORIGIN_OPENER_POLICY = None
+SECURE_REFERRER_POLICY = None

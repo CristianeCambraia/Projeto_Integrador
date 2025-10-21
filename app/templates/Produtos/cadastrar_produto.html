@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
+
 <div class="container">
   <section class="form-box">
     <h2 class="form-title">{{ titulo_pagina }}</h2>
@@ -12,8 +14,13 @@
       <div class="barcode-field">
         <div class="barcode-input-container">
           {{ form.codigo_barras }}
-
         </div>
+        
+
+        
+
+
+
       </div>
       
       <!-- Outros Campos -->
@@ -59,26 +66,65 @@
 
 .barcode-input-container input {
   width: 100%;
-  height: 50px;
-  font-size: 16px;
-  padding: 12px 60px 12px 12px;
-  border: 2px solid #ddd;
-  border-radius: 5px;
-  background-color: #f9f9f9;
+  height: 70px;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 20px;
+  border: 4px solid #007bff;
+  border-radius: 12px;
+  background: linear-gradient(145deg, #ffffff, #f8f9fa);
   box-sizing: border-box;
+  text-align: center;
+  letter-spacing: 3px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
 }
 
-.barcode-icon {
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 16px;
-  color: #666;
-  pointer-events: none;
-  font-family: monospace;
+.barcode-input-container input::placeholder {
+  color: #6c757d;
+  font-weight: normal;
   letter-spacing: 1px;
+  font-size: 16px;
 }
+
+.barcode-input-container input:focus {
+  border-color: #28a745 !important;
+  background: #ffffff !important;
+  box-shadow: 0 0 20px rgba(40, 167, 69, 0.4) !important;
+  transform: scale(1.02);
+}
+
+#interactive {
+  background: #f8f9fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#interactive video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+#interactive canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+}
+
+#scanner {
+  border: 2px solid #ddd;
+  border-radius: 5px;
+  padding: 10px;
+  background: #f9f9f9;
+}
+
+
 
 .barcode-input-container input:focus {
   border-color: #007bff;
@@ -87,49 +133,162 @@
 }
 </style>
 
+
+
 <script>
-// Otimização para leitor de código de barras
 document.addEventListener('DOMContentLoaded', function() {
     const codigoBarrasField = document.getElementById('id_codigo_barras');
-    if (codigoBarrasField) {
-        let timeout;
-        codigoBarrasField.addEventListener('input', function() {
-            clearTimeout(timeout);
-            const codigo = this.value.trim();
+    const startScanBtn = document.getElementById('startScan');
+    const stopScanBtn = document.getElementById('stopScan');
+    const scannerDiv = document.getElementById('scanner');
+    const video = document.getElementById('video');
+    
+    let codeReader = null;
+    let stream = null;
+    
+    // Auto-busca produto
+    let timeout;
+    codigoBarrasField.addEventListener('input', function() {
+        clearTimeout(timeout);
+        const codigo = this.value.trim();
+        
+        if (codigo.length >= 8) {
+            timeout = setTimeout(() => {
+                fetch('/buscar-produto-por-codigo/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                    },
+                    body: JSON.stringify({codigo_barras: codigo})
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.encontrado) {
+                        document.getElementById('id_nome').value = data.nome;
+                        document.getElementById('id_preco').value = data.preco;
+                        if (data.descricao) document.getElementById('id_descricao').value = data.descricao;
+                        if (data.fornecedor) document.getElementById('id_fornecedor').value = data.fornecedor;
+                        document.getElementById('id_unidade').value = data.unidade;
+                        if (data.observacao) document.getElementById('id_observacao').value = data.observacao;
+                        showNotification('✅ Produto encontrado: ' + data.nome);
+                    }
+                    document.getElementById('id_nome').focus();
+                })
+                .catch(() => document.getElementById('id_nome').focus());
+            }, 300);
+        }
+    });
+    
+
+    
+    // Detectar entrada rápida (leitor físico ou app que digita)
+    let entradaRapida = '';
+    let timeoutEntrada;
+    
+    document.addEventListener('keydown', function(e) {
+        if (document.activeElement === codigoBarrasField) {
+            clearTimeout(timeoutEntrada);
             
-            if (codigo.length > 5) {
-                timeout = setTimeout(() => {
-                    // Buscar produto existente pelo código
-                    fetch('/buscar-produto-por-codigo/', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-                        },
-                        body: JSON.stringify({codigo_barras: codigo})
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.encontrado) {
-                            // Preencher campos com dados do produto
-                            document.getElementById('id_nome').value = data.nome;
-                            document.getElementById('id_preco').value = data.preco;
-                            if (data.descricao) document.getElementById('id_descricao').value = data.descricao;
-                            if (data.fornecedor) document.getElementById('id_fornecedor').value = data.fornecedor;
-                            document.getElementById('id_unidade').value = data.unidade;
-                            if (data.observacao) document.getElementById('id_observacao').value = data.observacao;
-                        }
-                        // Auto-focus no próximo campo
-                        document.getElementById('id_nome').focus();
-                    })
-                    .catch(() => {
-                        // Em caso de erro, apenas move o foco
-                        document.getElementById('id_nome').focus();
-                    });
-                }, 300);
+            if (e.key.length === 1 && /[0-9]/.test(e.key)) {
+                entradaRapida += e.key;
+                
+                // Se chegou a 8+ dígitos, processar
+                if (entradaRapida.length >= 8) {
+                    timeoutEntrada = setTimeout(() => {
+                        codigoBarrasField.value = entradaRapida;
+                        showNotification('🔄 Auto-digitado: ' + entradaRapida);
+                        
+                        const event = new Event('input', { bubbles: true });
+                        codigoBarrasField.dispatchEvent(event);
+                        
+                        entradaRapida = '';
+                    }, 100);
+                } else {
+                    // Reset se parar de digitar
+                    timeoutEntrada = setTimeout(() => entradaRapida = '', 1000);
+                }
             }
-        });
+        }
+    });
+    
+    function showNotification(message) {
+        const notification = document.createElement('div');
+        notification.style.cssText = 'position: fixed; top: 20px; right: 20px; padding: 15px; background: #28a745; color: white; border-radius: 5px; z-index: 10000;';
+        notification.textContent = message;
+        document.body.appendChild(notification);
+        setTimeout(() => notification.remove(), 2000);
     }
+    
+    // Monitor automático de clipboard
+    let ultimoClipboard = '';
+    let monitorAtivo = true;
+    
+    async function monitorarClipboard() {
+        if (!monitorAtivo) return;
+        
+        try {
+            const texto = await navigator.clipboard.readText();
+            const codigo = texto.replace(/\D/g, '');
+            
+            // Se é um código novo e válido
+            if (codigo !== ultimoClipboard && codigo.length >= 8 && codigo.length <= 20) {
+                ultimoClipboard = codigo;
+                
+                document.getElementById('id_codigo_barras').value = codigo;
+                document.getElementById('status').innerHTML = '✅ Código detectado: ' + codigo;
+                document.getElementById('status').style.background = '#d1ecf1';
+                
+                showNotification('🔄 Auto-detectado: ' + codigo);
+                
+                // Disparar busca do produto
+                const event = new Event('input', { bubbles: true });
+                document.getElementById('id_codigo_barras').dispatchEvent(event);
+                
+                // Resetar status após 3 segundos
+                setTimeout(() => {
+                    document.getElementById('status').innerHTML = '🔍 Monitorando... Pronto para receber códigos';
+                    document.getElementById('status').style.background = '#d4edda';
+                }, 3000);
+            }
+        } catch (err) {
+            // Clipboard não acessível, continuar monitorando
+        }
+        
+        // Verificar novamente em 500ms
+        setTimeout(monitorarClipboard, 500);
+    }
+    
+    // Iniciar monitoramento
+    setTimeout(() => {
+        monitorarClipboard();
+    }, 1000);
+    
+
+    
+    // Auto-focus e feedback visual
+    codigoBarrasField.focus();
+    
+    // Manter campo sempre focado para receber dados
+    setInterval(() => {
+        if (document.activeElement !== codigoBarrasField && !document.querySelector('input:focus')) {
+            codigoBarrasField.focus();
+        }
+    }, 2000);
+    
+    codigoBarrasField.addEventListener('focus', function() {
+        this.style.borderColor = '#007bff';
+        this.style.backgroundColor = '#fff';
+        this.style.boxShadow = '0 0 10px rgba(0, 123, 255, 0.3)';
+    });
+    
+    codigoBarrasField.addEventListener('blur', function() {
+        // Manter foco para receber dados automaticamente
+        setTimeout(() => this.focus(), 100);
+    });
 });
+
+
+
 </script>
 {% endblock %}

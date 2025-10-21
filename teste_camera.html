@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Teste Câmera</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        #video { width: 100%; max-width: 640px; height: 480px; border: 2px solid #007bff; }
+        button { padding: 10px 20px; margin: 10px; font-size: 16px; }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h1>🎥 Teste de Câmera</h1>
+    
+    <button onclick="testarCamera()">Testar Câmera</button>
+    <button onclick="pararCamera()">Parar Câmera</button>
+    
+    <div id="status"></div>
+    <video id="video" autoplay playsinline></video>
+    
+    <script>
+        let stream = null;
+        const video = document.getElementById('video');
+        const status = document.getElementById('status');
+        
+        async function testarCamera() {
+            try {
+                status.innerHTML = '<p>🔄 Solicitando acesso à câmera...</p>';
+                
+                stream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        facingMode: 'environment',
+                        width: { ideal: 640 },
+                        height: { ideal: 480 }
+                    }
+                });
+                
+                video.srcObject = stream;
+                status.innerHTML = '<p class="success">✅ Câmera funcionando!</p>';
+                
+            } catch (error) {
+                console.error('Erro:', error);
+                status.innerHTML = `<p class="error">❌ Erro: ${error.message}</p>`;
+                
+                if (error.name === 'NotAllowedError') {
+                    status.innerHTML += '<p>Permissão negada. Clique no ícone da câmera na barra de endereços e permita o acesso.</p>';
+                } else if (error.name === 'NotFoundError') {
+                    status.innerHTML += '<p>Nenhuma câmera encontrada no dispositivo.</p>';
+                } else if (error.name === 'NotSupportedError') {
+                    status.innerHTML += '<p>Navegador não suporta acesso à câmera. Use Chrome, Firefox ou Edge.</p>';
+                }
+            }
+        }
+        
+        function pararCamera() {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                video.srcObject = null;
+                stream = null;
+                status.innerHTML = '<p>📴 Câmera parada.</p>';
+            }
+        }
+        
+        // Verificar suporte
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            status.innerHTML = '<p class="error">❌ Seu navegador não suporta acesso à câmera.</p>';
+        } else {
+            status.innerHTML = '<p>✅ Navegador suporta câmera. Clique em "Testar Câmera".</p>';
+        }
+    </script>
+</body>
+</html>
