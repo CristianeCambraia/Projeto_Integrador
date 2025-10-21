@@ -84,7 +84,7 @@
         </div>
         <div style="margin-top: 15px; text-align: center;">
           <a href="{% url 'abrir_orcamento' o.id %}" class="btn-info">Abrir</a>
-          <button onclick="abrirModalEmail({{ o.id }})" class="btn-info" style="margin-left: 10px;">Enviar por Email</button>
+          <button onclick="abrirModalEmail({{ o.id }})" class="btn-info" style="margin-left: 10px;">Email</button>
         </div>
       </li>
     {% empty %}
@@ -99,66 +99,147 @@
   </div>
 </div>
 
-<!-- Modal para envio de email -->
-<div id="modalEmail" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5);">
-  <div style="background-color: white; margin: 15% auto; padding: 20px; border-radius: 5px; width: 400px; text-align: center;">
-    <h3>Enviar Orçamento por Email</h3>
-    <form id="formEnviarEmail">
-      {% csrf_token %}
-      <input type="hidden" id="orcamentoId" name="orcamento_id">
-      <div style="margin-bottom: 15px;">
-        <label for="emailDestino" style="display: block; margin-bottom: 5px;">Email de destino:</label>
-        <input type="email" id="emailDestino" name="email" required style="width: 80%; padding: 8px;">
-      </div>
-      <div>
-        <button type="button" onclick="fecharModalEmail()" class="btn-limpar" style="margin-right: 10px;">Cancelar</button>
-        <button type="submit" class="btn-info">Enviar</button>
-      </div>
-    </form>
-  </div>
-</div>
+
 
 <script>
-function abrirModalEmail(orcamentoId) {
-  document.getElementById('orcamentoId').value = orcamentoId;
-  document.getElementById('modalEmail').style.display = 'block';
-  document.getElementById('emailDestino').focus();
+function criarModalEmail() {
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 10000;
+    `;
+    
+    const modalContent = document.createElement('div');
+    modalContent.style.cssText = `
+        background: #e8e8e8;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        max-width: 400px;
+        width: 90%;
+        text-align: center;
+        font-family: Arial, sans-serif;
+    `;
+    
+    modalContent.innerHTML = `
+        <h3 style="color: #026a84; margin-bottom: 20px; font-size: 20px;">📧 Enviar Orçamento por Email</h3>
+        <p style="color: #666; margin-bottom: 20px;">Digite o endereço de email de destino:</p>
+        <input type="email" id="emailInput" placeholder="exemplo@email.com" style="
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+            outline: none;
+        ">
+        <div style="display: flex; gap: 10px; justify-content: center;">
+            <button id="cancelarBtn" style="
+                background: #6c757d;
+                color: white;
+                border: none;
+                padding: 12px 20px;
+                border-radius: 8px;
+                cursor: pointer;
+                font-size: 14px;
+                font-weight: bold;
+            ">Cancelar</button>
+            <button id="enviarBtn" style="
+                background: #28a745;
+                color: white;
+                border: none;
+                padding: 12px 20px;
+                border-radius: 8px;
+                cursor: pointer;
+                font-size: 14px;
+                font-weight: bold;
+            ">Enviar</button>
+        </div>
+    `;
+    
+    modal.appendChild(modalContent);
+    document.body.appendChild(modal);
+    
+    const emailInput = document.getElementById('emailInput');
+    const cancelarBtn = document.getElementById('cancelarBtn');
+    const enviarBtn = document.getElementById('enviarBtn');
+    
+    emailInput.focus();
+    
+    return new Promise((resolve) => {
+        cancelarBtn.onclick = () => {
+            document.body.removeChild(modal);
+            resolve(null);
+        };
+        
+        enviarBtn.onclick = () => {
+            const email = emailInput.value.trim();
+            if (email) {
+                document.body.removeChild(modal);
+                resolve(email);
+            } else {
+                emailInput.style.border = '2px solid #dc3545';
+                emailInput.focus();
+            }
+        };
+        
+        emailInput.onkeypress = (e) => {
+            if (e.key === 'Enter') {
+                enviarBtn.click();
+            }
+        };
+        
+        modal.onclick = (e) => {
+            if (e.target === modal) {
+                cancelarBtn.click();
+            }
+        };
+    });
 }
 
-function fecharModalEmail() {
-  document.getElementById('modalEmail').style.display = 'none';
-  document.getElementById('emailDestino').value = '';
-}
-
-document.getElementById('formEnviarEmail').addEventListener('submit', function(e) {
-  e.preventDefault();
-  
-  const orcamentoId = document.getElementById('orcamentoId').value;
-  const email = document.getElementById('emailDestino').value;
-  
-  fetch('/enviar_orcamento_email/', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-    },
-    body: JSON.stringify({
-      orcamento_id: orcamentoId,
-      email: email
-    })
-  })
-  .then(response => response.json())
-  .then(data => {
-    if (data.success) {
-      window.location.href = '/orcamentos_emitidos/?email_enviado=1';
-    } else {
-      alert('Erro ao enviar orçamento: ' + data.error);
+async function abrirModalEmail(orcamentoId) {
+    const email = await criarModalEmail();
+    if (email) {
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        
+        fetch('/enviar_orcamento_email/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken
+            },
+            body: JSON.stringify({
+                orcamento_id: orcamentoId,
+                email: email
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const mensagem = document.createElement('div');
+                mensagem.className = 'alert alert-success';
+                mensagem.style.cssText = 'position: fixed; top: 80px; right: 20px; z-index: 9999; background: white; color: #28a745; border: 2px solid #28a745; padding: 15px 20px; border-radius: 5px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); font-weight: bold;';
+                mensagem.textContent = 'Orçamento enviado por email com sucesso!';
+                document.body.appendChild(mensagem);
+                setTimeout(() => mensagem.remove(), 4000);
+            } else {
+                alert('Erro ao enviar orçamento: ' + data.error);
+            }
+        })
+        .catch(error => {
+            alert('Erro ao enviar orçamento.');
+        });
     }
-  })
-  .catch(error => {
-    alert('Erro ao enviar orçamento.');
-  });
-});
+}
 
 function expandirItens(id) {
   document.querySelector('.itens-preview-' + id).style.display = 'none';
