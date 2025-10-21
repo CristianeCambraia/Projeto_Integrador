@@ -1704,16 +1704,22 @@ footer p {
     box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
 
-.message.success {
+.message.success,
+.success-message {
     background: #fff;
     color: #28a745;
     border: 2px solid #28a745;
     position: fixed;
-    top: 80px;
+    top: 20px;
     left: 50%;
     transform: translateX(-50%);
     z-index: 1000;
     box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    padding: 15px;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 16px;
+    max-width: 500px;
 }
 
 
@@ -2249,9 +2255,16 @@ nav ul li a {
 
 .alert-success {
   margin-bottom: 25px;
-  background-color: #d4edda; /* verde claro */
-  color: #155724; /* verde escuro */
-  border: 1px solid #c3e6cb;
+  background: #fff;
+  color: #28a745;
+  border: 2px solid #28a745;
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  max-width: 500px;
 }
 
 .alert-error,
