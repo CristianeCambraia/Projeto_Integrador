@@ -13,7 +13,7 @@
   
   <div class="filtro-orcamentos">
     <form method="GET">
-      <input type="text" name="filtro" placeholder="Filtrar por ID ou Nome" value="{{ filtro|default:'' }}">
+      <input type="text" name="filtro" placeholder="Filtrar por ID, Nome ou Data (dd/mm/aaaa)" value="{{ filtro|default:'' }}">
       <button type="submit" class="btn-filtrar">Filtrar</button>
       <a href="{% url 'orcamentos_emitidos' %}" class="btn-limpar">Limpar</a>
     </form>

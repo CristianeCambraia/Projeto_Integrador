@@ -94,6 +94,7 @@ class Orcamento(models.Model):
     cnpj = models.CharField(max_length=20, blank=True)
     endereco = models.CharField(max_length=200, blank=True)
     cidade = models.CharField(max_length=50, blank=True)
+    uf = models.CharField(max_length=2, blank=True, null=True)
     telefone = models.CharField(max_length=20, blank=True)
     email = models.EmailField(blank=True)
     itens_unidades = models.TextField(blank=True, null=True)

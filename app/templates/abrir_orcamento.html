@@ -232,7 +232,7 @@ input:not(.valores-totais input):not(.itens-orcamento input), textarea {
                     
       <div>
         <label><strong>UF:</strong></label>
-        <input type="text" name="uf" value="{{ orcamento.uf }}" disabled>
+        <input type="text" name="uf" value="{{ orcamento.uf|default:'' }}" disabled>
       </div>
                     
       <div>

@@ -255,6 +255,7 @@ def salvar_orcamento(request):
         cnpj = request.POST.get('cnpj', '').strip()
         endereco = request.POST.get('endereco', '').strip()
         cidade = request.POST.get('cidade', '').strip()
+        uf = request.POST.get('uf', '').strip()
         telefone = request.POST.get('telefone', '').strip()
         email = request.POST.get('email', '').strip()
         data = request.POST.get('data', '').strip()
@@ -309,6 +310,7 @@ def salvar_orcamento(request):
             cnpj=cnpj,
             endereco=endereco,
             cidade=cidade,
+            uf=uf,
             telefone=telefone,
             email=email,
             itens_unidades=unidades_agregadas,
@@ -339,7 +341,16 @@ def orcamentos_emitidos(request):
         if filtro.isdigit():
             orcamentos = orcamentos.filter(id=filtro)
         else:
-            orcamentos = orcamentos.filter(cliente__icontains=filtro)
+            # Tentar filtrar por data no formato dd/mm/yyyy
+            try:
+                from datetime import datetime
+                if '/' in filtro:
+                    data_filtro = datetime.strptime(filtro, '%d/%m/%Y').date()
+                    orcamentos = orcamentos.filter(data=data_filtro)
+                else:
+                    orcamentos = orcamentos.filter(cliente__icontains=filtro)
+            except ValueError:
+                orcamentos = orcamentos.filter(cliente__icontains=filtro)
     
     orcamentos = orcamentos.order_by('-data')
     
