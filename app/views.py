@@ -960,20 +960,52 @@ def enviar_orcamento_email(request):
             
             orcamento = Orcamento.objects.get(id=orcamento_id)
             
-            # Gerar PDF
+            # Processar itens do orçamento (mesmo código do PDF)
             descricoes = orcamento.descricao.split(' / ') if orcamento.descricao else []
             quantidades = orcamento.itens_quantidades.split(' / ') if orcamento.itens_quantidades else []
             valores = orcamento.itens_valores.split(' / ') if orcamento.itens_valores else []
+            unidades = orcamento.itens_unidades.split(' / ') if orcamento.itens_unidades else []
             
             itens = []
-            for i in range(max(len(descricoes), len(quantidades), len(valores))):
+            subtotal = 0
+            for i in range(max(len(descricoes), len(quantidades), len(valores), len(unidades))):
+                quantidade = quantidades[i] if i < len(quantidades) else ''
+                valor = valores[i] if i < len(valores) else ''
+                
+                # Calcular subtotal
+                try:
+                    qtd = float(quantidade.replace(',', '.')) if quantidade else 0
+                    val = float(valor.replace(',', '.')) if valor else 0
+                    subtotal += qtd * val
+                except ValueError:
+                    pass
+                
                 itens.append({
+                    'unidade': unidades[i] if i < len(unidades) else '',
                     'descricao': descricoes[i] if i < len(descricoes) else '',
-                    'quantidade': quantidades[i] if i < len(quantidades) else '',
-                    'valor': valores[i] if i < len(valores) else ''
+                    'quantidade': quantidade,
+                    'valor': valor
                 })
             
-            context = {'orcamento': orcamento, 'linhas': itens}
+            # Calcular desconto e valor final
+            desconto_percent = float(orcamento.desconto) if orcamento.desconto else 0
+            valor_desconto = subtotal * (desconto_percent / 100)
+            valor_total = subtotal - valor_desconto
+            
+            orcamento.subtotal_calculado = f"{subtotal:.2f}".replace('.', ',')
+            orcamento.valor_desconto_calculado = f"{valor_desconto:.2f}".replace('.', ',')
+            orcamento.valor_total_calculado = f"{valor_total:.2f}".replace('.', ',')
+            
+            # Usar o mesmo template do PDF
+            import os
+            static_root = getattr(settings, 'STATIC_ROOT', None) or os.path.join(settings.BASE_DIR, 'static')
+            
+            context = {
+                'orcamento': orcamento,
+                'linhas': itens,
+                'STATIC_ROOT': static_root
+            }
+            
             template = get_template('orcamento_pdf.html')
             html = template.render(context)
             
@@ -991,7 +1023,7 @@ def enviar_orcamento_email(request):
             from django.core.mail import EmailMessage
             email = EmailMessage(
                 f'Orçamento #{orcamento.id} - {orcamento.cliente}',
-                f'Segue em anexo o orçamento solicitado.\n\nCliente: {orcamento.cliente}\nData: {orcamento.data.strftime("%d/%m/%Y")}',
+                f'Segue em anexo o orçamento solicitado.\n\nCliente: {orcamento.cliente}\nData: {orcamento.data.strftime("%d/%m/%Y")}\n\nAtenciosamente,\nEquipe INSUMED',
                 settings.DEFAULT_FROM_EMAIL,
                 [email_destino]
             )
