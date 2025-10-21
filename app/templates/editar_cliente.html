@@ -28,4 +28,40 @@
     </div>
   </form>
 </div>
+
+<script>
+function validateAge(input) {
+    let birthDate = new Date(input.value);
+    let today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    let monthDiff = today.getMonth() - birthDate.getMonth();
+    
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+    }
+    
+    if (age < 18) {
+        alert('Erro: A idade deve ser maior ou igual a 18 anos.');
+        input.value = '';
+        input.focus();
+        return false;
+    }
+    return true;
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const dataField = document.getElementById('id_data_nascimento');
+    if (dataField) {
+        // Definir data máxima (18 anos atrás)
+        const today = new Date();
+        const maxDate = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
+        dataField.max = maxDate.toISOString().split('T')[0];
+        
+        // Adicionar validação no evento change
+        dataField.addEventListener('change', function() {
+            validateAge(this);
+        });
+    }
+});
+</script>
 {% endblock %}
