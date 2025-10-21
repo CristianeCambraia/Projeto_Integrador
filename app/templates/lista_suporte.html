@@ -7,7 +7,7 @@
     <!-- Filtro por ID -->
     <div class="filtro-orcamentos">
         <form method="get">
-            <input type="text" name="filtro" placeholder="Filtrar por ID, Nome ou Telefone" value="{{ filtro }}">
+            <input type="text" name="filtro" placeholder="Filtrar por ID, Nome ou Telefone" value="{{ filtro|default:'' }}">
             <button type="submit" class="btn-filtrar">Filtrar</button>
             <a href="{% url 'lista_suporte' %}" class="btn-limpar">Limpar</a>
         </form>

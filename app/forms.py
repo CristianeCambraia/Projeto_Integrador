@@ -42,6 +42,10 @@ class FornecedorForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
             field.label = ''
+        
+        # Preencher data de nascimento ao editar
+        if self.instance and hasattr(self.instance, 'data_nascimento') and self.instance.data_nascimento:
+            self.initial['data_nascimento'] = self.instance.data_nascimento
 
 
 # Formulário de Produto

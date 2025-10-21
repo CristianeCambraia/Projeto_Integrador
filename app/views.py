@@ -660,6 +660,7 @@ def editar_fornecedor(request, fornecedor_id):
         form = FornecedorForm(request.POST, instance=fornecedor)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Fornecedor atualizado com sucesso!')
             return redirect('lista_fornecedores')
     else:
         form = FornecedorForm(instance=fornecedor)

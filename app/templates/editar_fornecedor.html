@@ -28,4 +28,58 @@
     </div>
   </form>
 </div>
+
+<script>
+// Máscara para CEP
+function mascaraCEP(campo) {
+    let valor = campo.value.replace(/\D/g, '');
+    valor = valor.replace(/(\d{5})(\d)/, '$1-$2');
+    campo.value = valor;
+}
+
+// Máscara para telefone
+function mascaraTelefone(campo) {
+    let valor = campo.value.replace(/\D/g, '');
+    if (valor.length <= 10) {
+        valor = valor.replace(/(\d{2})(\d)/, '($1) $2');
+        valor = valor.replace(/(\d{4})(\d)/, '$1-$2');
+    } else {
+        valor = valor.replace(/(\d{2})(\d)/, '($1) $2');
+        valor = valor.replace(/(\d{5})(\d)/, '$1-$2');
+    }
+    campo.value = valor;
+}
+
+// Aplicar máscaras aos campos
+document.addEventListener('DOMContentLoaded', function() {
+    const cepField = document.getElementById('id_cep');
+    const telefoneField = document.getElementById('id_telefone');
+    const dataField = document.getElementById('id_data_nascimento');
+    
+    if (cepField) {
+        cepField.addEventListener('input', function() {
+            mascaraCEP(this);
+        });
+    }
+    
+    if (telefoneField) {
+        telefoneField.addEventListener('input', function() {
+            mascaraTelefone(this);
+        });
+    }
+    
+    // Forçar preenchimento da data de nascimento
+    if (dataField) {
+        {% if fornecedor.data_nascimento %}
+            dataField.value = '{{ fornecedor.data_nascimento|date:"Y-m-d" }}';
+        {% endif %}
+    }
+});
+</script>
+
+<script>
+// Debug - verificar se os dados estão chegando
+console.log('Fornecedor ID: {{ fornecedor.id }}');
+console.log('Data nascimento: {{ fornecedor.data_nascimento|date:"Y-m-d" }}');
+</script>
 {% endblock %}
