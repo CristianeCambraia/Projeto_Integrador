@@ -4,15 +4,21 @@
 {% block content %}
 <div class="estoque-container" style="max-width: 95%; width: 95%; margin: 0 auto;">
     <div class="print-header" style="display: none;">
-        <div style="text-align: center; margin-bottom: 30px;">
-            <h2>INSUMED - Sistema de Gestão</h2>
-            <h3>Relatório de Estoque</h3>
-            <p id="data-geracao"></p>
-            {% if request.GET.q %}<p>Filtro aplicado: "{{ request.GET.q }}"</p>{% endif %}
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; padding: 0 80px;">
+            <img src="{% static 'images/insumed_icon.png' %}" style="width: 100px; height: 100px;" alt="Logo">
+            <h1 style="font-size: 48px; font-weight: bold; color: rgba(0, 0, 0, 0.12); margin: 0 120px; word-wrap: break-word; line-height: 1.2;">INSUMED</h1>
+            <img src="{% static 'images/insumed_icon.png' %}" style="width: 100px; height: 100px;" alt="Logo">
         </div>
+
     </div>
     
     <h2 class="titulo screen-only">Relatório de Estoque</h2>
+    
+    <div class="print-info" style="display: none;">
+        <h3 style="text-align: center; margin: 0 0 10px 0; color: #026a84; font-size: 24px;">Relatório de Estoque</h3>
+        <p id="data-geracao-print" style="text-align: center; margin: 0; color: #026a84;"></p>
+        {% if request.GET.q %}<p style="text-align: center; margin: 5px 0 0 0; color: #026a84;">Filtro aplicado: "{{ request.GET.q }}"</p>{% endif %}
+    </div>
 
     <!-- Token CSRF oculto -->
     {% csrf_token %}
@@ -131,8 +137,34 @@ function toggleDescricaoTabela(btn) {
 
 <style>
 @media print {
+    @page {
+        margin: 0;
+        size: A4 landscape;
+        background: #013e6a !important;
+    }
     * {
+        -webkit-print-color-adjust: exact !important;
+        color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+    body * {
         visibility: hidden;
+    }
+    html {
+        background: #013e6a !important;
+        -webkit-print-color-adjust: exact !important;
+        color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+    body {
+        margin: 0;
+        padding: 0;
+        background: #013e6a !important;
+        -webkit-print-color-adjust: exact !important;
+        color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        min-height: 100vh;
+        visibility: visible;
     }
     .estoque-container, .estoque-container * {
         visibility: visible;
@@ -143,24 +175,64 @@ function toggleDescricaoTabela(btn) {
     .print-header, .print-footer {
         display: block !important;
     }
+    .print-info {
+        display: block !important;
+        background: #e8e8e8 !important;
+        padding: 15px;
+        margin-bottom: 20px;
+        border-radius: 5px;
+        margin-top: 130px;
+    }
+    .screen-only {
+        display: none !important;
+    }
     .estoque-container {
-        position: absolute;
+        position: relative;
         left: 0;
         top: 0;
         width: 100%;
         max-width: 100%;
+        margin: 0 auto;
     }
-    body {
-        margin: 0;
-        padding: 0;
+    .print-header {
+        background: #013e6a !important;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 120px;
+        z-index: 10;
+        padding: 20px 0 !important;
+        margin: 0 !important;
+    }
+    .estoque-container {
+        margin-top: 0 !important;
+        padding: 20px;
+        position: relative;
+    }
+    .print-header {
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    .print-header h1 {
+        color: rgba(255, 255, 255, 0.3) !important;
+    }
+    .print-header h3 {
+        color: #026a84 !important;
+        margin: 10px 0 !important;
+    }
+    .print-header p {
+        color: #026a84 !important;
     }
     table {
-        font-size: 10px;
+        font-size: 14px;
         width: 100%;
+        background: white !important;
     }
     th, td {
-        padding: 4px;
+        padding: 6px;
     }
+
 }
 </style>
 
@@ -176,8 +248,12 @@ document.addEventListener('DOMContentLoaded', function() {
         minute: '2-digit'
     });
     const elementoData = document.getElementById('data-geracao');
+    const elementoDataPrint = document.getElementById('data-geracao-print');
     if (elementoData) {
         elementoData.textContent = 'Data: ' + dataFormatada;
+    }
+    if (elementoDataPrint) {
+        elementoDataPrint.textContent = 'Data: ' + dataFormatada;
     }
 });
 

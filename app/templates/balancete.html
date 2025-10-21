@@ -3,7 +3,15 @@
 
 {% block content %}
 <div class="estoque-container" style="max-width: 95%; width: 95%; margin: 0 auto;">
-    <h2 class="titulo">Balancete Financeiro</h2>
+    <div class="print-header">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; padding: 0 80px;">
+            <img src="{% static 'images/insumed_icon.png' %}" style="width: 100px; height: 100px;" alt="Logo">
+            <h1 style="font-size: 48px; font-weight: bold; color: rgba(0, 0, 0, 0.12); margin: 0 120px; word-wrap: break-word; line-height: 1.2;">INSUMED</h1>
+            <img src="{% static 'images/insumed_icon.png' %}" style="width: 100px; height: 100px;" alt="Logo">
+        </div>
+        <h2 style="text-align: center; margin: 0;">Balancete Financeiro</h2>
+    </div>
+    <h2 class="titulo screen-only">Balancete Financeiro</h2>
 
     <!-- Filtro de Período e Botões -->
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
@@ -131,9 +139,32 @@
 </div>
 
 <style>
+.print-header {
+    display: none;
+}
+
 @media print {
+    * {
+        -webkit-print-color-adjust: exact !important;
+        color-adjust: exact !important;
+    }
     .btn, form select, form button, form a, .botoes {
         display: none !important;
+    }
+    .print-header {
+        display: block !important;
+        padding: 20px 0 !important;
+        margin-bottom: 30px !important;
+    }
+    .screen-only {
+        display: none !important;
+    }
+    .print-header h1 {
+        color: rgba(255, 255, 255, 0.3) !important;
+    }
+    .print-header h2 {
+        color: white !important;
+        margin: 10px 0 !important;
     }
     .estoque-container {
         max-width: 100% !important;
@@ -142,6 +173,10 @@
     body {
         margin: 0;
         padding: 0;
+        background-image: linear-gradient(to left top, #013e6a ,#43d1ff , #013e6a ,#419ad6, #01186a) !important;
+        background-repeat: no-repeat !important;
+        background-size: cover !important;
+        background-attachment: fixed !important;
     }
     header, footer {
         display: none !important;
@@ -154,6 +189,7 @@
     div[style*="grid-template-columns"] {
         display: flex !important;
         gap: 10px !important;
+        background: white !important;
     }
     div[style*="grid-template-columns"] > div {
         flex: 1 !important;
