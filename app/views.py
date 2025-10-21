@@ -487,15 +487,26 @@ def voltar(request):
 @login_required_custom
 def relatorio_estoque(request):
     busca = request.GET.get('q')
+    periodo = request.GET.get('periodo')
+    
+    produtos = Produto.objects.all()
+    
+    # Filtro por busca
     if busca:
-        produtos = Produto.objects.filter(
+        produtos = produtos.filter(
             models.Q(nome__icontains=busca) |
             models.Q(fornecedor__nome__icontains=busca) |
             models.Q(descricao__icontains=busca) |
             models.Q(codigo_barras__icontains=busca)
         )
-    else:
-        produtos = Produto.objects.all()
+    
+    # Filtro por período (em dias)
+    if periodo and periodo.isdigit():
+        from datetime import timedelta
+        dias = int(periodo)
+        data_limite = timezone.now() - timedelta(days=dias)
+        produtos = produtos.filter(data_hora__gte=data_limite)
+        print(f"Filtro últimos {dias} dias (desde {data_limite}): {produtos.count()} produtos")  # Debug
     
     # Adicionar informações de movimentação para cada produto
     produtos_com_movimentacao = []
@@ -512,10 +523,19 @@ def relatorio_estoque(request):
         produto.ultima_saida = ultima_saida
         produtos_com_movimentacao.append(produto)
     
+    print(f"Total produtos final: {len(produtos_com_movimentacao)}")  # Debug
     return render(request, 'relatorio_estoque.html', {'produtos': produtos_com_movimentacao})
 
 def relatorio_entrada(request):
+    periodo = request.GET.get('periodo')
     produtos = Produto.objects.all()
+    
+    # Filtro por período
+    if periodo and periodo.isdigit():
+        from datetime import timedelta
+        dias = int(periodo)
+        data_limite = timezone.now() - timedelta(days=dias)
+        produtos = produtos.filter(data_hora__gte=data_limite)
     
     # Adicionar informações de última entrada
     produtos_com_entrada = []
@@ -549,7 +569,15 @@ def relatorio_entrada(request):
 
 
 def relatorio_saida(request):
+    periodo = request.GET.get('periodo')
     produtos = Produto.objects.all()
+    
+    # Filtro por período
+    if periodo and periodo.isdigit():
+        from datetime import timedelta
+        dias = int(periodo)
+        data_limite = timezone.now() - timedelta(days=dias)
+        produtos = produtos.filter(data_hora__gte=data_limite)
     
     # Adicionar informações de última saída
     produtos_com_saida = []
@@ -1327,15 +1355,23 @@ def marcar_todas_lidas(request):
 # ----- EXPORTAR ESTOQUE PDF -----
 def exportar_estoque_pdf(request):
     busca = request.GET.get('q')
+    periodo = request.GET.get('periodo')
+    
+    produtos = Produto.objects.all()
+    
     if busca:
-        produtos = Produto.objects.filter(
+        produtos = produtos.filter(
             models.Q(nome__icontains=busca) |
             models.Q(fornecedor__nome__icontains=busca) |
             models.Q(descricao__icontains=busca) |
             models.Q(codigo_barras__icontains=busca)
         )
-    else:
-        produtos = Produto.objects.all()
+    
+    if periodo and periodo.isdigit():
+        from datetime import timedelta
+        dias = int(periodo)
+        data_limite = timezone.now() - timedelta(days=dias)
+        produtos = produtos.filter(data_hora__gte=data_limite)
     
     produtos_com_movimentacao = []
     for produto in produtos:
@@ -1382,19 +1418,26 @@ def enviar_estoque_email(request):
             data = json.loads(request.body)
             email_destino = data.get('email')
             busca = data.get('busca', '')
+            periodo = data.get('periodo', '')
             
             if not email_destino:
                 return JsonResponse({'success': False, 'error': 'Email não informado'})
             
+            produtos = Produto.objects.all()
+            
             if busca:
-                produtos = Produto.objects.filter(
+                produtos = produtos.filter(
                     models.Q(nome__icontains=busca) |
                     models.Q(fornecedor__nome__icontains=busca) |
                     models.Q(descricao__icontains=busca) |
                     models.Q(codigo_barras__icontains=busca)
                 )
-            else:
-                produtos = Produto.objects.all()
+            
+            if periodo and periodo.isdigit():
+                from datetime import timedelta
+                dias = int(periodo)
+                data_limite = timezone.now() - timedelta(days=dias)
+                produtos = produtos.filter(data_hora__gte=data_limite)
             
             produtos_com_movimentacao = []
             for produto in produtos:

@@ -21,11 +21,17 @@
     <form method="GET" class="barra-pesquisa">
         {% csrf_token %}
         <input type="text" name="q" placeholder="Buscar por produto, fornecedor, descrição ou código de barras" value="{{ request.GET.q }}">
+        <select name="periodo" style="margin-left: 10px; padding: 8px; font-size: 12px; border: 1px solid #ddd; border-radius: 3px;">
+            <option value="">Todos</option>
+            <option value="1" {% if request.GET.periodo == '1' %}selected{% endif %}>Último dia</option>
+            <option value="7" {% if request.GET.periodo == '7' %}selected{% endif %}>Últimos 7 dias</option>
+            <option value="30" {% if request.GET.periodo == '30' %}selected{% endif %}>Últimos 30 dias</option>
+        </select>
         <button type="submit" class="btn-pesquisar">Pesquisar</button>
         <a href="{% url 'relatorio_estoque' %}" class="btn" style="background: #6c757d; margin-left: 10px; padding: 8px 12px; font-size: 12px;">Limpar</a>
         <button type="button" onclick="window.print()" class="btn" style="background: #17a2b8; margin-left: 10px; padding: 8px 12px; font-size: 12px;">Imprimir</button>
         <button type="button" onclick="enviarEmail()" class="btn" style="background: #28a745; margin-left: 10px; padding: 8px 12px; font-size: 12px;">Email</button>
-        <a href="{% url 'exportar_estoque_pdf' %}{% if request.GET.q %}?q={{ request.GET.q }}{% endif %}" class="btn" style="background: #dc3545; margin-left: 10px; padding: 8px 12px; font-size: 12px;">PDF</a>
+        <a href="{% url 'exportar_estoque_pdf' %}?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.periodo %}periodo={{ request.GET.periodo }}{% endif %}" class="btn" style="background: #dc3545; margin-left: 10px; padding: 8px 12px; font-size: 12px;">PDF</a>
     </form>
 
     <!-- Tabela -->
@@ -179,6 +185,7 @@ function enviarEmail() {
     const email = prompt('Digite o email de destino:');
     if (email) {
         const busca = new URLSearchParams(window.location.search).get('q') || '';
+        const periodo = new URLSearchParams(window.location.search).get('periodo') || '';
         
         // Obter CSRF token
         let csrfToken = '';
@@ -203,7 +210,7 @@ function enviarEmail() {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': csrfToken
             },
-            body: JSON.stringify({email: email, busca: busca})
+            body: JSON.stringify({email: email, busca: busca, periodo: periodo})
         })
         .then(response => {
             if (!response.ok) {
