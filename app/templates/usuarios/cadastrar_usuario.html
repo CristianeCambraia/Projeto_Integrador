@@ -1,62 +1,106 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+{% extends 'base.html' %}
 {% load static %}
-<head>
-    <meta charset="UTF-8">
-    <title>{{ titulo_pagina }}</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
-    <header class="cadastro_usuario">
-        <div class="logo-header">
-            <img src="{% static 'images/insumed_icon.png' %}" alt="insumed_icon">
-            <h1 class="insumed">INSUMED</h1>
-        </div>
-        
-    </header>
 
-    <div class="form-container">
-        <div class="titulo">{{ titulo_pagina }}</div>
-
-        <form method="post">
-            {% csrf_token %}
-            <div class="form-grid">
-                {% for field in form %}
-                    <p>
-                        {{ field.label_tag }}
-                        {{ field }}
-                        {% if field.errors %}
-                            <span style="color: red;">{{ field.errors.0 }}</span>
-                        {% endif %}
-                    </p>
-                {% endfor %}
-            </div>
-
-            <div class="botoes">
-                <button type="submit" class="btn-salvar">Cadastrar</button>
-                <a href="{% url 'home' %}" class="btn-cancelar">Cancelar</a>
-            </div>
-        </form>
+{% block content %}
+<div class="container">
+  <section class="form-box">
+    <div style="text-align: center; margin-bottom: 30px;">
+      <h2 class="form-title" style="color: #026a84; font-size: 28px; margin: 0;">{{ titulo_pagina }}</h2>
+      <p style="color: #666; margin-top: 10px; font-size: 16px;">Preencha os dados para criar sua conta no sistema INSUMED</p>
     </div>
 
-    <footer>
-        <div>
-            <p>Redes Sociais</p>
-            <ul class="social-media">
-                <li><a href="https://wa.me/5535997548034" target="_blank"><img src="{% static 'images/whatsapp.svg' %}" alt="WhatsApp"></a></li>
-                <li><a href="https://instagram.com/insumed" target="_blank"><img src="{% static 'images/instagram.svg' %}" alt="Instagram"></a></li>
-                <li><a href="https://facebook.com/insumed" target="_blank"><img src="{% static 'images/facebook.svg' %}" alt="Facebook"></a></li>
-            </ul>
-        </div>
-        <p>Todos os direitos reservados &copy; <br> Develop By: Bessa, Cristiane, Eduardo, Leonardo, Lucas.</p>
-        <p>Telefone - (35) 99877-8346</p>
+    <form method="post">
+      {% csrf_token %}
+      
+      <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+        {% for field in form %}
+          <div class="form-group" style="{% if field.name == 'nome' or field.name == 'email' or field.name == 'senha' %}grid-column: 1 / -1;{% endif %}">
+            <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #026a84; font-size: 14px;">
+              {% if field.name == 'nome' %}🔵 Nome Completo{% endif %}
+              {% if field.name == 'email' %}📧 Email{% endif %}
+              {% if field.name == 'senha' %}🔒 Senha{% endif %}
+              {% if field.name == 'telefone' %}📞 Telefone{% endif %}
+              {% if field.name == 'cargo' %}💼 Cargo{% endif %}
+              {% if field.name == 'data_nascimento' %}🎂 Data de Nascimento{% endif %}
+              {% if field.name == 'cpf' %}🆔 CPF{% endif %}
+              {% if field.name == 'endereco' %}🏠 Endereço{% endif %}
+            </label>
+            {% if field.name == 'email' %}
+              <input type="email" name="{{ field.name }}" id="{{ field.id_for_label }}" placeholder="Digite seu email" autocomplete="off" style="width: 100%; height: 45px; padding: 12px 15px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; transition: border-color 0.3s ease; box-sizing: border-box;">
+            {% elif field.name == 'telefone' %}
+              <input type="tel" name="{{ field.name }}" id="{{ field.id_for_label }}" placeholder="Digite seu telefone" autocomplete="off" style="width: 100%; height: 45px; padding: 12px 15px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; transition: border-color 0.3s ease; box-sizing: border-box;">
+            {% elif field.name == 'senha' %}
+              <input type="password" name="{{ field.name }}" id="{{ field.id_for_label }}" placeholder="Digite sua senha" autocomplete="new-password" style="width: 100%; height: 45px; padding: 12px 15px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; transition: border-color 0.3s ease; box-sizing: border-box;">
+            {% else %}
+              {{ field }}
+            {% endif %}
+            {% if field.errors %}
+              <span style="color: #dc3545; font-size: 12px; margin-top: 5px; display: block;">{{ field.errors.0 }}</span>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
 
-        <ul class="contact">
-            <li><a href="{% url 'sobre_nos' %}">Sobre nós</a></li>
-            <li><a href="{% url 'criar_suporte' %}">Contato</a></li>
+      <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #026a84;">
+        <h4 style="color: #026a84; margin: 0 0 10px 0; font-size: 16px;">ℹ️ Informações Importantes</h4>
+        <ul style="margin: 0; padding-left: 20px; color: #666; font-size: 14px;">
+          <li>Sua senha deve ter pelo menos 8 caracteres</li>
+          <li>O email será usado para login no sistema</li>
+          <li>Mantenha seus dados sempre atualizados</li>
         </ul>
-    </footer>
+      </div>
 
-</body>
-</html>
+      <div class="form-buttons" style="display: flex; gap: 15px; justify-content: center; margin-top: 30px;">
+        <button type="submit" class="btn btn-salvar" style="background: #28a745; padding: 12px 30px; font-size: 16px; font-weight: bold;">✅ Cadastrar Usuário</button>
+        <a href="{% url 'home' %}" class="btn btn-voltar" style="background: #6c757d; padding: 12px 30px; font-size: 16px;">Voltar ⤴</a>
+      </div>
+
+    </form>
+  </section>
+</div>
+
+<style>
+.form-group input, .form-group select {
+    width: 100%;
+    height: 45px;
+    padding: 12px 15px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+    box-sizing: border-box;
+}
+
+.form-group input:focus, .form-group select:focus {
+    border-color: #026a84;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(2, 106, 132, 0.1);
+}
+
+.form-box {
+    background: #e8e8e8;
+    border-radius: 30px 30px 0 0;
+    padding: 40px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.btn {
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    color: white;
+    font-weight: 600;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+</style>
+{% endblock %}
 
