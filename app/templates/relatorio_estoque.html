@@ -7,8 +7,9 @@
 
     <!-- Barra de pesquisa -->
     <form method="GET" class="barra-pesquisa">
-        <input type="text" name="q" placeholder="Buscar produto" value="{{ request.GET.q }}">
+        <input type="text" name="q" placeholder="Buscar por produto, fornecedor, descrição ou código de barras" value="{{ request.GET.q }}">
         <button type="submit" class="btn-pesquisar">Pesquisar</button>
+        <a href="{% url 'relatorio_estoque' %}" class="btn" style="background: #6c757d; margin-left: 10px;">Limpar</a>
     </form>
 
     <!-- Tabela -->
@@ -77,5 +78,7 @@ function toggleDescricaoTabela(btn) {
         btn.textContent = '-';
     }
 }
+
+
 </script>
 {% endblock %}

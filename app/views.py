@@ -488,15 +488,14 @@ def voltar(request):
 def relatorio_estoque(request):
     busca = request.GET.get('q')
     if busca:
-        produtos = Produto.objects.filter(nome__icontains=busca)
-        print(f"Busca '{busca}': {produtos.count()} produtos encontrados")  # Debug
+        produtos = Produto.objects.filter(
+            models.Q(nome__icontains=busca) |
+            models.Q(fornecedor__nome__icontains=busca) |
+            models.Q(descricao__icontains=busca) |
+            models.Q(codigo_barras__icontains=busca)
+        )
     else:
         produtos = Produto.objects.all()
-        print(f"Sem busca: {produtos.count()} produtos encontrados")  # Debug
-    
-    # Debug: listar alguns produtos
-    for produto in produtos[:5]:
-        print(f"Produto: {produto.id} - {produto.nome}")  # Debug
     
     return render(request, 'relatorio_estoque.html', {'produtos': produtos})
 
