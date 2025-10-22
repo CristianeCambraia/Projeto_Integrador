@@ -182,15 +182,20 @@ class UsuarioForm(forms.ModelForm):
 
 class LoginForm(forms.Form):
     email = forms.EmailField(
+        required=True,
         widget=forms.EmailInput(attrs={
             'placeholder': 'E‑mail',
-            'class': 'form-control'
+            'class': 'form-control',
+            'required': True
         })
     )
     senha = forms.CharField(
+        required=True,
+        min_length=1,
         widget=forms.PasswordInput(attrs={
             'placeholder': 'Senha',
-            'class': 'form-control'
+            'class': 'form-control',
+            'required': True
         })
     )
     remember = forms.BooleanField(
@@ -199,6 +204,18 @@ class LoginForm(forms.Form):
             'class': 'form-check-input'
         })
     )
+    
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if not email:
+            raise forms.ValidationError('Email é obrigatório')
+        return email.strip()
+    
+    def clean_senha(self):
+        senha = self.cleaned_data.get('senha')
+        if not senha:
+            raise forms.ValidationError('Senha é obrigatória')
+        return senha
  
 # Formulário para editar produto (sem preço, quantidade e unidade)
 class EditarProdutoForm(forms.ModelForm):

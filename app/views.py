@@ -718,8 +718,13 @@ def login_view(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
-            email = form.cleaned_data['email']
+            email = form.cleaned_data['email'].strip()
             senha = form.cleaned_data['senha']
+            
+            # Validação adicional
+            if not email or not senha:
+                messages.error(request, 'Email e senha são obrigatórios')
+                return render(request, 'login.html', {'form': form})
             
             try:
                 usuario = Usuario.objects.get(email=email, senha=senha)
@@ -735,6 +740,8 @@ def login_view(request):
                 return redirect('home')
             except Usuario.DoesNotExist:
                 messages.error(request, 'Email ou senha incorretos')
+        else:
+            messages.error(request, 'Dados inválidos')
     else:
         form = LoginForm()
     
