@@ -1476,7 +1476,7 @@ footer p {
   .login-container {
    background-color: #ececec;
    width: 60%;
-   height:10%;;
+   height: 500px;
    margin: 10% 20%;
    display: flex;
    align-items: center;
@@ -1491,19 +1491,30 @@ footer p {
 
 /* lado da imagem */
 .login-side {
-  flex: 1;  /* pode crescer */
+  flex: 1;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: flex-start;
+  align-items: stretch;
+  height: 100%;
 }
 
-.login-side .logo-side {
-  max-width: 100%;
-  height: 500px;
-  border-radius: 20px;
-  /* se quiser limitar um pouco: */
-  object-fit: contain;
+.login-side img {
+  width: 320px !important;
+  height: 400px !important;
+  border-radius: 20px !important;
+  margin-left: 100px !important;
 }
+
+.logo-side {
+  width: 320px !important;
+  height: 400px !important;
+  border-radius: 20px !important;
+  object-fit: cover !important;
+  display: block !important;
+  margin: 50px auto 0 auto !important;
+}
+
+
 
 /* caixa de login ocupa espaço fixo ou proporcional menor */
 .login-box {
