@@ -75,6 +75,19 @@
             display: none;
         }
         
+        #notificationDropdown {
+            max-height: 400px;
+            overflow-y: auto;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+        
+        #notificationDropdown div {
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            white-space: normal;
+        }
+        
         .notification-dropdown.show {
             display: block;
         }
@@ -203,6 +216,8 @@
             }
         }
 
+
+
     </style>
 </head>
 <body>
@@ -235,6 +250,10 @@
                             
                             <div id="notificationDropdown" style="display: none; position: fixed; top: 80px; right: 20px; background: white; border: 1px solid #ccc; width: 320px; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.2); z-index: 99999;">
                                 <h3 style="margin: 0 0 10px 0; color: #333;">Notificações de Estoque</h3>
+                                <div style="margin-bottom: 10px; display: flex; gap: 5px;">
+                                    <button onclick="zerarContador()" style="background: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 3px; font-size: 12px;">Marcar Todas como Lidas</button>
+                                    <button onclick="marcarTodasNaoLidas()" style="background: #28a745; color: white; border: none; padding: 5px 10px; border-radius: 3px; font-size: 12px;">Marcar Todas como Não Lidas</button>
+                                </div>
                                 <div id="notificationContent">
                                     <div style="text-align: center; padding: 20px; color: #666;">Carregando...</div>
                                 </div>
@@ -306,10 +325,20 @@
                     if (data.categorias && data.categorias.length > 0) {
                         let html = '';
                         data.categorias.forEach(categoria => {
-                            if (categoria.count > 0) {
+                            // Calcular count real descontando apagadas
+                            const apagadas = JSON.parse(localStorage.getItem('notificacoesApagadas') || '[]');
+                            let countReal = 0;
+                            for (let i = 1; i <= categoria.count; i++) {
+                                const key = `${i}_${categoria.tipo}`;
+                                if (!apagadas.includes(key)) {
+                                    countReal++;
+                                }
+                            }
+                            
+                            if (countReal > 0) {
                                 html += `
                                     <div style="border-bottom: 1px solid #eee; padding: 10px 0; margin: 5px 0; cursor: pointer; background: #f8f9fa; border-radius: 5px; padding: 10px;" onclick="expandCategory('${categoria.tipo}')">
-                                        <strong>${categoria.icone} ${categoria.titulo} (${categoria.count})</strong>
+                                        <strong>${categoria.icone} ${categoria.titulo} (${countReal})</strong>
                                         <div id="items-${categoria.tipo}" style="display: none; margin-top: 10px; padding-left: 20px;"></div>
                                     </div>
                                 `;
@@ -317,11 +346,24 @@
                         });
                         content.innerHTML = html;
                         
-                        // Atualizar contador
+                        // Calcular notificações não lidas
+                        const lidas = JSON.parse(localStorage.getItem('notificacoesLidas') || '[]');
+                        const apagadas = JSON.parse(localStorage.getItem('notificacoesApagadas') || '[]');
+                        let totalNaoLidas = 0;
+                        
+                        data.categorias.forEach(cat => {
+                            for (let i = 1; i <= cat.count; i++) {
+                                const key = `${i}_${cat.tipo}`;
+                                if (!lidas.includes(key) && !apagadas.includes(key)) {
+                                    totalNaoLidas++;
+                                }
+                            }
+                        });
+                        
                         const counter = document.getElementById('notificationCounter');
                         if (counter) {
-                            counter.textContent = data.total;
-                            counter.style.display = data.total > 0 ? 'flex' : 'none';
+                            counter.textContent = totalNaoLidas;
+                            counter.style.display = totalNaoLidas > 0 ? 'flex' : 'none';
                         }
                     } else {
                         content.innerHTML = '<div style="text-align: center; padding: 20px; color: #666;">Nenhuma notificação</div>';
@@ -355,12 +397,40 @@
                     if (data.notificacoes && data.notificacoes.length > 0) {
                         let html = '';
                         data.notificacoes.forEach(notif => {
-                            html += `
-                                <div style="border-bottom: 1px solid #ddd; padding: 5px 0; margin: 5px 0; cursor: pointer; background: white; padding: 8px; border-radius: 3px;" onclick="window.location.href='/notificacao/${notif.produto_id}/${notif.tipo}/'">
-                                    <strong>${notif.produto_nome}</strong><br>
-                                    <small>${notif.mensagem}</small>
-                                </div>
-                            `;
+                            const key = `${notif.produto_id}_${notif.tipo}`;
+                            const lidas = JSON.parse(localStorage.getItem('notificacoesLidas') || '[]');
+                            const apagadas = JSON.parse(localStorage.getItem('notificacoesApagadas') || '[]');
+                            const jaLida = lidas.includes(key);
+                            const foiApagada = apagadas.includes(key);
+                            
+                            if (foiApagada) return;
+                            
+                            if (jaLida) {
+                                html += `
+                                    <div style="border-bottom: 1px solid #ddd; padding: 8px; margin: 5px 0; background: #f0f0f0; color: #888; border-radius: 3px; word-wrap: break-word; display: flex; justify-content: space-between; align-items: center;">
+                                        <div onclick="window.location.href='/notificacao/${notif.produto_id}/${notif.tipo}/'" style="cursor: pointer; flex: 1;">
+                                            <strong>✓ ${notif.produto_nome} (LIDA)</strong><br>
+                                            <small>${notif.mensagem}</small>
+                                        </div>
+                                        <div style="display: flex; gap: 5px;">
+                                            <button onclick="marcarNaoLida('${key}')" style="background: #28a745; color: white; border: none; padding: 3px 6px; border-radius: 3px; font-size: 10px;">Não Lida</button>
+                                            <button onclick="apagarNotif('${key}')" style="background: #dc3545; color: white; border: none; padding: 3px 6px; border-radius: 3px; font-size: 10px;">Apagar</button>
+                                        </div>
+                                    </div>
+                                `;
+                            } else {
+                                html += `
+                                    <div style="border-bottom: 1px solid #ddd; padding: 8px; margin: 5px 0; background: white; border-radius: 3px; word-wrap: break-word; display: flex; justify-content: space-between; align-items: center;">
+                                        <div onclick="marcarLida('${key}'); window.location.href='/notificacao/${notif.produto_id}/${notif.tipo}/'" style="cursor: pointer; flex: 1;">
+                                            <strong>${notif.produto_nome}</strong><br>
+                                            <small>${notif.mensagem}</small>
+                                        </div>
+                                        <div style="display: flex; gap: 5px;">
+                                            <button onclick="apagarNotif('${key}')" style="background: #dc3545; color: white; border: none; padding: 3px 6px; border-radius: 3px; font-size: 10px;">Apagar</button>
+                                        </div>
+                                    </div>
+                                `;
+                            }
                         });
                         itemsDiv.innerHTML = html;
                     } else {
@@ -373,15 +443,98 @@
                 });
         }
         
+
+        function marcarLida(key) {
+            const lidas = JSON.parse(localStorage.getItem('notificacoesLidas') || '[]');
+            if (!lidas.includes(key)) {
+                lidas.push(key);
+                localStorage.setItem('notificacoesLidas', JSON.stringify(lidas));
+            }
+        }
+        
         function initializeNotifications() {
-            // Carregar contador inicial
             loadNotifications();
         }
+        
+        function marcarNaoLida(key) {
+            const lidas = JSON.parse(localStorage.getItem('notificacoesLidas') || '[]');
+            const index = lidas.indexOf(key);
+            if (index > -1) {
+                lidas.splice(index, 1);
+                localStorage.setItem('notificacoesLidas', JSON.stringify(lidas));
+                
+                const counter = document.getElementById('notificationCounter');
+                let count = parseInt(counter.textContent) + 1;
+                counter.textContent = count;
+                counter.style.display = 'flex';
+                
+                loadNotifications();
+            }
+        }
+        
+        function apagarNotif(key) {
+            const apagadas = JSON.parse(localStorage.getItem('notificacoesApagadas') || '[]');
+            apagadas.push(key);
+            localStorage.setItem('notificacoesApagadas', JSON.stringify(apagadas));
+            
+            const lidas = JSON.parse(localStorage.getItem('notificacoesLidas') || '[]');
+            if (!lidas.includes(key)) {
+                const counter = document.getElementById('notificationCounter');
+                let count = Math.max(0, parseInt(counter.textContent) - 1);
+                counter.textContent = count;
+                if (count <= 0) counter.style.display = 'none';
+            }
+            
+            loadNotifications();
+        }
+        
+        function marcarTodasNaoLidas() {
+            localStorage.removeItem('notificacoesLidas');
+            
+            const counter = document.getElementById('notificationCounter');
+            counter.textContent = '22';
+            counter.style.display = 'flex';
+            
+            loadNotifications();
+        }
+        
+        function zerarContador() {
+            const todasLidas = [];
+            for (let i = 1; i <= 50; i++) {
+                todasLidas.push(`${i}_VALIDADE`);
+                todasLidas.push(`${i}_ESTOQUE_CRITICO`);
+                todasLidas.push(`${i}_BAIXA_SAIDA`);
+            }
+            localStorage.setItem('notificacoesLidas', JSON.stringify(todasLidas));
+            
+            const counter = document.getElementById('notificationCounter');
+            counter.textContent = '0';
+            counter.style.display = 'none';
+            
+            loadNotifications();
+        }
+        
+
+        
+
         
         // Inicializar ao carregar a página
         document.addEventListener('DOMContentLoaded', function() {
             initializeNotifications();
         });
+        
+
+        
+        function getCsrfToken() {
+            const cookies = document.cookie.split(';');
+            for (let cookie of cookies) {
+                const [name, value] = cookie.trim().split('=');
+                if (name === 'csrftoken') {
+                    return value;
+                }
+            }
+            return '';
+        }
         
         // Fechar dropdown ao clicar fora
         document.addEventListener('click', function(event) {

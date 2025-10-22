@@ -1190,6 +1190,9 @@ def teste_notificacoes(request):
 
 def detalhes_notificacao(request, produto_id, tipo):
     """Exibe detalhes de uma notificação específica"""
+    # Marcar como lida ao acessar
+    Notificacao.objects.filter(produto_id=produto_id, tipo=tipo, lida=False).update(lida=True)
+    
     try:
         produto = Produto.objects.get(id=produto_id)
     except Produto.DoesNotExist:
@@ -1407,10 +1410,12 @@ def marcar_notificacao_lida(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
-            notificacao_id = data.get('notificacao_id')
+            produto_id = data.get('produto_id')
+            tipo = data.get('tipo')
             
-            if notificacao_id:
-                Notificacao.objects.filter(id=notificacao_id).update(lida=True)
+            if produto_id and tipo:
+                # Marcar todas as notificações deste produto e tipo como lidas
+                Notificacao.objects.filter(produto_id=produto_id, tipo=tipo, lida=False).update(lida=True)
                 return JsonResponse({'success': True})
         except:
             pass
