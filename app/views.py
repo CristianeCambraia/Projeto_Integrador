@@ -1319,41 +1319,78 @@ def gerar_notificacoes_estoque():
 
 @csrf_exempt
 def obter_notificacoes(request):
-    """Retorna notificações não lidas para o usuário"""
+    """Retorna notificações baseadas em produtos reais do banco"""
     try:
         if request.method == 'GET':
+            from datetime import timedelta
+            hoje = timezone.now().date()
+            
+            # 1. Produtos próximos da validade (60 dias)
+            produtos_validade = Produto.objects.filter(
+                validade__isnull=False,
+                validade__lte=hoje + timedelta(days=60)
+            )[:10]
+            
+            # 2. Produtos com estoque crítico (≤ 5 unidades)
+            produtos_criticos = Produto.objects.filter(quantidade__lte=5)[:10]
+            
+            # 3. Produtos com baixa saída (90 dias sem movimentação)
+            data_limite = timezone.now() - timedelta(days=90)
+            produtos_sem_saida = Produto.objects.filter(data_hora__lt=data_limite)[:10]
+            
             tipo_filtro = request.GET.get('tipo')
             
-            if tipo_filtro and tipo_filtro in ['VALIDADE', 'BAIXA_SAIDA', 'ESTOQUE_CRITICO']:
-                # Simular dados para teste - depois conectar com banco real
-                dados_teste = {
-                    'VALIDADE': [
-                        {'id': 1, 'produto_id': 1, 'produto_nome': 'Medicamento A', 'mensagem': 'Vence em 15 dias', 'tipo': 'VALIDADE'},
-                        {'id': 2, 'produto_id': 2, 'produto_nome': 'Medicamento B', 'mensagem': 'Vence em 30 dias', 'tipo': 'VALIDADE'}
-                    ],
-                    'ESTOQUE_CRITICO': [
-                        {'id': 3, 'produto_id': 3, 'produto_nome': 'Produto C', 'mensagem': 'Apenas 2 unidades', 'tipo': 'ESTOQUE_CRITICO'}
-                    ],
-                    'BAIXA_SAIDA': [
-                        {'id': 4, 'produto_id': 4, 'produto_nome': 'Produto D', 'mensagem': 'Sem saída há 90 dias', 'tipo': 'BAIXA_SAIDA'}
-                    ]
-                }
-                
-                return JsonResponse({
-                    'notificacoes': dados_teste.get(tipo_filtro, []),
-                    'total': len(dados_teste.get(tipo_filtro, []))
-                })
+            if tipo_filtro == 'VALIDADE':
+                notificacoes = []
+                for produto in produtos_validade:
+                    dias_restantes = (produto.validade - hoje).days
+                    notificacoes.append({
+                        'id': produto.id,
+                        'produto_id': produto.id,
+                        'produto_nome': produto.nome,
+                        'mensagem': f'Vence em {dias_restantes} dias',
+                        'tipo': 'VALIDADE'
+                    })
+                return JsonResponse({'notificacoes': notificacoes, 'total': len(notificacoes)})
+            
+            elif tipo_filtro == 'ESTOQUE_CRITICO':
+                notificacoes = []
+                for produto in produtos_criticos:
+                    notificacoes.append({
+                        'id': produto.id,
+                        'produto_id': produto.id,
+                        'produto_nome': produto.nome,
+                        'mensagem': f'Apenas {produto.quantidade} unidades',
+                        'tipo': 'ESTOQUE_CRITICO'
+                    })
+                return JsonResponse({'notificacoes': notificacoes, 'total': len(notificacoes)})
+            
+            elif tipo_filtro == 'BAIXA_SAIDA':
+                notificacoes = []
+                for produto in produtos_sem_saida:
+                    dias_parado = (hoje - produto.data_hora.date()).days
+                    notificacoes.append({
+                        'id': produto.id,
+                        'produto_id': produto.id,
+                        'produto_nome': produto.nome,
+                        'mensagem': f'Sem saída há {dias_parado} dias',
+                        'tipo': 'BAIXA_SAIDA'
+                    })
+                return JsonResponse({'notificacoes': notificacoes, 'total': len(notificacoes)})
+            
             else:
                 # Retornar contadores por categoria
                 categorias = [
-                    {'tipo': 'VALIDADE', 'titulo': 'Produto próximo da validade', 'icone': '⚠️', 'count': 2},
-                    {'tipo': 'ESTOQUE_CRITICO', 'titulo': 'Estoque crítico', 'icone': '🔴', 'count': 1},
-                    {'tipo': 'BAIXA_SAIDA', 'titulo': 'Baixa saída', 'icone': '📦', 'count': 1}
+                    {'tipo': 'VALIDADE', 'titulo': 'Produto próximo da validade', 'icone': '⚠️', 'count': produtos_validade.count()},
+                    {'tipo': 'ESTOQUE_CRITICO', 'titulo': 'Estoque crítico', 'icone': '🔴', 'count': produtos_criticos.count()},
+                    {'tipo': 'BAIXA_SAIDA', 'titulo': 'Baixa saída', 'icone': '📦', 'count': produtos_sem_saida.count()}
                 ]
+                
+                total = sum(cat['count'] for cat in categorias)
                 
                 return JsonResponse({
                     'categorias': categorias,
-                    'total': 4
+                    'total': total
                 })
     except Exception as e:
         return JsonResponse({
