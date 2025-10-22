@@ -1748,6 +1748,210 @@ footer p {
     top: 80px;
     left: 50%;
     transform: translateX(-50%);
+}
+
+.estoque-container .botoes {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.estoque-container .botoes .btn {
+    flex: none;
+    margin: 5px;
+    padding: 10px 15px;
+    color: #FFFFFF;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+    background-color: #04BAFC;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: auto;
+    min-width: 140px;
+    max-width: 200px;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+}
+
+.estoque-container .botoes .btn:hover {
+    background: #0399d6;
+}ansform: translateX(-50%);
+}
+
+.botoes-orcamento {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.botoes-orcamento .btn-padrao {
+    margin: 5px;
+    padding: 10px 15px;
+    color: #FFFFFF;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+    background-color: #04BAFC;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: auto;
+    max-width: 200px;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+}
+
+.botoes-orcamento .btn-padrao:hover {
+    background: #0399d6;
+}
+
+.lista-container > div:last-child {
+    display: flex !important;
+    justify-content: center !important;
+    gap: 10px !important;
+    margin: 20px 0 !important;
+}
+
+.container-lista-orcamentos .botoes-orcamento .btn-padrao {
+    margin: 5px;
+    padding: 10px 15px;
+    color: #FFFFFF;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+    background-color: #04BAFC;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: auto;
+    min-width: 140px;
+    max-width: 200px;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+}
+
+.container-lista-orcamentos .botoes-orcamento .btn-padrao:hover {
+    background: #0399d6;
+}ansform: translateX(-50%);
+}
+
+.botoes-orcamento {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.botoes-orcamento .btn-padrao {
+    margin: 5px;
+    padding: 10px 15px;
+    color: #FFFFFF;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+    background-color: #04BAFC;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: auto;
+    max-width: 200px;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+}
+
+.botoes-orcamento .btn-padrao:hover {
+    background: #0399d6;
+}ansform: translateX(-50%);
+}
+
+.botoes-orcamento {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.botoes-orcamento .btn-padrao {
+    margin: 5px;
+    padding: 10px 15px;
+    color: #FFFFFF;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+    background-color: #04BAFC;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: auto;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+}
+
+.botoes-orcamento .btn-padrao:hover {
+    background: #0399d6;
+}
+}
+
+.botoes-orcamento {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.botoes-orcamento .btn-padrao {
+    margin: 5px;
+    padding: 10px 15px;
+    color: #FFFFFF;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+    background-color: #04BAFC;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-width: 140px;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+}
+
+.botoes-orcamento .btn-padrao:hover {
+    background: #0399d6;
+}ansform: translateX(-50%);
     z-index: 1000;
     box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     max-width: 500px;
