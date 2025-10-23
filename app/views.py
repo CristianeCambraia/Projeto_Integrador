@@ -11,6 +11,10 @@ from .decorators import login_required_custom
 from django.conf import settings
 from django.db import models
 
+def formatar_valor_brasileiro(valor):
+    """Formata valor para padrão brasileiro: 1.234,56"""
+    return f"{valor:,.2f}".replace(',', 'X').replace('.', ',').replace('X', '.')
+
 # Página inicial (exibe primeiro fornecedor só como exemplo)
 def cadastros(request):
     fornecedor = Fornecedor.objects.first()
@@ -418,9 +422,9 @@ def orcamentos_emitidos(request):
         valor_total = subtotal - valor_desconto
         
         orc.itens_processados = itens
-        orc.subtotal = f"{subtotal:.2f}".replace('.', ',')
-        orc.valor_desconto = f"{valor_desconto:.2f}".replace('.', ',')
-        orc.valor_total = f"{valor_total:.2f}".replace('.', ',')
+        orc.subtotal = formatar_valor_brasileiro(subtotal)
+        orc.valor_desconto = formatar_valor_brasileiro(valor_desconto)
+        orc.valor_total = formatar_valor_brasileiro(valor_total)
         orcamentos_processados.append(orc)
     
     return render(request, 'lista_orcamentos.html', {
@@ -492,10 +496,10 @@ def abrir_orcamento(request, orcamento_id):
     valor_desconto = subtotal * (desconto_percent / 100)
     valor_total = subtotal - valor_desconto
     
-    # Adicionar valores calculados ao orçamento
-    orc.subtotal_calculado = f"{subtotal:.2f}".replace('.', ',')
-    orc.valor_desconto_calculado = f"{valor_desconto:.2f}".replace('.', ',')
-    orc.valor_total_calculado = f"{valor_total:.2f}".replace('.', ',')
+    # Adicionar valores calculados ao orçamento com separador de milhares
+    orc.subtotal_calculado = formatar_valor_brasileiro(subtotal)
+    orc.valor_desconto_calculado = formatar_valor_brasileiro(valor_desconto)
+    orc.valor_total_calculado = formatar_valor_brasileiro(valor_total)
 
     return render(request, 'abrir_orcamento.html', {
         'orcamento': orc,

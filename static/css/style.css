@@ -1477,12 +1477,12 @@ footer p {
    background-color: #ececec;
    width: 60%;
    height: 500px;
-   margin: 10% 20%;
+   margin: 10% auto;
    display: flex;
    align-items: center;
    justify-content: center;
    padding: 20px;
-   gap: 120px;  /* espaço entre imagem e box */
+   gap: 40px;  /* espaço entre imagem e box */
    border-radius: 20px;
    font-size: 1em;
    font-weight: bold;
@@ -1493,7 +1493,7 @@ footer p {
 .login-side {
   flex: 1;
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: stretch;
   height: 100%;
 }
@@ -1502,7 +1502,6 @@ footer p {
   width: 320px !important;
   height: 400px !important;
   border-radius: 20px !important;
-  margin-left: 100px !important;
 }
 
 .logo-side {
