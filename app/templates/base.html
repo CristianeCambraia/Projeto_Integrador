@@ -449,11 +449,46 @@
             if (!lidas.includes(key)) {
                 lidas.push(key);
                 localStorage.setItem('notificacoesLidas', JSON.stringify(lidas));
+                
+                // Atualizar contador imediatamente
+                const counter = document.getElementById('notificationCounter');
+                if (counter) {
+                    let count = Math.max(0, parseInt(counter.textContent) - 1);
+                    counter.textContent = count;
+                    if (count <= 0) {
+                        counter.style.display = 'none';
+                    }
+                }
             }
         }
         
         function initializeNotifications() {
-            loadNotifications();
+            // Carregar notificações e calcular contador na inicialização
+            fetch('/notificacoes/')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.categorias) {
+                        const lidas = JSON.parse(localStorage.getItem('notificacoesLidas') || '[]');
+                        const apagadas = JSON.parse(localStorage.getItem('notificacoesApagadas') || '[]');
+                        let totalNaoLidas = 0;
+                        
+                        data.categorias.forEach(cat => {
+                            for (let i = 1; i <= cat.count; i++) {
+                                const key = `${i}_${cat.tipo}`;
+                                if (!lidas.includes(key) && !apagadas.includes(key)) {
+                                    totalNaoLidas++;
+                                }
+                            }
+                        });
+                        
+                        const counter = document.getElementById('notificationCounter');
+                        if (counter) {
+                            counter.textContent = totalNaoLidas;
+                            counter.style.display = totalNaoLidas > 0 ? 'flex' : 'none';
+                        }
+                    }
+                })
+                .catch(error => console.error('Erro ao inicializar notificações:', error));
         }
         
         function marcarNaoLida(key) {
@@ -463,10 +498,13 @@
                 lidas.splice(index, 1);
                 localStorage.setItem('notificacoesLidas', JSON.stringify(lidas));
                 
+                // Atualizar contador imediatamente
                 const counter = document.getElementById('notificationCounter');
-                let count = parseInt(counter.textContent) + 1;
-                counter.textContent = count;
-                counter.style.display = 'flex';
+                if (counter) {
+                    let count = parseInt(counter.textContent || '0') + 1;
+                    counter.textContent = count;
+                    counter.style.display = 'flex';
+                }
                 
                 loadNotifications();
             }
@@ -490,12 +528,7 @@
         
         function marcarTodasNaoLidas() {
             localStorage.removeItem('notificacoesLidas');
-            
-            const counter = document.getElementById('notificationCounter');
-            counter.textContent = '22';
-            counter.style.display = 'flex';
-            
-            loadNotifications();
+            loadNotifications(); // Recarregar para calcular contador correto
         }
         
         function zerarContador() {
@@ -521,6 +554,8 @@
         // Inicializar ao carregar a página
         document.addEventListener('DOMContentLoaded', function() {
             initializeNotifications();
+            // Atualizar contador a cada 30 segundos
+            setInterval(initializeNotifications, 30000);
         });
         
 
