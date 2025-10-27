@@ -1629,46 +1629,74 @@ def balancete(request):
         data_fim = None
         titulo_periodo = "Todo o Período"
     
-    # Filtrar movimentações
+    # Filtrar movimentações de entrada e saída
     if data_inicio:
         if data_fim:  # Para filtro de dia
-            entradas = MovimentacaoEstoque.objects.filter(
+            entradas_mov = MovimentacaoEstoque.objects.filter(
                 tipo='ENTRADA',
                 data_hora__range=[data_inicio, data_fim]
             ).select_related('produto')
-            saidas = MovimentacaoEstoque.objects.filter(
+            saidas_mov = MovimentacaoEstoque.objects.filter(
                 tipo='SAIDA',
                 data_hora__range=[data_inicio, data_fim]
             ).select_related('produto')
+            # Para produtos cadastrados no período
+            produtos_periodo = Produto.objects.filter(
+                data_hora__range=[data_inicio, data_fim]
+            )
         else:  # Para filtros de mês e ano
-            entradas = MovimentacaoEstoque.objects.filter(
+            entradas_mov = MovimentacaoEstoque.objects.filter(
                 tipo='ENTRADA',
                 data_hora__gte=data_inicio
             ).select_related('produto')
-            saidas = MovimentacaoEstoque.objects.filter(
+            saidas_mov = MovimentacaoEstoque.objects.filter(
                 tipo='SAIDA',
                 data_hora__gte=data_inicio
             ).select_related('produto')
+            # Para produtos cadastrados no período
+            produtos_periodo = Produto.objects.filter(
+                data_hora__gte=data_inicio
+            )
     else:
-        entradas = MovimentacaoEstoque.objects.filter(tipo='ENTRADA').select_related('produto')
-        saidas = MovimentacaoEstoque.objects.filter(tipo='SAIDA').select_related('produto')
+        entradas_mov = MovimentacaoEstoque.objects.filter(tipo='ENTRADA').select_related('produto')
+        saidas_mov = MovimentacaoEstoque.objects.filter(tipo='SAIDA').select_related('produto')
+        # Todos os produtos para "Todo o Período"
+        produtos_periodo = Produto.objects.all()
     
-    print(f"Período: {periodo}, Data início: {data_inicio}, Entradas: {entradas.count()}, Saídas: {saidas.count()}")  # Debug
+    # Calcular valores das movimentações
+    valor_entradas_mov = sum(mov.quantidade * mov.produto.preco for mov in entradas_mov)
+    valor_saidas_mov = sum(mov.quantidade * mov.produto.preco for mov in saidas_mov)
     
-    # Calcular valores
-    valor_entradas = sum(mov.quantidade * mov.produto.preco for mov in entradas)
-    valor_saidas = sum(mov.quantidade * mov.produto.preco for mov in saidas)
-    lucro = valor_saidas - valor_entradas
+    # Calcular valor do estoque inicial dos produtos cadastrados no período
+    valor_estoque_inicial = sum(produto.quantidade * produto.preco for produto in produtos_periodo)
     
-    # Estatísticas
-    total_entradas = sum(mov.quantidade for mov in entradas)
-    total_saidas = sum(mov.quantidade for mov in saidas)
+    # Somar entradas: movimentações + estoque inicial dos produtos cadastrados
+    valor_entradas_total = valor_entradas_mov + valor_estoque_inicial
+    valor_saidas_total = valor_saidas_mov
+    
+    # Calcular lucro
+    lucro = valor_saidas_total - valor_entradas_total
+    
+    # Estatísticas de quantidade
+    total_entradas_mov = sum(mov.quantidade for mov in entradas_mov)
+    total_saidas_mov = sum(mov.quantidade for mov in saidas_mov)
+    total_estoque_inicial = sum(produto.quantidade for produto in produtos_periodo)
+    
+    # Total de entradas = movimentações + estoque inicial
+    total_entradas = total_entradas_mov + total_estoque_inicial
+    total_saidas = total_saidas_mov
+    
+    print(f"Período: {periodo}")
+    print(f"Entradas mov: {valor_entradas_mov:.2f} ({total_entradas_mov} itens)")
+    print(f"Estoque inicial: {valor_estoque_inicial:.2f} ({total_estoque_inicial} itens)")
+    print(f"Total entradas: {valor_entradas_total:.2f} ({total_entradas} itens)")
+    print(f"Saídas: {valor_saidas_total:.2f} ({total_saidas} itens)")
     
     context = {
         'periodo': periodo,
         'titulo_periodo': titulo_periodo,
-        'valor_entradas': valor_entradas,
-        'valor_saidas': valor_saidas,
+        'valor_entradas': valor_entradas_total,
+        'valor_saidas': valor_saidas_total,
         'lucro': lucro,
         'total_entradas': total_entradas,
         'total_saidas': total_saidas,
@@ -1702,32 +1730,48 @@ def exportar_balancete_pdf(request):
         data_fim = None
         titulo_periodo = "Todo o Período"
     
-    # Filtrar movimentações (mesma lógica)
+    # Filtrar movimentações e produtos (mesma lógica da view principal)
     if data_inicio:
         if data_fim:
-            entradas = MovimentacaoEstoque.objects.filter(
+            entradas_mov = MovimentacaoEstoque.objects.filter(
                 tipo='ENTRADA', data_hora__range=[data_inicio, data_fim]
             ).select_related('produto')
-            saidas = MovimentacaoEstoque.objects.filter(
+            saidas_mov = MovimentacaoEstoque.objects.filter(
                 tipo='SAIDA', data_hora__range=[data_inicio, data_fim]
             ).select_related('produto')
+            produtos_periodo = Produto.objects.filter(
+                data_hora__range=[data_inicio, data_fim]
+            )
         else:
-            entradas = MovimentacaoEstoque.objects.filter(
+            entradas_mov = MovimentacaoEstoque.objects.filter(
                 tipo='ENTRADA', data_hora__gte=data_inicio
             ).select_related('produto')
-            saidas = MovimentacaoEstoque.objects.filter(
+            saidas_mov = MovimentacaoEstoque.objects.filter(
                 tipo='SAIDA', data_hora__gte=data_inicio
             ).select_related('produto')
+            produtos_periodo = Produto.objects.filter(
+                data_hora__gte=data_inicio
+            )
     else:
-        entradas = MovimentacaoEstoque.objects.filter(tipo='ENTRADA').select_related('produto')
-        saidas = MovimentacaoEstoque.objects.filter(tipo='SAIDA').select_related('produto')
+        entradas_mov = MovimentacaoEstoque.objects.filter(tipo='ENTRADA').select_related('produto')
+        saidas_mov = MovimentacaoEstoque.objects.filter(tipo='SAIDA').select_related('produto')
+        produtos_periodo = Produto.objects.all()
     
     # Calcular valores
-    valor_entradas = sum(mov.quantidade * mov.produto.preco for mov in entradas)
-    valor_saidas = sum(mov.quantidade * mov.produto.preco for mov in saidas)
+    valor_entradas_mov = sum(mov.quantidade * mov.produto.preco for mov in entradas_mov)
+    valor_saidas_mov = sum(mov.quantidade * mov.produto.preco for mov in saidas_mov)
+    valor_estoque_inicial = sum(produto.quantidade * produto.preco for produto in produtos_periodo)
+    
+    valor_entradas = valor_entradas_mov + valor_estoque_inicial
+    valor_saidas = valor_saidas_mov
     lucro = valor_saidas - valor_entradas
-    total_entradas = sum(mov.quantidade for mov in entradas)
-    total_saidas = sum(mov.quantidade for mov in saidas)
+    
+    total_entradas_mov = sum(mov.quantidade for mov in entradas_mov)
+    total_saidas_mov = sum(mov.quantidade for mov in saidas_mov)
+    total_estoque_inicial = sum(produto.quantidade for produto in produtos_periodo)
+    
+    total_entradas = total_entradas_mov + total_estoque_inicial
+    total_saidas = total_saidas_mov
     
     import os
     static_root = getattr(settings, 'STATIC_ROOT', None) or os.path.join(settings.BASE_DIR, 'static')
@@ -1789,28 +1833,44 @@ def enviar_balancete_email(request):
             
             if data_inicio:
                 if data_fim:
-                    entradas = MovimentacaoEstoque.objects.filter(
+                    entradas_mov = MovimentacaoEstoque.objects.filter(
                         tipo='ENTRADA', data_hora__range=[data_inicio, data_fim]
                     ).select_related('produto')
-                    saidas = MovimentacaoEstoque.objects.filter(
+                    saidas_mov = MovimentacaoEstoque.objects.filter(
                         tipo='SAIDA', data_hora__range=[data_inicio, data_fim]
                     ).select_related('produto')
+                    produtos_periodo = Produto.objects.filter(
+                        data_hora__range=[data_inicio, data_fim]
+                    )
                 else:
-                    entradas = MovimentacaoEstoque.objects.filter(
+                    entradas_mov = MovimentacaoEstoque.objects.filter(
                         tipo='ENTRADA', data_hora__gte=data_inicio
                     ).select_related('produto')
-                    saidas = MovimentacaoEstoque.objects.filter(
+                    saidas_mov = MovimentacaoEstoque.objects.filter(
                         tipo='SAIDA', data_hora__gte=data_inicio
                     ).select_related('produto')
+                    produtos_periodo = Produto.objects.filter(
+                        data_hora__gte=data_inicio
+                    )
             else:
-                entradas = MovimentacaoEstoque.objects.filter(tipo='ENTRADA').select_related('produto')
-                saidas = MovimentacaoEstoque.objects.filter(tipo='SAIDA').select_related('produto')
+                entradas_mov = MovimentacaoEstoque.objects.filter(tipo='ENTRADA').select_related('produto')
+                saidas_mov = MovimentacaoEstoque.objects.filter(tipo='SAIDA').select_related('produto')
+                produtos_periodo = Produto.objects.all()
             
-            valor_entradas = sum(mov.quantidade * mov.produto.preco for mov in entradas)
-            valor_saidas = sum(mov.quantidade * mov.produto.preco for mov in saidas)
+            valor_entradas_mov = sum(mov.quantidade * mov.produto.preco for mov in entradas_mov)
+            valor_saidas_mov = sum(mov.quantidade * mov.produto.preco for mov in saidas_mov)
+            valor_estoque_inicial = sum(produto.quantidade * produto.preco for produto in produtos_periodo)
+            
+            valor_entradas = valor_entradas_mov + valor_estoque_inicial
+            valor_saidas = valor_saidas_mov
             lucro = valor_saidas - valor_entradas
-            total_entradas = sum(mov.quantidade for mov in entradas)
-            total_saidas = sum(mov.quantidade for mov in saidas)
+            
+            total_entradas_mov = sum(mov.quantidade for mov in entradas_mov)
+            total_saidas_mov = sum(mov.quantidade for mov in saidas_mov)
+            total_estoque_inicial = sum(produto.quantidade for produto in produtos_periodo)
+            
+            total_entradas = total_entradas_mov + total_estoque_inicial
+            total_saidas = total_saidas_mov
             
             import os
             static_root = getattr(settings, 'STATIC_ROOT', None) or os.path.join(settings.BASE_DIR, 'static')
