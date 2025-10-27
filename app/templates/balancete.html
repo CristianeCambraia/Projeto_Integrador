@@ -52,7 +52,7 @@
             <p style="font-size: 24px; font-weight: bold; margin: 10px 0; color: #28a745;">
                 R$ {{ valor_entradas|floatformat:2 }}
             </p>
-            <small style="color: #6c757d;">{{ total_entradas }} itens</small>
+
         </div>
 
         <!-- Card Saídas -->
@@ -61,7 +61,7 @@
             <p style="font-size: 24px; font-weight: bold; margin: 10px 0; color: #dc3545;">
                 R$ {{ valor_saidas|floatformat:2 }}
             </p>
-            <small style="color: #6c757d;">{{ total_saidas }} itens</small>
+
         </div>
 
         <!-- Card Lucro -->
@@ -70,15 +70,24 @@
                 {% if lucro >= 0 %}📈 SALDO{% else %}⚠️ SALDO{% endif %}
             </h4>
             <p style="font-size: 24px; font-weight: bold; margin: 10px 0; color: {% if lucro >= 0 %}#007bff{% else %}#ffc107{% endif %};">
-                R$ {{ lucro|floatformat:2 }}
+                R$ {% if lucro < 0 %}{{ lucro|floatformat:2|slice:"1:" }}{% else %}{{ lucro|floatformat:2 }}{% endif %}
             </p>
             <small style="color: #6c757d;">
                 {% if lucro >= 0 %}
                     Resultado positivo
                 {% else %}
-                    Resultado negativo
+                    Saldo atual
                 {% endif %}
             </small>
+        </div>
+
+        <!-- Card Prejuízo -->
+        <div style="background: #ffe8e8; border: 2px solid #dc3545; border-radius: 8px; padding: 20px; text-align: center;">
+            <h4 style="margin: 0 0 10px 0; color: #721c24;">⚠️ PREJUÍZO</h4>
+            <p style="font-size: 24px; font-weight: bold; margin: 10px 0; color: #dc3545;">
+                R$ {{ valor_prejuizo|floatformat:2 }}
+            </p>
+            <small style="color: #6c757d;">Produtos vencidos</small>
         </div>
     </div>
 
@@ -90,7 +99,7 @@
             <thead>
                 <tr style="background: #f8f9fa;">
                     <th style="padding: 12px; text-align: left; border: 1px solid #dee2e6;">Descrição</th>
-                    <th style="padding: 12px; text-align: right; border: 1px solid #dee2e6;">Quantidade</th>
+
                     <th style="padding: 12px; text-align: right; border: 1px solid #dee2e6;">Valor (R$)</th>
                 </tr>
             </thead>
@@ -99,7 +108,7 @@
                     <td style="padding: 12px; border: 1px solid #dee2e6;">
                         <span style="color: #28a745; font-weight: bold;">➕ Total de Entradas</span>
                     </td>
-                    <td style="padding: 12px; text-align: right; border: 1px solid #dee2e6;">{{ total_entradas }}</td>
+
                     <td style="padding: 12px; text-align: right; border: 1px solid #dee2e6; color: #28a745; font-weight: bold;">
                         {{ valor_entradas|floatformat:2 }}
                     </td>
@@ -108,7 +117,7 @@
                     <td style="padding: 12px; border: 1px solid #dee2e6;">
                         <span style="color: #dc3545; font-weight: bold;">➖ Total de Saídas</span>
                     </td>
-                    <td style="padding: 12px; text-align: right; border: 1px solid #dee2e6;">{{ total_saidas }}</td>
+
                     <td style="padding: 12px; text-align: right; border: 1px solid #dee2e6; color: #dc3545; font-weight: bold;">
                         {{ valor_saidas|floatformat:2 }}
                     </td>
@@ -119,9 +128,9 @@
                             {% if lucro >= 0 %}💰 SALDO LÍQUIDO{% else %}⚠️ SALDO LÍQUIDO{% endif %}
                         </span>
                     </td>
-                    <td style="padding: 12px; text-align: right; border: 1px solid #dee2e6;">-</td>
+
                     <td style="padding: 12px; text-align: right; border: 1px solid #dee2e6; color: {% if lucro >= 0 %}#007bff{% else %}#ffc107{% endif %}; font-size: 18px;">
-                        {{ lucro|floatformat:2 }}
+                        {% if lucro < 0 %}{{ lucro|floatformat:2|slice:"1:" }}{% else %}{{ lucro|floatformat:2 }}{% endif %}
                     </td>
                 </tr>
             </tbody>

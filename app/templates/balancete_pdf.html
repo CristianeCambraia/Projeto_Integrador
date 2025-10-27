@@ -111,23 +111,28 @@
                 <td class="card-entradas">
                     <div class="card-title color-green">💰 ENTRADAS</div>
                     <div class="card-valor color-green">R$ {{ valor_entradas|floatformat:2 }}</div>
-                    <div class="card-detalhes">{{ total_entradas }} itens</div>
+
                 </td>
                 <td class="card-saidas">
                     <div class="card-title color-red">📤 SAÍDAS</div>
                     <div class="card-valor color-red">R$ {{ valor_saidas|floatformat:2 }}</div>
-                    <div class="card-detalhes">{{ total_saidas }} itens</div>
+
                 </td>
                 <td class="{% if lucro >= 0 %}card-lucro{% else %}card-saldo{% endif %}">
                     <div class="card-title {% if lucro >= 0 %}color-blue{% else %}color-yellow{% endif %}">
                         {% if lucro >= 0 %}📈 SALDO{% else %}⚠️ SALDO{% endif %}
                     </div>
                     <div class="card-valor {% if lucro >= 0 %}color-blue{% else %}color-yellow{% endif %}">
-                        R$ {{ lucro|floatformat:2 }}
+                        R$ {% if lucro < 0 %}{{ lucro|floatformat:2|slice:"1:" }}{% else %}{{ lucro|floatformat:2 }}{% endif %}
                     </div>
                     <div class="card-detalhes">
-                        {% if lucro >= 0 %}Resultado positivo{% else %}Resultado negativo{% endif %}
+                        {% if lucro >= 0 %}Resultado positivo{% else %}Saldo atual{% endif %}
                     </div>
+                </td>
+                <td class="card-saidas">
+                    <div class="card-title color-red">⚠️ PREJUÍZO</div>
+                    <div class="card-valor color-red">R$ {{ valor_prejuizo|floatformat:2 }}</div>
+                    <div class="card-detalhes">Produtos vencidos</div>
                 </td>
             </tr>
         </table>
@@ -141,7 +146,7 @@
             <thead>
                 <tr>
                     <th>Descrição</th>
-                    <th class="text-right">Quantidade</th>
+
                     <th class="text-right">Valor (R$)</th>
                 </tr>
             </thead>
@@ -150,14 +155,14 @@
                     <td>
                         <span class="color-green">➕ Total de Entradas</span>
                     </td>
-                    <td class="text-right">{{ total_entradas }}</td>
+
                     <td class="text-right color-green">{{ valor_entradas|floatformat:2 }}</td>
                 </tr>
                 <tr>
                     <td>
                         <span class="color-red">➖ Total de Saídas</span>
                     </td>
-                    <td class="text-right">{{ total_saidas }}</td>
+
                     <td class="text-right color-red">{{ valor_saidas|floatformat:2 }}</td>
                 </tr>
                 <tr class="total-row">
@@ -166,9 +171,9 @@
                             {% if lucro >= 0 %}💰 SALDO LÍQUIDO{% else %}⚠️ SALDO LÍQUIDO{% endif %}
                         </span>
                     </td>
-                    <td class="text-right">-</td>
+
                     <td class="text-right {% if lucro >= 0 %}color-blue{% else %}color-yellow{% endif %}">
-                        {{ lucro|floatformat:2 }}
+                        {% if lucro < 0 %}{{ lucro|floatformat:2|slice:"1:" }}{% else %}{{ lucro|floatformat:2 }}{% endif %}
                     </td>
                 </tr>
             </tbody>

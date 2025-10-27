@@ -11,6 +11,7 @@
                 <th>Fornecedor</th>
                 <th>Produto</th>
                 <th>Quantidade</th>
+                <th>Unidade</th>
                 <th>Preço</th>
             </tr>
         </thead>
@@ -21,10 +22,11 @@
                 <td>{{ mov.produto.fornecedor.nome }}</td>
                 <td>{{ mov.produto.nome }}</td>
                 <td>{{ mov.quantidade }}</td>
+                <td>{{ mov.produto.unidade }}</td>
                 <td>R$ {{ mov.produto.preco }}</td>
             </tr>
             {% empty %}
-            <tr><td colspan="5">Nenhuma movimentação de saída registrada</td></tr>
+            <tr><td colspan="6">Nenhuma movimentação de saída registrada</td></tr>
             {% endfor %}
         </tbody>
     </table>

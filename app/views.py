@@ -1674,6 +1674,14 @@ def balancete(request):
     valor_entradas_total = valor_entradas_mov + valor_estoque_inicial
     valor_saidas_total = valor_saidas_mov
     
+    # Calcular produtos vencidos (prejuízo)
+    hoje = timezone.now().date()
+    produtos_vencidos = Produto.objects.filter(
+        validade__isnull=False,
+        validade__lt=hoje
+    )
+    valor_prejuizo = sum(produto.quantidade * produto.preco for produto in produtos_vencidos)
+    
     # Calcular lucro
     lucro = valor_saidas_total - valor_entradas_total
     
@@ -1698,6 +1706,7 @@ def balancete(request):
         'valor_entradas': valor_entradas_total,
         'valor_saidas': valor_saidas_total,
         'lucro': lucro,
+        'valor_prejuizo': valor_prejuizo,
         'total_entradas': total_entradas,
         'total_saidas': total_saidas,
         'data_atual': timezone.now().strftime('%d/%m/%Y %H:%M')
@@ -1762,6 +1771,14 @@ def exportar_balancete_pdf(request):
     valor_saidas_mov = sum(mov.quantidade * mov.produto.preco for mov in saidas_mov)
     valor_estoque_inicial = sum(produto.quantidade * produto.preco for produto in produtos_periodo)
     
+    # Calcular produtos vencidos (prejuízo)
+    hoje = timezone.now().date()
+    produtos_vencidos = Produto.objects.filter(
+        validade__isnull=False,
+        validade__lt=hoje
+    )
+    valor_prejuizo = sum(produto.quantidade * produto.preco for produto in produtos_vencidos)
+    
     valor_entradas = valor_entradas_mov + valor_estoque_inicial
     valor_saidas = valor_saidas_mov
     lucro = valor_saidas - valor_entradas
@@ -1781,6 +1798,7 @@ def exportar_balancete_pdf(request):
         'valor_entradas': valor_entradas,
         'valor_saidas': valor_saidas,
         'lucro': lucro,
+        'valor_prejuizo': valor_prejuizo,
         'total_entradas': total_entradas,
         'total_saidas': total_saidas,
         'data_atual': timezone.now().strftime('%d/%m/%Y %H:%M'),
@@ -1861,6 +1879,14 @@ def enviar_balancete_email(request):
             valor_saidas_mov = sum(mov.quantidade * mov.produto.preco for mov in saidas_mov)
             valor_estoque_inicial = sum(produto.quantidade * produto.preco for produto in produtos_periodo)
             
+            # Calcular produtos vencidos (prejuízo)
+            hoje = timezone.now().date()
+            produtos_vencidos = Produto.objects.filter(
+                validade__isnull=False,
+                validade__lt=hoje
+            )
+            valor_prejuizo = sum(produto.quantidade * produto.preco for produto in produtos_vencidos)
+            
             valor_entradas = valor_entradas_mov + valor_estoque_inicial
             valor_saidas = valor_saidas_mov
             lucro = valor_saidas - valor_entradas
@@ -1880,6 +1906,7 @@ def enviar_balancete_email(request):
                 'valor_entradas': valor_entradas,
                 'valor_saidas': valor_saidas,
                 'lucro': lucro,
+                'valor_prejuizo': valor_prejuizo,
                 'total_entradas': total_entradas,
                 'total_saidas': total_saidas,
                 'data_atual': timezone.now().strftime('%d/%m/%Y %H:%M'),
