@@ -43,6 +43,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'app.context_processors.usuario_logado',
             ],
+            'debug': DEBUG,
         },
     },
 ]
@@ -98,3 +99,14 @@ DEFAULT_FROM_EMAIL = 'INSUMED <insumed.sistema2025@gmail.com>'
 # Configurações para acesso à câmera
 SECURE_CROSS_ORIGIN_OPENER_POLICY = None
 SECURE_REFERRER_POLICY = None
+
+# Desabilitar cache em desenvolvimento
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+    }
+}
+
+# Forçar recarregamento de templates
+if DEBUG:
+    TEMPLATES[0]['OPTIONS']['debug'] = True

@@ -45,7 +45,7 @@
         .card-entradas { background-color: #e8f5e8; border-color: #28a745; }
         .card-saidas { background-color: #ffe8e8; border-color: #dc3545; }
         .card-lucro { background-color: #e8f4fd; border-color: #007bff; }
-        .card-prejuizo { background-color: #fff3cd; border-color: #ffc107; }
+        .card-saldo { background-color: #fff3cd; border-color: #ffc107; }
         
         .card-title { margin: 0 0 5px 0; font-size: 11px; font-weight: bold; }
         .card-valor { font-size: 16px; font-weight: bold; margin: 5px 0; }
@@ -118,9 +118,9 @@
                     <div class="card-valor color-red">R$ {{ valor_saidas|floatformat:2 }}</div>
                     <div class="card-detalhes">{{ total_saidas }} itens</div>
                 </td>
-                <td class="{% if lucro >= 0 %}card-lucro{% else %}card-prejuizo{% endif %}">
+                <td class="{% if lucro >= 0 %}card-lucro{% else %}card-saldo{% endif %}">
                     <div class="card-title {% if lucro >= 0 %}color-blue{% else %}color-yellow{% endif %}">
-                        {% if lucro >= 0 %}📈 SALDO{% else %}⚠️ PREJUÍZO{% endif %}
+                        {% if lucro >= 0 %}📈 SALDO{% else %}⚠️ SALDO{% endif %}
                     </div>
                     <div class="card-valor {% if lucro >= 0 %}color-blue{% else %}color-yellow{% endif %}">
                         R$ {{ lucro|floatformat:2 }}
@@ -163,7 +163,7 @@
                 <tr class="total-row">
                     <td>
                         <span class="{% if lucro >= 0 %}color-blue{% else %}color-yellow{% endif %}">
-                            {% if lucro >= 0 %}💰 SALDO LÍQUIDO{% else %}⚠️ PREJUÍZO{% endif %}
+                            {% if lucro >= 0 %}💰 SALDO LÍQUIDO{% else %}⚠️ SALDO LÍQUIDO{% endif %}
                         </span>
                     </td>
                     <td class="text-right">-</td>
