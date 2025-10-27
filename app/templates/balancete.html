@@ -66,7 +66,7 @@
         <!-- Card Lucro -->
         <div style="background: {% if lucro >= 0 %}#e8f4fd{% else %}#fff3cd{% endif %}; border: 2px solid {% if lucro >= 0 %}#007bff{% else %}#ffc107{% endif %}; border-radius: 8px; padding: 20px; text-align: center;">
             <h4 style="margin: 0 0 10px 0; color: {% if lucro >= 0 %}#004085{% else %}#856404{% endif %};">
-                {% if lucro >= 0 %}📈 LUCRO{% else %}⚠️ PREJUÍZO{% endif %}
+                {% if lucro >= 0 %}📈 SALDO{% else %}⚠️ PREJUÍZO{% endif %}
             </h4>
             <p style="font-size: 24px; font-weight: bold; margin: 10px 0; color: {% if lucro >= 0 %}#007bff{% else %}#ffc107{% endif %};">
                 R$ {{ lucro|floatformat:2 }}
@@ -115,7 +115,7 @@
                 <tr style="background: #f8f9fa; font-weight: bold;">
                     <td style="padding: 12px; border: 1px solid #dee2e6;">
                         <span style="color: {% if lucro >= 0 %}#007bff{% else %}#ffc107{% endif %};">
-                            {% if lucro >= 0 %}💰 LUCRO LÍQUIDO{% else %}⚠️ PREJUÍZO{% endif %}
+                            {% if lucro >= 0 %}💰 SALDO LÍQUIDO{% else %}⚠️ PREJUÍZO{% endif %}
                         </span>
                     </td>
                     <td style="padding: 12px; text-align: right; border: 1px solid #dee2e6;">-</td>

@@ -120,7 +120,7 @@
                 </td>
                 <td class="{% if lucro >= 0 %}card-lucro{% else %}card-prejuizo{% endif %}">
                     <div class="card-title {% if lucro >= 0 %}color-blue{% else %}color-yellow{% endif %}">
-                        {% if lucro >= 0 %}📈 LUCRO{% else %}⚠️ PREJUÍZO{% endif %}
+                        {% if lucro >= 0 %}📈 SALDO{% else %}⚠️ PREJUÍZO{% endif %}
                     </div>
                     <div class="card-valor {% if lucro >= 0 %}color-blue{% else %}color-yellow{% endif %}">
                         R$ {{ lucro|floatformat:2 }}
@@ -163,7 +163,7 @@
                 <tr class="total-row">
                     <td>
                         <span class="{% if lucro >= 0 %}color-blue{% else %}color-yellow{% endif %}">
-                            {% if lucro >= 0 %}💰 LUCRO LÍQUIDO{% else %}⚠️ PREJUÍZO{% endif %}
+                            {% if lucro >= 0 %}💰 SALDO LÍQUIDO{% else %}⚠️ PREJUÍZO{% endif %}
                         </span>
                     </td>
                     <td class="text-right">-</td>
