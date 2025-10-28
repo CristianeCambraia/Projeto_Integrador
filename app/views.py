@@ -15,10 +15,10 @@ def formatar_valor_brasileiro(valor):
     """Formata valor para padrão brasileiro: 1.234,56"""
     return f"{valor:,.2f}".replace(',', 'X').replace('.', ',').replace('X', '.')
 
-# Página inicial (exibe primeiro fornecedor só como exemplo)
+# Página de cadastros - menu principal
+@login_required_custom
 def cadastros(request):
-    fornecedor = Fornecedor.objects.first()
-    return render(request, 'base.html', {'fornecedor': fornecedor})
+    return render(request, 'menu_cadastros.html')
 
 
 # Página inicial

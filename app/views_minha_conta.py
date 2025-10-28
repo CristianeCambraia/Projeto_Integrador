@@ -55,6 +55,6 @@ def editar_conta(request):
         
         usuario.save()
         messages.success(request, 'Dados atualizados com sucesso!')
-        return redirect('minha_conta')
+        return redirect('editar_conta')
     
     return render(request, 'editar_conta.html', {'usuario': usuario})

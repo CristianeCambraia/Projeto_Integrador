@@ -8,6 +8,9 @@ urlpatterns = [
     # Página inicial
     path('', views.pagina_home, name='home'),
 
+    # ----- MENU CADASTROS -----
+    path('cadastros/', views.cadastros, name='cadastros'),
+    
     # ----- FORNECEDORES -----
     path('fornecedores/', views.abrir_fornecedor, name='fornecedores'),
     path('fornecedores/salvar/', views.salvar_fornecedor, name='salvar_fornecedor'),
