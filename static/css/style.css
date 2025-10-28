@@ -19,7 +19,7 @@ header {
     align-items: center;
     padding: 12px 20px;
     box-sizing: border-box;
-    overflow: hidden;
+    overflow: visible;
 }
 
 header.cadastro_usuario {
@@ -50,7 +50,7 @@ header img {
 }
 
 nav {
-    overflow: hidden;
+    overflow: visible;
 }
 
 nav ul {
@@ -2522,3 +2522,41 @@ nav ul li a {
   color: #721c24; /* vermelho escuro */
   border: 1px solid #f5c6cb;
 }
+
+/* Container do dropdown */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+/* Conteúdo do dropdown (inicialmente oculto) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  top: 100%; /* posiciona logo abaixo do botão */
+  left: 0;
+  background-color: #fff;
+  min-width: 150px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  border-radius: 4px;
+  z-index: 100;
+}
+
+/* Links dentro do dropdown */
+.dropdown-content a {
+  display: block;
+  padding: 8px 12px;
+  text-decoration: none;
+  color: #333;
+  transition: background-color 0.2s ease;
+}
+
+.dropdown-content a:hover {
+  background-color: #f1f1f1;
+}
+
+/* Mostrar dropdown ao passar o mouse no container */
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+

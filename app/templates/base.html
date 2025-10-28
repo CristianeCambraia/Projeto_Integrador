@@ -224,7 +224,7 @@
             <img src="{% static 'images/insumed_icon.png' %}" alt="insumed_icon">
             <h1 class="insumed">INSUMED</h1>
         </div>
-
+                             
         <nav>
             <ul>
                 {% if admin_logado %}
@@ -233,7 +233,30 @@
                     <li><a href="{% url 'admin_logout' %}">Sair Admin</a></li>
                 {% else %}
                     <li><a href="/">Home</a></li>
-                    <li><a href="{% url 'cadastros' %}">Cadastros</a></li>
+                   
+                    <div class="dropdown">
+     <li><a href="{% url 'cadastros' %}">Cadastros</a></li>
+    <div class="dropdown-content">
+        <!-- Clientes -->
+        <a href="{% url 'clientes' %}">Cadastrar Cliente</a>
+        <a href="{% url 'lista_cliente' %}">Listar Clientes</a>
+        <div class="divider"></div>
+        <!-- Fornecedores -->
+        <a href="{% url 'fornecedores' %}">Cadastrar Fornecedor</a>
+        <a href="{% url 'lista_fornecedores' %}">Listar Fornecedores</a>
+        <div class="divider"></div>
+        <!-- Produtos -->
+        <a href="{% url 'cadastrar_produto' %}">Cadastrar Produto</a>
+        <a href="{% url 'lista_produtos' %}">Listar Produtos</a>
+        <div class="divider"></div>
+        <!-- Usuários -->
+        <a href="{% url 'cadastrar_usuario' %}">Cadastrar Usuário</a>
+        <div class="divider"></div>
+        <!-- Serviços -->
+        <a href="{% url 'cadastrar_servico' %}">Cadastrar Serviço</a>
+        <a href="{% url 'lista_servicos' %}">Listar Serviços</a>
+    </div>
+</div>
                     <li><a href="{% url 'emitir_orcamento' %}">Orçamentos</a></li>
                     <li><a href="{% url 'relatorio_estoque' %}">Relatórios</a></li>
                     <li><a href="{% url 'balancete' %}">Balancete</a></li>
