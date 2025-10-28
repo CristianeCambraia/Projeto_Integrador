@@ -502,7 +502,7 @@ td input{
     padding: 10px 15px;
     color: #FFFFFF;
     font-size: 14px;
-    font-family: Arial, sans-serif;
+    font-family: 'Roboto', sans-serif !important;
     background-color: #04BAFC;
 }
 
@@ -1453,7 +1453,7 @@ footer p {
     padding: 10px 15px;
     color: #FFFFFF;
     font-size: 14px;
-    font-family: Arial, sans-serif;
+    font-family: 'Roboto', sans-serif !important;
     background-color: #04BAFC;
     border-radius: 8px;
     border: none;
@@ -1475,7 +1475,7 @@ footer p {
     padding: 10px 15px;
     color: #FFFFFF;
     font-size: 14px;
-    font-family: Arial, sans-serif;
+    font-family: 'Roboto', sans-serif !important;
     background-color: #04BAFC;
     border-radius: 8px;
     border: none;

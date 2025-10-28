@@ -8,8 +8,18 @@
     </title>
     <link rel="icon" type="image/png" href="{% static 'images/insumed_icon.png' %}">
     <link rel="shortcut icon" type="image/png" href="{% static 'images/insumed_icon.png' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <style>
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Open Sans', sans-serif;
+        }
+        
+        button, .btn, input[type="submit"], input[type="button"], a.btn, .btn-padrao, .btn-info, .btn-limpar, .btn-expandir-obs, .filter-btn, .mark-all-read, .bell-btn, .btn-adicionar, .btn-login, .suporte-btn, .btn-status, .btn-expandir, .btn-expandir-desc, .btn-salvar, .btn-editar, .btn-voltar, .btn-cancelar, .btn-cadastrar-produto, .btn-cadastrar-cliente, .btn-confirmar, .btn-filtrar, .btn-emitidos, .btn-pesquisar {
+            font-family: 'Roboto', sans-serif !important;
+        }
         nav ul {
             display: flex;
             align-items: center;
