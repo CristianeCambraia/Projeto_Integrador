@@ -214,7 +214,46 @@
             }
         }
 
+        /* Dropdown CSS */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
 
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: white;
+            min-width: 200px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            border-radius: 5px;
+            z-index: 1000;
+            padding: 10px 0;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-content a {
+            color: #333 !important;
+            padding: 8px 16px;
+            text-decoration: none;
+            display: block;
+            font-size: 14px;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+
+        .divider {
+            height: 1px;
+            background-color: #ddd;
+            margin: 5px 0;
+        }
 
     </style>
 </head>
@@ -257,8 +296,24 @@
         <a href="{% url 'lista_servicos' %}">Listar Serviços</a>
     </div>
 </div>
-                    <li><a href="{% url 'emitir_orcamento' %}">Orçamentos</a></li>
-                    <li><a href="{% url 'relatorio_estoque' %}">Relatórios</a></li>
+                    <div class="dropdown">
+                        <li><a href="{% url 'emitir_orcamento' %}">Orçamentos</a></li>
+                        <div class="dropdown-content">
+                            <a href="{% url 'emitir_orcamento' %}">Emitir Orçamento</a>
+                            <a href="{% url 'orcamentos_emitidos' %}">Orçamentos Emitidos</a>
+                        </div>
+                    </div>
+                    <div class="dropdown">
+                        <li><a href="{% url 'relatorio_estoque' %}">Relatórios</a></li>
+                        <div class="dropdown-content">
+                            <a href="{% url 'relatorio_estoque' %}">Relatório de Estoque</a>
+                            <a href="{% url 'relatorio_entrada' %}">Lançamento de Entrada</a>
+                            <a href="{% url 'relatorio_saida' %}">Lançamento de Saída</a>
+                            <div class="divider"></div>
+                            <a href="{% url 'relatorio_movimentacao_entrada' %}">Ver Históricos - Entrada</a>
+                            <a href="{% url 'relatorio_movimentacao_saida' %}">Ver Históricos - Saída</a>
+                        </div>
+                    </div>
                     <li><a href="{% url 'balancete' %}">Balancete</a></li>
                     {% if usuario_logado %}
                         <li><a href="{% url 'minha_conta' %}">Minha Conta</a></li>
