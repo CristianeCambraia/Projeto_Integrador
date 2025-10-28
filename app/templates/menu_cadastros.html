@@ -4,55 +4,57 @@
 
 {% block content %}
 <div class="lista-container">
-    <h2 class="titulo" style="margin-bottom: 40px;">📋 Menu de Cadastros</h2>
+    <h2 class="titulo" style="margin-bottom: 50px; text-align: center; font-size: 2.2em; color: #2c3e50;">📋 Menu de Cadastros</h2>
     
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-bottom: 40px;">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 40px; margin-bottom: 50px; max-width: 1200px; margin-left: auto; margin-right: auto;">
         
         <!-- Seção Cadastrar -->
-        <div style="background: #f8f9fa; padding: 25px; border-radius: 10px; border-left: 5px solid #007bff;">
-            <h3 style="color: #007bff; margin-bottom: 20px;">➕ Cadastrar</h3>
-            <div style="display: flex; flex-direction: column; gap: 10px;">
-                <a href="{% url 'cadastrar_usuario' %}" class="btn-filtrar" style="text-decoration: none; text-align: center; padding: 12px;">
-                    👤 Cadastrar Usuário
+        <div style="background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%); padding: 30px; border-radius: 20px; box-shadow: 0 15px 35px rgba(116, 185, 255, 0.3); transform: translateY(0); transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 20px 40px rgba(116, 185, 255, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 15px 35px rgba(116, 185, 255, 0.3)'">
+            <h3 style="color: white; margin-bottom: 25px; font-size: 1.4em; text-align: center; font-weight: 600;">✨ Cadastrar</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <a href="{% url 'cadastrar_usuario' %}" style="background: rgba(255,255,255,0.2); color: white; text-decoration: none; text-align: center; padding: 15px 10px; border-radius: 12px; font-weight: 500; transition: all 0.3s ease; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.3);" onmouseover="this.style.background='rgba(255,255,255,0.3)'; this.style.transform='scale(1.05)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'; this.style.transform='scale(1)'">
+                    👤 Usuário
                 </a>
-                <a href="{% url 'fornecedores' %}" class="btn-filtrar" style="text-decoration: none; text-align: center; padding: 12px;">
-                    🏢 Cadastrar Fornecedor
+                <a href="{% url 'fornecedores' %}" style="background: rgba(255,255,255,0.2); color: white; text-decoration: none; text-align: center; padding: 15px 10px; border-radius: 12px; font-weight: 500; transition: all 0.3s ease; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.3);" onmouseover="this.style.background='rgba(255,255,255,0.3)'; this.style.transform='scale(1.05)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'; this.style.transform='scale(1)'">
+                    🏢 Fornecedor
                 </a>
-                <a href="{% url 'clientes' %}" class="btn-filtrar" style="text-decoration: none; text-align: center; padding: 12px;">
-                    👥 Cadastrar Cliente
+                <a href="{% url 'clientes' %}" style="background: rgba(255,255,255,0.2); color: white; text-decoration: none; text-align: center; padding: 15px 10px; border-radius: 12px; font-weight: 500; transition: all 0.3s ease; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.3);" onmouseover="this.style.background='rgba(255,255,255,0.3)'; this.style.transform='scale(1.05)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'; this.style.transform='scale(1)'">
+                    👥 Cliente
                 </a>
-                <a href="{% url 'cadastrar_produto' %}" class="btn-filtrar" style="text-decoration: none; text-align: center; padding: 12px;">
-                    📦 Cadastrar Produto
+                <a href="{% url 'cadastrar_produto' %}" style="background: rgba(255,255,255,0.2); color: white; text-decoration: none; text-align: center; padding: 15px 10px; border-radius: 12px; font-weight: 500; transition: all 0.3s ease; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.3);" onmouseover="this.style.background='rgba(255,255,255,0.3)'; this.style.transform='scale(1.05)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'; this.style.transform='scale(1)'">
+                    📦 Produto
                 </a>
-                <a href="{% url 'cadastrar_servico' %}" class="btn-filtrar" style="text-decoration: none; text-align: center; padding: 12px;">
-                    🔧 Cadastrar Serviço
+                <a href="{% url 'cadastrar_servico' %}" style="background: rgba(255,255,255,0.2); color: white; text-decoration: none; text-align: center; padding: 15px 10px; border-radius: 12px; font-weight: 500; transition: all 0.3s ease; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.3); grid-column: 1 / -1;" onmouseover="this.style.background='rgba(255,255,255,0.3)'; this.style.transform='scale(1.02)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'; this.style.transform='scale(1)'">
+                    🛠️ Serviço
                 </a>
             </div>
         </div>
 
         <!-- Seção Listar -->
-        <div style="background: #f8f9fa; padding: 25px; border-radius: 10px; border-left: 5px solid #28a745;">
-            <h3 style="color: #28a745; margin-bottom: 20px;">📋 Listar Cadastrados</h3>
-            <div style="display: flex; flex-direction: column; gap: 10px;">
-                <a href="{% url 'lista_fornecedores' %}" class="btn-filtrar" style="text-decoration: none; text-align: center; padding: 12px; background: #28a745;">
-                    🏢 Fornecedores Cadastrados
+        <div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); padding: 30px; border-radius: 20px; box-shadow: 0 15px 35px rgba(17, 153, 142, 0.3); transform: translateY(0); transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 20px 40px rgba(17, 153, 142, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 15px 35px rgba(17, 153, 142, 0.3)'">
+            <h3 style="color: white; margin-bottom: 25px; font-size: 1.4em; text-align: center; font-weight: 600;">📊 Listar Cadastrados</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <a href="{% url 'lista_fornecedores' %}" style="background: rgba(255,255,255,0.2); color: white; text-decoration: none; text-align: center; padding: 15px 10px; border-radius: 12px; font-weight: 500; transition: all 0.3s ease; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.3);" onmouseover="this.style.background='rgba(255,255,255,0.3)'; this.style.transform='scale(1.05)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'; this.style.transform='scale(1)'">
+                    🏢 Fornecedores
                 </a>
-                <a href="{% url 'lista_cliente' %}" class="btn-filtrar" style="text-decoration: none; text-align: center; padding: 12px; background: #28a745;">
-                    👥 Clientes Cadastrados
+                <a href="{% url 'lista_cliente' %}" style="background: rgba(255,255,255,0.2); color: white; text-decoration: none; text-align: center; padding: 15px 10px; border-radius: 12px; font-weight: 500; transition: all 0.3s ease; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.3);" onmouseover="this.style.background='rgba(255,255,255,0.3)'; this.style.transform='scale(1.05)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'; this.style.transform='scale(1)'">
+                    👥 Clientes
                 </a>
-                <a href="{% url 'lista_produtos' %}" class="btn-filtrar" style="text-decoration: none; text-align: center; padding: 12px; background: #28a745;">
-                    📦 Produtos Cadastrados
+                <a href="{% url 'lista_produtos' %}" style="background: rgba(255,255,255,0.2); color: white; text-decoration: none; text-align: center; padding: 15px 10px; border-radius: 12px; font-weight: 500; transition: all 0.3s ease; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.3);" onmouseover="this.style.background='rgba(255,255,255,0.3)'; this.style.transform='scale(1.05)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'; this.style.transform='scale(1)'">
+                    📦 Produtos
                 </a>
-                <a href="{% url 'lista_servicos' %}" class="btn-filtrar" style="text-decoration: none; text-align: center; padding: 12px; background: #28a745;">
-                    🔧 Serviços Cadastrados
+                <a href="{% url 'lista_servicos' %}" style="background: rgba(255,255,255,0.2); color: white; text-decoration: none; text-align: center; padding: 15px 10px; border-radius: 12px; font-weight: 500; transition: all 0.3s ease; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.3);" onmouseover="this.style.background='rgba(255,255,255,0.3)'; this.style.transform='scale(1.05)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'; this.style.transform='scale(1)'">
+                    🛠️ Serviços
                 </a>
             </div>
         </div>
         
     </div>
 
-    <div class="botoes">
-        <a href="{% url 'home' %}" class="btn-cancelar">⤴ Voltar ao Início</a>
+    <div style="text-align: center; margin-top: 40px;">
+        <a href="{% url 'home' %}" style="background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%); color: white; text-decoration: none; padding: 15px 30px; border-radius: 25px; font-weight: 600; font-size: 1.1em; box-shadow: 0 8px 25px rgba(116, 185, 255, 0.3); transition: all 0.3s ease; display: inline-block;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 12px 30px rgba(116, 185, 255, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 25px rgba(116, 185, 255, 0.3)'">
+            ⤴ Voltar
+        </a>
     </div>
 </div>
 {% endblock %}
