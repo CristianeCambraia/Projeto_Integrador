@@ -90,8 +90,7 @@
     {% endfor %}
   </ul>
 
-  <div class="botoes-orcamento">
-    <a href="{% url 'emitir_orcamento' %}" class="btn-padrao">Novo Orçamento ➕</a>
+  <div class="botoes-orcamento" style="display: flex; justify-content: center; gap: 15px; margin: 30px 0;">
     <a href="https://www.nfse.gov.br/EmissorNacional/Login" target="_blank" class="btn-padrao">Portal NF-e 📄</a>
     <a href="{% url 'novo_orcamento' %}" class="btn-padrao voltar">Voltar ⤴</a>
   </div>

@@ -32,6 +32,7 @@
             <button onclick="limparFiltro()" class="btn" style="background: #6c757d; padding: 12px 16px; height: 45px; font-size: 14px;">Limpar</button>
         </div>
         <div style="display: flex; gap: 10px;">
+            <button onclick="location.reload()" class="btn" style="background: #007bff; padding: 12px 16px; height: 45px; font-size: 14px;">Atualizar Lista</button>
             <button type="button" onclick="window.print()" class="btn" style="background: #17a2b8; padding: 12px 16px; height: 45px; font-size: 14px;">Imprimir</button>
             <button type="button" onclick="enviarEmail()" class="btn" style="background: #28a745; padding: 12px 16px; height: 45px; font-size: 14px;">Email</button>
             <a href="{% url 'exportar_estoque_pdf' %}?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.periodo %}periodo={{ request.GET.periodo }}{% endif %}" class="btn" style="background: #dc3545; padding: 12px 16px; height: 45px; font-size: 14px; display: flex; align-items: center;">PDF</a>
@@ -106,14 +107,7 @@
         </div>
     </div>
 
-    <!-- Botões -->
-    <div class="botoes">
-        <button onclick="location.reload()" class="btn" style="background: #007bff;">Atualizar Lista</button>
-        <a href="{% url 'relatorio_estoque' %}" class="btn ativo">Relatório de Estoque</a>
-        <a href="{% url 'relatorio_entrada' %}" class="btn">Lançamento de Entrada</a>
-        <a href="{% url 'relatorio_saida'%}" class="btn">Lançamento de Saída</a>
-        <a href="{% url 'relatorio_movimentacao_entrada' %}" class="btn">Ver Históricos</a>
-    </div>
+
     
     <!-- Espaço extra para garantir scroll -->
     <div style="height: 200px;"></div>
