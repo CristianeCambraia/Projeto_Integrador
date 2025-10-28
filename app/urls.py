@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from .views_minha_conta import minha_conta, editar_conta
 from django.contrib.auth.views import LogoutView
 
  
@@ -97,6 +98,16 @@ urlpatterns = [
     # ----- BALANCETE -----
     path('balancete/', views.balancete, name='balancete'),
     path('balancete/pdf/', views.exportar_balancete_pdf, name='exportar_balancete_pdf'),
-    path('enviar-balancete-email/', views.enviar_balancete_email, name='enviar_balancete_email')
+    path('enviar-balancete-email/', views.enviar_balancete_email, name='enviar_balancete_email'),
+    
+    # ----- MINHA CONTA -----
+    path('minha-conta/', minha_conta, name='minha_conta'),
+    path('editar-conta/', editar_conta, name='editar_conta'),
+    
+    # ----- ADMIN - USUÁRIOS CADASTRADOS -----
+    path('usuarios-cadastrados/', views.usuarios_cadastrados, name='usuarios_cadastrados'),
+    
+    # ----- GERAR SENHA TEMPORÁRIA -----
+    path('gerar-senha-temporaria/', views.gerar_senha_temporaria, name='gerar_senha_temporaria')
 
 ]

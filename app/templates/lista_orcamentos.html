@@ -12,16 +12,15 @@
   <h2>Orçamentos Emitidos</h2>
   
   <div class="filtro-orcamentos">
-    <form method="GET">
-      <input type="text" name="filtro" placeholder="Filtrar por ID, Nome ou Data (dd/mm/aaaa)" value="{{ filtro|default:'' }}">
-      <button type="submit" class="btn-filtrar">Filtrar</button>
-      <a href="{% url 'orcamentos_emitidos' %}" class="btn-limpar" style="background: #6c757d;">Limpar</a>
-    </form>
+    <div style="display: flex; gap: 10px; align-items: center;">
+      <input type="text" id="filtroOrcamento" placeholder="Filtrar por ID, Nome ou Data (dd/mm/aaaa)" style="padding: 8px; border: 1px solid #ddd; border-radius: 3px;">
+      <button onclick="limparFiltro()" class="btn-limpar" style="background: #6c757d;">Limpar</button>
+    </div>
   </div>
 
   <ul class="lista-orcamentos">
     {% for o in orcamentos %}
-      <li class="item-orcamento">
+      <li class="item-orcamento" data-id="{{ o.id }}" data-cliente="{{ o.cliente|lower }}" data-data="{{ o.data|date:'d/m/Y' }}">
         <div class="row-two-col">
           <div class="col-left">
             <div class="field"><strong>ID:</strong> {{ o.id }}</div>
@@ -87,7 +86,7 @@
         </div>
       </li>
     {% empty %}
-      <li>Nenhum orçamento emitido.</li>
+      <li id="nenhumOrcamento">Nenhum orçamento emitido.</li>
     {% endfor %}
   </ul>
 
@@ -97,6 +96,25 @@
     <a href="{% url 'novo_orcamento' %}" class="btn-padrao voltar">Voltar ⤴</a>
   </div>
 </div>
+
+<!-- Botão Voltar ao Topo -->
+<button id="voltarTopo" onclick="voltarAoTopo()" style="
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background: #04bafc;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  font-size: 24px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  display: none;
+  z-index: 1000;
+  transition: all 0.3s ease;
+">⬆️</button>
 
 
 
@@ -249,6 +267,69 @@ function recolherItens(id) {
   document.querySelector('.itens-preview-' + id).style.display = 'block';
   document.querySelector('.itens-completos-' + id).style.display = 'none';
 }
+
+function voltarAoTopo() {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function filtrarOrcamentos() {
+  const filtro = document.getElementById('filtroOrcamento').value.toLowerCase();
+  const items = document.querySelectorAll('.item-orcamento[data-id]');
+  let visivel = 0;
+  
+  items.forEach(item => {
+    const id = item.getAttribute('data-id');
+    const cliente = item.getAttribute('data-cliente');
+    const data = item.getAttribute('data-data');
+    
+    if (id.includes(filtro) || cliente.includes(filtro) || data.includes(filtro)) {
+      item.style.display = 'block';
+      visivel++;
+    } else {
+      item.style.display = 'none';
+    }
+  });
+  
+  const nenhumItem = document.getElementById('nenhumOrcamento');
+  if (nenhumItem) {
+    nenhumItem.style.display = visivel === 0 && filtro !== '' ? 'block' : 'none';
+  }
+}
+
+function limparFiltro() {
+  document.getElementById('filtroOrcamento').value = '';
+  filtrarOrcamentos();
+}
+
+document.getElementById('filtroOrcamento').addEventListener('input', filtrarOrcamentos);
+
+// Mostrar/ocultar botão baseado no scroll
+window.onscroll = function() {
+  const botao = document.getElementById('voltarTopo');
+  if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+    botao.style.display = 'block';
+  } else {
+    botao.style.display = 'none';
+  }
+};
+
+// Hover effect
+document.getElementById('voltarTopo').onmouseover = function() {
+  this.style.transform = 'scale(1.1)';
+  this.style.background = '#0299d1';
+};
+
+document.getElementById('voltarTopo').onmouseout = function() {
+  this.style.transform = 'scale(1)';
+  this.style.background = '#04bafc';
+};
+
+// Inicializar filtro quando a página carregar
+document.addEventListener('DOMContentLoaded', function() {
+  if (document.getElementById('filtroOrcamento')) {
+    document.getElementById('filtroOrcamento').addEventListener('input', filtrarOrcamentos);
+  }
+});
 </script>
 
 <style>

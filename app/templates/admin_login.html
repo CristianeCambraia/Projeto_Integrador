@@ -1,32 +1,61 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block titulo_pagina %}Login do Administrador{% endblock titulo_pagina %}
+
 {% block content %}
 <div class="login-container">
-    <div class="login-form">
-        <h2>Login Admin</h2>
-        
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}">
-                    {{ message }}
-                </div>
-            {% endfor %}
+  <div class="login-side">
+    <img src="{% static 'images/logo_insumed.png' %}" alt="Logo Insumed" class="logo-side">
+  </div>
+
+  <div class="login-box">
+    <h1>Login do Administrador</h1>
+    <form method="post">
+      {% csrf_token %}
+
+      <div class="form-group">
+        {{ form.email }}
+        {% if form.email.errors %}
+        <div class="error">
+          {% for erro in form.email.errors %}
+          <div>{{ erro }}</div>
+          {% endfor %}
+        </div>
         {% endif %}
-        
-        <form method="post">
-            {% csrf_token %}
-            <div class="form-group">
-                {{ form.email }}
-            </div>
-            <div class="form-group">
-                {{ form.senha }}
-            </div>
-            <div style="text-align: center;">
-                <button type="submit" class="btn-login">Admin</button>
-            </div>
-        </form>
-        
-    </div>
+      </div>
+
+      <div class="form-group">
+        {{ form.senha }}
+        {% if form.senha.errors %}
+        <div class="error">
+          {% for erro in form.senha.errors %}
+          <div>{{ erro }}</div>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+
+      {% if form.non_field_errors %}
+      <div class="error general-errors">
+        {% for erro in form.non_field_errors %}
+        <div>{{ erro }}</div>
+        {% endfor %}
+      </div>
+      {% endif %}
+      
+      {% if messages %}
+      <div class="messages">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+          {{ message }}
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <button class="btn-login" type="submit">Login</button>
+    </form>
+  </div>
 </div>
-{% endblock %}
+{% endblock content %}

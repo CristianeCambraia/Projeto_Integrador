@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% block title %}Emitir Orçamento{% endblock %}
+
 {% block content %}
 <style>
 .caixa-titulo {
@@ -154,6 +156,9 @@
             <a href="{% url 'home' %}" class="btn-voltar">Voltar ⤴</a>
         </div>
     </form>
+    
+    <!-- Espaço extra para garantir scroll -->
+    <div style="height: 200px;"></div>
 </div>
 
 <script>

@@ -1,26 +1,27 @@
 {% extends 'base.html' %}
 
+{% block title %}Clientes Cadastrados{% endblock %}
+
 {% block content %}
 <div class="lista-container">
     <h2 class="titulo" style="margin-bottom: 30px;">Clientes Cadastrados</h2>
 
     <!-- Filtro por nome -->
     <div style="display: flex; justify-content: center; margin-bottom: 20px;">
-        <form method="GET" style="display: flex; align-items: center; gap: 10px;">
-            <input type="text" name="filtro" placeholder="Filtrar por nome do cliente" value="{{ filtro|default:'' }}" style="width: 300px; padding: 8px; border: 1px solid #ddd; border-radius: 3px;">
-            <button type="submit" class="btn" style="background: #007bff; padding: 8px 15px;">Filtrar</button>
-            <a href="{% url 'lista_cliente' %}" class="btn" style="background: #6c757d; padding: 8px 15px;">Limpar</a>
-        </form>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <input type="text" id="filtroCliente" placeholder="Filtrar por nome do cliente" style="width: 300px; padding: 8px; border: 1px solid #ddd; border-radius: 3px;">
+            <button onclick="limparFiltro()" class="btn" style="background: #6c757d; padding: 8px 15px;">Limpar</button>
+        </div>
     </div>
 
-    <ul class="lista">
+    <ul class="lista" id="listaClientes">
         {% for f in clientes %}
-            <li>
+            <li class="cliente-item" data-nome="{{ f.nome|lower }}">
                 <div style="margin-left: 5px;">{{ f.nome }} - {{ f.email }}</div>
                 <div><a href="{% url 'editar_cliente' f.id %}" class="btn-editar">Editar</a></div>
             </li>
         {% empty %}
-            <li>Nenhum cliente cadastrado.</li>
+            <li id="nenhumCliente">Nenhum cliente cadastrado.</li>
         {% endfor %}
     </ul>
 
@@ -29,6 +30,36 @@
         <a href="{% url 'fornecedores' %}" class="btn-voltar">Voltar ⤴</a>
     </div>
 </div>
+
+<script>
+function filtrarClientes() {
+    const filtro = document.getElementById('filtroCliente').value.toLowerCase();
+    const items = document.querySelectorAll('.cliente-item');
+    let visivel = 0;
+    
+    items.forEach(item => {
+        const nome = item.getAttribute('data-nome');
+        if (nome.includes(filtro)) {
+            item.style.display = 'block';
+            visivel++;
+        } else {
+            item.style.display = 'none';
+        }
+    });
+    
+    const nenhumItem = document.getElementById('nenhumCliente');
+    if (nenhumItem) {
+        nenhumItem.style.display = visivel === 0 && filtro !== '' ? 'block' : 'none';
+    }
+}
+
+function limparFiltro() {
+    document.getElementById('filtroCliente').value = '';
+    filtrarClientes();
+}
+
+document.getElementById('filtroCliente').addEventListener('input', filtrarClientes);
+</script>
 
 <style>
 .lista-container {

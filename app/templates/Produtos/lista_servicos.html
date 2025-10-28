@@ -5,16 +5,15 @@
   <h2>Serviços Cadastrados</h2>
   
   <div class="filtro-orcamentos">
-    <form method="GET">
-      <input type="text" name="filtro" placeholder="Filtrar por ID ou Nome" value="{{ filtro|default:'' }}">
-      <button type="submit" class="btn-filtrar">Filtrar</button>
-      <a href="{% url 'lista_servicos' %}" class="btn-limpar" style="background: #6c757d;">Limpar</a>
-    </form>
+    <div style="display: flex; gap: 10px; align-items: center;">
+      <input type="text" id="filtroServico" placeholder="Filtrar por ID ou Nome" style="padding: 8px; border: 1px solid #ddd; border-radius: 3px;">
+      <button onclick="limparFiltro()" class="btn-limpar" style="background: #6c757d;">Limpar</button>
+    </div>
   </div>
 
   <ul class="lista-orcamentos">
     {% for servico in servicos %}
-      <li class="item-orcamento">
+      <li class="item-orcamento servico-item" data-id="{{ servico.id }}" data-nome="{{ servico.nome|lower }}">
         <div class="row-two-col">
           <div class="col-left">
             <div class="field"><strong>ID:</strong> {{ servico.id }}</div>
@@ -39,7 +38,7 @@
         {% endif %}
       </li>
     {% empty %}
-      <li>Nenhum serviço cadastrado.</li>
+      <li id="nenhumServico">Nenhum serviço cadastrado.</li>
     {% endfor %}
   </ul>
 
@@ -48,6 +47,38 @@
     <a href="{% url 'fornecedores' %}" class="btn-padrao voltar">Voltar ⤴</a>
   </div>
 </div>
+
+<script>
+function filtrarServicos() {
+  const filtro = document.getElementById('filtroServico').value.toLowerCase();
+  const items = document.querySelectorAll('.servico-item');
+  let visivel = 0;
+  
+  items.forEach(item => {
+    const id = item.getAttribute('data-id');
+    const nome = item.getAttribute('data-nome');
+    
+    if (id.includes(filtro) || nome.includes(filtro)) {
+      item.style.display = 'block';
+      visivel++;
+    } else {
+      item.style.display = 'none';
+    }
+  });
+  
+  const nenhumItem = document.getElementById('nenhumServico');
+  if (nenhumItem) {
+    nenhumItem.style.display = visivel === 0 && filtro !== '' ? 'block' : 'none';
+  }
+}
+
+function limparFiltro() {
+  document.getElementById('filtroServico').value = '';
+  filtrarServicos();
+}
+
+document.getElementById('filtroServico').addEventListener('input', filtrarServicos);
+</script>
 
 <style>
 .container-lista-orcamentos {

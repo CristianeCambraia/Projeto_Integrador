@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% load static %}
 
+{% block title %}Relatório de Estoque{% endblock %}
+
 {% block content %}
 <div class="estoque-container" style="max-width: 95%; width: 95%; margin: 0 auto;">
     <div class="print-header" style="display: none;">
@@ -25,18 +27,10 @@
     
     <!-- Barra de pesquisa -->
     <div class="search-controls" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <form method="GET" style="display: flex; align-items: center; gap: 10px;">
-            {% csrf_token %}
-            <input type="text" name="q" placeholder="Buscar por produto, fornecedor, descrição ou código de barras" value="{{ request.GET.q }}" style="width: 450px; padding: 8px; height: 35px; border: 1px solid #ddd; border-radius: 15px; font-size: 14px;">
-            <select name="periodo" style="padding: 12px; height: 45px; font-size: 14px; border: 1px solid #ddd; border-radius: 8px;">
-                <option value="">Todos</option>
-                <option value="1" {% if request.GET.periodo == '1' %}selected{% endif %}>Último dia</option>
-                <option value="7" {% if request.GET.periodo == '7' %}selected{% endif %}>Últimos 7 dias</option>
-                <option value="30" {% if request.GET.periodo == '30' %}selected{% endif %}>Últimos 30 dias</option>
-            </select>
-            <button type="submit" class="btn-pesquisar" style="height: 45px; padding: 12px 16px; font-size: 14px;">Pesquisar</button>
-            <a href="{% url 'relatorio_estoque' %}" class="btn" style="background: #6c757d; padding: 12px 16px; height: 45px; font-size: 14px; display: flex; align-items: center;">Limpar</a>
-        </form>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <input type="text" id="filtroEstoque" placeholder="Buscar por produto, fornecedor, descrição ou código de barras" style="width: 450px; padding: 8px; height: 35px; border: 1px solid #ddd; border-radius: 15px; font-size: 14px;">
+            <button onclick="limparFiltro()" class="btn" style="background: #6c757d; padding: 12px 16px; height: 45px; font-size: 14px;">Limpar</button>
+        </div>
         <div style="display: flex; gap: 10px;">
             <button type="button" onclick="window.print()" class="btn" style="background: #17a2b8; padding: 12px 16px; height: 45px; font-size: 14px;">Imprimir</button>
             <button type="button" onclick="enviarEmail()" class="btn" style="background: #28a745; padding: 12px 16px; height: 45px; font-size: 14px;">Email</button>
@@ -61,7 +55,7 @@
         </thead>
         <tbody>
             {% for produto in produtos %}
-            <tr>
+            <tr class="produto-row" data-fornecedor="{{ produto.fornecedor.nome|lower }}" data-produto="{{ produto.nome|lower }}" data-descricao="{{ produto.descricao|default:''|lower }}" data-codigo="{{ produto.codigo_barras|default:''|lower }}">
                 <td>{{ produto.fornecedor.nome }}</td>
                 <td>{{ produto.nome }}</td>
                 <td>
@@ -100,7 +94,7 @@
                 </td>
             </tr>
             {% empty %}
-            <tr><td colspan="9">Nenhum produto encontrado</td></tr>
+            <tr id="nenhumProdutoEstoque"><td colspan="9">Nenhum produto encontrado</td></tr>
             {% endfor %}
         </tbody>
     </table>
@@ -120,6 +114,9 @@
         <a href="{% url 'relatorio_saida'%}" class="btn">Lançamento de Saída</a>
         <a href="{% url 'relatorio_movimentacao_entrada' %}" class="btn">Ver Históricos</a>
     </div>
+    
+    <!-- Espaço extra para garantir scroll -->
+    <div style="height: 200px;"></div>
 </div>
 
 <script>
@@ -137,6 +134,38 @@ function toggleDescricaoTabela(btn) {
         btn.textContent = '-';
     }
 }
+
+function filtrarEstoque() {
+    const filtro = document.getElementById('filtroEstoque').value.toLowerCase();
+    const rows = document.querySelectorAll('.produto-row');
+    let visivel = 0;
+    
+    rows.forEach(row => {
+        const fornecedor = row.getAttribute('data-fornecedor');
+        const produto = row.getAttribute('data-produto');
+        const descricao = row.getAttribute('data-descricao');
+        const codigo = row.getAttribute('data-codigo');
+        
+        if (fornecedor.includes(filtro) || produto.includes(filtro) || descricao.includes(filtro) || codigo.includes(filtro)) {
+            row.style.display = 'table-row';
+            visivel++;
+        } else {
+            row.style.display = 'none';
+        }
+    });
+    
+    const nenhumItem = document.getElementById('nenhumProdutoEstoque');
+    if (nenhumItem) {
+        nenhumItem.style.display = visivel === 0 && filtro !== '' ? 'table-row' : 'none';
+    }
+}
+
+function limparFiltro() {
+    document.getElementById('filtroEstoque').value = '';
+    filtrarEstoque();
+}
+
+document.getElementById('filtroEstoque').addEventListener('input', filtrarEstoque);
 </script>
 
 <style>
@@ -260,6 +289,10 @@ function toggleDescricaoTabela(btn) {
 <script>
 // Atualizar data/hora atual
 document.addEventListener('DOMContentLoaded', function() {
+    // Inicializar filtro
+    if (document.getElementById('filtroEstoque')) {
+        document.getElementById('filtroEstoque').addEventListener('input', filtrarEstoque);
+    }
     const agora = new Date();
     const dataFormatada = agora.toLocaleString('pt-BR', {
         day: '2-digit',

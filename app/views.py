@@ -679,21 +679,32 @@ def lista_suporte(request):
         messages.error(request, 'Acesso negado. Apenas administradores podem acessar o suporte.')
         return redirect('home')
     filtro = request.GET.get('filtro')
+    periodo = request.GET.get('periodo')
+    
+    demandas = Suporte.objects.all()
     
     if filtro:
         filtro = filtro.strip()
         if filtro.isdigit():
-            demandas = Suporte.objects.filter(
+            demandas = demandas.filter(
                 models.Q(id=filtro) |
-                models.Q(telefone=filtro)
-            ).order_by('-data_criacao')
-        else:
-            demandas = Suporte.objects.filter(
-                models.Q(nome__icontains=filtro) |
                 models.Q(telefone__icontains=filtro)
-            ).order_by('-data_criacao')
-    else:
-        demandas = Suporte.objects.all().order_by('-data_criacao')
+            )
+        else:
+            demandas = demandas.filter(
+                models.Q(nome__icontains=filtro) |
+                models.Q(email__icontains=filtro) |
+                models.Q(telefone__icontains=filtro) |
+                models.Q(descreva__icontains=filtro)
+            )
+    
+    if periodo and periodo.isdigit():
+        from datetime import timedelta
+        dias = int(periodo)
+        data_limite = timezone.now() - timedelta(days=dias)
+        demandas = demandas.filter(data_criacao__gte=data_limite)
+    
+    demandas = demandas.order_by('-data_criacao')
     
     return render(request, 'lista_suporte.html', {
         'demandas': demandas,
@@ -963,6 +974,50 @@ def admin_logout(request):
     if 'admin_logado' in request.session:
         del request.session['admin_logado']
     return redirect('login')
+
+def usuarios_cadastrados(request):
+    # Verificar se é admin
+    if 'admin_logado' not in request.session:
+        messages.error(request, 'Acesso negado. Apenas administradores podem acessar esta página.')
+        return redirect('home')
+    
+    filtro = request.GET.get('filtro')
+    periodo = request.GET.get('periodo')
+    usuarios = Usuario.objects.all()
+    
+    # Filtro por busca
+    if filtro:
+        filtro = filtro.strip()
+        if filtro.isdigit():
+            usuarios = usuarios.filter(id=filtro)
+        else:
+            usuarios = usuarios.filter(
+                models.Q(nome__icontains=filtro) |
+                models.Q(email__icontains=filtro) |
+                models.Q(cpf__icontains=filtro) |
+                models.Q(telefone__icontains=filtro)
+            )
+    
+    if periodo and periodo.isdigit():
+        from datetime import timedelta
+        dias = int(periodo)
+        data_limite = timezone.now() - timedelta(days=dias)
+        # Como não temos campo de data de cadastro, vamos usar o ID como aproximação
+        # IDs maiores = cadastros mais recentes
+        usuarios_recentes = usuarios.order_by('-id')[:50]  # Pegar os 50 mais recentes
+        if dias <= 7:
+            usuarios = usuarios_recentes[:10]
+        elif dias <= 30:
+            usuarios = usuarios_recentes[:25]
+        else:
+            usuarios = usuarios_recentes
+    else:
+        usuarios = usuarios.order_by('nome')
+    
+    return render(request, 'usuarios_cadastrados.html', {
+        'usuarios': usuarios,
+        'filtro': filtro
+    })
 
 # ----- BUSCAR CLIENTES PARA AUTOCOMPLETE -----
 def buscar_clientes(request):
@@ -1603,6 +1658,60 @@ def debug_produtos(request):
         'produtos': produtos_data
     })
 
+@csrf_exempt
+def gerar_senha_temporaria(request):
+    if request.method == 'POST':
+        # Verificar se é admin
+        if 'admin_logado' not in request.session:
+            return JsonResponse({'success': False, 'error': 'Acesso negado'})
+        
+        try:
+            data = json.loads(request.body)
+            usuario_id = data.get('usuario_id')
+            novo_email = data.get('novo_email', '').strip()
+            
+            if not usuario_id or not novo_email:
+                return JsonResponse({'success': False, 'error': 'Dados incompletos'})
+            
+            # Verificar se usuário existe
+            try:
+                usuario = Usuario.objects.get(id=usuario_id)
+            except Usuario.DoesNotExist:
+                return JsonResponse({'success': False, 'error': 'Usuário não encontrado'})
+            
+            # Gerar senha temporária de 8 caracteres
+            import random
+            import string
+            senha_temp = ''.join(random.choices(string.ascii_letters + string.digits, k=8))
+            
+            # Enviar email com senha temporária
+            try:
+                from django.core.mail import send_mail
+                send_mail(
+                    'Senha Temporária - INSUMED',
+                    f'Olá {usuario.nome},\n\nSua senha temporária é: {senha_temp}\n\nUse esta senha para acessar o sistema com seu email original ({usuario.email}) e depois altere sua senha e email nas configurações da conta.\n\nAtenciosamente,\nEquipe INSUMED',
+                    settings.DEFAULT_FROM_EMAIL,
+                    [novo_email],
+                    fail_silently=False,
+                )
+                
+                # Atualizar senha do usuário no banco
+                usuario.senha = senha_temp
+                usuario.save()
+                
+                return JsonResponse({
+                    'success': True, 
+                    'message': f'Senha temporária enviada para {novo_email}'
+                })
+                
+            except Exception as e:
+                return JsonResponse({'success': False, 'error': f'Erro ao enviar email: {str(e)}'})
+                
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+    
+    return JsonResponse({'success': False, 'error': 'Método não permitido'})
+
 # ----- BALANCETE -----
 @login_required_custom
 def balancete(request):
@@ -1941,3 +2050,15 @@ def enviar_balancete_email(request):
             return JsonResponse({'success': False, 'error': str(e)})
     
     return JsonResponse({'success': False, 'error': 'Método não permitido'})
+
+def usuarios_cadastrados(request):
+    # Verificar se é admin
+    if 'admin_logado' not in request.session:
+        messages.error(request, 'Acesso negado. Apenas administradores podem acessar esta página.')
+        return redirect('home')
+    
+    usuarios = Usuario.objects.all().order_by('nome')
+    
+    return render(request, 'usuarios_cadastrados.html', {
+        'usuarios': usuarios
+    })

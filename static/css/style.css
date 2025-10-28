@@ -293,6 +293,11 @@ main {
     flex: 1;
 }
 
+/* Script global para botão voltar ao topo */
+.voltar-topo-script {
+    /* Placeholder para script */
+}
+
 /*Footer aqui*/
 
 footer {
@@ -499,6 +504,37 @@ td input{
     font-size: 14px;
     font-family: Arial, sans-serif;
     background-color: #04BAFC;
+}
+
+/* Botão Voltar ao Topo */
+.voltar-topo {
+    position: fixed !important;
+    bottom: 30px !important;
+    right: 30px !important;
+    background: #04bafc !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 50% !important;
+    width: 60px !important;
+    height: 60px !important;
+    font-size: 24px !important;
+    cursor: pointer !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
+    display: none !important;
+    z-index: 9999 !important;
+    transition: all 0.3s ease !important;
+    text-decoration: none !important;
+}
+
+.voltar-topo:hover {
+    transform: scale(1.1) !important;
+    background: #0299d1 !important;
+    color: white !important;
+}
+
+.voltar-topo.show {
+    display: block !important;
+}
     border-radius: 8px;
     border: none;
     cursor: pointer;

@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% block title %}Lançamento de Saída{% endblock %}
+
 {% block content %}
 {% if messages %}
 <script>
@@ -18,17 +20,21 @@
         </div>
     </div>
     
-    <!-- Filtro de Período -->
-    <form method="GET" style="margin-bottom: 20px;">
-        <select name="periodo" style="padding: 8px; font-size: 12px; border: 1px solid #ddd; border-radius: 3px; margin-right: 10px;">
-            <option value="">Todos os produtos</option>
-            <option value="1" {% if request.GET.periodo == '1' %}selected{% endif %}>Último dia</option>
-            <option value="7" {% if request.GET.periodo == '7' %}selected{% endif %}>Últimos 7 dias</option>
-            <option value="30" {% if request.GET.periodo == '30' %}selected{% endif %}>Últimos 30 dias</option>
-        </select>
-        <button type="submit" class="btn" style="background: #007bff; padding: 8px 12px; font-size: 12px;">Filtrar</button>
-        <a href="{% url 'relatorio_saida' %}" class="btn" style="background: #6c757d; margin-left: 10px; padding: 8px 12px; font-size: 12px;">Limpar</a>
-    </form>
+    <!-- Filtros -->
+    <div style="margin-bottom: 30px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+        <input type="text" id="filtroSaida" placeholder="Filtrar por fornecedor, produto ou descrição" style="width: 380px; padding: 8px; border: 1px solid #ddd; border-radius: 3px;">
+        <button onclick="limparFiltroTexto()" style="background: #6c757d; color: white; border: none; padding: 8px 20px; font-size: 12px; border-radius: 3px; cursor: pointer;">Limpar</button>
+        
+        <form method="GET" id="formPeriodo" style="display: flex; gap: 10px; align-items: center; margin: 0; margin-left: 30px;">
+            <select name="periodo" id="selectPeriodo" onchange="document.getElementById('formPeriodo').submit()" style="padding: 8px 12px; font-size: 12px; border: 1px solid #ddd; border-radius: 3px; min-width: 80px;">
+                <option value="">Todos</option>
+                <option value="1" {% if request.GET.periodo == '1' %}selected{% endif %}>1 dia</option>
+                <option value="7" {% if request.GET.periodo == '7' %}selected{% endif %}>7 dias</option>
+                <option value="30" {% if request.GET.periodo == '30' %}selected{% endif %}>30 dias</option>
+            </select>
+            <a href="{% url 'relatorio_saida' %}" style="background: #6c757d; color: white; text-decoration: none; padding: 8px 20px; font-size: 12px; border-radius: 3px;">Limpar</a>
+        </form>
+    </div>
 
     <!-- Formulário -->
     <form method="post">
@@ -47,7 +53,7 @@
             </thead>
             <tbody>
                 {% for produto in produtos %}
-                <tr>
+                <tr class="produto-saida-row" data-fornecedor="{{ produto.fornecedor.nome|lower }}" data-produto="{{ produto.nome|lower }}" data-descricao="{{ produto.descricao|default:''|lower }}">
                     <td>{{ produto.fornecedor.nome }}</td>
                     <td>{{ produto.nome }}</td>
                     <td class="descricao-cell">
@@ -75,6 +81,8 @@
                     </td>
                     <td>{{ produto.unidade }}</td>
                 </tr>
+                {% empty %}
+                <tr id="nenhumProdutoSaida"><td colspan="7">Nenhum produto encontrado</td></tr>
                 {% endfor %}
             </tbody>
         </table>
@@ -92,6 +100,9 @@
         <a href="{% url 'relatorio_saida' %}" class="btn ativo">Lançamento de Saída</a>
         <a href="{% url 'relatorio_movimentacao_saida' %}" class="btn">Ver Histórico</a>
     </div>
+    
+    <!-- Espaço extra para garantir scroll -->
+    <div style="height: 200px;"></div>
 </div>
 
 <script>
@@ -110,8 +121,41 @@ function toggleDescricaoTabela(btn) {
     }
 }
 
+function filtrarSaida() {
+    const filtro = document.getElementById('filtroSaida').value.toLowerCase();
+    const rows = document.querySelectorAll('.produto-saida-row');
+    let visivel = 0;
+    
+    rows.forEach(row => {
+        const fornecedor = row.getAttribute('data-fornecedor');
+        const produto = row.getAttribute('data-produto');
+        const descricao = row.getAttribute('data-descricao');
+        
+        if (fornecedor.includes(filtro) || produto.includes(filtro) || descricao.includes(filtro)) {
+            row.style.display = 'table-row';
+            visivel++;
+        } else {
+            row.style.display = 'none';
+        }
+    });
+    
+    const nenhumItem = document.getElementById('nenhumProdutoSaida');
+    if (nenhumItem) {
+        nenhumItem.style.display = visivel === 0 && filtro !== '' ? 'table-row' : 'none';
+    }
+}
+
+function limparFiltroTexto() {
+    document.getElementById('filtroSaida').value = '';
+    filtrarSaida();
+}
+
 // Leitor de código de barras para saída
 document.addEventListener('DOMContentLoaded', function() {
+    // Inicializar filtro
+    if (document.getElementById('filtroSaida')) {
+        document.getElementById('filtroSaida').addEventListener('input', filtrarSaida);
+    }
     const codigoBarrasField = document.getElementById('codigo_barras_saida');
     if (codigoBarrasField) {
         let timeout;

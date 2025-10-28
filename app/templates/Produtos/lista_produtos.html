@@ -5,22 +5,15 @@
     <h2 class="titulo">Produtos Cadastrados</h2>
     
     <div class="filtro-orcamentos" style="margin-left: 15px;">
-        <form method="get" style="display: flex; gap: 10px; align-items: center;">
-            <input type="text" name="filtro" placeholder="Filtrar por Nome, ID, Fornecedor ou Código de Barras" value="{{ filtro|default:'' }}">
-            <select name="periodo" style="padding: 8px; font-size: 12px; border: 1px solid #ddd; border-radius: 3px;">
-                <option value="">Todos</option>
-                <option value="1" {% if request.GET.periodo == '1' %}selected{% endif %}>Último dia</option>
-                <option value="7" {% if request.GET.periodo == '7' %}selected{% endif %}>Últimos 7 dias</option>
-                <option value="30" {% if request.GET.periodo == '30' %}selected{% endif %}>Últimos 30 dias</option>
-            </select>
-            <button type="submit" class="btn-filtrar">Filtrar</button>
-            <a href="{% url 'lista_produtos' %}" class="btn-limpar" style="background: #6c757d;">Limpar</a>
-        </form>
+        <div style="display: flex; gap: 10px; align-items: center;">
+            <input type="text" id="filtroProduto" placeholder="Filtrar por Nome, ID, Fornecedor ou Código de Barras" style="padding: 8px; border: 1px solid #ddd; border-radius: 3px;">
+            <button onclick="limparFiltro()" class="btn-limpar" style="background: #6c757d;">Limpar</button>
+        </div>
     </div>
     
     <ul class="lista">
         {% for p in produtos %}
-            <li class="produto-item">
+            <li class="produto-item" data-nome="{{ p.nome|lower }}" data-id="{{ p.id }}" data-fornecedor="{{ p.fornecedor|default:'não informado'|lower }}" data-codigo="{{ p.codigo_barras|default:''|lower }}">
                 <div class="produto-info" style="margin-left: 5px;">
                     <strong>ID:</strong> {{ p.id }} - <strong>Fornecedor:</strong> {{ p.fornecedor|default:"Não informado" }} - {{ p.nome }} - R$ {{ p.preco }} - {{ p.quantidade }} {{ p.unidade }}
                 </div>
@@ -41,7 +34,7 @@
                 </div>
             </li>
         {% empty %}
-            <li style="text-align: left; margin-left: 10px;">Nenhum produto cadastrado.</li>
+            <li id="nenhumProduto" style="text-align: left; margin-left: 10px;">Nenhum produto cadastrado.</li>
         {% endfor %}
     </ul>
 
@@ -60,6 +53,38 @@
             btn.textContent = 'Ver menos';
         }
     }
+    
+    function filtrarProdutos() {
+        const filtro = document.getElementById('filtroProduto').value.toLowerCase();
+        const items = document.querySelectorAll('.produto-item[data-nome]');
+        let visivel = 0;
+        
+        items.forEach(item => {
+            const nome = item.getAttribute('data-nome');
+            const id = item.getAttribute('data-id');
+            const fornecedor = item.getAttribute('data-fornecedor');
+            const codigo = item.getAttribute('data-codigo');
+            
+            if (nome.includes(filtro) || id.includes(filtro) || fornecedor.includes(filtro) || codigo.includes(filtro)) {
+                item.style.display = 'block';
+                visivel++;
+            } else {
+                item.style.display = 'none';
+            }
+        });
+        
+        const nenhumItem = document.getElementById('nenhumProduto');
+        if (nenhumItem) {
+            nenhumItem.style.display = visivel === 0 && filtro !== '' ? 'block' : 'none';
+        }
+    }
+    
+    function limparFiltro() {
+        document.getElementById('filtroProduto').value = '';
+        filtrarProdutos();
+    }
+    
+    document.getElementById('filtroProduto').addEventListener('input', filtrarProdutos);
     </script>
 
     <!-- Corrigido para a URL correta da view de cadastro -->

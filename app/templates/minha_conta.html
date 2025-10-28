@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}Minha Conta{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h2 class="titulo" style="margin-bottom: 50px;">👤 Minha Conta</h2>
+    
+    <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px; margin-left: 150px;">
+        <h3 style="margin: 0 0 15px 0; color: #026a84;">Informações da Conta</h3>
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+            <div>
+                <strong>Nome:</strong>
+                <p style="margin: 5px 0; color: #666;">{{ usuario.nome }}</p>
+            </div>
+            <div>
+                <strong>Email:</strong>
+                <p style="margin: 5px 0; color: #666;">{{ usuario.email }}</p>
+            </div>
+            <div>
+                <strong>CPF:</strong>
+                <p style="margin: 5px 0; color: #666;">{{ usuario.cpf }}</p>
+            </div>
+            <div>
+                <strong>Telefone:</strong>
+                <p style="margin: 5px 0; color: #666;">{{ usuario.telefone|default:"Não informado" }}</p>
+            </div>
+            <div>
+                <strong>Endereço:</strong>
+                <p style="margin: 5px 0; color: #666;">{{ usuario.endereco|default:"Não informado" }}</p>
+            </div>
+            <div>
+                <strong>Cidade:</strong>
+                <p style="margin: 5px 0; color: #666;">{{ usuario.cidade|default:"Não informado" }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="botoes">
+        <a href="{% url 'editar_conta' %}" class="btn-salvar">✏️ Editar Dados</a>
+        <a href="{% url 'home' %}" class="btn-cancelar">⤴ Voltar</a>
+    </div>
+</div>
+
+<style>
+.form-container {
+    border-radius: 30px 30px 30px 30px !important;
+}
+</style>
+{% endblock %}

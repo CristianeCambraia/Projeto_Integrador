@@ -4,12 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <title>
-        {% if titulo_pagina %}
-            {{ titulo_pagina }} | INSUMED
-        {% else %}
-            INSUMED
-        {% endif %}
+        {% block title %}INSUMED{% endblock %}
     </title>
+    <link rel="icon" type="image/png" href="{% static 'images/insumed_icon.png' %}">
+    <link rel="shortcut icon" type="image/png" href="{% static 'images/insumed_icon.png' %}">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <style>
         nav ul {
@@ -231,6 +229,7 @@
             <ul>
                 {% if admin_logado %}
                     <li><a href="{% url 'lista_suporte' %}">Suporte</a></li>
+                    <li><a href="{% url 'usuarios_cadastrados' %}">Usuários Cadastrados</a></li>
                     <li><a href="{% url 'admin_logout' %}">Sair Admin</a></li>
                 {% else %}
                     <li><a href="/">Home</a></li>
@@ -239,6 +238,7 @@
                     <li><a href="{% url 'relatorio_estoque' %}">Relatórios</a></li>
                     <li><a href="{% url 'balancete' %}">Balancete</a></li>
                     {% if usuario_logado %}
+                        <li><a href="{% url 'minha_conta' %}">Minha Conta</a></li>
                         <li><a href="{% url 'logout' %}">Sair</a></li>
                         <li style="position: relative;">
                             <button onclick="toggleNotifications()" style="background: none; border: none; cursor: pointer; position: relative; padding: 5px;">
@@ -298,7 +298,24 @@
         {% endif %}
     </footer>
 
+    <!-- Botão Voltar ao Topo -->
+    <button class="voltar-topo" onclick="voltarAoTopo()">⬆️</button>
+
     <script>
+        // Função voltar ao topo
+        function voltarAoTopo() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        // Mostrar/ocultar botão baseado no scroll
+        window.addEventListener('scroll', function() {
+            const botao = document.querySelector('.voltar-topo');
+            if (window.scrollY > 300) {
+                botao.classList.add('show');
+            } else {
+                botao.classList.remove('show');
+            }
+        });
 
         
 

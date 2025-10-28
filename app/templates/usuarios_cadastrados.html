@@ -1,0 +1,238 @@
+{% extends 'base.html' %}
+
+{% block title %}Usuários Cadastrados{% endblock %}
+
+{% block content %}
+<div class="lista-container">
+    <h2 class="titulo" style="margin-bottom: 40px;">👥 Usuários Cadastrados</h2>
+    
+    <div class="filtro-orcamentos">
+        <form method="get">
+            <input type="text" name="filtro" placeholder="Filtrar por ID, Nome, Email, CPF ou Telefone" value="{{ filtro|default:'' }}" id="filtroUsuarios">
+            <select name="periodo" onchange="this.form.submit()" style="margin-right: 10px; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                <option value="">Todos os períodos</option>
+                <option value="7" {% if request.GET.periodo == '7' %}selected{% endif %}>Últimos 7 dias</option>
+                <option value="30" {% if request.GET.periodo == '30' %}selected{% endif %}>Últimos 30 dias</option>
+                <option value="90" {% if request.GET.periodo == '90' %}selected{% endif %}>Últimos 90 dias</option>
+            </select>
+            <button type="submit" class="btn-filtrar">Filtrar</button>
+            <a href="{% url 'usuarios_cadastrados' %}" class="btn-limpar" style="background: #6c757d;">Limpar</a>
+        </form>
+    </div>
+
+    <table class="tabela-lista">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>CPF</th>
+                <th>Telefone</th>
+                <th>Cidade</th>
+                <th>Data Nascimento</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody id="usuariosTable">
+            {% for usuario in usuarios %}
+            <tr>
+                <td>{{ usuario.id }}</td>
+                <td>{{ usuario.nome }}</td>
+                <td>{{ usuario.email }}</td>
+                <td>{{ usuario.cpf }}</td>
+                <td>{{ usuario.telefone|default:"Não informado" }}</td>
+                <td>{{ usuario.cidade|default:"Não informado" }}</td>
+                <td>{{ usuario.data_nascimento|date:"d/m/Y"|default:"Não informado" }}</td>
+                <td>
+                    <button onclick="abrirModalSenhaTemp({{ usuario.id }}, '{{ usuario.nome|escapejs }}')" 
+                            style="background: #dee2e6; color: #495057; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; font-size: 12px;">
+                        🔑 Senha Temp.
+                    </button>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="8" style="text-align: center; color: #666;">Nenhum usuário cadastrado</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="botoes">
+        <a href="{% url 'lista_suporte' %}" class="btn-cancelar">⤴ Voltar</a>
+    </div>
+</div>
+
+<script>
+// Teste se JavaScript está funcionando
+console.log('JavaScript carregado');
+
+// Função voltar ao topo
+function voltarAoTopo() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Mostrar/ocultar botão baseado no scroll
+window.addEventListener('scroll', function() {
+    const botao = document.querySelector('.voltar-topo');
+    if (window.scrollY > 300) {
+        botao.classList.add('show');
+    } else {
+        botao.classList.remove('show');
+    }
+});
+
+// Filtro em tempo real
+document.getElementById('filtroUsuarios').addEventListener('input', function() {
+    const filtro = this.value.toLowerCase();
+    const linhas = document.querySelectorAll('#usuariosTable tr');
+    
+    linhas.forEach(function(linha) {
+        const textoLinha = linha.textContent.toLowerCase();
+        if (textoLinha.includes(filtro)) {
+            linha.style.display = '';
+        } else {
+            linha.style.display = 'none';
+        }
+    });
+});
+
+// Função para abrir modal de senha temporária
+function abrirModalSenhaTemp(usuarioId, nomeUsuario) {
+    console.log('Função chamada:', usuarioId, nomeUsuario);
+    
+    // Criar modal customizado
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+        background: rgba(0,0,0,0.5); z-index: 1000; display: flex; 
+        align-items: center; justify-content: center;
+    `;
+    
+    modal.innerHTML = `
+        <div style="
+            background: white; padding: 30px; border-radius: 8px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3); max-width: 400px; width: 90%;
+        ">
+            <h3 style="margin: 0 0 20px 0; color: #333; text-align: center;">🔑 Senha Temporária</h3>
+            <p style="margin: 0 0 15px 0; color: #666;">Usuário: <strong>${nomeUsuario}</strong></p>
+            <p style="margin: 0 0 15px 0; color: #666;">Digite o novo email para envio da senha temporária:</p>
+            <input type="email" id="novoEmail" placeholder="exemplo@email.com" style="
+                width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; 
+                margin-bottom: 20px; box-sizing: border-box;
+            ">
+            <div style="text-align: center;">
+                <button onclick="confirmarEnvio(${usuarioId})" style="
+                    background: #28a745; color: white; border: none; padding: 10px 20px; 
+                    border-radius: 4px; margin-right: 10px; cursor: pointer;
+                ">Enviar</button>
+                <button onclick="fecharModal()" style="
+                    background: #6c757d; color: white; border: none; padding: 10px 20px; 
+                    border-radius: 4px; cursor: pointer;
+                ">Cancelar</button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    document.getElementById('novoEmail').focus();
+}
+
+function fecharModal() {
+    const modals = document.querySelectorAll('div[style*="position: fixed"]');
+    modals.forEach(modal => modal.remove());
+}
+
+function confirmarEnvio(usuarioId) {
+    const novoEmail = document.getElementById('novoEmail').value.trim();
+    if (!novoEmail) {
+        mostrarModalErro('Por favor, digite um email válido.');
+        return;
+    }
+    fecharModal();
+    gerarSenhaTemporaria(usuarioId, novoEmail);
+}
+
+function mostrarModalSucesso(mensagem) {
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+        background: rgba(0,0,0,0.5); z-index: 1000; display: flex; 
+        align-items: center; justify-content: center;
+    `;
+    
+    modal.innerHTML = `
+        <div style="
+            background: white; padding: 30px; border-radius: 8px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3); max-width: 400px; width: 90%;
+        ">
+            <h3 style="margin: 0 0 20px 0; color: #28a745; text-align: center;">✓ Sucesso</h3>
+            <p style="margin: 0 0 20px 0; color: #666; text-align: center;">${mensagem}</p>
+            <div style="text-align: center;">
+                <button onclick="fecharModal()" style="
+                    background: #28a745; color: white; border: none; padding: 10px 20px; 
+                    border-radius: 4px; cursor: pointer;
+                ">OK</button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+}
+
+function mostrarModalErro(mensagem) {
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+        background: rgba(0,0,0,0.5); z-index: 1000; display: flex; 
+        align-items: center; justify-content: center;
+    `;
+    
+    modal.innerHTML = `
+        <div style="
+            background: white; padding: 30px; border-radius: 8px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3); max-width: 400px; width: 90%;
+        ">
+            <h3 style="margin: 0 0 20px 0; color: #dc3545; text-align: center;">✗ Erro</h3>
+            <p style="margin: 0 0 20px 0; color: #666; text-align: center;">${mensagem}</p>
+            <div style="text-align: center;">
+                <button onclick="fecharModal()" style="
+                    background: #dc3545; color: white; border: none; padding: 10px 20px; 
+                    border-radius: 4px; cursor: pointer;
+                ">OK</button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+}
+
+// Função para gerar senha temporária
+function gerarSenhaTemporaria(usuarioId, novoEmail) {
+    fetch('/gerar-senha-temporaria/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            usuario_id: usuarioId,
+            novo_email: novoEmail
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            mostrarModalSucesso(data.message);
+        } else {
+            mostrarModalErro(data.error);
+        }
+    })
+    .catch(error => {
+        mostrarModalErro('Erro ao gerar senha temporária: ' + error);
+    });
+}
+</script>
+<!-- Botão Voltar ao Topo -->
+<button class="voltar-topo" onclick="voltarAoTopo()">⬆️</button>
+
+{% endblock %}

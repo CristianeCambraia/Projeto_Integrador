@@ -7,7 +7,13 @@
     <!-- Filtro por ID -->
     <div class="filtro-orcamentos">
         <form method="get">
-            <input type="text" name="filtro" placeholder="Filtrar por ID, Nome ou Telefone" value="{{ filtro|default:'' }}">
+            <input type="text" name="filtro" placeholder="Filtrar por ID, Nome, Email, Telefone ou Descrição" value="{{ filtro|default:'' }}" style="margin-right: 10px;" id="filtroSuporte">
+            <select name="periodo" onchange="this.form.submit()" style="margin-right: 10px; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                <option value="">Todos os períodos</option>
+                <option value="7" {% if request.GET.periodo == '7' %}selected{% endif %}>Últimos 7 dias</option>
+                <option value="30" {% if request.GET.periodo == '30' %}selected{% endif %}>Últimos 30 dias</option>
+                <option value="90" {% if request.GET.periodo == '90' %}selected{% endif %}>Últimos 90 dias</option>
+            </select>
             <button type="submit" class="btn-filtrar">Filtrar</button>
             <a href="{% url 'lista_suporte' %}" class="btn-limpar" style="background: #6c757d;">Limpar</a>
         </form>
@@ -26,7 +32,7 @@
                         <th>Data</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="suporteTable">
                     {% for demanda in demandas %}
                     <tr>
                         <td>#{{ demanda.id }}</td>
@@ -57,3 +63,38 @@
 }
 </style>
 {% endblock %}
+
+<!-- Botão Voltar ao Topo -->
+<button class="voltar-topo" onclick="voltarAoTopo()">⬆️</button>
+
+<script>
+// Função voltar ao topo
+function voltarAoTopo() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Mostrar/ocultar botão baseado no scroll
+window.addEventListener('scroll', function() {
+    const botao = document.querySelector('.voltar-topo');
+    if (window.scrollY > 300) {
+        botao.classList.add('show');
+    } else {
+        botao.classList.remove('show');
+    }
+});
+
+// Filtro em tempo real
+document.getElementById('filtroSuporte').addEventListener('input', function() {
+    const filtro = this.value.toLowerCase();
+    const linhas = document.querySelectorAll('#suporteTable tr');
+    
+    linhas.forEach(function(linha) {
+        const textoLinha = linha.textContent.toLowerCase();
+        if (textoLinha.includes(filtro)) {
+            linha.style.display = '';
+        } else {
+            linha.style.display = 'none';
+        }
+    });
+});
+</script>

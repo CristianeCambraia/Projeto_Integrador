@@ -4,16 +4,15 @@
 <div class="lista-container">
     <h2 class="titulo">Fornecedores Cadastrados</h2>
     <div class="filtro-orcamentos">
-        <form method="get">
-            <input type="text" name="filtro" placeholder="Filtrar por Nome ou CNPJ" value="{{ filtro|default:'' }}">
-            <button type="submit" class="btn-filtrar">Filtrar</button>
-            <a href="{% url 'lista_fornecedores' %}" class="btn-limpar" style="background: #6c757d;">Limpar</a>
-        </form>
+        <div style="display: flex; gap: 10px; align-items: center;">
+            <input type="text" id="filtroFornecedor" placeholder="Filtrar por Nome ou CNPJ" style="padding: 8px; border: 1px solid #ddd; border-radius: 3px;">
+            <button onclick="limparFiltro()" class="btn-limpar" style="background: #6c757d;">Limpar</button>
+        </div>
     </div>
 
     <ul class="lista">
         {% for f in fornecedores %}
-            <li class="fornecedor-item">
+            <li class="fornecedor-item" data-nome="{{ f.nome|lower }}" data-cnpj="{{ f.cnpj|default:''|lower }}">
                 <div class="fornecedor-info">
                     <span class="fornecedor-nome">{{ f.nome }}</span>
                     <span class="status-fornecedor {% if f.ativo %}ativo{% else %}inativo{% endif %}">
@@ -29,7 +28,7 @@
                 </div>
             </li>
         {% empty %}
-            <li>Nenhum fornecedor cadastrado.</li>
+            <li id="nenhumFornecedor">Nenhum fornecedor cadastrado.</li>
         {% endfor %}
     </ul>
 
@@ -38,6 +37,37 @@
         <a href="{% url 'fornecedores' %}" class="btn-voltar">Voltar ⤴</a>
     </div>
 </div>
+
+<script>
+function filtrarFornecedores() {
+    const filtro = document.getElementById('filtroFornecedor').value.toLowerCase();
+    const items = document.querySelectorAll('.fornecedor-item[data-nome]');
+    let visivel = 0;
+    
+    items.forEach(item => {
+        const nome = item.getAttribute('data-nome');
+        const cnpj = item.getAttribute('data-cnpj');
+        if (nome.includes(filtro) || cnpj.includes(filtro)) {
+            item.style.display = 'block';
+            visivel++;
+        } else {
+            item.style.display = 'none';
+        }
+    });
+    
+    const nenhumItem = document.getElementById('nenhumFornecedor');
+    if (nenhumItem) {
+        nenhumItem.style.display = visivel === 0 && filtro !== '' ? 'block' : 'none';
+    }
+}
+
+function limparFiltro() {
+    document.getElementById('filtroFornecedor').value = '';
+    filtrarFornecedores();
+}
+
+document.getElementById('filtroFornecedor').addEventListener('input', filtrarFornecedores);
+</script>
 
 <style>
 .lista-container {
