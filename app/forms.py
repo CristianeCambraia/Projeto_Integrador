@@ -52,12 +52,13 @@ class FornecedorForm(forms.ModelForm):
 class ProdutoForm(forms.ModelForm):
     class Meta:
         model = Produto
-        fields = ['nome', 'codigo_barras', 'preco', 'descricao', 'fornecedor', 'unidade', 'quantidade', 'validade', 'observacao']
+        fields = ['nome', 'codigo_barras', 'preco', 'preco_compra', 'descricao', 'fornecedor', 'unidade', 'quantidade', 'validade', 'observacao']
 
         widgets = {
             'nome': forms.TextInput(attrs={'placeholder': 'Nome do Produto', 'required': True}),
             'codigo_barras': forms.TextInput(attrs={'placeholder': 'Escaneie ou digite o código de barras...', 'id': 'codigo_barras', 'autocomplete': 'off', 'required': True}),
-            'preco': forms.NumberInput(attrs={'placeholder': 'Preço', 'required': True}),
+            'preco': forms.NumberInput(attrs={'placeholder': 'Preço de Venda', 'required': True}),
+            'preco_compra': forms.NumberInput(attrs={'placeholder': 'Preço de Compra', 'required': False}),
             'descricao': forms.Textarea(attrs={'placeholder': 'Descrição', 'rows': 4, 'style': 'width: 100%; grid-column: 1 / -1;', 'required': True}),
             'fornecedor': forms.Select(attrs={'placeholder': 'Selecione o Fornecedor', 'required': True}),
             'unidade': forms.Select(attrs={'placeholder': 'Selecione a Unidade', 'required': True}),
@@ -71,6 +72,8 @@ class ProdutoForm(forms.ModelForm):
         for field in self.fields.values():
             field.label = ''
             field.required = True
+        # Preço de compra é opcional
+        self.fields['preco_compra'].required = False
         # Mostrar apenas fornecedores ativos
         self.fields['fornecedor'].queryset = Fornecedor.objects.filter(ativo=True)
         if not Fornecedor.objects.filter(ativo=True).exists():

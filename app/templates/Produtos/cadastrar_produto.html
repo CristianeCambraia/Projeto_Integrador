@@ -34,18 +34,19 @@
       <div class="form-grid">
         {{ form.nome }}
         {{ form.quantidade }}
-        {{ form.preco }}
-        <div style="display: flex; flex-direction: column;">
-          <label style="display: block; margin-bottom: 5px; font-weight: bold; text-align: center; visibility: hidden;">Espaço:</label>
-          {{ form.fornecedor }}
+        <div>
+          <label for="id_validade" style="display: block; margin-bottom: 5px; font-weight: bold; text-align: center;">Data de Validade:</label>
+          <input type="date" name="validade" id="id_validade" style="width: 100%; height: 45px; padding: 12px 15px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; transition: border-color 0.3s ease; box-sizing: border-box;">
         </div>
         <div style="display: flex; flex-direction: column;">
           <label style="display: block; margin-bottom: 5px; font-weight: bold; text-align: center; visibility: hidden;">Espaço:</label>
           {{ form.unidade }}
         </div>
-        <div>
-          <label for="id_validade" style="display: block; margin-bottom: 5px; font-weight: bold; text-align: center;">Data de Validade:</label>
-          <input type="date" name="validade" id="id_validade" style="width: 100%; height: 45px; padding: 12px 15px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; transition: border-color 0.3s ease; box-sizing: border-box;">
+        {{ form.preco_compra }}
+        {{ form.preco }}
+        <div style="display: flex; flex-direction: column;">
+          <label style="display: block; margin-bottom: 5px; font-weight: bold; text-align: center; visibility: hidden;">Espaço:</label>
+          {{ form.fornecedor }}
         </div>
         {{ form.descricao }}
         {{ form.observacao }}
