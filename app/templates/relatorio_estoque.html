@@ -31,7 +31,7 @@
             <input type="text" id="filtroEstoque" placeholder="Buscar por produto, fornecedor, descrição ou código de barras" style="width: 450px; padding: 8px; height: 35px; border: 1px solid #ddd; border-radius: 15px; font-size: 14px;">
             <button onclick="limparFiltro()" class="btn" style="background: #6c757d; padding: 12px 16px; height: 45px; font-size: 14px;">Limpar</button>
         </div>
-        <div style="display: flex; gap: 10px;">
+        <div style="display: flex; gap: 10px; margin-right: 40px;">
             <button onclick="location.reload()" class="btn" style="background: #007bff; padding: 12px 16px; height: 45px; font-size: 14px;">Atualizar Lista</button>
             <button type="button" onclick="window.print()" class="btn" style="background: #17a2b8; padding: 12px 16px; height: 45px; font-size: 14px;">Imprimir</button>
             <button type="button" onclick="enviarEmail()" class="btn" style="background: #28a745; padding: 12px 16px; height: 45px; font-size: 14px;">Email</button>
@@ -284,6 +284,15 @@ document.getElementById('filtroEstoque').addEventListener('input', filtrarEstoqu
 }
 
 /* Responsividade para Dev Tools - Header e Container */
+@media screen and (max-width: 2560px) {
+    .table-responsive {
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+}
+
 @media screen and (max-width: 1400px) {
     header {
         width: 100vw !important;
@@ -301,6 +310,40 @@ document.getElementById('filtroEstoque').addEventListener('input', filtrarEstoqu
         margin: 20px 0 0 0 !important;
         padding: 15px !important;
         box-sizing: border-box !important;
+    }
+    
+    .search-controls {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 15px !important;
+    }
+    
+    .search-controls > div {
+        width: 100% !important;
+        display: flex !important;
+        flex-wrap: wrap !important;
+        gap: 8px !important;
+        justify-content: center !important;
+    }
+    
+    .search-controls input {
+        width: 100% !important;
+        max-width: none !important;
+        min-width: 250px !important;
+        flex: 1 !important;
+        margin-bottom: 10px !important;
+    }
+    
+    .search-controls .btn, .search-controls a.btn {
+        flex: 1 1 auto !important;
+        min-width: 80px !important;
+        max-width: 120px !important;
+        padding: 8px 10px !important;
+        font-size: 12px !important;
+        height: 35px !important;
+        box-sizing: border-box !important;
+        text-align: center !important;
+        white-space: nowrap !important;
     }
 }
 
@@ -401,6 +444,22 @@ document.getElementById('filtroEstoque').addEventListener('input', filtrarEstoqu
 .table-responsive {
     margin-top: 20px;
 }
+
+@media screen and (min-width: 1401px) and (max-width: 2560px) {
+    .table-responsive {
+        width: calc(100% - 30px) !important;
+        max-width: 100% !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+    
+    .table {
+        width: 100% !important;
+        min-width: 1200px !important;
+    }
+}
+
+
 
 .table {
     margin-bottom: 0;
