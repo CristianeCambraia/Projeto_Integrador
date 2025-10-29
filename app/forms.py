@@ -62,7 +62,7 @@ class ProdutoForm(forms.ModelForm):
             'descricao': forms.Textarea(attrs={'placeholder': 'Descrição', 'rows': 4, 'style': 'width: 100%; grid-column: 1 / -1;', 'required': True}),
             'fornecedor': forms.Select(attrs={'placeholder': 'Selecione o Fornecedor', 'required': True}),
             'unidade': forms.Select(attrs={'placeholder': 'Selecione a Unidade', 'required': True}),
-            'quantidade': forms.NumberInput(attrs={'placeholder': 'Quantidade', 'min': '0', 'required': True}),
+            'quantidade': forms.NumberInput(attrs={'placeholder': 'Quantidade', 'min': '0', 'required': True, 'value': ''}),
             'validade': forms.DateInput(attrs={'placeholder': 'Data de Validade', 'type': 'date', 'required': True}),
             'observacao': forms.Textarea(attrs={'placeholder': 'Observações', 'rows': 4, 'style': 'width: 100%; grid-column: 1 / -1;', 'required': True})
         }

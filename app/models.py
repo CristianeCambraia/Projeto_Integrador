@@ -48,7 +48,7 @@ class Produto(models.Model):
     fornecedor = models.ForeignKey(Fornecedor, on_delete=models.CASCADE, related_name="produtos", null=True, blank=True)
     data_hora = models.DateTimeField(default=timezone.now)
     unidade = models.CharField(max_length=50, choices=UNIDADE_CHOICES, default="Unidades")
-    quantidade = models.IntegerField(default=1)
+    quantidade = models.IntegerField()
     validade = models.DateField(blank=True, null=True)
     observacao = models.TextField(blank=True, null=True)
     def __str__(self):
