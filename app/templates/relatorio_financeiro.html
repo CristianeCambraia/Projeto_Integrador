@@ -1,41 +1,41 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Relatório de Estoque{% endblock %}
+{% block title %}Relatório Financeiro{% endblock %}
 
 {% block content %}
-<div class="estoque-container" style="max-width: 95%; width: 95%; margin: 0 auto;">
+<div class="financeiro-container" style="max-width: 95%; width: 95%; margin: 0 auto; background: #e8e8e8; padding: 20px; border-radius: 30px;">
     <div class="print-header" style="display: none;">
         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; padding: 0 80px;">
             <img src="{% static 'images/insumed_icon.png' %}" style="width: 100px; height: 100px;" alt="Logo">
             <h1 style="font-size: 48px; font-weight: bold; color: rgba(0, 0, 0, 0.12); margin: 0 120px; word-wrap: break-word; line-height: 1.2;">INSUMED</h1>
             <img src="{% static 'images/insumed_icon.png' %}" style="width: 100px; height: 100px;" alt="Logo">
         </div>
-
     </div>
     
-    <h2 class="titulo screen-only">Relatório de Estoque</h2>
+    <h2 class="titulo screen-only">Relatório Financeiro</h2>
     
     <div class="print-info" style="display: none;">
-        <h3 style="text-align: center; margin: 0 0 10px 0; color: #026a84; font-size: 24px;">Relatório de Estoque</h3>
+        <h3 style="text-align: center; margin: 0 0 10px 0; color: #026a84; font-size: 24px;">Relatório Financeiro</h3>
         <p id="data-geracao-print" style="text-align: center; margin: 0; color: #026a84;"></p>
         {% if request.GET.q %}<p style="text-align: center; margin: 5px 0 0 0; color: #026a84;">Filtro aplicado: "{{ request.GET.q }}"</p>{% endif %}
     </div>
 
-    <!-- Token CSRF oculto -->
     {% csrf_token %}
     
-    <!-- Barra de pesquisa -->
     <div class="search-controls" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
         <div style="display: flex; align-items: center; gap: 10px;">
-            <input type="text" id="filtroEstoque" placeholder="Buscar por produto, fornecedor, descrição ou código de barras" style="width: 450px; padding: 8px; height: 35px; border: 1px solid #ddd; border-radius: 15px; font-size: 14px;">
-            <button onclick="limparFiltro()" class="btn" style="background: #6c757d; padding: 12px 16px; height: 45px; font-size: 14px;">Limpar</button>
+            <select onchange="filtrarPeriodo(this.value)" style="padding: 8px; height: 35px; border: 1px solid #ddd; border-radius: 15px; font-size: 14px;">
+                <option value="" {% if not periodo %}selected{% endif %}>Todos os Períodos</option>
+                <option value="7" {% if periodo == '7' %}selected{% endif %}>Última Semana</option>
+                <option value="30" {% if periodo == '30' %}selected{% endif %}>Último Mês</option>
+                <option value="365" {% if periodo == '365' %}selected{% endif %}>Último Ano</option>
+            </select>
         </div>
         <div style="display: flex; gap: 10px;">
-            <button onclick="location.reload()" class="btn" style="background: #007bff; padding: 12px 16px; height: 45px; font-size: 14px;">Atualizar Lista</button>
             <button type="button" onclick="window.print()" class="btn" style="background: #17a2b8; padding: 12px 16px; height: 45px; font-size: 14px;">Imprimir</button>
             <button type="button" onclick="enviarEmail()" class="btn" style="background: #28a745; padding: 12px 16px; height: 45px; font-size: 14px;">Email</button>
-            <a href="{% url 'exportar_estoque_pdf' %}?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.periodo %}periodo={{ request.GET.periodo }}{% endif %}" class="btn" style="background: #dc3545; padding: 12px 16px; height: 45px; font-size: 14px; display: flex; align-items: center;">PDF</a>
+            <a href="{% url 'exportar_financeiro_pdf' %}?{% if periodo %}periodo={{ periodo }}{% endif %}" class="btn" style="background: #dc3545; padding: 12px 16px; height: 45px; font-size: 14px; display: flex; align-items: center;">PDF</a>
         </div>
     </div>
 
@@ -44,63 +44,67 @@
         <table class="table table-striped table-hover" style="background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
             <thead style="background: #026a84; color: white;">
                 <tr>
-                    <th style="text-align: center; padding: 12px; font-weight: bold; width: 12%;">Fornecedor</th>
-                    <th style="text-align: center; padding: 12px; font-weight: bold; width: 15%;">Produto</th>
-                    <th style="text-align: center; padding: 12px; font-weight: bold; width: 12%;">Quantidade Cadastrada</th>
-                    <th style="text-align: center; padding: 12px; font-weight: bold; width: 12%;">Última Entrada</th>
-                    <th style="text-align: center; padding: 12px; font-weight: bold; width: 12%;">Última Saída</th>
-                    <th style="text-align: center; padding: 12px; font-weight: bold; width: 8%;">Estoque Atual</th>
-                    <th style="text-align: center; padding: 12px; font-weight: bold; width: 8%;">Unidade</th>
-                    <th style="text-align: center; padding: 12px; font-weight: bold; width: 8%;">Preço</th>
-                    <th style="text-align: center; padding: 12px; font-weight: bold; width: 13%;">Descrição</th>
+                    <th style="text-align: center; padding: 12px; font-weight: bold;">Produto</th>
+                    <th style="text-align: center; padding: 12px; font-weight: bold;">Fornecedor</th>
+                    <th style="text-align: center; padding: 12px; font-weight: bold;">Quantidade</th>
+                    <th style="text-align: center; padding: 12px; font-weight: bold;">Unidade</th>
+                    <th style="text-align: center; padding: 12px; font-weight: bold;">Valor Compra</th>
+                    <th style="text-align: center; padding: 12px; font-weight: bold;">Valor Venda</th>
+                    <th style="text-align: center; padding: 12px; font-weight: bold;">Estoque Atual</th>
+                    <th style="text-align: center; padding: 12px; font-weight: bold;">Valor Total Compra</th>
+                    <th style="text-align: center; padding: 12px; font-weight: bold;">Valor Total Venda</th>
+                    <th style="text-align: center; padding: 12px; font-weight: bold;">Lucro Unitário</th>
+                    <th style="text-align: center; padding: 12px; font-weight: bold;">Lucro Total</th>
                 </tr>
             </thead>
-        <tbody>
-            {% for produto in produtos %}
-            <tr class="produto-row" data-fornecedor="{{ produto.fornecedor.nome|lower }}" data-produto="{{ produto.nome|lower }}" data-descricao="{{ produto.descricao|default:''|lower }}" data-codigo="{{ produto.codigo_barras|default:''|lower }}">
-                <td style="padding: 10px; text-align: center;">{{ produto.fornecedor.nome }}</td>
-                <td style="padding: 10px; text-align: center;">{{ produto.nome }}</td>
-                <td style="padding: 10px; text-align: center;">
-                    {{ produto.data_hora|date:"d/m/Y H:i" }}<br>
-                    <small>({{ produto.quantidade }} inicial)</small>
-                </td>
-                <td style="padding: 10px; text-align: center;">
-                    {% if produto.ultima_entrada %}
-                        {{ produto.ultima_entrada.data_hora|date:"d/m/Y H:i" }}
-                        <small>(+{{ produto.ultima_entrada.quantidade }})</small>
-                    {% else %}
-                        <small>Sem entrada</small>
-                    {% endif %}
-                </td>
-                <td style="padding: 10px; text-align: center;">
-                    {% if produto.ultima_saida %}
-                        {{ produto.ultima_saida.data_hora|date:"d/m/Y H:i" }}
-                        <small>(-{{ produto.ultima_saida.quantidade }})</small>
-                    {% else %}
-                        <small>Sem saída</small>
-                    {% endif %}
-                </td>
-                <td style="padding: 10px; text-align: center; font-weight: bold;">{{ produto.quantidade }}</td>
-                <td style="padding: 10px; text-align: center;">{{ produto.unidade }}</td>
-                <td style="padding: 10px; text-align: center;">R$ {{ produto.preco }}</td>
-                <td class="descricao-cell" style="padding: 10px; text-align: center;">
-                    {% if produto.descricao %}
-                        <span class="descricao-preview">{{ produto.descricao|truncatechars:30 }}</span>
-                        <span class="descricao-completa" style="display: none;">{{ produto.descricao }}</span>
-                        {% if produto.descricao|length > 30 %}
-                            <button type="button" class="btn-expandir-desc" onclick="toggleDescricaoTabela(this)">+</button>
+            <tbody>
+                {% for produto in produtos %}
+                <tr class="produto-row" data-produto="{{ produto.nome|lower }}" data-fornecedor="{{ produto.fornecedor.nome|default:'sem fornecedor'|lower }}" data-codigo="{{ produto.codigo_barras|default:''|lower }}">
+                    <td style="padding: 10px; text-align: left;">{{ produto.nome }}</td>
+                    <td style="padding: 10px; text-align: center;">{{ produto.fornecedor.nome|default:"Sem fornecedor" }}</td>
+                    <td style="padding: 10px; text-align: center;">{{ produto.quantidade }}</td>
+                    <td style="padding: 10px; text-align: center;">{{ produto.unidade }}</td>
+                    <td style="padding: 10px; text-align: center;">R$ {{ produto.preco_compra|default:"0,00" }}</td>
+                    <td style="padding: 10px; text-align: center;">R$ {{ produto.preco }}</td>
+                    <td style="padding: 10px; text-align: center; font-weight: bold;">{{ produto.quantidade }}</td>
+                    <td style="padding: 10px; text-align: center;">R$ {{ produto.valor_total_compra|default:"0,00" }}</td>
+                    <td style="padding: 10px; text-align: center;">R$ {{ produto.valor_total_venda }}</td>
+                    <td style="padding: 10px; text-align: center;">
+                        {% if produto.lucro_unitario >= 0 %}
+                            <span style="color: #28a745; font-weight: bold;">R$ {{ produto.lucro_unitario }}</span>
+                        {% else %}
+                            <span style="color: #dc3545; font-weight: bold;">R$ {{ produto.lucro_unitario }}</span>
                         {% endif %}
-                    {% else %}
-                        <small>Sem descrição</small>
-                    {% endif %}
-                </td>
-            </tr>
-            {% empty %}
-            <tr id="nenhumProdutoEstoque">
-                <td colspan="9" style="text-align: center; padding: 20px; color: #666;">Nenhum produto encontrado</td>
-            </tr>
-            {% endfor %}
-        </tbody>
+                    </td>
+                    <td style="padding: 10px; text-align: center;">
+                        {% if produto.lucro_total >= 0 %}
+                            <span style="color: #28a745; font-weight: bold;">R$ {{ produto.lucro_total }}</span>
+                        {% else %}
+                            <span style="color: #dc3545; font-weight: bold;">R$ {{ produto.lucro_total }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr id="nenhumProdutoFinanceiro">
+                    <td colspan="11" style="text-align: center; padding: 20px; color: #666;">Nenhum produto encontrado</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr style="background: #f8f9fa; font-weight: bold; border-top: 2px solid #026a84;">
+                    <td colspan="7" style="padding: 12px; text-align: right; font-size: 16px;">TOTAIS:</td>
+                    <td style="padding: 12px; text-align: center; font-size: 16px;">R$ {{ total_compra|default:"0,00" }}</td>
+                    <td style="padding: 12px; text-align: center; font-size: 16px;">R$ {{ total_venda|default:"0,00" }}</td>
+                    <td style="padding: 12px; text-align: center;">-</td>
+                    <td style="padding: 12px; text-align: center; font-size: 16px;">
+                        {% if lucro_geral >= 0 %}
+                            <span style="color: #28a745; font-weight: bold;">R$ {{ lucro_geral|default:"0,00" }}</span>
+                        {% else %}
+                            <span style="color: #dc3545; font-weight: bold;">R$ {{ lucro_geral|default:"0,00" }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            </tfoot>
         </table>
     </div>
     
@@ -111,62 +115,43 @@
         </div>
     </div>
 
-
-    
-    <!-- Espaço extra para garantir scroll -->
     <div style="height: 200px;"></div>
 </div>
 
 <script>
-function toggleDescricaoTabela(btn) {
-    const preview = btn.parentElement.querySelector('.descricao-preview');
-    const completa = btn.parentElement.querySelector('.descricao-completa');
-    
-    if (preview.style.display === 'none') {
-        preview.style.display = 'inline';
-        completa.style.display = 'none';
-        btn.textContent = '+';
+function filtrarPeriodo(periodo) {
+    if (periodo) {
+        window.location.href = `?periodo=${periodo}`;
     } else {
-        preview.style.display = 'none';
-        completa.style.display = 'inline';
-        btn.textContent = '-';
+        window.location.href = window.location.pathname;
     }
 }
-
-function filtrarEstoque() {
-    const filtro = document.getElementById('filtroEstoque').value.toLowerCase();
-    const rows = document.querySelectorAll('.produto-row');
-    let visivel = 0;
-    
-    rows.forEach(row => {
-        const fornecedor = row.getAttribute('data-fornecedor');
-        const produto = row.getAttribute('data-produto');
-        const descricao = row.getAttribute('data-descricao');
-        const codigo = row.getAttribute('data-codigo');
-        
-        if (fornecedor.includes(filtro) || produto.includes(filtro) || descricao.includes(filtro) || codigo.includes(filtro)) {
-            row.style.display = 'table-row';
-            visivel++;
-        } else {
-            row.style.display = 'none';
-        }
-    });
-    
-    const nenhumItem = document.getElementById('nenhumProdutoEstoque');
-    if (nenhumItem) {
-        nenhumItem.style.display = visivel === 0 && filtro !== '' ? 'table-row' : 'none';
-    }
-}
-
-function limparFiltro() {
-    document.getElementById('filtroEstoque').value = '';
-    filtrarEstoque();
-}
-
-document.getElementById('filtroEstoque').addEventListener('input', filtrarEstoque);
 </script>
 
 <style>
+.table-responsive {
+    margin-top: 20px;
+}
+
+.table {
+    margin-bottom: 0;
+    font-size: 14px;
+}
+
+.table th {
+    border: none;
+    vertical-align: middle;
+}
+
+.table td {
+    border: 1px solid #dee2e6;
+    vertical-align: middle;
+}
+
+.table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
 @media print {
     @page {
         margin: 0;
@@ -197,10 +182,10 @@ document.getElementById('filtroEstoque').addEventListener('input', filtrarEstoqu
         min-height: 100vh;
         visibility: visible;
     }
-    .estoque-container, .estoque-container * {
+    .financeiro-container, .financeiro-container * {
         visibility: visible;
     }
-    .barra-pesquisa, .botoes, .screen-only, .search-controls {
+    .search-controls, .screen-only {
         display: none !important;
     }
     .print-header, .print-footer {
@@ -214,17 +199,6 @@ document.getElementById('filtroEstoque').addEventListener('input', filtrarEstoqu
         border-radius: 5px;
         margin-top: 130px;
     }
-    .screen-only {
-        display: none !important;
-    }
-    .estoque-container {
-        position: relative;
-        left: 0;
-        top: 0;
-        width: 100%;
-        max-width: 100%;
-        margin: 0 auto;
-    }
     .print-header {
         background: #013e6a !important;
         position: absolute;
@@ -236,85 +210,36 @@ document.getElementById('filtroEstoque').addEventListener('input', filtrarEstoqu
         padding: 20px 0 !important;
         margin: 0 !important;
     }
-    .estoque-container {
-        margin-top: 0 !important;
-        padding: 20px;
-        position: relative;
-    }
-    .print-header {
-        padding: 0 !important;
-        margin: 0 !important;
-    }
     .print-header h1 {
         color: rgba(255, 255, 255, 0.3) !important;
     }
-    .print-header h3 {
-        color: #026a84 !important;
-        margin: 10px 0 !important;
-    }
-    .print-header p {
-        color: #026a84 !important;
-    }
-    table {
-        font-size: 14px;
+    .table {
+        font-size: 10px;
         width: 100%;
         background: white !important;
     }
-    th, td {
-        padding: 6px;
+    .table th, .table td {
+        padding: 3px;
+        font-size: 10px;
     }
-    
-    div.estoque-container {
-        border-radius: 0 !important;
-        border-top-left-radius: 0 !important;
-        border-top-right-radius: 0 !important;
-        border-bottom-left-radius: 0 !important;
-        border-bottom-right-radius: 0 !important;
+    .table thead th {
+        background: #026a84 !important;
+        color: white !important;
     }
-    
-    div[style*="border-radius"] {
-        border-radius: 0 !important;
-    }
-
 }
 
-.estoque-container {
+.financeiro-container {
     border-radius: 30px 30px 30px 30px !important;
     margin-top: 20px !important;
 }
 
-.table-responsive {
-    margin-top: 20px;
-}
-
-.table {
-    margin-bottom: 0;
-    font-size: 14px;
-    border-collapse: collapse;
-}
-
-.table th {
-    border: 1px solid #dee2e6;
-    vertical-align: middle;
-}
-
-.table td {
-    border: 1px solid #dee2e6;
-    vertical-align: middle;
-}
-
-.table tbody tr:hover {
-    background-color: #f8f9fa;
+.lista-container {
+    border-radius: 30px 30px 30px 30px !important;
 }
 </style>
 
 <script>
-// Atualizar data/hora atual
 document.addEventListener('DOMContentLoaded', function() {
-    // Inicializar filtro
-    if (document.getElementById('filtroEstoque')) {
-        document.getElementById('filtroEstoque').addEventListener('input', filtrarEstoque);
-    }
     const agora = new Date();
     const dataFormatada = agora.toLocaleString('pt-BR', {
         day: '2-digit',
@@ -323,11 +248,7 @@ document.addEventListener('DOMContentLoaded', function() {
         hour: '2-digit',
         minute: '2-digit'
     });
-    const elementoData = document.getElementById('data-geracao');
     const elementoDataPrint = document.getElementById('data-geracao-print');
-    if (elementoData) {
-        elementoData.textContent = 'Data: ' + dataFormatada;
-    }
     if (elementoDataPrint) {
         elementoDataPrint.textContent = 'Data: ' + dataFormatada;
     }
@@ -440,16 +361,13 @@ function criarModalEmail() {
 async function enviarEmail() {
     const email = await criarModalEmail();
     if (email) {
-        const busca = new URLSearchParams(window.location.search).get('q') || '';
         const periodo = new URLSearchParams(window.location.search).get('periodo') || '';
         
-        // Obter CSRF token
         let csrfToken = '';
         const csrfInput = document.querySelector('[name=csrfmiddlewaretoken]');
         if (csrfInput) {
             csrfToken = csrfInput.value;
         } else {
-            // Tentar obter do cookie
             const cookies = document.cookie.split(';');
             for (let cookie of cookies) {
                 const [name, value] = cookie.trim().split('=');
@@ -460,13 +378,13 @@ async function enviarEmail() {
             }
         }
         
-        fetch('/enviar-estoque-email/', {
+        fetch('/enviar-financeiro-email/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': csrfToken
             },
-            body: JSON.stringify({email: email, busca: busca, periodo: periodo})
+            body: JSON.stringify({email: email, periodo: periodo})
         })
         .then(response => {
             if (!response.ok) {
@@ -476,7 +394,6 @@ async function enviarEmail() {
         })
         .then(data => {
             if (data.success) {
-                // Criar mensagem de sucesso no estilo padrão
                 const mensagem = document.createElement('div');
                 mensagem.className = 'alert alert-success';
                 mensagem.style.cssText = 'position: fixed; top: 80px; right: 20px; z-index: 9999; background: white; color: #28a745; border: 2px solid #28a745; padding: 15px 20px; border-radius: 5px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); font-weight: bold;';

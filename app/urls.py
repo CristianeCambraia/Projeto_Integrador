@@ -107,6 +107,14 @@ urlpatterns = [
     path('usuarios-cadastrados/', views.usuarios_cadastrados, name='usuarios_cadastrados'),
     
     # ----- GERAR SENHA TEMPORÁRIA -----
-    path('gerar-senha-temporaria/', views.gerar_senha_temporaria, name='gerar_senha_temporaria')
+    path('gerar-senha-temporaria/', views.gerar_senha_temporaria, name='gerar_senha_temporaria'),
+    
+    # ----- RELATÓRIO FINANCEIRO -----
+    path('relatorio-financeiro/', views.relatorio_financeiro, name='relatorio_financeiro'),
+    path('financeiro/pdf/', views.exportar_financeiro_pdf, name='exportar_financeiro_pdf'),
+    path('enviar-financeiro-email/', views.enviar_financeiro_email, name='enviar_financeiro_email'),
+    
+    # ----- CADASTROS MENU -----
+    path('cadastros/', views.cadastros, name='cadastros')
 
 ]

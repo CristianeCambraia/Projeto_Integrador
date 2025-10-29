@@ -2062,3 +2062,204 @@ def usuarios_cadastrados(request):
     return render(request, 'usuarios_cadastrados.html', {
         'usuarios': usuarios
     })
+
+# ----- RELATÓRIO FINANCEIRO -----
+@login_required_custom
+def relatorio_financeiro(request):
+    periodo = request.GET.get('periodo')
+    
+    produtos = Produto.objects.all()
+    
+    # Filtro por período
+    if periodo and periodo.isdigit():
+        from datetime import timedelta
+        dias = int(periodo)
+        data_limite = timezone.now() - timedelta(days=dias)
+        produtos = produtos.filter(data_hora__gte=data_limite)
+    
+    # Calcular valores financeiros para cada produto
+    produtos_financeiros = []
+    total_compra = 0
+    total_venda = 0
+    
+    for produto in produtos:
+        preco_compra = produto.preco_compra or 0
+        preco_venda = produto.preco or 0
+        quantidade = produto.quantidade or 0
+        
+        valor_total_compra = preco_compra * quantidade
+        valor_total_venda = preco_venda * quantidade
+        lucro_unitario = preco_venda - preco_compra
+        lucro_total = lucro_unitario * quantidade
+        
+        produto.valor_total_compra = f"{valor_total_compra:.2f}".replace('.', ',')
+        produto.valor_total_venda = f"{valor_total_venda:.2f}".replace('.', ',')
+        produto.lucro_unitario = f"{lucro_unitario:.2f}".replace('.', ',')
+        produto.lucro_total = f"{lucro_total:.2f}".replace('.', ',')
+        
+        total_compra += valor_total_compra
+        total_venda += valor_total_venda
+        
+        produtos_financeiros.append(produto)
+    
+    lucro_geral = total_venda - total_compra
+    
+    return render(request, 'relatorio_financeiro.html', {
+        'produtos': produtos_financeiros,
+        'total_compra': f"{total_compra:.2f}".replace('.', ','),
+        'total_venda': f"{total_venda:.2f}".replace('.', ','),
+        'lucro_geral': f"{lucro_geral:.2f}".replace('.', ','),
+        'periodo': periodo
+    })
+
+def exportar_financeiro_pdf(request):
+    periodo = request.GET.get('periodo')
+    
+    produtos = Produto.objects.all()
+    
+    if periodo and periodo.isdigit():
+        from datetime import timedelta
+        dias = int(periodo)
+        data_limite = timezone.now() - timedelta(days=dias)
+        produtos = produtos.filter(data_hora__gte=data_limite)
+    
+    produtos_financeiros = []
+    total_compra = 0
+    total_venda = 0
+    
+    for produto in produtos:
+        preco_compra = produto.preco_compra or 0
+        preco_venda = produto.preco or 0
+        quantidade = produto.quantidade or 0
+        
+        valor_total_compra = preco_compra * quantidade
+        valor_total_venda = preco_venda * quantidade
+        lucro_unitario = preco_venda - preco_compra
+        lucro_total = lucro_unitario * quantidade
+        
+        produto.valor_total_compra = f"{valor_total_compra:.2f}".replace('.', ',')
+        produto.valor_total_venda = f"{valor_total_venda:.2f}".replace('.', ',')
+        produto.lucro_unitario = f"{lucro_unitario:.2f}".replace('.', ',')
+        produto.lucro_total = f"{lucro_total:.2f}".replace('.', ',')
+        
+        total_compra += valor_total_compra
+        total_venda += valor_total_venda
+        
+        produtos_financeiros.append(produto)
+    
+    lucro_geral = total_venda - total_compra
+    
+    import os
+    from datetime import datetime
+    static_root = getattr(settings, 'STATIC_ROOT', None) or os.path.join(settings.BASE_DIR, 'static')
+    
+    context = {
+        'produtos': produtos_financeiros,
+        'total_compra': f"{total_compra:.2f}".replace('.', ','),
+        'total_venda': f"{total_venda:.2f}".replace('.', ','),
+        'lucro_geral': f"{lucro_geral:.2f}".replace('.', ','),
+        'periodo': periodo,
+        'data_atual': datetime.now().strftime('%d/%m/%Y %H:%M'),
+        'STATIC_ROOT': static_root
+    }
+    
+    template = get_template('financeiro_pdf.html')
+    html = template.render(context)
+    
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="relatorio_financeiro.pdf"'
+    
+    pisa_status = pisa.CreatePDF(html, dest=response)
+    
+    if pisa_status.err:
+        return HttpResponse('Erro ao gerar PDF', status=500)
+    
+    return response
+
+@csrf_exempt
+def enviar_financeiro_email(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            email_destino = data.get('email')
+            periodo = data.get('periodo', '')
+            
+            if not email_destino:
+                return JsonResponse({'success': False, 'error': 'Email não informado'})
+            
+            produtos = Produto.objects.all()
+            
+            if periodo and periodo.isdigit():
+                from datetime import timedelta
+                dias = int(periodo)
+                data_limite = timezone.now() - timedelta(days=dias)
+                produtos = produtos.filter(data_hora__gte=data_limite)
+            
+            produtos_financeiros = []
+            total_compra = 0
+            total_venda = 0
+            
+            for produto in produtos:
+                preco_compra = produto.preco_compra or 0
+                preco_venda = produto.preco or 0
+                quantidade = produto.quantidade or 0
+                
+                valor_total_compra = preco_compra * quantidade
+                valor_total_venda = preco_venda * quantidade
+                lucro_unitario = preco_venda - preco_compra
+                lucro_total = lucro_unitario * quantidade
+                
+                produto.valor_total_compra = f"{valor_total_compra:.2f}".replace('.', ',')
+                produto.valor_total_venda = f"{valor_total_venda:.2f}".replace('.', ',')
+                produto.lucro_unitario = f"{lucro_unitario:.2f}".replace('.', ',')
+                produto.lucro_total = f"{lucro_total:.2f}".replace('.', ',')
+                
+                total_compra += valor_total_compra
+                total_venda += valor_total_venda
+                
+                produtos_financeiros.append(produto)
+            
+            lucro_geral = total_venda - total_compra
+            
+            import os
+            from datetime import datetime
+            static_root = getattr(settings, 'STATIC_ROOT', None) or os.path.join(settings.BASE_DIR, 'static')
+            
+            context = {
+                'produtos': produtos_financeiros,
+                'total_compra': f"{total_compra:.2f}".replace('.', ','),
+                'total_venda': f"{total_venda:.2f}".replace('.', ','),
+                'lucro_geral': f"{lucro_geral:.2f}".replace('.', ','),
+                'periodo': periodo,
+                'data_atual': datetime.now().strftime('%d/%m/%Y %H:%M'),
+                'STATIC_ROOT': static_root
+            }
+            
+            template = get_template('financeiro_pdf.html')
+            html = template.render(context)
+            
+            from io import BytesIO
+            pdf_buffer = BytesIO()
+            pisa_status = pisa.CreatePDF(html, dest=pdf_buffer)
+            
+            if pisa_status.err:
+                return JsonResponse({'success': False, 'error': 'Erro ao gerar PDF'})
+            
+            pdf_buffer.seek(0)
+            
+            from django.core.mail import EmailMessage
+            email = EmailMessage(
+                'Relatório Financeiro - INSUMED',
+                f'Segue em anexo o relatório financeiro.\n\nResumo:\n- Total Compra: R$ {total_compra:.2f}\n- Total Venda: R$ {total_venda:.2f}\n- Lucro Geral: R$ {lucro_geral:.2f}\n\nAtenciosamente,\nEquipe INSUMED',
+                settings.DEFAULT_FROM_EMAIL,
+                [email_destino]
+            )
+            email.attach('relatorio_financeiro.pdf', pdf_buffer.getvalue(), 'application/pdf')
+            email.send()
+            
+            return JsonResponse({'success': True})
+            
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+    
+    return JsonResponse({'success': False, 'error': 'Método não permitido'})

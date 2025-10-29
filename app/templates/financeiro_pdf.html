@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Relatório Financeiro</title>
+    <style>
+        @page {
+            size: A4 landscape;
+            margin: 0;
+            background: #013e6a;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #013e6a;
+            color: #333;
+        }
+        
+        .header {
+            background: #013e6a;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            position: relative;
+            height: 120px;
+        }
+        
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 80px;
+            height: 100%;
+        }
+        
+        .logo {
+            width: 100px;
+            height: 100px;
+        }
+        
+        .header h1 {
+            font-size: 48px;
+            font-weight: bold;
+            color: rgba(255, 255, 255, 0.3);
+            margin: 0;
+            flex: 1;
+            text-align: center;
+        }
+        
+        .content {
+            background: #e8e8e8;
+            padding: 20px;
+            margin-top: 0;
+        }
+        
+        .report-info {
+            text-align: center;
+            margin-bottom: 20px;
+            background: #e8e8e8;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        
+        .report-info h3 {
+            color: #026a84;
+            font-size: 24px;
+            margin: 0 0 10px 0;
+        }
+        
+        .report-info p {
+            color: #026a84;
+            margin: 5px 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            font-size: 10px;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 4px;
+            text-align: left;
+        }
+        
+        th {
+            background: #f8f9fa;
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        .footer {
+            margin-top: 20px;
+            font-size: 10px;
+            color: #666;
+            text-align: center;
+        }
+        
+        .totals {
+            background: #f8f9fa;
+            font-weight: bold;
+        }
+        
+        .positive {
+            color: #28a745;
+        }
+        
+        .negative {
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <img src="file://{{ STATIC_ROOT }}/images/insumed_icon.png" class="logo" alt="Logo">
+            <h1>INSUMED</h1>
+            <img src="file://{{ STATIC_ROOT }}/images/insumed_icon.png" class="logo" alt="Logo">
+        </div>
+    </div>
+    
+    <div class="content">
+        <div class="report-info">
+            <h3>Relatório Financeiro</h3>
+            <p>Data: {{ data_atual }}</p>
+            {% if busca %}<p>Filtro aplicado: "{{ busca }}"</p>{% endif %}
+        </div>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Produto</th>
+                    <th>Fornecedor</th>
+                    <th>Qtd</th>
+                    <th>Unidade</th>
+                    <th>Valor Compra</th>
+                    <th>Valor Venda</th>
+                    <th>Estoque Atual</th>
+                    <th>Total Compra</th>
+                    <th>Total Venda</th>
+                    <th>Lucro Unit.</th>
+                    <th>Lucro Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for produto in produtos %}
+                <tr>
+                    <td>{{ produto.nome }}</td>
+                    <td>{{ produto.fornecedor.nome|default:"Sem fornecedor" }}</td>
+                    <td>{{ produto.quantidade }}</td>
+                    <td>{{ produto.unidade }}</td>
+                    <td>R$ {{ produto.preco_compra|default:"0,00" }}</td>
+                    <td>R$ {{ produto.preco }}</td>
+                    <td>{{ produto.quantidade }}</td>
+                    <td>R$ {{ produto.valor_total_compra }}</td>
+                    <td>R$ {{ produto.valor_total_venda }}</td>
+                    <td>R$ {{ produto.lucro_unitario }}</td>
+                    <td>R$ {{ produto.lucro_total }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="11">Nenhum produto encontrado</td></tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr class="totals">
+                    <td colspan="7">TOTAIS:</td>
+                    <td>R$ {{ total_compra }}</td>
+                    <td>R$ {{ total_venda }}</td>
+                    <td>-</td>
+                    <td>R$ {{ lucro_geral }}</td>
+                </tr>
+            </tfoot>
+        </table>
+        
+        <div class="footer">
+            <p>Total de produtos: {{ produtos|length }}</p>
+            <p>Relatório gerado automaticamente pelo Sistema INSUMED</p>
+        </div>
+    </div>
+</body>
+</html>
