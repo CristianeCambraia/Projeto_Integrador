@@ -241,12 +241,16 @@ function filtrarPeriodo(periodo) {
     border-radius: 30px 30px 30px 30px !important;
 }
 
-/* Responsividade para Dev Tools - Header e Container */
+/* Responsividade para Dev Tools - Header */
 @media screen and (max-width: 1400px) {
     header {
-        width: 100% !important;
+        width: 100vw !important;
         padding: 12px 5px !important;
         box-sizing: border-box !important;
+        margin: 0 !important;
+        position: relative !important;
+        left: 0 !important;
+        right: 0 !important;
     }
     
     .financeiro-container {
@@ -255,41 +259,6 @@ function filtrarPeriodo(periodo) {
         margin: 20px 0 0 0 !important;
         padding: 15px !important;
         box-sizing: border-box !important;
-    }
-    
-    .table-responsive {
-        overflow-x: auto !important;
-        -webkit-overflow-scrolling: touch !important;
-        width: 100% !important;
-    }
-    
-    .table {
-        width: 100% !important;
-        min-width: unset !important;
-        table-layout: fixed !important;
-    }
-    
-    .table th:nth-child(1), .table td:nth-child(1) { width: 15% !important; }
-    .table th:nth-child(2), .table td:nth-child(2) { width: 12% !important; }
-    .table th:nth-child(3), .table td:nth-child(3) { width: 8% !important; }
-    .table th:nth-child(4), .table td:nth-child(4) { width: 6% !important; }
-    .table th:nth-child(5), .table td:nth-child(5) { width: 9% !important; }
-    .table th:nth-child(6), .table td:nth-child(6) { width: 9% !important; }
-    .table th:nth-child(7), .table td:nth-child(7) { width: 8% !important; }
-    .table th:nth-child(8), .table td:nth-child(8) { width: 11% !important; }
-    .table th:nth-child(9), .table td:nth-child(9) { width: 11% !important; }
-    .table th:nth-child(10), .table td:nth-child(10) { width: 11% !important; }
-    .table th:nth-child(11), .table td:nth-child(11) { width: 11% !important; }
-    .table th:nth-child(8), .table td:nth-child(8) { width: 11% !important; }
-    .table th:nth-child(9), .table td:nth-child(9) { width: 11% !important; }
-    .table th:nth-child(10), .table td:nth-child(10) { width: 11% !important; }
-    
-    .table th, .table td {
-        padding: 6px 2px !important;
-        font-size: 11px !important;
-        overflow: hidden !important;
-        text-overflow: ellipsis !important;
-        white-space: nowrap !important;
     }
 }
 

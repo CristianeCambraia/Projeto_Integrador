@@ -22,6 +22,19 @@ header {
     overflow: visible;
 }
 
+/* Responsividade para Dev Tools - Header */
+@media screen and (max-width: 1400px) {
+    header {
+        width: 100vw !important;
+        padding: 12px 5px !important;
+        box-sizing: border-box !important;
+        margin: 0 !important;
+        position: relative !important;
+        left: 0 !important;
+        right: 0 !important;
+    }
+}
+
 header.cadastro_usuario {
     background-color: transparent !important;
     box-shadow: none !important;
