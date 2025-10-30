@@ -524,7 +524,7 @@ td input{
 /* Botão Voltar ao Topo */
 .voltar-topo {
     position: fixed !important;
-    bottom: 30px !important;
+    bottom: 120px !important;
     right: 30px !important;
     background: #04bafc !important;
     color: white !important;
