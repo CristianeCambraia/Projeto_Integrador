@@ -242,6 +242,39 @@ def lista_servicos(request):
         'filtro': filtro
     })
 
+@login_required_custom
+def editar_servico(request, servico_id):
+    try:
+        servico = Servico.objects.get(id=servico_id)
+    except Servico.DoesNotExist:
+        messages.error(request, 'Serviço não encontrado')
+        return redirect('lista_servicos')
+    
+    if request.method == "POST":
+        form = ServicoForm(request.POST, instance=servico)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Serviço atualizado com sucesso!')
+            return redirect('lista_servicos')
+    else:
+        form = ServicoForm(instance=servico)
+    
+    return render(request, 'produtos/editar_servico.html', {
+        'form': form,
+        'servico': servico,
+        'titulo_pagina': 'Editar Serviço'
+    })
+
+@login_required_custom
+def excluir_servico(request, servico_id):
+    try:
+        servico = Servico.objects.get(id=servico_id)
+        servico.delete()
+        messages.success(request, 'Serviço excluído com sucesso!')
+    except Servico.DoesNotExist:
+        messages.error(request, 'Serviço não encontrado')
+    return redirect('lista_servicos')
+
 
 # ----- CLIENTES -----
 @login_required_custom

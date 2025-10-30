@@ -8,336 +8,813 @@
 </div>
 {% endfor %}
 {% endif %}
-<div class="container-lista-orcamentos">
-  <h2>Orçamentos Emitidos</h2>
-  
-  <div class="filtro-orcamentos">
-    <div style="display: flex; gap: 10px; align-items: center;">
-      <input type="text" id="filtroOrcamento" placeholder="Filtrar por ID, Nome ou Data (dd/mm/aaaa)" style="padding: 8px; border: 1px solid #ddd; border-radius: 3px;">
-      <button onclick="limparFiltro()" class="btn-limpar" style="background: #6c757d;">Limpar</button>
+
+<div class="orcamentos-container">
+    <div class="header-section">
+        <div class="icon-title">
+            <div class="icon-circle">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                    <path d="M9 11H15M9 15H15M9 7H15M7 3H17C18.1046 3 19 3.89543 19 5V19C19 20.1046 18.1046 21 17 21H7C5.89543 21 5 20.1046 5 19V5C5 3.89543 5.89543 3 7 3Z" stroke="#026a84" stroke-width="2" fill="#026a84"/>
+                    <path d="M9 7H15M9 11H15M9 15H15" stroke="white" stroke-width="2"/>
+                </svg>
+            </div>
+            <div>
+                <h1>Orçamentos Emitidos</h1>
+                <p>Gerencie todos os orçamentos do sistema</p>
+            </div>
+        </div>
+        <a href="{% url 'emitir_orcamento' %}" class="btn-novo-orcamento">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Novo Orçamento
+        </a>
     </div>
-  </div>
 
-  <ul class="lista-orcamentos">
-    {% for o in orcamentos %}
-      <li class="item-orcamento" data-id="{{ o.id }}" data-cliente="{{ o.cliente|lower }}" data-data="{{ o.data|date:'d/m/Y' }}">
-        <div class="row-two-col">
-          <div class="col-left">
-            <div class="field"><strong>ID:</strong> {{ o.id }}</div>
-            <div class="field"><strong>Data:</strong> {{ o.data|date:"d/m/Y" }}</div>
-            <div class="field field-email"><strong>E-mail:</strong> {{ o.email }}</div>
-          </div>
-          <div class="col-right">
-            <div class="field"><strong>Cliente:</strong> {{ o.cliente }}</div>
-            <div class="field field-cnpj"><strong>CNPJ:</strong> {{ o.cnpj }}</div>
-            <div class="field"><strong>Telefone:</strong> {{ o.telefone }}</div>
-          </div>
-        </div>
-        <div class="field" style="margin-top: 10px;">
-          <strong>Itens do Orçamento:</strong>
-          {% if o.itens_processados %}
-            <div class="itens-preview-{{ o.id }}">
-              <button class="btn-expandir-obs" onclick="expandirItens({{ o.id }})">Ver Itens +</button>
+    <div class="search-section">
+        <div class="search-controls">
+            <div class="search-input-group">
+                <input type="text" id="filtroOrcamento" placeholder="Buscar por ID, cliente ou data (dd/mm/aaaa)...">
+                <button onclick="limparFiltro()" class="btn-limpar">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                    Limpar
+                </button>
             </div>
-            <div class="itens-completos-{{ o.id }}" style="display: none; margin-top: 10px;">
-              <table style="width: 100%; border-collapse: collapse; margin-top: 5px;">
-                <thead>
-                  <tr style="background-color: #f5f5f5;">
-                    <th style="border: 1px solid #ddd; padding: 8px; text-align: center;">Unidade/Serviço</th>
-                    <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Descrição</th>
-                    <th style="border: 1px solid #ddd; padding: 8px; text-align: center;">Quantidade</th>
-                    <th style="border: 1px solid #ddd; padding: 8px; text-align: center;">Valor</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for item in o.itens_processados %}
-                    {% if item.unidade or item.descricao or item.quantidade or item.valor %}
-                      <tr>
-                        <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">{{ item.unidade|default:"-" }}</td>
-                        <td style="border: 1px solid #ddd; padding: 8px;">{{ item.descricao|default:"-" }}</td>
-                        <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">{{ item.quantidade|default:"-" }}</td>
-                        <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">{{ item.valor|default:"-" }}</td>
-                      </tr>
-                    {% endif %}
-                  {% endfor %}
-                </tbody>
-              </table>
-              <button class="btn-expandir-obs" onclick="recolherItens({{ o.id }})">Ocultar Itens -</button>
-            </div>
-          {% else %}
-            (Nenhum item cadastrado)
-          {% endif %}
         </div>
-        <div style="margin-top: 15px; text-align: right;">
-          <div style="margin-bottom: 5px;">
-            <strong>Subtotal: R$ {{ o.subtotal|default:"0,00" }}</strong>
-          </div>
-          {% if o.desconto %}
-          <div style="margin-bottom: 5px;">
-            <strong>Desconto ({{ o.desconto }}%): R$ {{ o.valor_desconto|default:"0,00" }}</strong>
-          </div>
-          {% endif %}
-          <div style="font-size: 16px;">
-            <strong>Valor Total: R$ {{ o.valor_total|default:"0,00" }}</strong>
-          </div>
-        </div>
-        <div style="margin-top: 15px; text-align: center;">
-          <a href="{% url 'abrir_orcamento' o.id %}" class="btn-info" style="background: #17a2b8;">Abrir</a>
-        </div>
-      </li>
-    {% empty %}
-      <li id="nenhumOrcamento">Nenhum orçamento emitido.</li>
-    {% endfor %}
-  </ul>
+    </div>
 
-  <div class="botoes-orcamento" style="display: flex; justify-content: center; gap: 15px; margin: 30px 0;">
-    <a href="https://www.nfse.gov.br/EmissorNacional/Login" target="_blank" class="btn-padrao">Portal NF-e 📄</a>
-    <a href="{% url 'novo_orcamento' %}" class="btn-padrao voltar">Voltar ⤴</a>
-  </div>
+    <div class="orcamentos-content">
+        <div class="orcamentos-grid">
+            {% for o in orcamentos %}
+                <div class="orcamento-card item-orcamento" data-id="{{ o.id }}" data-cliente="{{ o.cliente|lower }}" data-data="{{ o.data|date:'d/m/Y' }}">
+                    <!-- Header do Card -->
+                    <div class="card-header">
+                        <div class="orcamento-id">
+                            <span class="id-badge">#{{ o.id }}</span>
+                            <span class="data-badge">{{ o.data|date:"d/m/Y" }}</span>
+                        </div>
+                        <div class="valor-total">
+                            <span class="valor-label">Total</span>
+                            <span class="valor-amount">R$ {{ o.valor_total|default:"0,00" }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Informações do Cliente -->
+                    <div class="cliente-info">
+                        <h3 class="cliente-nome">{{ o.cliente }}</h3>
+                        <div class="cliente-detalhes">
+                            <div class="detalhe-item">
+                                <span class="label">CNPJ:</span>
+                                <span class="value">{{ o.cnpj|default:"-" }}</span>
+                            </div>
+                            <div class="detalhe-item">
+                                <span class="label">Email:</span>
+                                <span class="value">{{ o.email|default:"-" }}</span>
+                            </div>
+                            <div class="detalhe-item">
+                                <span class="label">Telefone:</span>
+                                <span class="value">{{ o.telefone|default:"-" }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Resumo Financeiro -->
+                    <div class="resumo-financeiro">
+                        <div class="resumo-item">
+                            <span class="resumo-label">Subtotal:</span>
+                            <span class="resumo-valor">R$ {{ o.subtotal|default:"0,00" }}</span>
+                        </div>
+                        {% if o.desconto %}
+                        <div class="resumo-item desconto">
+                            <span class="resumo-label">Desconto ({{ o.desconto }}%):</span>
+                            <span class="resumo-valor">R$ {{ o.valor_desconto|default:"0,00" }}</span>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Itens do Orçamento -->
+                    <div class="itens-section">
+                        <div class="itens-header">
+                            <span class="itens-title">Itens do Orçamento</span>
+                            {% if o.itens_processados %}
+                                <button class="btn-expandir" onclick="expandirItens({{ o.id }})">
+                                    <span class="expandir-text">Ver Itens</span>
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="6,9 12,15 18,9"></polyline>
+                                    </svg>
+                                </button>
+                            {% endif %}
+                        </div>
+                        
+                        {% if o.itens_processados %}
+                            <div class="itens-completos-{{ o.id }}" style="display: none;">
+                                <div class="itens-table">
+                                    <div class="table-header">
+                                        <div class="col-unidade">Unidade</div>
+                                        <div class="col-descricao">Descrição</div>
+                                        <div class="col-quantidade">Qtd</div>
+                                        <div class="col-valor">Valor</div>
+                                    </div>
+                                    <div class="table-body">
+                                        {% for item in o.itens_processados %}
+                                            {% if item.unidade or item.descricao or item.quantidade or item.valor %}
+                                                <div class="table-row">
+                                                    <div class="col-unidade">{{ item.unidade|default:"-" }}</div>
+                                                    <div class="col-descricao">{{ item.descricao|default:"-" }}</div>
+                                                    <div class="col-quantidade">{{ item.quantidade|default:"-" }}</div>
+                                                    <div class="col-valor">{{ item.valor|default:"-" }}</div>
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <button class="btn-recolher" onclick="recolherItens({{ o.id }})">
+                                    <span>Ocultar Itens</span>
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="18,15 12,9 6,15"></polyline>
+                                    </svg>
+                                </button>
+                            </div>
+                        {% else %}
+                            <div class="sem-itens">
+                                <span>Nenhum item cadastrado</span>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Ações -->
+                    <div class="card-actions">
+                        <a href="{% url 'abrir_orcamento' o.id %}" class="btn-abrir">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14,2 14,8 20,8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                            </svg>
+                            Abrir Orçamento
+                        </a>
+                    </div>
+                </div>
+            {% empty %}
+                <div id="nenhumOrcamento" class="sem-orcamentos">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14,2 14,8 20,8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                    </svg>
+                    <h3>Nenhum orçamento encontrado</h3>
+                    <p>Crie o primeiro orçamento para começar</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Footer Actions -->
+    <div class="footer-actions">
+        <a href="https://www.nfse.gov.br/EmissorNacional/Login" target="_blank" class="btn-portal">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14,2 14,8 20,8"></polyline>
+            </svg>
+            Portal NF-e
+        </a>
+        <a href="{% url 'home' %}" class="btn-voltar">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 12H5"></path>
+                <path d="M12 19l-7-7 7-7"></path>
+            </svg>
+            Voltar
+        </a>
+    </div>
 </div>
 
 <!-- Botão Voltar ao Topo -->
-<button id="voltarTopo" onclick="voltarAoTopo()" style="
-  position: fixed;
-  bottom: 30px;
-  right: 30px;
-  background: #04bafc;
-  color: white;
-  border: none;
-  border-radius: 50%;
-  width: 60px;
-  height: 60px;
-  font-size: 24px;
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-  display: none;
-  z-index: 1000;
-  transition: all 0.3s ease;
-">⬆️</button>
-
-
+<button id="voltarTopo" onclick="voltarAoTopo()">⬆️</button>
 
 <script>
-function criarModalEmail() {
-    const modal = document.createElement('div');
-    modal.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 10000;
-    `;
-    
-    const modalContent = document.createElement('div');
-    modalContent.style.cssText = `
-        background: #e8e8e8;
-        padding: 30px;
-        border-radius: 15px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-        max-width: 400px;
-        width: 90%;
-        text-align: center;
-        font-family: Arial, sans-serif;
-    `;
-    
-    modalContent.innerHTML = `
-        <h3 style="color: #026a84; margin-bottom: 20px; font-size: 20px;">📧 Enviar Orçamento por Email</h3>
-        <p style="color: #666; margin-bottom: 20px;">Digite o endereço de email de destino:</p>
-        <input type="email" id="emailInput" placeholder="exemplo@email.com" style="
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-            margin-bottom: 20px;
-            box-sizing: border-box;
-            outline: none;
-        ">
-        <div style="display: flex; gap: 10px; justify-content: center;">
-            <button id="cancelarBtn" style="
-                background: #6c757d;
-                color: white;
-                border: none;
-                padding: 12px 20px;
-                border-radius: 8px;
-                cursor: pointer;
-                font-size: 14px;
-                font-weight: bold;
-            ">Cancelar</button>
-            <button id="enviarBtn" style="
-                background: #28a745;
-                color: white;
-                border: none;
-                padding: 12px 20px;
-                border-radius: 8px;
-                cursor: pointer;
-                font-size: 14px;
-                font-weight: bold;
-            ">Enviar</button>
-        </div>
-    `;
-    
-    modal.appendChild(modalContent);
-    document.body.appendChild(modal);
-    
-    const emailInput = document.getElementById('emailInput');
-    const cancelarBtn = document.getElementById('cancelarBtn');
-    const enviarBtn = document.getElementById('enviarBtn');
-    
-    emailInput.focus();
-    
-    return new Promise((resolve) => {
-        cancelarBtn.onclick = () => {
-            document.body.removeChild(modal);
-            resolve(null);
-        };
-        
-        enviarBtn.onclick = () => {
-            const email = emailInput.value.trim();
-            if (email) {
-                document.body.removeChild(modal);
-                resolve(email);
-            } else {
-                emailInput.style.border = '2px solid #dc3545';
-                emailInput.focus();
-            }
-        };
-        
-        emailInput.onkeypress = (e) => {
-            if (e.key === 'Enter') {
-                enviarBtn.click();
-            }
-        };
-        
-        modal.onclick = (e) => {
-            if (e.target === modal) {
-                cancelarBtn.click();
-            }
-        };
-    });
-}
-
-async function abrirModalEmail(orcamentoId) {
-    const email = await criarModalEmail();
-    if (email) {
-        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-        
-        fetch('/enviar_orcamento_email/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': csrfToken
-            },
-            body: JSON.stringify({
-                orcamento_id: orcamentoId,
-                email: email
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                const mensagem = document.createElement('div');
-                mensagem.className = 'alert alert-success';
-                mensagem.style.cssText = 'position: fixed; top: 80px; right: 20px; z-index: 9999; background: white; color: #28a745; border: 2px solid #28a745; padding: 15px 20px; border-radius: 5px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); font-weight: bold;';
-                mensagem.textContent = 'Orçamento enviado por email com sucesso!';
-                document.body.appendChild(mensagem);
-                setTimeout(() => mensagem.remove(), 4000);
-            } else {
-                alert('Erro ao enviar orçamento: ' + data.error);
-            }
-        })
-        .catch(error => {
-            alert('Erro ao enviar orçamento.');
-        });
-    }
-}
-
 function expandirItens(id) {
-  document.querySelector('.itens-preview-' + id).style.display = 'none';
-  document.querySelector('.itens-completos-' + id).style.display = 'block';
+    const container = document.querySelector('.itens-completos-' + id);
+    const btn = document.querySelector(`[onclick="expandirItens(${id})"]`);
+    
+    container.style.display = 'block';
+    btn.style.display = 'none';
 }
 
 function recolherItens(id) {
-  document.querySelector('.itens-preview-' + id).style.display = 'block';
-  document.querySelector('.itens-completos-' + id).style.display = 'none';
+    const container = document.querySelector('.itens-completos-' + id);
+    const btn = document.querySelector(`[onclick="expandirItens(${id})"]`);
+    
+    container.style.display = 'none';
+    btn.style.display = 'flex';
 }
 
 function voltarAoTopo() {
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function filtrarOrcamentos() {
-  const filtro = document.getElementById('filtroOrcamento').value.toLowerCase();
-  const items = document.querySelectorAll('.item-orcamento[data-id]');
-  let visivel = 0;
-  
-  items.forEach(item => {
-    const id = item.getAttribute('data-id');
-    const cliente = item.getAttribute('data-cliente');
-    const data = item.getAttribute('data-data');
+    const filtro = document.getElementById('filtroOrcamento').value.toLowerCase();
+    const items = document.querySelectorAll('.item-orcamento[data-id]');
+    let visivel = 0;
     
-    if (id.includes(filtro) || cliente.includes(filtro) || data.includes(filtro)) {
-      item.style.display = 'block';
-      visivel++;
-    } else {
-      item.style.display = 'none';
+    items.forEach(item => {
+        const id = item.getAttribute('data-id');
+        const cliente = item.getAttribute('data-cliente');
+        const data = item.getAttribute('data-data');
+        
+        if (id.includes(filtro) || cliente.includes(filtro) || data.includes(filtro)) {
+            item.style.display = 'block';
+            visivel++;
+        } else {
+            item.style.display = 'none';
+        }
+    });
+    
+    const nenhumItem = document.getElementById('nenhumOrcamento');
+    if (nenhumItem) {
+        nenhumItem.style.display = visivel === 0 && filtro !== '' ? 'flex' : 'none';
     }
-  });
-  
-  const nenhumItem = document.getElementById('nenhumOrcamento');
-  if (nenhumItem) {
-    nenhumItem.style.display = visivel === 0 && filtro !== '' ? 'block' : 'none';
-  }
 }
 
 function limparFiltro() {
-  document.getElementById('filtroOrcamento').value = '';
-  filtrarOrcamentos();
+    document.getElementById('filtroOrcamento').value = '';
+    filtrarOrcamentos();
 }
 
-document.getElementById('filtroOrcamento').addEventListener('input', filtrarOrcamentos);
-
-// Mostrar/ocultar botão baseado no scroll
-window.onscroll = function() {
-  const botao = document.getElementById('voltarTopo');
-  if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
-    botao.style.display = 'block';
-  } else {
-    botao.style.display = 'none';
-  }
-};
-
-// Hover effect
-document.getElementById('voltarTopo').onmouseover = function() {
-  this.style.transform = 'scale(1.1)';
-  this.style.background = '#0299d1';
-};
-
-document.getElementById('voltarTopo').onmouseout = function() {
-  this.style.transform = 'scale(1)';
-  this.style.background = '#04bafc';
-};
-
-// Inicializar filtro quando a página carregar
+// Event listeners
 document.addEventListener('DOMContentLoaded', function() {
-  if (document.getElementById('filtroOrcamento')) {
     document.getElementById('filtroOrcamento').addEventListener('input', filtrarOrcamentos);
-  }
+    
+    // Mostrar/ocultar botão voltar ao topo
+    window.addEventListener('scroll', function() {
+        const botao = document.getElementById('voltarTopo');
+        if (window.scrollY > 300) {
+            botao.classList.add('show');
+        } else {
+            botao.classList.remove('show');
+        }
+    });
 });
 </script>
 
 <style>
-.container-lista-orcamentos {
-  border-radius: 30px 30px 30px 30px !important;
-  overflow-x: hidden !important;
+.orcamentos-container {
+    max-width: 1200px;
+    margin: 30px auto;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    overflow: hidden;
 }
 
-/* Responsividade para Dev Tools - Header */
+.header-section {
+    background: #cbd5e0;
+    padding: 30px 40px;
+    color: #2d3748;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+}
+
+.icon-title {
+    flex: 1;
+    text-align: center;
+}
+
+.icon-title {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    justify-content: center;
+    flex: 1;
+    text-align: center;
+}
+
+.icon-circle {
+    width: 60px;
+    height: 60px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(10px);
+}
+
+.header-section h1 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 600;
+}
+
+.header-section p {
+    margin: 5px 0 0 0;
+    opacity: 0.9;
+    font-size: 16px;
+}
+
+.btn-novo-orcamento {
+    background: linear-gradient(135deg, #026a84 0%, #04bafc 100%);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-novo-orcamento:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(2, 106, 132, 0.3);
+}
+
+.search-section {
+    padding: 30px 40px 20px 40px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.search-controls {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.search-input-group {
+    display: flex;
+    gap: 10px;
+    flex: 1;
+}
+
+.search-input-group input {
+    flex: 1;
+    height: 45px;
+    padding: 12px 15px;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.search-input-group input:focus {
+    border-color: #026a84;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(2, 106, 132, 0.1);
+}
+
+.btn-limpar {
+    background: #718096;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-limpar:hover {
+    background: #5a6c7d;
+    transform: translateY(-1px);
+}
+
+.orcamentos-content {
+    padding: 30px 40px;
+}
+
+.orcamentos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    gap: 25px;
+}
+
+.orcamento-card {
+    background: #f8f9fa;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 20px;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.orcamento-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    border-color: #cbd5e0;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.orcamento-id {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.id-badge {
+    background: #026a84;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    width: fit-content;
+}
+
+.data-badge {
+    color: #4a5568;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.valor-total {
+    text-align: right;
+}
+
+.valor-label {
+    display: block;
+    color: #4a5568;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.valor-amount {
+    display: block;
+    color: #2d3748;
+    font-size: 18px;
+    font-weight: 700;
+    margin-top: 2px;
+}
+
+.cliente-info {
+    margin-bottom: 15px;
+}
+
+.cliente-nome {
+    color: #2d3748;
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 10px 0;
+}
+
+.cliente-detalhes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.detalhe-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.detalhe-item .label {
+    color: #4a5568;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.detalhe-item .value {
+    color: #2d3748;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.resumo-financeiro {
+    background: white;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #e2e8f0;
+}
+
+.resumo-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.resumo-item:last-child {
+    margin-bottom: 0;
+}
+
+.resumo-item.desconto {
+    color: #e53e3e;
+}
+
+.resumo-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: #4a5568;
+}
+
+.resumo-valor {
+    font-size: 13px;
+    font-weight: 600;
+    color: #2d3748;
+}
+
+.itens-section {
+    margin-bottom: 15px;
+}
+
+.itens-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.itens-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #2d3748;
+}
+
+.btn-expandir, .btn-recolher {
+    background: #e2e8f0;
+    color: #2d3748;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.3s ease;
+}
+
+.btn-expandir:hover, .btn-recolher:hover {
+    background: #cbd5e0;
+}
+
+.btn-recolher {
+    margin-top: 10px;
+    width: 100%;
+    justify-content: center;
+}
+
+.itens-table {
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+    margin-bottom: 10px;
+}
+
+.table-header {
+    display: grid;
+    grid-template-columns: 1fr 2fr 80px 100px;
+    background: #f8f9fa;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.table-header > div {
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #2d3748;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.table-body {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.table-row {
+    display: grid;
+    grid-template-columns: 1fr 2fr 80px 100px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.table-row:last-child {
+    border-bottom: none;
+}
+
+.table-row > div {
+    padding: 8px 12px;
+    font-size: 13px;
+    color: #2d3748;
+    display: flex;
+    align-items: center;
+}
+
+.col-quantidade, .col-valor {
+    justify-content: center;
+    text-align: center;
+}
+
+.sem-itens {
+    text-align: center;
+    padding: 20px;
+    color: #4a5568;
+    font-style: italic;
+}
+
+.card-actions {
+    padding-top: 15px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.btn-abrir {
+    background: #17a2b8;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    justify-content: center;
+}
+
+.btn-abrir:hover {
+    background: #138496;
+    transform: translateY(-1px);
+}
+
+.sem-orcamentos {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    color: #4a5568;
+    text-align: center;
+}
+
+.sem-orcamentos svg {
+    margin-bottom: 20px;
+    opacity: 0.5;
+}
+
+.sem-orcamentos h3 {
+    color: #2d3748;
+    font-size: 20px;
+    margin: 0 0 10px 0;
+}
+
+.sem-orcamentos p {
+    color: #4a5568;
+    margin: 0;
+}
+
+.footer-actions {
+    padding: 20px 40px;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.btn-portal, .btn-voltar {
+    background: #718096;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-portal:hover, .btn-voltar:hover {
+    background: #5a6c7d;
+    transform: translateY(-1px);
+}
+
+#voltarTopo {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: #04bafc;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    opacity: 0;
+    visibility: hidden;
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+#voltarTopo.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+#voltarTopo:hover {
+    transform: scale(1.1);
+    background: #0299d1;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .orcamentos-container {
+        margin: 20px;
+        border-radius: 15px;
+    }
+    
+    .header-section {
+        padding: 20px;
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+    
+    .icon-title {
+        gap: 15px;
+    }
+    
+    .icon-circle {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .header-section h1 {
+        font-size: 24px;
+    }
+    
+    .search-section, .orcamentos-content {
+        padding: 20px;
+    }
+    
+    .orcamentos-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .search-input-group {
+        flex-direction: column;
+    }
+    
+    .cliente-detalhes {
+        grid-template-columns: 1fr;
+    }
+    
+    .table-header, .table-row {
+        grid-template-columns: 1fr;
+        gap: 5px;
+    }
+    
+    .table-header > div, .table-row > div {
+        padding: 6px 8px;
+    }
+    
+    .footer-actions {
+        flex-direction: column;
+        padding: 15px 20px;
+    }
+}
+
 @media screen and (max-width: 1400px) {
     header {
         width: 100vw !important;
@@ -348,14 +825,7 @@ document.addEventListener('DOMContentLoaded', function() {
         left: 0 !important;
         right: 0 !important;
     }
-    
-    .container-lista-orcamentos {
-        max-width: 100% !important;
-        width: 100% !important;
-        margin: 20px 0 0 0 !important;
-        padding: 15px !important;
-        box-sizing: border-box !important;
-    }
 }
 </style>
+
 {% endblock %}

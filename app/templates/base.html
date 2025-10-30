@@ -3,6 +3,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>
         {% block title %}INSUMED{% endblock %}
     </title>
@@ -215,15 +216,754 @@
             text-decoration: underline;
         }
         
-        /* Padronização de tamanho para todas as telas */
-        @media screen {
-            .container, .form-container, .lista-container, .emitir-orcamento-container, .container-lista-orcamentos, .suporte-container {
+        /* Padronização de tamanho para desktop */
+        @media screen and (min-width: 769px) {
+            .hamburger {
+                display: none !important;
+            }
+            
+            .desktop-nav {
+                display: block !important;
+            }
+            
+            .mobile-nav {
+                display: none !important;
+            }
+            
+            .container, .form-container, .lista-container, .emitir-orcamento-container, .container-lista-orcamentos, .suporte-container, .financeiro-container {
                 max-width: 95% !important;
                 width: 95% !important;
                 margin: 20px auto 0 auto !important;
             }
         }
 
+        /* ===== PREVENÇÃO DE OVERFLOW HORIZONTAL ===== */
+        @media screen and (max-width: 768px) {
+            * {
+                max-width: 100% !important;
+                box-sizing: border-box !important;
+            }
+            
+            body {
+                overflow-x: hidden !important;
+                overflow-y: auto !important;
+                width: 100% !important;
+                height: auto !important;
+                min-height: 100vh !important;
+            }
+            
+            main {
+                padding-bottom: 10px !important;
+                min-height: auto !important;
+            }
+            
+            /* Prevenir elementos que saem da tela */
+            div, section, article, main, aside, nav, header, footer {
+                max-width: 100% !important;
+                overflow-x: auto !important;
+            }
+            
+            /* Textos longos */
+            p, span, label, td, th {
+                word-wrap: break-word !important;
+                overflow-wrap: break-word !important;
+                hyphens: auto !important;
+            }
+            
+            /* Imagens responsivas - corrigir distorção */
+            img {
+                max-width: 100% !important;
+                height: auto !important;
+                object-fit: contain !important;
+                aspect-ratio: auto !important;
+            }
+            
+            /* Imagens específicas que podem distorcer */
+            .suporte-container img,
+            .form-container img,
+            .container img {
+                width: auto !important;
+                max-width: 90% !important;
+                height: auto !important;
+                object-fit: contain !important;
+                display: block !important;
+                margin: 0 auto !important;
+            }
+            
+            /* Tabelas sempre com scroll horizontal */
+            table {
+                display: block !important;
+                overflow-x: auto !important;
+                white-space: nowrap !important;
+            }
+            
+            /* Dica de rotação para tabelas grandes */
+            .table-responsive::before {
+                content: '🔄 Vire o celular para melhor visualização';
+                display: block;
+                background: #e3f2fd;
+                color: #1976d2;
+                padding: 8px;
+                text-align: center;
+                font-size: 12px;
+                border-radius: 4px;
+                margin-bottom: 10px;
+                border: 1px solid #bbdefb;
+            }
+            
+            /* Inputs nunca maiores que o container */
+            input, select, textarea {
+                max-width: 100% !important;
+                min-width: 0 !important;
+            }
+        }
+        
+        /* ===== MENU HAMBÚRGUER E RESPONSIVIDADE MOBILE ===== */
+        
+        /* Botão Hambúrguer - OCULTO POR PADRÃO */
+        .hamburger {
+            display: none !important;
+            justify-content: center;
+            align-items: center;
+            width: 30px;
+            height: 30px;
+            background: #0066cc;
+            border: 2px solid #004499;
+            border-radius: 6px;
+            cursor: pointer;
+            z-index: 1001;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            margin-left: auto;
+        }
+        
+        .hamburger:hover {
+            background: #0052a3;
+            border-color: #003366;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+        }
+        
+        .hamburger span {
+            display: block;
+            width: 18px;
+            height: 3px;
+            background: white;
+            border-radius: 1px;
+            margin: 2px 0;
+            transition: all 0.3s ease;
+            transform-origin: center;
+        }
+        
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(4px, 4px);
+        }
+        
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+        
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(4px, -4px);
+        }
+        
+        /* Menu Mobile - OCULTO POR PADRÃO */
+        .mobile-nav {
+            display: none !important;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: rgba(1, 62, 106, 0.98);
+            z-index: 1000;
+            overflow-y: auto;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+        
+        .mobile-nav.active {
+            transform: translateX(0);
+        }
+        
+        .mobile-nav-content {
+            padding: 80px 20px 20px 20px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        .mobile-nav-item {
+            display: block;
+            color: white !important;
+            text-decoration: none;
+            padding: 15px 20px;
+            margin: 5px 0;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+        
+        .mobile-nav-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-left-color: #04bafc;
+            transform: translateX(5px);
+        }
+        
+        /* Dropdown Mobile */
+        .mobile-dropdown {
+            margin: 5px 0;
+        }
+        
+        .mobile-dropdown-btn {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: none;
+            padding: 20px 25px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            min-height: 60px;
+        }
+        
+        .mobile-dropdown-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .mobile-dropdown-btn .arrow {
+            transition: transform 0.3s ease;
+        }
+        
+        .mobile-dropdown-btn.active .arrow {
+            transform: rotate(180deg);
+        }
+        
+        .mobile-dropdown-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 0 0 10px 10px;
+            margin-top: -5px;
+        }
+        
+        .mobile-dropdown-content.active {
+            max-height: 500px;
+        }
+        
+        .mobile-nav-subitem {
+            display: block;
+            color: rgba(255, 255, 255, 0.9) !important;
+            text-decoration: none;
+            padding: 12px 30px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            border-left: 2px solid transparent;
+        }
+        
+        .mobile-nav-subitem:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-left-color: #04bafc;
+            color: white !important;
+        }
+        
+        /* Notificações Mobile */
+        .mobile-notifications {
+            margin: 20px 0;
+        }
+        
+        .mobile-notification-btn {
+            width: 100%;
+            background: rgba(255, 193, 7, 0.2);
+            color: white;
+            border: 2px solid #ffc107;
+            padding: 20px 25px;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            min-height: 60px;
+        }
+        
+        .mobile-notification-btn:hover {
+            background: rgba(255, 193, 7, 0.3);
+        }
+        
+        .mobile-notification-counter {
+            background: #ff4444;
+            color: white;
+            border-radius: 50%;
+            min-width: 20px;
+            height: 20px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .mobile-notification-dropdown {
+            display: none;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            margin-top: 10px;
+            padding: 15px;
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .mobile-notification-dropdown.active {
+            display: block !important;
+        }
+        
+        .mobile-notification-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 8px;
+            color: white;
+            border-left: 3px solid #ffc107;
+        }
+        
+        .mobile-notification-item strong {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        
+        .mobile-notification-item small {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        
+        /* ===== RESPONSIVIDADE GLOBAL PARA MOBILE ===== */
+        @media screen and (max-width: 768px) {
+            input, select, textarea, button {
+                width: auto !important;
+                box-sizing: border-box;
+                font-size: 16px !important;
+                /* padding: 12px !important; */
+            }
+            
+            /* Menu */
+            .hamburger {
+                display: flex !important;
+            }
+            
+            .desktop-nav {
+                display: none !important;
+            }
+            
+            .mobile-nav {
+                display: block !important;
+            }
+            
+            /* Notificações desktop ocultas no mobile */
+            #notificationDropdown {
+                display: none !important;
+            }
+            
+            /* Botão de notificação desktop oculto */
+            .desktop-nav li:has(button[onclick="toggleNotifications()"]) {
+                display: none !important;
+            }
+            
+            /* TODOS os containers */
+            .container, .form-container, .lista-container, 
+            .emitir-orcamento-container, .container-lista-orcamentos, 
+            .suporte-container, .financeiro-container,
+            .orcamento-container, .produto-container, .cliente-container,
+            .fornecedor-container, .servico-container, .usuario-container,
+            .estoque-container, .movimentacao-container {
+                margin: 10px 10px 50px 10px !important;
+                padding: 10px 10px 30px 10px !important;
+                width: calc(100% - 20px) !important;
+                max-width: none !important;
+                border-radius: 15px 15px 15px 15px !important;
+                overflow-x: auto !important;
+            }
+            
+            /* Ocultar links do footer no mobile */
+            .contact {
+                display: none !important;
+            }
+            
+            /* TODAS as tabelas */
+            .table-responsive {
+                overflow-x: auto !important;
+                -webkit-overflow-scrolling: touch !important;
+                margin: 0 -10px !important;
+                padding: 0 10px !important;
+            }
+            
+            .table {
+                min-width: 800px !important;
+                font-size: 11px !important;
+                width: 100% !important;
+            }
+            
+            .table th, .table td {
+                padding: 6px 3px !important;
+                white-space: nowrap !important;
+                font-size: 11px !important;
+            }
+            
+            /* TODOS os formulários */
+            .form-group {
+                margin-bottom: 15px !important;
+                width: 100% !important;
+            }
+            
+            .form-group label {
+                display: block !important;
+                margin-bottom: 5px !important;
+                font-weight: 500 !important;
+                width: 100% !important;
+            }
+            
+            .form-group input, 
+            .form-group select, 
+            .form-group textarea {
+                width: 100% !important;
+                padding: 12px !important;
+                border: 1px solid #ddd !important;
+                border-radius: 6px !important;
+                font-size: 16px !important;
+                box-sizing: border-box !important;
+                margin: 0 !important;
+            }
+            
+            /* TODOS os botões */
+            .btn, .btn-padrao, .btn-info, .btn-salvar, 
+            .btn-editar, .btn-voltar, .btn-cancelar,
+            .btn-adicionar, .btn-confirmar, .btn-filtrar,
+            .btn-pesquisar, .btn-limpar, .btn-expandir {
+                width: 100% !important;
+                padding: 12px !important;
+                margin: 5px 0 !important;
+                font-size: 14px !important;
+                border-radius: 6px !important;
+                box-sizing: border-box !important;
+            }
+            
+            /* Grupos de botões lado a lado */
+            .btn-group {
+                display: flex !important;
+                gap: 5px !important;
+                flex-wrap: wrap !important;
+            }
+            
+            .btn-group .btn {
+                flex: 1 !important;
+                min-width: 120px !important;
+            }
+            
+            /* Controles de busca/filtros */
+            .search-controls, .filter-controls {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                gap: 10px !important;
+            }
+            
+            .search-controls > div,
+            .filter-controls > div {
+                width: 100% !important;
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 10px !important;
+            }
+            
+            .search-controls select,
+            .filter-controls select {
+                width: 100% !important;
+                font-size: 16px !important;
+                padding: 12px !important;
+            }
+            
+            /* Títulos */
+            h1, h2, h3 {
+                font-size: 18px !important;
+                margin: 10px 0 !important;
+                text-align: center !important;
+            }
+            
+            /* Cards/Itens de lista */
+            .card, .item, .produto-item, .cliente-item {
+                margin: 5px 0 !important;
+                padding: 10px !important;
+                border-radius: 8px !important;
+            }
+            
+            /* Modais */
+            .modal-content {
+                width: 95% !important;
+                max-width: none !important;
+                margin: 10px !important;
+                padding: 15px !important;
+            }
+            
+            /* Alertas/Mensagens */
+            .alert, .message {
+                margin: 10px !important;
+                padding: 10px !important;
+                font-size: 14px !important;
+                border-radius: 6px !important;
+            }
+            
+            /* Paginação */
+            .pagination {
+                justify-content: center !important;
+                flex-wrap: wrap !important;
+            }
+            
+            .pagination a, .pagination span {
+                padding: 8px 12px !important;
+                margin: 2px !important;
+                font-size: 14px !important;
+            }
+            
+            /* Logo da home - descer um pouco no mobile */
+            .logo {
+                margin-top: 50px !important;
+                margin-bottom: 20px !important;
+            }
+            
+
+        }
+            
+            header {
+                padding: 15px 20px !important;
+                display: flex !important;
+                align-items: center !important;
+                gap: 15px !important;
+                position: relative !important;
+            }
+            
+            .logo-header {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                flex: 1;
+                justify-content: flex-start;
+                margin-top: 0px;
+            }
+            
+            .logo-header img {
+                width: 49.19px;
+                height: 50px;
+            }
+            
+            .logo-header h1 {
+                width: 172.03px;
+                height: 39px;
+                font-size: 32px;
+                margin: 0;
+            }
+            
+
+            
+            /* Footer responsivo */
+            footer {
+                flex-direction: column;
+                text-align: center;
+                padding: 20px;
+            }
+            
+            footer > div {
+                margin: 10px 0;
+            }
+            
+            .social-media {
+                justify-content: center;
+            }
+        }
+        
+        /* ===== ORIENTAÇÃO LANDSCAPE NO MOBILE ===== */
+        @media screen and (max-width: 768px) and (orientation: landscape) {
+            /* Ocultar dica de rotação quando já está em landscape */
+            .table-responsive::before {
+                display: none !important;
+            }
+            /* Header mais compacto */
+            header {
+                padding: 8px 15px !important;
+                min-height: 50px !important;
+            }
+            
+            .logo-header h1 {
+                font-size: 16px !important;
+            }
+            
+            .logo-header img {
+                width: 28px !important;
+                height: 28px !important;
+            }
+            
+            /* Containers otimizados para landscape */
+            .container, .form-container, .lista-container, 
+            .emitir-orcamento-container, .container-lista-orcamentos, 
+            .suporte-container, .financeiro-container,
+            .orcamento-container, .produto-container, .cliente-container {
+                margin: 5px !important;
+                padding: 8px !important;
+                width: calc(100% - 10px) !important;
+                max-height: calc(100vh - 80px) !important;
+                overflow-y: auto !important;
+            }
+            
+            /* Tabelas otimizadas para landscape */
+            .table-responsive {
+                max-height: calc(100vh - 150px) !important;
+                overflow: auto !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            
+            .table {
+                font-size: 12px !important;
+                min-width: 1000px !important;
+                margin: 0 !important;
+            }
+            
+            .table th, .table td {
+                padding: 6px 4px !important;
+                font-size: 12px !important;
+                white-space: nowrap !important;
+            }
+            
+            /* Controles de busca mais compactos */
+            .search-controls, .filter-controls {
+                flex-direction: row !important;
+                flex-wrap: wrap !important;
+                gap: 8px !important;
+                margin-bottom: 10px !important;
+            }
+            
+            .search-controls > div {
+                flex: 1 !important;
+                min-width: 200px !important;
+            }
+            
+            .search-controls select {
+                padding: 8px !important;
+                font-size: 14px !important;
+            }
+            
+            .search-controls .btn {
+                padding: 8px 12px !important;
+                font-size: 12px !important;
+                white-space: nowrap !important;
+            }
+            
+            /* Títulos mais compactos */
+            h1, h2, h3 {
+                font-size: 16px !important;
+                margin: 5px 0 !important;
+            }
+            
+            /* Botões em linha quando possível */
+            .btn-group {
+                flex-direction: row !important;
+                justify-content: space-between !important;
+            }
+            
+            .btn-group .btn {
+                width: auto !important;
+                flex: 1 !important;
+                margin: 0 2px !important;
+                padding: 8px !important;
+                font-size: 12px !important;
+            }
+            
+            /* Footer mais compacto */
+            footer {
+                padding: 10px !important;
+                font-size: 12px !important;
+            }
+            
+            /* Menu mobile landscape */
+            .mobile-nav-content {
+                padding: 60px 15px 15px 15px !important;
+                columns: 2 !important;
+                column-gap: 20px !important;
+            }
+            
+            .mobile-nav-item, .mobile-dropdown {
+                break-inside: avoid !important;
+                margin: 3px 0 !important;
+                padding: 10px 15px !important;
+            }
+        }
+        
+        /* Celulares muito pequenos */
+        @media screen and (max-width: 480px) {
+            .container, .form-container, .lista-container, 
+            .emitir-orcamento-container, .container-lista-orcamentos, 
+            .suporte-container, .financeiro-container,
+            .orcamento-container, .produto-container, .cliente-container {
+                margin: 5px !important;
+                padding: 8px !important;
+                width: calc(100% - 10px) !important;
+            }
+            
+            .table {
+                font-size: 10px !important;
+                min-width: 700px !important;
+            }
+            
+            .table th, .table td {
+                padding: 4px 2px !important;
+                font-size: 10px !important;
+            }
+            
+            .btn {
+                padding: 10px !important;
+                font-size: 13px !important;
+            }
+            
+            h1, h2, h3 {
+                font-size: 16px !important;
+            }
+        }
+        
+        /* Landscape em celulares pequenos */
+        @media screen and (max-width: 480px) and (orientation: landscape) {
+            .table {
+                font-size: 11px !important;
+                min-width: 800px !important;
+            }
+            
+            .table th, .table td {
+                padding: 5px 3px !important;
+                font-size: 11px !important;
+            }
+        }
+        
+        /* Responsividade para tablets */
+        @media screen and (min-width: 769px) and (max-width: 1024px) {
+            .container, .form-container, .lista-container, 
+            .emitir-orcamento-container, .container-lista-orcamentos, 
+            .suporte-container, .financeiro-container {
+                margin: 15px auto !important;
+                padding: 20px !important;
+                width: 95% !important;
+                max-width: 900px !important;
+            }
+        }
+        
         /* Responsividade do Header para Dev Tools */
         @media screen and (max-width: 1400px) {
             header {
@@ -393,11 +1133,15 @@
 <body>
     <header>
         <div class="logo-header">
+            <!-- Botão Hambúrguer à esquerda -->
+            <button class="hamburger" onclick="toggleMobileMenu()" aria-label="Menu">
+                ≡
+            </button>
             <img src="{% static 'images/insumed_icon.png' %}" alt="insumed_icon">
             <h1 class="insumed">INSUMED</h1>
         </div>
                              
-        <nav>
+        <nav class="desktop-nav">
             <ul>
                 {% if admin_logado %}
                     <li><a href="{% url 'lista_suporte' %}">Suporte</a></li>
@@ -481,6 +1225,84 @@
                 {% endif %}
             </ul>
         </nav>
+        
+        <!-- Menu Mobile -->
+        <nav class="mobile-nav" id="mobileNav">
+            <div class="mobile-nav-content">
+                {% if admin_logado %}
+                    <a href="{% url 'lista_suporte' %}" class="mobile-nav-item">Suporte</a>
+                    <a href="{% url 'usuarios_cadastrados' %}" class="mobile-nav-item">Usuários Cadastrados</a>
+                    <a href="{% url 'admin_logout' %}" class="mobile-nav-item">Sair Admin</a>
+                {% else %}
+                    <a href="/" class="mobile-nav-item">Home</a>
+                    
+                    <!-- Cadastros -->
+                    <div class="mobile-dropdown">
+                        <button class="mobile-dropdown-btn" onclick="toggleMobileDropdown('cadastros')">Cadastros <span class="arrow">▼</span></button>
+                        <div class="mobile-dropdown-content" id="cadastros">
+                            <a href="{% url 'clientes' %}" class="mobile-nav-subitem">Cadastrar Cliente</a>
+                            <a href="{% url 'lista_cliente' %}" class="mobile-nav-subitem">Listar Clientes</a>
+                            <a href="{% url 'fornecedores' %}" class="mobile-nav-subitem">Cadastrar Fornecedor</a>
+                            <a href="{% url 'lista_fornecedores' %}" class="mobile-nav-subitem">Listar Fornecedores</a>
+                            <a href="{% url 'cadastrar_produto' %}" class="mobile-nav-subitem">Cadastrar Produto</a>
+                            <a href="{% url 'lista_produtos' %}" class="mobile-nav-subitem">Listar Produtos</a>
+                            <a href="{% url 'cadastrar_usuario' %}" class="mobile-nav-subitem">Cadastrar Usuário</a>
+                            <a href="{% url 'cadastrar_servico' %}" class="mobile-nav-subitem">Cadastrar Serviço</a>
+                            <a href="{% url 'lista_servicos' %}" class="mobile-nav-subitem">Listar Serviços</a>
+                        </div>
+                    </div>
+                    
+                    <!-- Orçamentos -->
+                    <div class="mobile-dropdown">
+                        <button class="mobile-dropdown-btn" onclick="toggleMobileDropdown('orcamentos')">Orçamentos <span class="arrow">▼</span></button>
+                        <div class="mobile-dropdown-content" id="orcamentos">
+                            <a href="{% url 'emitir_orcamento' %}" class="mobile-nav-subitem">Emitir Orçamento</a>
+                            <a href="{% url 'orcamentos_emitidos' %}" class="mobile-nav-subitem">Orçamentos Emitidos</a>
+                        </div>
+                    </div>
+                    
+                    <!-- Relatórios -->
+                    <div class="mobile-dropdown">
+                        <button class="mobile-dropdown-btn" onclick="toggleMobileDropdown('relatorios')">Relatórios <span class="arrow">▼</span></button>
+                        <div class="mobile-dropdown-content" id="relatorios">
+                            <a href="{% url 'relatorio_estoque' %}" class="mobile-nav-subitem">Relatório de Estoque</a>
+                            <a href="{% url 'relatorio_financeiro' %}" class="mobile-nav-subitem">Relatório Financeiro</a>
+                            <a href="{% url 'relatorio_entrada' %}" class="mobile-nav-subitem">Lançamento de Entrada</a>
+                            <a href="{% url 'relatorio_saida' %}" class="mobile-nav-subitem">Lançamento de Saída</a>
+                            <a href="{% url 'relatorio_movimentacao_entrada' %}" class="mobile-nav-subitem">Ver Históricos - Entrada</a>
+                            <a href="{% url 'relatorio_movimentacao_saida' %}" class="mobile-nav-subitem">Ver Históricos - Saída</a>
+                        </div>
+                    </div>
+
+                    {% if usuario_logado %}
+                        <a href="{% url 'minha_conta' %}" class="mobile-nav-item">Minha Conta</a>
+                        <a href="{% url 'logout' %}" class="mobile-nav-item">Sair</a>
+                        
+                        <!-- Notificações Mobile -->
+                        <div class="mobile-notifications">
+                            <button onclick="toggleMobileNotifications()" class="mobile-notification-btn">
+                                🔔 Notificações
+                                <span id="mobileNotificationCounter" class="mobile-notification-counter" style="display: none;">0</span>
+                            </button>
+                            <div id="mobileNotificationDropdown" class="mobile-notification-dropdown">
+                                <div style="padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.2); margin-bottom: 10px;">
+                                    <h4 style="margin: 0; color: white; font-size: 14px;">Notificações de Estoque</h4>
+                                </div>
+                                <div id="mobileNotificationContent">
+                                    <div style="text-align: center; padding: 20px; color: rgba(255,255,255,0.7);">Carregando...</div>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <a href="{% url 'cadastrar_usuario' %}" class="mobile-nav-item">Cadastrar Usuário</a>
+                        <a href="{% url 'login' %}" class="mobile-nav-item">Login</a>
+                    {% endif %}
+                    
+                    <a href="{% url 'sobre_nos' %}" class="mobile-nav-item">Sobre nós</a>
+                    <a href="{% url 'criar_suporte' %}" class="mobile-nav-item">Contato</a>
+                {% endif %}
+            </div>
+        </nav>
     </header>
 
     <main>
@@ -488,27 +1310,31 @@
         {% endblock %}
     </main>
 
-    <footer>
-        <div>
-            <p class="Rede-social">Redes Sociais</p>
-            <ul class="social-media">
-                <li><a href="https://wa.me/5535997548034" target="_blank"><img src="{% static 'images/whatsapp.svg' %}" alt="WhatsApp"></a></li>
-                <li><a href="https://instagram.com/insumed" target="_blank"><img src="{% static 'images/instagram.svg' %}" alt="Instagram"></a></li>
-                <li><a href="https://facebook.com/insumed" target="_blank"><img src="{% static 'images/facebook.svg' %}" alt="Facebook"></a></li>
-            </ul>
-        </div>
-        <div style="text-align: center; flex: 1;">
-            <p>Todos os direitos reservados &copy;</p>
-            <p>Develop By: Bessa, Cristiane, Eduardo, Leonardo, Lucas.</p>
-            <p>Telefone - (35) 98412-3236</p>
+    <footer style="display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 15px 20px;">
+        <div style="display: flex; align-items: center; gap: 300px;">
+            <div>
+                <p class="Rede-social">Redes Sociais</p>
+                <ul class="social-media">
+                    <li><a href="https://wa.me/5535997548034" target="_blank"><img src="{% static 'images/whatsapp.svg' %}" alt="WhatsApp"></a></li>
+                    <li><a href="https://instagram.com/insumed" target="_blank"><img src="{% static 'images/instagram.svg' %}" alt="Instagram"></a></li>
+                    <li><a href="https://facebook.com/insumed" target="_blank"><img src="{% static 'images/facebook.svg' %}" alt="Facebook"></a></li>
+                </ul>
+            </div>
+            <div>
+                <p>Todos os direitos reservados &copy;</p>
+                <p>Develop By: Bessa, Cristiane, Eduardo, Leonardo, Lucas.</p>
+                <p>Telefone - (35) 98412-3236</p>
+            </div>
+            {% if not admin_logado %}
+            <div>
+                <ul class="contact" style="list-style: none; padding: 0; margin: 0;">
+                    <li><a href="{% url 'sobre_nos' %}">Sobre nós</a></li>
+                    <li><a href="{% url 'criar_suporte' %}">Contato</a></li>
+                </ul>
+            </div>
+            {% endif %}
         </div>
 
-        {% if not admin_logado %}
-        <ul class="contact">
-            <li><a href="{% url 'sobre_nos' %}">Sobre nós</a></li>
-            <li><a href="{% url 'criar_suporte' %}">Contato</a></li>
-        </ul>
-        {% endif %}
     </footer>
 
     <!-- Botão Voltar ao Topo -->
@@ -827,7 +1653,29 @@
         // Inicializar ao carregar a página
         document.addEventListener('DOMContentLoaded', function() {
             initializeNotifications();
-            // Remover atualização automática para evitar conflitos
+            
+            // Inicializar notificações mobile também
+            const mobileCounter = document.getElementById('mobileNotificationCounter');
+            if (mobileCounter) {
+                fetch('/notificacoes/')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.categorias) {
+                            let totalCount = 0;
+                            data.categorias.forEach(cat => totalCount += cat.count);
+                            
+                            // Subtrair notificações já lidas
+                            const lidas = JSON.parse(localStorage.getItem('notificacoesLidas') || '[]');
+                            const apagadas = JSON.parse(localStorage.getItem('notificacoesApagadas') || '[]');
+                            const totalMarcadas = lidas.length + apagadas.length;
+                            totalCount = Math.max(0, totalCount - totalMarcadas);
+                            
+                            mobileCounter.textContent = totalCount;
+                            mobileCounter.style.display = totalCount > 0 ? 'flex' : 'none';
+                        }
+                    })
+                    .catch(error => console.error('Erro ao inicializar notificações mobile:', error));
+            }
             
             // Ocultar mensagens quando dropdowns são abertos
             const dropdowns = document.querySelectorAll('.dropdown');
@@ -853,6 +1701,183 @@
             }
             return '';
         }
+        
+        // ===== FUNÇÕES DO MENU MOBILE =====
+        
+        function toggleMobileMenu() {
+            const mobileNav = document.getElementById('mobileNav');
+            const hamburger = document.querySelector('.hamburger');
+            
+            mobileNav.classList.toggle('active');
+            hamburger.classList.toggle('active');
+            
+            // Prevenir scroll do body quando menu está aberto
+            if (mobileNav.classList.contains('active')) {
+                document.body.style.overflow = 'hidden';
+            } else {
+                document.body.style.overflow = '';
+            }
+        }
+        
+        function toggleMobileDropdown(id) {
+            const dropdown = document.getElementById(id);
+            const btn = dropdown.previousElementSibling;
+            
+            dropdown.classList.toggle('active');
+            btn.classList.toggle('active');
+        }
+        
+        function toggleMobileNotifications() {
+            const dropdown = document.getElementById('mobileNotificationDropdown');
+            
+            if (dropdown) {
+                dropdown.classList.toggle('active');
+                
+                if (dropdown.classList.contains('active')) {
+                    loadMobileNotifications();
+                }
+            } else {
+                console.error('Dropdown de notificações mobile não encontrado');
+            }
+        }
+        
+        function loadMobileNotifications() {
+            fetch('/notificacoes/')
+                .then(response => response.json())
+                .then(data => {
+                    const content = document.getElementById('mobileNotificationContent');
+                    const counter = document.getElementById('mobileNotificationCounter');
+                    
+                    if (data.categorias && data.categorias.length > 0) {
+                        let html = '';
+                        let totalCount = 0;
+                        
+                        data.categorias.forEach(categoria => {
+                            if (categoria.count > 0) {
+                                totalCount += categoria.count;
+                                html += `
+                                    <div class="mobile-notification-item" onclick="expandMobileCategory('${categoria.tipo}')" style="cursor: pointer;">
+                                        <strong>${categoria.icone} ${categoria.titulo} (${categoria.count})</strong>
+                                        <small>Toque para ver detalhes</small>
+                                        <div id="mobile-items-${categoria.tipo}" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.2);"></div>
+                                    </div>
+                                `;
+                            }
+                        });
+                        
+                        // Ajustar contador considerando itens lidos/apagados
+                        const lidas = JSON.parse(localStorage.getItem('notificacoesLidas') || '[]');
+                        const apagadas = JSON.parse(localStorage.getItem('notificacoesApagadas') || '[]');
+                        const totalMarcadas = lidas.length + apagadas.length;
+                        totalCount = Math.max(0, totalCount - totalMarcadas);
+                        
+                        content.innerHTML = html;
+                        counter.textContent = totalCount;
+                        counter.style.display = totalCount > 0 ? 'flex' : 'none';
+                    } else {
+                        content.innerHTML = '<div style="text-align: center; padding: 20px; color: rgba(255,255,255,0.7);">Nenhuma notificação</div>';
+                        counter.style.display = 'none';
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro ao carregar notificações mobile:', error);
+                    document.getElementById('mobileNotificationContent').innerHTML = '<div style="text-align: center; padding: 20px; color: #ff6b6b;">Erro ao carregar</div>';
+                });
+        }
+        
+        function expandMobileCategory(tipo) {
+            const itemsDiv = document.getElementById(`mobile-items-${tipo}`);
+            
+            if (itemsDiv.style.display === 'none') {
+                itemsDiv.style.display = 'block';
+                loadMobileCategoryItems(tipo);
+            } else {
+                itemsDiv.style.display = 'none';
+            }
+        }
+        
+        function loadMobileCategoryItems(tipo) {
+            fetch(`/notificacoes/?tipo=${tipo}`)
+                .then(response => response.json())
+                .then(data => {
+                    const itemsDiv = document.getElementById(`mobile-items-${tipo}`);
+                    if (data.notificacoes && data.notificacoes.length > 0) {
+                        let html = '';
+                        data.notificacoes.forEach(notif => {
+                            const key = `${notif.produto_id}_${notif.tipo}`;
+                            const lidas = JSON.parse(localStorage.getItem('notificacoesLidas') || '[]');
+                            const apagadas = JSON.parse(localStorage.getItem('notificacoesApagadas') || '[]');
+                            
+                            if (!apagadas.includes(key)) {
+                                const jaLida = lidas.includes(key);
+                                const opacity = jaLida ? '0.5' : '1';
+                                const status = jaLida ? ' (LIDA)' : '';
+                                
+                                html += `
+                                    <div onclick="marcarLidaMobile('${key}', '${notif.produto_id}', '${notif.tipo}')" style="background: rgba(255,255,255,0.05); padding: 8px; margin: 3px 0; border-radius: 5px; font-size: 12px; cursor: pointer; opacity: ${opacity};">
+                                        <strong>${notif.produto_nome}${status}</strong><br>
+                                        <span style="opacity: 0.8;">${notif.mensagem}</span>
+                                    </div>
+                                `;
+                            }
+                        });
+                        itemsDiv.innerHTML = html;
+                    } else {
+                        itemsDiv.innerHTML = '<div style="padding: 8px; color: rgba(255,255,255,0.6); font-size: 12px;">Nenhum item encontrado</div>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro ao carregar itens mobile:', error);
+                    document.getElementById(`mobile-items-${tipo}`).innerHTML = '<div style="padding: 8px; color: #ff6b6b; font-size: 12px;">Erro ao carregar</div>';
+                });
+        }
+        
+        function marcarLidaMobile(key, produto_id, tipo) {
+            // Marcar como lida no localStorage
+            const lidas = JSON.parse(localStorage.getItem('notificacoesLidas') || '[]');
+            if (!lidas.includes(key)) {
+                lidas.push(key);
+                localStorage.setItem('notificacoesLidas', JSON.stringify(lidas));
+                
+                // Atualizar contador mobile imediatamente
+                const mobileCounter = document.getElementById('mobileNotificationCounter');
+                if (mobileCounter) {
+                    let count = Math.max(0, parseInt(mobileCounter.textContent || '0') - 1);
+                    mobileCounter.textContent = count;
+                    if (count <= 0) {
+                        mobileCounter.style.display = 'none';
+                    }
+                }
+                
+                // Atualizar contador desktop também se existir
+                const desktopCounter = document.getElementById('notificationCounter');
+                if (desktopCounter) {
+                    let count = Math.max(0, parseInt(desktopCounter.textContent || '0') - 1);
+                    desktopCounter.textContent = count;
+                    if (count <= 0) {
+                        desktopCounter.style.display = 'none';
+                    }
+                }
+            }
+            
+            // Redirecionar para a página da notificação
+            window.location.href = `/notificacao/${produto_id}/${tipo}/`;
+        }
+        
+        // Fechar menu mobile ao clicar em link
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileNavItems = document.querySelectorAll('.mobile-nav-item, .mobile-nav-subitem');
+            mobileNavItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const mobileNav = document.getElementById('mobileNav');
+                    const hamburger = document.querySelector('.hamburger');
+                    
+                    mobileNav.classList.remove('active');
+                    hamburger.classList.remove('active');
+                    document.body.style.overflow = '';
+                });
+            });
+        });
         
         // Fechar dropdown ao clicar fora
         document.addEventListener('click', function(event) {

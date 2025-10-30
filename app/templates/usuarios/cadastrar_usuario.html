@@ -2,64 +2,182 @@
 {% load static %}
 
 {% block content %}
-<div class="container">
-  <section class="form-box">
-    <div style="text-align: center; margin-bottom: 30px;">
-      <h2 class="form-title" style="color: #026a84; font-size: 28px; margin: 0;">{{ titulo_pagina }}</h2>
-      <p style="color: #666; margin-top: 10px; font-size: 16px;">Preencha os dados para criar sua conta no sistema INSUMED</p>
-    </div>
+<div class="produto-container">
+        <!-- Header -->
+        <div class="form-header" style="background: #cbd5e0; padding: 25px 40px; text-align: center; position: relative;">
+            <h1 style="color: #2d3748; margin: 0; font-size: 28px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 12px;">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                Cadastrar Usuário
+            </h1>
+            <p style="color: #4a5568; margin: 8px 0 0 0; font-size: 16px;">Preencha os dados para criar uma nova conta no sistema</p>
+        </div>
 
-    <form method="post">
-      {% csrf_token %}
-      
-      <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-        {% for field in form %}
-          <div class="form-group" style="{% if field.name == 'nome' or field.name == 'email' or field.name == 'senha' %}grid-column: 1 / -1;{% endif %}">
-            <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #026a84; font-size: 14px;">
-              {% if field.name == 'nome' %}🔵 Nome Completo{% endif %}
-              {% if field.name == 'email' %}📧 Email{% endif %}
-              {% if field.name == 'senha' %}🔒 Senha{% endif %}
-              {% if field.name == 'telefone' %}📞 Telefone{% endif %}
-              {% if field.name == 'cargo' %}💼 Cargo{% endif %}
-              {% if field.name == 'data_nascimento' %}🎂 Data de Nascimento{% endif %}
-              {% if field.name == 'cpf' %}🆔 CPF{% endif %}
-              {% if field.name == 'endereco' %}🏠 Endereço{% endif %}
-            </label>
-            {% if field.name == 'email' %}
-              <input type="email" name="{{ field.name }}" id="{{ field.id_for_label }}" placeholder="Digite seu email" autocomplete="off" style="width: 100%; height: 45px; padding: 12px 15px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; transition: border-color 0.3s ease; box-sizing: border-box;">
-            {% elif field.name == 'telefone' %}
-              <input type="tel" name="{{ field.name }}" id="{{ field.id_for_label }}" placeholder="(XX) XXXXX-XXXX" autocomplete="off" maxlength="15" style="width: 100%; height: 45px; padding: 12px 15px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; transition: border-color 0.3s ease; box-sizing: border-box;" oninput="formatarTelefone(this)" onkeypress="return somenteNumeros(event)">
-            {% elif field.name == 'senha' %}
-              <input type="password" name="{{ field.name }}" id="{{ field.id_for_label }}" placeholder="Digite sua senha" autocomplete="new-password" style="width: 100%; height: 45px; padding: 12px 15px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; transition: border-color 0.3s ease; box-sizing: border-box;">
-            {% elif field.name == 'data_nascimento' %}
-              <input type="date" name="{{ field.name }}" id="{{ field.id_for_label }}" style="width: 100%; height: 45px; padding: 12px 15px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; transition: border-color 0.3s ease; box-sizing: border-box;" onchange="validarIdade(this)">
-            {% else %}
-              {{ field }}
-            {% endif %}
-            {% if field.errors %}
-              <span style="color: #dc3545; font-size: 12px; margin-top: 5px; display: block;">{{ field.errors.0 }}</span>
-            {% endif %}
-          </div>
-        {% endfor %}
-      </div>
+        <!-- Form Content -->
+        <div class="form-content" style="padding: 40px;">
+            <form method="post">
+                {% csrf_token %}
+                
+                <!-- Dados Pessoais -->
+                <div class="form-section" style="margin-bottom: 35px;">
+                    <h3 style="color: #2d3748; font-size: 18px; font-weight: 600; margin: 0 0 20px 0; padding-bottom: 10px; border-bottom: 2px solid #e2e8f0; display: flex; align-items: center; gap: 10px;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        Dados Pessoais
+                    </h3>
+                    <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        {% for field in form %}
+                            {% if field.name == 'nome' or field.name == 'cpf' or field.name == 'data_nascimento' %}
+                                <div class="form-group" style="{% if field.name == 'nome' %}grid-column: 1 / -1;{% endif %}">
+                                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #2d3748; font-size: 14px;">
+                                        {% if field.name == 'nome' %}Nome Completo{% endif %}
+                                        {% if field.name == 'cpf' %}CPF{% endif %}
+                                        {% if field.name == 'data_nascimento' %}Data de Nascimento{% endif %}
+                                        <span style="color: #e53e3e;">*</span>
+                                    </label>
+                                    {% if field.name == 'data_nascimento' %}
+                                        <input type="date" name="{{ field.name }}" id="{{ field.id_for_label }}" value="{{ field.value|default:'' }}" style="width: 100%; height: 45px; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 16px; transition: all 0.3s ease; box-sizing: border-box; background: white;" onchange="validarIdade(this)">
+                                    {% elif field.name == 'cpf' %}
+                                        <input type="text" name="{{ field.name }}" id="{{ field.id_for_label }}" value="{{ field.value|default:'' }}" placeholder="000.000.000-00" maxlength="14" style="width: 100%; height: 45px; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 16px; transition: all 0.3s ease; box-sizing: border-box; background: white;" oninput="formatarCPF(this)" onkeypress="return somenteNumeros(event)">
+                                    {% else %}
+                                        <input type="text" name="{{ field.name }}" id="{{ field.id_for_label }}" value="{{ field.value|default:'' }}" placeholder="Digite o {{ field.label|lower }}" style="width: 100%; height: 45px; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 16px; transition: all 0.3s ease; box-sizing: border-box; background: white;">
+                                    {% endif %}
+                                    {% if field.errors %}
+                                        <span style="color: #e53e3e; font-size: 12px; margin-top: 5px; display: block;">{{ field.errors.0 }}</span>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
 
-      <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #026a84;">
-        <h4 style="color: #026a84; margin: 0 0 10px 0; font-size: 16px;">ℹ️ Informações Importantes</h4>
-        <ul style="margin: 0; padding-left: 20px; color: #666; font-size: 14px;">
-          <li>Sua senha deve ter pelo menos 8 caracteres</li>
-          <li>O email será usado para login no sistema</li>
-          <li>Você deve ter pelo menos 18 anos para se cadastrar</li>
-          <li>Mantenha seus dados sempre atualizados</li>
-        </ul>
-      </div>
+                <!-- Contato -->
+                <div class="form-section" style="margin-bottom: 35px;">
+                    <h3 style="color: #2d3748; font-size: 18px; font-weight: 600; margin: 0 0 20px 0; padding-bottom: 10px; border-bottom: 2px solid #e2e8f0; display: flex; align-items: center; gap: 10px;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                            <polyline points="22,6 12,13 2,6"></polyline>
+                        </svg>
+                        Contato
+                    </h3>
+                    <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        {% for field in form %}
+                            {% if field.name == 'email' or field.name == 'telefone' %}
+                                <div class="form-group">
+                                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #2d3748; font-size: 14px;">
+                                        {% if field.name == 'email' %}Email{% endif %}
+                                        {% if field.name == 'telefone' %}Telefone{% endif %}
+                                        <span style="color: #e53e3e;">*</span>
+                                    </label>
+                                    {% if field.name == 'email' %}
+                                        <input type="email" name="{{ field.name }}" id="{{ field.id_for_label }}" value="{{ field.value|default:'' }}" placeholder="exemplo@email.com" autocomplete="off" style="width: 100%; height: 45px; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 16px; transition: all 0.3s ease; box-sizing: border-box; background: white;">
+                                    {% else %}
+                                        <input type="tel" name="{{ field.name }}" id="{{ field.id_for_label }}" value="{{ field.value|default:'' }}" placeholder="(XX) XXXXX-XXXX" autocomplete="off" maxlength="15" style="width: 100%; height: 45px; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 16px; transition: all 0.3s ease; box-sizing: border-box; background: white;" oninput="formatarTelefone(this)" onkeypress="return somenteNumeros(event)">
+                                    {% endif %}
+                                    {% if field.errors %}
+                                        <span style="color: #e53e3e; font-size: 12px; margin-top: 5px; display: block;">{{ field.errors.0 }}</span>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
 
-      <div class="form-buttons" style="display: flex; gap: 15px; justify-content: center; margin-top: 30px;">
-        <button type="submit" class="btn btn-salvar" style="background: #28a745; padding: 12px 30px; font-size: 16px; font-weight: bold;">✅ Cadastrar Usuário</button>
-        <a href="{% url 'home' %}" class="btn btn-voltar" style="background: #6c757d; padding: 12px 30px; font-size: 16px;">Voltar ⤴</a>
-      </div>
+                <!-- Dados Profissionais -->
+                <div class="form-section" style="margin-bottom: 35px;">
+                    <h3 style="color: #2d3748; font-size: 18px; font-weight: 600; margin: 0 0 20px 0; padding-bottom: 10px; border-bottom: 2px solid #e2e8f0; display: flex; align-items: center; gap: 10px;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                            <line x1="8" y1="21" x2="16" y2="21"></line>
+                            <line x1="12" y1="17" x2="12" y2="21"></line>
+                        </svg>
+                        Dados Profissionais
+                    </h3>
+                    <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        {% for field in form %}
+                            {% if field.name == 'cargo' or field.name == 'endereco' %}
+                                <div class="form-group" style="{% if field.name == 'endereco' %}grid-column: 1 / -1;{% endif %}">
+                                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #2d3748; font-size: 14px;">
+                                        {% if field.name == 'cargo' %}Cargo{% endif %}
+                                        {% if field.name == 'endereco' %}Endereço{% endif %}
+                                    </label>
+                                    <input type="text" name="{{ field.name }}" id="{{ field.id_for_label }}" value="{{ field.value|default:'' }}" placeholder="Digite o {{ field.label|lower }}" style="width: 100%; height: 45px; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 16px; transition: all 0.3s ease; box-sizing: border-box; background: white;">
+                                    {% if field.errors %}
+                                        <span style="color: #e53e3e; font-size: 12px; margin-top: 5px; display: block;">{{ field.errors.0 }}</span>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
 
-    </form>
-  </section>
+                <!-- Segurança -->
+                <div class="form-section" style="margin-bottom: 35px;">
+                    <h3 style="color: #2d3748; font-size: 18px; font-weight: 600; margin: 0 0 20px 0; padding-bottom: 10px; border-bottom: 2px solid #e2e8f0; display: flex; align-items: center; gap: 10px;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <circle cx="12" cy="16" r="1"></circle>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                        Segurança
+                    </h3>
+                    <div class="form-grid" style="display: grid; grid-template-columns: 1fr; gap: 20px;">
+                        {% for field in form %}
+                            {% if field.name == 'senha' %}
+                                <div class="form-group">
+                                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #2d3748; font-size: 14px;">
+                                        Senha <span style="color: #e53e3e;">*</span>
+                                    </label>
+                                    <input type="password" name="{{ field.name }}" id="{{ field.id_for_label }}" value="{{ field.value|default:'' }}" placeholder="Digite uma senha segura" autocomplete="new-password" style="width: 100%; height: 45px; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 16px; transition: all 0.3s ease; box-sizing: border-box; background: white;">
+                                    {% if field.errors %}
+                                        <span style="color: #e53e3e; font-size: 12px; margin-top: 5px; display: block;">{{ field.errors.0 }}</span>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Info Box -->
+                <div style="background: #f7fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; margin-bottom: 30px;">
+                    <h4 style="color: #2d3748; margin: 0 0 12px 0; font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="16" x2="12" y2="12"></line>
+                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                        </svg>
+                        Informações Importantes
+                    </h4>
+                    <ul style="margin: 0; padding-left: 20px; color: #4a5568; font-size: 14px; line-height: 1.6;">
+                        <li>Sua senha deve ter pelo menos 8 caracteres</li>
+                        <li>O email será usado para login no sistema</li>
+                        <li>Você deve ter pelo menos 18 anos para se cadastrar</li>
+                        <li>Mantenha seus dados sempre atualizados</li>
+                    </ul>
+                </div>
+
+                <!-- Buttons -->
+                <div class="form-actions" style="display: flex; gap: 15px; justify-content: center; padding-top: 20px;">
+                    <button type="submit" style="background: linear-gradient(135deg, #026a84 0%, #04bafc 100%); color: white; border: none; padding: 12px 30px; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; gap: 8px;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 6L9 17l-5-5"></path>
+                        </svg>
+                        Cadastrar Usuário
+                    </button>
+                    <a href="{% url 'home' %}" style="background: #718096; color: white; border: none; padding: 12px 30px; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; text-decoration: none; display: flex; align-items: center; gap: 8px;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M19 12H5"></path>
+                            <path d="M12 19l-7-7 7-7"></path>
+                        </svg>
+                        Voltar
+                    </a>
+                </div>
+            </form>
+        </div>
 </div>
 
 <style>
@@ -67,42 +185,74 @@
     width: 100%;
     height: 45px;
     padding: 12px 15px;
-    border: 2px solid #ddd;
+    border: 2px solid #e2e8f0;
     border-radius: 8px;
     font-size: 16px;
-    transition: border-color 0.3s ease;
+    transition: all 0.3s ease;
     box-sizing: border-box;
+    background: white;
 }
 
 .form-group input:focus, .form-group select:focus {
     border-color: #026a84;
     outline: none;
     box-shadow: 0 0 0 3px rgba(2, 106, 132, 0.1);
+    transform: translateY(-1px);
 }
 
-.form-box {
-    background: #e8e8e8;
-    border-radius: 30px 30px 0 0;
-    padding: 40px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+.form-group input:hover {
+    border-color: #cbd5e0;
 }
 
-.btn {
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-    color: white;
-    font-weight: 600;
-}
-
-.btn:hover {
+button:hover, a:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 10px !important;
+    }
+    
+    .form-container {
+        margin: 0 10px !important;
+    }
+    
+    .form-content {
+        padding: 20px !important;
+    }
+    
+    .form-header {
+        padding: 20px !important;
+    }
+    
+    .form-header h1 {
+        font-size: 24px !important;
+    }
+    
+    .form-grid {
+        grid-template-columns: 1fr !important;
+        gap: 15px !important;
+    }
+    
+    .form-actions {
+        flex-direction: column !important;
+        align-items: stretch !important;
+    }
+    
+    .form-actions button,
+    .form-actions a {
+        width: 100% !important;
+        justify-content: center !important;
+    }
+}
+.produto-container {
+    max-width: 1000px;
+    margin: 30px auto;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    overflow: hidden;
 }
 </style>
 
@@ -127,6 +277,17 @@ function formatarTelefone(input) {
         valor = valor.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
     }
     
+    input.value = valor;
+}
+
+function formatarCPF(input) {
+    let valor = input.value.replace(/\D/g, '');
+    
+    if (valor.length > 11) {
+        valor = valor.substring(0, 11);
+    }
+    
+    valor = valor.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
     input.value = valor;
 }
 

@@ -3,80 +3,274 @@
 {% block title %}Minha Conta{% endblock %}
 
 {% block content %}
-<div class="form-container">
-    <h2 class="titulo" style="margin-bottom: 30px; text-align: center;">👤 Minha Conta</h2>
-        
-        <div style="background: white; padding: 30px; border-radius: 15px; margin-bottom: 30px;">
-            <h3 style="margin: 0 0 25px 0; color: #026a84; text-align: center; font-size: 22px;">📋 Informações da Conta</h3>
-            
-            <div style="display: flex; flex-wrap: wrap; gap: 25px; justify-content: space-between;">
-                <div style="flex: 1; min-width: 250px; background: #f8f9fa; padding: 15px; border-radius: 8px;">
-                    <div style="display: flex; align-items: center; margin-bottom: 8px;">
-                        <span style="color: #026a84; font-weight: bold; margin-right: 8px;">👤</span>
-                        <strong style="color: #333;">Nome Completo</strong>
-                    </div>
-                    <p style="margin: 0; color: #555; font-size: 16px;">{{ usuario.nome }}</p>
-                </div>
-                
-                <div style="flex: 1; min-width: 250px; background: #f8f9fa; padding: 15px; border-radius: 8px;">
-                    <div style="display: flex; align-items: center; margin-bottom: 8px;">
-                        <span style="color: #026a84; font-weight: bold; margin-right: 8px;">📧</span>
-                        <strong style="color: #333;">Email</strong>
-                    </div>
-                    <p style="margin: 0; color: #555; font-size: 16px;">{{ usuario.email }}</p>
-                </div>
+<div class="conta-container">
+    <!-- Header Section -->
+    <div class="header-section">
+        <div class="icon-title">
+            <div class="icon-circle">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="#2d3748"/>
+                </svg>
             </div>
-            
-            <div style="display: flex; flex-wrap: wrap; gap: 25px; justify-content: space-between; margin-top: 20px;">
-                <div style="flex: 1; min-width: 250px; background: #f8f9fa; padding: 15px; border-radius: 8px;">
-                    <div style="display: flex; align-items: center; margin-bottom: 8px;">
-                        <span style="color: #026a84; font-weight: bold; margin-right: 8px;">🆔</span>
-                        <strong style="color: #333;">CPF</strong>
-                    </div>
-                    <p style="margin: 0; color: #555; font-size: 16px;">{{ usuario.cpf }}</p>
-                </div>
-                
-                <div style="flex: 1; min-width: 250px; background: #f8f9fa; padding: 15px; border-radius: 8px;">
-                    <div style="display: flex; align-items: center; margin-bottom: 8px;">
-                        <span style="color: #026a84; font-weight: bold; margin-right: 8px;">📱</span>
-                        <strong style="color: #333;">Telefone</strong>
-                    </div>
-                    <p style="margin: 0; color: #555; font-size: 16px;">{{ usuario.telefone|default:"Não informado" }}</p>
-                </div>
-            </div>
-            
-            <div style="display: flex; flex-wrap: wrap; gap: 25px; justify-content: space-between; margin-top: 20px;">
-                <div style="flex: 1; min-width: 250px; background: #f8f9fa; padding: 15px; border-radius: 8px;">
-                    <div style="display: flex; align-items: center; margin-bottom: 8px;">
-                        <span style="color: #026a84; font-weight: bold; margin-right: 8px;">🏠</span>
-                        <strong style="color: #333;">Endereço</strong>
-                    </div>
-                    <p style="margin: 0; color: #555; font-size: 16px;">{{ usuario.endereco|default:"Não informado" }}</p>
-                </div>
-                
-                <div style="flex: 1; min-width: 250px; background: #f8f9fa; padding: 15px; border-radius: 8px;">
-                    <div style="display: flex; align-items: center; margin-bottom: 8px;">
-                        <span style="color: #026a84; font-weight: bold; margin-right: 8px;">🏙️</span>
-                        <strong style="color: #333;">Cidade</strong>
-                    </div>
-                    <p style="margin: 0; color: #555; font-size: 16px;">{{ usuario.cidade|default:"Não informado" }}</p>
-                </div>
+            <div>
+                <h1>Minha Conta</h1>
+                <p>Visualize suas informações pessoais</p>
             </div>
         </div>
+    </div>
 
-        <div class="botoes" style="text-align: center; margin-top: 30px;">
-            <a href="{% url 'editar_conta' %}" class="btn-salvar">✏️ Editar Dados</a>
-            <a href="{% url 'home' %}" class="btn-cancelar">⤴ Voltar</a>
+    <!-- Account Info Section -->
+    <div class="info-section">
+        <div class="section-header">
+            <h3>👤 Informações Pessoais</h3>
         </div>
+        <div class="info-grid">
+            <div class="info-item">
+                <label>Nome Completo</label>
+                <div class="info-value">{{ usuario.nome }}</div>
+            </div>
+            <div class="info-item">
+                <label>E-mail</label>
+                <div class="info-value">{{ usuario.email }}</div>
+            </div>
+            <div class="info-item">
+                <label>CPF</label>
+                <div class="info-value">{{ usuario.cpf }}</div>
+            </div>
+            <div class="info-item">
+                <label>Telefone</label>
+                <div class="info-value">{{ usuario.telefone|default:"Não informado" }}</div>
+            </div>
+            <div class="info-item full-width">
+                <label>Endereço</label>
+                <div class="info-value">{{ usuario.endereco|default:"Não informado" }}</div>
+            </div>
+            <div class="info-item">
+                <label>Cidade</label>
+                <div class="info-value">{{ usuario.cidade|default:"Não informado" }}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Actions Section -->
+    <div class="actions-section">
+        <a href="{% url 'editar_conta' %}" class="btn-primary">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="white" stroke-width="2" fill="none"/>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="white" stroke-width="2" fill="none"/>
+            </svg>
+            Editar Dados
+        </a>
+        <a href="{% url 'home' %}" class="btn-secondary">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" fill="#2d3748"/>
+            </svg>
+            Voltar
+        </a>
+    </div>
 </div>
 
 <style>
-.form-container {
-    background-color: #e8e8e8 !important;
-    border-radius: 30px 30px 30px 30px !important;
+.conta-container {
+    max-width: 1000px;
+    margin: 30px auto;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    overflow: hidden;
 }
 
-/* Responsividade para Dev Tools - Header */
+.header-section {
+    background: #cbd5e0;
+    padding: 30px;
+    color: #2d3748;
+}
+
+.icon-title {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    justify-content: center;
+    text-align: center;
+}
+
+.icon-circle {
+    width: 60px;
+    height: 60px;
+    background: rgba(255,255,255,0.3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(10px);
+}
+
+.header-section h1 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 600;
+}
+
+.header-section p {
+    margin: 5px 0 0 0;
+    opacity: 0.9;
+    font-size: 16px;
+}
+
+.info-section {
+    padding: 40px;
+}
+
+.section-header {
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.section-header h3 {
+    margin: 0;
+    color: #333;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 25px;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.info-item.full-width {
+    grid-column: 1 / -1;
+}
+
+.info-item label {
+    font-weight: 600;
+    color: #555;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.info-value {
+    padding: 12px 16px;
+    background: #f8f9fa;
+    border: 2px solid #e1e5e9;
+    border-radius: 10px;
+    font-size: 16px;
+    color: #333;
+    min-height: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.actions-section {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    padding: 30px 40px;
+    border-top: 2px solid #f0f0f0;
+    background: #fafbfc;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #026a84 0%, #04bafc 100%);
+    color: white;
+    border: none;
+    padding: 14px 28px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(2, 106, 132, 0.3);
+}
+
+.btn-secondary {
+    background: #cbd5e0;
+    color: #2d3748;
+    border: 2px solid #a0aec0;
+    padding: 12px 26px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.btn-secondary:hover {
+    background: #a0aec0;
+    border-color: #718096;
+    transform: translateY(-1px);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .conta-container {
+        margin: 20px;
+        border-radius: 15px;
+    }
+    
+    .header-section {
+        padding: 20px;
+    }
+    
+    .icon-title {
+        gap: 15px;
+    }
+    
+    .icon-circle {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .header-section h1 {
+        font-size: 24px;
+    }
+    
+    .info-section {
+        padding: 25px;
+    }
+    
+    .info-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .info-item.full-width {
+        grid-column: 1;
+    }
+    
+    .actions-section {
+        flex-direction: column;
+        padding: 25px;
+    }
+    
+    .btn-primary,
+    .btn-secondary {
+        justify-content: center;
+        width: 100%;
+    }
+}
+
 @media screen and (max-width: 1400px) {
     header {
         width: 100vw !important;
@@ -88,12 +282,16 @@
         right: 0 !important;
     }
     
-    .form-container {
+    .conta-container {
         max-width: 100% !important;
         width: 100% !important;
         margin: 20px 0 0 0 !important;
-        padding: 15px !important;
+        padding: 0 !important;
         box-sizing: border-box !important;
+    }
+    
+    .info-section, .actions-section {
+        padding: 20px 15px !important;
     }
 }
 </style>

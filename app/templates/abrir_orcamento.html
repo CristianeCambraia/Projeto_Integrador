@@ -2,319 +2,182 @@
 {% load static %}
 
 {% block content %}
-<style>
-.caixa-titulo {
-  background-color: #f9f9f9;
-  padding: 10px;
-  border-radius: 5px;
-  margin-bottom: 10px;
-  border: 1px solid #ddd;
-  text-align: center;
-}
-
-.caixa-titulo span, .caixa-titulo h4 {
-  margin: 0;
-  font-weight: bold;
-  font-size: 18px;
-}
-
-@media print {
-  @page {
-    margin: 0.5in;
-    size: A4;
-  }
-  
-  header, footer, .botoes {
-    display: none !important;
-  }
-  
-  body {
-    margin: 0 !important;
-    padding: 0 !important;
-    width: 100% !important;
-    max-width: none !important;
-    font-size: 12px !important;
-  }
-  
-  .print-header {
-    display: table !important;
-    padding-top: 20px !important;
-  }
-  
-  .emitir-orcamento-container {
-    width: 100% !important;
-    max-width: none !important;
-    margin: 0 auto !important;
-    padding: 0 !important;
-  }
-  
-
-  
-  * {
-    -webkit-print-color-adjust: exact !important;
-    color-adjust: exact !important;
-  }
-  
-  .caixa-titulo {
-    background-color: #f9f9f9 !important;
-    border: 1px solid #ddd !important;
-    padding: 8px !important;
-    border-radius: 3px !important;
-    margin-bottom: 8px !important;
-    text-align: center !important;
-    width: 100% !important;
-    box-sizing: border-box !important;
-  }
-  
-  .caixa-titulo span, .caixa-titulo h4 {
-    font-weight: bold !important;
-    font-size: 14px !important;
-    margin: 0 !important;
-  }
-  
-  h2.titulo {
-    padding-top: 30px !important;
-    margin-top: 0 !important;
-  }
-  
-  table {
-    width: 100% !important;
-    font-size: 10px !important;
-    table-layout: fixed !important;
-  }
-  
-  table input {
-    font-size: 12px !important;
-    padding: 5px !important;
-    border-radius: 5px !important;
-    border: 1px solid #ddd !important;
-  }
-  
-  .cliente-dados {
-    width: 100% !important;
-    font-size: 11px !important;
-  }
-  
-  input, textarea {
-    font-size: 10px !important;
-    padding: 16px !important;
-    text-align: left !important;
-    padding-left: 30px !important;
-    width: auto !important;
-    min-width: 100% !important;
-    max-width: none !important;
-    overflow: visible !important;
-    text-overflow: clip !important;
-    white-space: nowrap !important;
-  }
-  
-  div[style*="text-align: right"] {
-    text-align: right !important;
-  }
-  
-  * {
-    box-sizing: border-box !important;
-  }
-  
-  div {
-    text-align: inherit !important;
-  }
-  
-  div[style*="text-align: right"] {
-    text-align: right !important;
-    direction: rtl !important;
-    width: 30% !important;
-    display: inline-block !important;
-    float: right !important;
-    max-width: 250px !important;
-  }
-  
-  div[style*="text-align: right"] * {
-    direction: ltr !important;
-    text-align: right !important;
-  }
-  
-  div.emitir-orcamento-container {
-    border-radius: 0 !important;
-    border-top-left-radius: 0 !important;
-    border-top-right-radius: 0 !important;
-    border-bottom-left-radius: 0 !important;
-    border-bottom-right-radius: 0 !important;
-  }
-  
-  div[style*="border-radius"] {
-    border-radius: 0 !important;
-  }
-}
-
-.print-header {
-  display: none;
-}
-
-.valores-totais input {
-  text-align: right !important;
-}
-
-.itens-orcamento input {
-  font-size: 12px !important;
-  padding: 5px !important;
-  border-radius: 5px !important;
-  border: 1px solid #ddd !important;
-  background-color: #f0f0f0 !important;
-}
-
-input:not(.valores-totais input):not(.itens-orcamento input), textarea {
-  width: auto !important;
-  min-width: 100% !important;
-  max-width: none !important;
-  overflow: visible !important;
-  text-overflow: clip !important;
-  white-space: nowrap !important;
-}
-
-
-</style>
-
-<div class="print-header">
-  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; padding: 0 80px;">
-    <img src="{% static 'images/insumed_icon.png' %}" style="width: 100px; height: 100px;" alt="Logo">
-    <h1 style="font-size: 48px; font-weight: bold; color: rgba(0, 0, 0, 0.12); margin: 0 120px; word-wrap: break-word; line-height: 1.2;">INSUMED</h1>
-    <img src="{% static 'images/insumed_icon.png' %}" style="width: 100px; height: 100px;" alt="Logo">
-  </div>
-</div>
-<div class="emitir-orcamento-container">
-  <h2 class="titulo" style="margin-bottom: 30px;">Orçamento #{{ orcamento.id }}</h2>
-  
-  <div class="caixa-titulo" style="width: 100%; box-sizing: border-box; margin-bottom: 20px;">
-      <h4>Dados da Empresa INSUMED</h4>
-  </div>
-  <div style="background-color: #f9f9f9; padding: 10px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #ddd; width: 100%; box-sizing: border-box;">
-      <div style="display: grid; grid-template-columns: 1.8fr 1fr 1.4fr 0.8fr; gap: 8px; width: 100%;">
-          <div>
-              <label style="font-size: 12px; color: #666;">Endereço:</label>
-              <input type="text" name="endereco_insumed" value="Rua das Flores, 123 - Centro - Pouso Alegre - MG" disabled style="width: 100%; padding: 5px; font-size: 12px; box-sizing: border-box; border-radius: 5px; border: 1px solid #ddd; background-color: #f0f0f0;">
-          </div>
-          <div>
-              <label style="font-size: 12px; color: #666;">CNPJ:</label>
-              <input type="text" name="cnpj_insumed" value="12.345.678/0001-90" disabled style="width: 100%; padding: 5px; font-size: 12px; box-sizing: border-box; border-radius: 5px; border: 1px solid #ddd; background-color: #f0f0f0;">
-          </div>
-          <div>
-              <label style="font-size: 12px; color: #666;">E-mail:</label>
-              <input type="email" name="email_insumed" value="insumed.sistema2025@gmail.com" disabled style="width: 100%; padding: 5px; font-size: 12px; box-sizing: border-box; border-radius: 5px; border: 1px solid #ddd; background-color: #f0f0f0;">
-          </div>
-          <div>
-              <label style="font-size: 12px; color: #666;">Telefone:</label>
-              <input type="text" name="telefone_insumed" value="(35) 98412-3236" disabled style="width: 100%; padding: 5px; font-size: 12px; box-sizing: border-box; border-radius: 5px; border: 1px solid #ddd; background-color: #f0f0f0;">
-          </div>
-      </div>
-  </div>
-
-  <form class="form-box"  method="post" action="#">
-    {% csrf_token %}
-
-    <div class="caixa-titulo">
-      <span>Dados do Cliente</span>
-    </div>
-
-    <div class="cliente-dados">
-      <div>
-        <label><strong>Cliente:</strong></label>
-        <input type="text" name="cliente" value="{{ orcamento.cliente }}" disabled>
-      </div>
-                    
-      <div>
-        <label><strong>Data:</strong></label>
-        <input type="date" name="data" value="{{ orcamento.data|date:'Y-m-d' }}" disabled>
-      </div>
-                    
-      <div>
-        <label><strong>CNPJ:</strong></label>
-        <input type="text" name="cnpj" value="{{ orcamento.cnpj }}" disabled>
-      </div>
-                    
-      <div>
-        <label><strong>Endereço:</strong></label>
-        <input type="text" name="endereco" value="{{ orcamento.endereco }}" disabled>
-      </div>
-                    
-      <div>
-        <label><strong>Cidade:</strong></label>
-        <input type="text" name="cidade" value="{{ orcamento.cidade }}" disabled>
-      </div>
-                    
-      <div>
-        <label><strong>UF:</strong></label>
-        <input type="text" name="uf" value="{{ orcamento.uf|default:'' }}" disabled>
-      </div>
-                    
-      <div>
-        <label><strong>E-mail:</strong></label>
-        <input type="email" name="email" value="{{ orcamento.email }}" disabled>
-      </div>
-                    
-      <div>
-        <label><strong>Telefone:</strong></label>
-        <input type="tel" name="telefone" value="{{ orcamento.telefone }}" disabled>
-      </div>
-
-    </div>
-
-    <div class="caixa-titulo">
-      <span>Descrição do Serviço</span>
-    </div>
-
-    <table class="itens-orcamento">
-      <thead>
-        <tr>
-          <th>Unidade/Serviço</th>
-          <th>Descrição</th>
-          <th>Quantidade</th>
-          <th>Valor</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for linha in linhas %}
-        <tr>
-          <td><input type="text" name="unidade_{{ forloop.counter }}" value="{{ linha.unidade }}" disabled></td>
-          <td><input type="text" name="descricao_{{ forloop.counter }}" value="{{ linha.descricao }}" disabled></td>
-          <td><input type="number" name="quantidade_{{ forloop.counter }}" min="1" value="{{ linha.quantidade }}" disabled></td>
-          <td><input type="text" name="valor_{{ forloop.counter }}" value="{{ linha.valor }}" disabled></td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-
-    <div class="valores-totais" style="margin: 20px 0; text-align: right;">
-        <div style="margin-bottom: 10px;">
-            <label><strong>Subtotal: R$ </strong></label>
-            <input type="text" id="subtotal" value="{{ orcamento.subtotal_calculado }}" readonly style="background-color: #f0f0f0; font-weight: bold; width: 150px;">
-        </div>
-        {% if orcamento.desconto %}
-        <div style="margin-bottom: 10px;">
-            <label><strong>Desconto ({{ orcamento.desconto }}%): R$ </strong></label>
-            <input type="text" id="valorDesconto" value="{{ orcamento.valor_desconto_calculado }}" readonly style="background-color: #f0f0f0; font-weight: bold; width: 150px;">
-        </div>
-        {% endif %}
-        <div>
-            <label><strong>Valor Total: R$ </strong></label>
-            <input type="text" id="valorTotal" name="valor_total" value="{{ orcamento.valor_total_calculado }}" readonly style="background-color: #f0f0f0; font-weight: bold; width: 150px;">
+<div class="modern-container">
+    <!-- Header Section -->
+    <div class="header-section">
+        <div class="header-content">
+            <div class="header-left">
+                <i class="fas fa-file-invoice-dollar header-icon"></i>
+                <div class="header-text">
+                    <h1>Visualizar Orçamento</h1>
+                    <p>Orçamento #{{ orcamento.id }} - {{ orcamento.data|date:"d/m/Y" }}</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button type="button" onclick="window.print()" class="btn btn-info">
+                    <i class="fas fa-print"></i> Imprimir
+                </button>
+                <button type="button" onclick="abrirModalEmail({{ orcamento.id }})" class="btn btn-success">
+                    <i class="fas fa-envelope"></i> Email
+                </button>
+                <a href="{% url 'exportar_pdf_orcamento' orcamento.id %}" class="btn btn-danger">
+                    <i class="fas fa-file-pdf"></i> PDF
+                </a>
+                <a href="{% url 'orcamentos_emitidos' %}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Voltar
+                </a>
+            </div>
         </div>
     </div>
 
-    <div class="observacao-container">
-        <label><strong>Observação:</strong></label>
-        <textarea name="observacao" rows="4" disabled>{{ orcamento.observacao }}</textarea>
+    <!-- Print Header -->
+    <div class="print-header">
+        <div class="print-logo-section">
+            <img src="{% static 'images/insumed_icon.png' %}" alt="Logo">
+            <h1>INSUMED</h1>
+            <img src="{% static 'images/insumed_icon.png' %}" alt="Logo">
+        </div>
     </div>
 
-    <div class="botoes">
-      <button type="button" onclick="window.print()" class="btn-salvar" style="background: #17a2b8;">Imprimir</button>
-      <button type="button" onclick="abrirModalEmail({{ orcamento.id }})" class="btn-emitidos" style="background: #28a745;">Email</button>
-      <a href="{% url 'exportar_pdf_orcamento' orcamento.id %}" class="btn-emitidos" style="background: #dc3545;">PDF</a>
-      <a href="{% url 'orcamentos_emitidos' %}" class="btn-voltar">Voltar ⤴</a>
+    <!-- Company Data Section -->
+    <div class="form-section">
+        <div class="section-header">
+            <i class="fas fa-building"></i>
+            <h3>Dados da Empresa INSUMED</h3>
+        </div>
+        <div class="form-grid">
+            <div class="form-group">
+                <label>Endereço</label>
+                <input type="text" value="Rua das Flores, 123 - Centro - Pouso Alegre - MG" readonly>
+            </div>
+            <div class="form-group">
+                <label>CNPJ</label>
+                <input type="text" value="12.345.678/0001-90" readonly>
+            </div>
+            <div class="form-group">
+                <label>E-mail</label>
+                <input type="email" value="insumed.sistema2025@gmail.com" readonly>
+            </div>
+            <div class="form-group">
+                <label>Telefone</label>
+                <input type="text" value="(35) 98412-3236" readonly>
+            </div>
+        </div>
     </div>
-  </form>
+
+    <!-- Client Data Section -->
+    <div class="form-section">
+        <div class="section-header">
+            <i class="fas fa-user"></i>
+            <h3>Dados do Cliente</h3>
+        </div>
+        <div class="form-grid">
+            <div class="form-group">
+                <label>Cliente</label>
+                <input type="text" value="{{ orcamento.cliente }}" readonly>
+            </div>
+            <div class="form-group">
+                <label>Data</label>
+                <input type="date" value="{{ orcamento.data|date:'Y-m-d' }}" readonly>
+            </div>
+            <div class="form-group">
+                <label>CNPJ</label>
+                <input type="text" value="{{ orcamento.cnpj }}" readonly>
+            </div>
+            <div class="form-group">
+                <label>Endereço</label>
+                <input type="text" value="{{ orcamento.endereco }}" readonly>
+            </div>
+            <div class="form-group">
+                <label>Cidade</label>
+                <input type="text" value="{{ orcamento.cidade }}" readonly>
+            </div>
+            <div class="form-group">
+                <label>UF</label>
+                <input type="text" value="{{ orcamento.uf|default:'' }}" readonly>
+            </div>
+            <div class="form-group">
+                <label>E-mail</label>
+                <input type="email" value="{{ orcamento.email }}" readonly>
+            </div>
+            <div class="form-group">
+                <label>Telefone</label>
+                <input type="tel" value="{{ orcamento.telefone }}" readonly>
+            </div>
+        </div>
+    </div>
+
+    <!-- Service Items Section -->
+    <div class="form-section">
+        <div class="section-header">
+            <i class="fas fa-list"></i>
+            <h3>Itens do Orçamento</h3>
+        </div>
+        <div class="table-responsive">
+            <table class="modern-table">
+                <thead>
+                    <tr>
+                        <th>Unidade/Serviço</th>
+                        <th>Descrição</th>
+                        <th>Quantidade</th>
+                        <th>Valor Unitário</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for linha in linhas %}
+                    <tr>
+                        <td>{{ linha.unidade }}</td>
+                        <td>{{ linha.descricao }}</td>
+                        <td class="text-center">{{ linha.quantidade }}</td>
+                        <td class="text-right">R$ {{ linha.valor }}</td>
+                        <td class="text-right">R$ {{ linha.total|default:"0,00" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Totals Section -->
+    <div class="form-section">
+        <div class="section-header">
+            <i class="fas fa-calculator"></i>
+            <h3>Valores Totais</h3>
+        </div>
+        <div class="totals-grid">
+            <div class="total-item">
+                <label>Subtotal</label>
+                <input type="text" value="R$ {{ orcamento.subtotal_calculado }}" readonly>
+            </div>
+            {% if orcamento.desconto %}
+            <div class="total-item">
+                <label>Desconto ({{ orcamento.desconto }}%)</label>
+                <input type="text" value="R$ {{ orcamento.valor_desconto_calculado }}" readonly>
+            </div>
+            {% endif %}
+            <div class="total-item total-final">
+                <label>Valor Total</label>
+                <input type="text" value="R$ {{ orcamento.valor_total_calculado }}" readonly>
+            </div>
+        </div>
+    </div>
+
+    <!-- Observations Section -->
+    {% if orcamento.observacao %}
+    <div class="form-section">
+        <div class="section-header">
+            <i class="fas fa-comment"></i>
+            <h3>Observações</h3>
+        </div>
+        <div class="form-group">
+            <textarea rows="4" readonly>{{ orcamento.observacao }}</textarea>
+        </div>
+    </div>
+    {% endif %}
 </div>
 
+<!-- Email Modal Script -->
 <script>
 function criarModalEmail() {
     const modal = document.createElement('div');
@@ -457,11 +320,325 @@ async function abrirModalEmail(orcamentoId) {
 </script>
 
 <style>
-.emitir-orcamento-container {
-    border-radius: 30px 30px 30px 30px !important;
+/* Modern Container */
+.modern-container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #e8e8e8;
+    border-radius: 30px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
-/* Responsividade para Dev Tools - Header */
+/* Header Section */
+.header-section {
+    background: linear-gradient(135deg, #026a84, #013e6a);
+    color: white;
+    padding: 25px;
+    border-radius: 20px;
+    margin-bottom: 25px;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.header-icon {
+    font-size: 2.5rem;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.header-text h1 {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+.header-text p {
+    margin: 5px 0 0 0;
+    opacity: 0.9;
+    font-size: 1rem;
+}
+
+.header-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+}
+
+.btn-info { background: #17a2b8; color: white; }
+.btn-success { background: #28a745; color: white; }
+.btn-danger { background: #dc3545; color: white; }
+.btn-secondary { background: #6c757d; color: white; }
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Form Sections */
+.form-section {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.section-header i {
+    color: #026a84;
+    font-size: 1.3rem;
+}
+
+.section-header h3 {
+    margin: 0;
+    color: #333;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+/* Form Grid */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.form-group input,
+.form-group textarea {
+    padding: 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
+    background: #f8f9fa;
+    color: #666;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #026a84;
+}
+
+/* Table */
+.table-responsive {
+    overflow-x: auto;
+    margin-top: 15px;
+}
+
+.modern-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.modern-table th {
+    background: #026a84;
+    color: white;
+    padding: 15px 12px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.modern-table td {
+    padding: 12px;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 14px;
+}
+
+.modern-table tbody tr:hover {
+    background: #f8f9fa;
+}
+
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+
+/* Totals Grid */
+.totals-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    max-width: 600px;
+    margin-left: auto;
+}
+
+.total-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.total-item label {
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.total-item input {
+    padding: 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
+    background: #f8f9fa;
+    color: #666;
+    text-align: right;
+    font-weight: 600;
+}
+
+.total-final input {
+    background: #026a84;
+    color: white;
+    border-color: #026a84;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* Print Styles */
+.print-header {
+    display: none;
+}
+
+@media print {
+    @page {
+        margin: 0.5in;
+        size: A4;
+    }
+    
+    body * {
+        visibility: hidden;
+    }
+    
+    .modern-container,
+    .modern-container * {
+        visibility: visible;
+    }
+    
+    .modern-container {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        background: white;
+        border-radius: 0;
+        box-shadow: none;
+    }
+    
+    .header-section {
+        display: none;
+    }
+    
+    .print-header {
+        display: block !important;
+        text-align: center;
+        margin-bottom: 30px;
+        padding: 20px 0;
+    }
+    
+    .print-logo-section {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    
+    .print-logo-section img {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .print-logo-section h1 {
+        font-size: 36px;
+        font-weight: bold;
+        color: rgba(0, 0, 0, 0.12);
+        margin: 0;
+    }
+    
+    .form-section {
+        margin-bottom: 15px;
+        padding: 15px;
+        box-shadow: none;
+    }
+    
+    .section-header {
+        margin-bottom: 10px;
+        padding-bottom: 8px;
+    }
+    
+    .form-grid {
+        gap: 10px;
+    }
+    
+    .form-group input,
+    .form-group textarea {
+        padding: 8px;
+        font-size: 12px;
+        border: 1px solid #ddd;
+    }
+    
+    .modern-table {
+        font-size: 11px;
+    }
+    
+    .modern-table th,
+    .modern-table td {
+        padding: 8px 6px;
+    }
+}
+
+/* Responsive Design */
 @media screen and (max-width: 1400px) {
     header {
         width: 100vw !important;
@@ -473,12 +650,45 @@ async function abrirModalEmail(orcamentoId) {
         right: 0 !important;
     }
     
-    .emitir-orcamento-container {
+    .modern-container {
         max-width: 100% !important;
         width: 100% !important;
         margin: 20px 0 0 0 !important;
         padding: 15px !important;
         box-sizing: border-box !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .modern-container {
+        padding: 15px;
+        border-radius: 15px;
+    }
+    
+    .header-content {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .header-actions {
+        justify-content: center;
+    }
+    
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .totals-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .modern-table {
+        font-size: 12px;
+    }
+    
+    .modern-table th,
+    .modern-table td {
+        padding: 8px 6px;
     }
 }
 </style>
