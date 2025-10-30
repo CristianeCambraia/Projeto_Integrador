@@ -323,19 +323,21 @@
         /* Botão Hambúrguer - OCULTO POR PADRÃO */
         .hamburger {
             display: none !important;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
-            width: 40px;
-            height: 40px;
+            width: 30px;
+            height: 30px;
             background: #0066cc;
             border: 2px solid #004499;
-            border-radius: 8px;
+            border-radius: 6px;
             cursor: pointer;
-            padding: 8px;
             z-index: 1001;
             transition: all 0.3s ease;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            margin-left: auto;
         }
         
         .hamburger:hover {
@@ -346,8 +348,8 @@
         
         .hamburger span {
             display: block;
-            width: 22px;
-            height: 2px;
+            width: 18px;
+            height: 3px;
             background: white;
             border-radius: 1px;
             margin: 2px 0;
@@ -356,7 +358,7 @@
         }
         
         .hamburger.active span:nth-child(1) {
-            transform: rotate(45deg) translate(6px, 6px);
+            transform: rotate(45deg) translate(4px, 4px);
         }
         
         .hamburger.active span:nth-child(2) {
@@ -364,7 +366,7 @@
         }
         
         .hamburger.active span:nth-child(3) {
-            transform: rotate(-45deg) translate(6px, -6px);
+            transform: rotate(-45deg) translate(4px, -4px);
         }
         
         /* Menu Mobile - OCULTO POR PADRÃO */
@@ -421,7 +423,7 @@
             background: rgba(255, 255, 255, 0.1);
             color: white;
             border: none;
-            padding: 15px 20px;
+            padding: 20px 25px;
             border-radius: 10px;
             font-size: 16px;
             font-weight: 500;
@@ -430,6 +432,7 @@
             justify-content: space-between;
             align-items: center;
             transition: all 0.3s ease;
+            min-height: 60px;
         }
         
         .mobile-dropdown-btn:hover {
@@ -483,7 +486,7 @@
             background: rgba(255, 193, 7, 0.2);
             color: white;
             border: 2px solid #ffc107;
-            padding: 15px 20px;
+            padding: 20px 25px;
             border-radius: 10px;
             font-size: 16px;
             cursor: pointer;
@@ -491,6 +494,7 @@
             justify-content: space-between;
             align-items: center;
             transition: all 0.3s ease;
+            min-height: 60px;
         }
         
         .mobile-notification-btn:hover {
@@ -547,6 +551,13 @@
         
         /* ===== RESPONSIVIDADE GLOBAL PARA MOBILE ===== */
         @media screen and (max-width: 768px) {
+            input, select, textarea, button {
+                width: auto !important;
+                box-sizing: border-box;
+                font-size: 16px !important;
+                /* padding: 12px !important; */
+            }
+            
             /* Menu */
             .hamburger {
                 display: flex !important;
@@ -738,6 +749,7 @@
                 display: flex !important;
                 align-items: center !important;
                 gap: 15px !important;
+                position: relative !important;
             }
             
             .logo-header {
@@ -746,6 +758,7 @@
                 gap: 10px;
                 flex: 1;
                 justify-content: center;
+                margin-top: 0px;
             }
             
             .logo-header img {
@@ -1117,14 +1130,11 @@
 </head>
 <body>
     <header>
-        <!-- Botão Hambúrguer à esquerda -->
-        <button class="hamburger" onclick="toggleMobileMenu()" aria-label="Menu">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
-        
         <div class="logo-header">
+            <!-- Botão Hambúrguer à esquerda -->
+            <button class="hamburger" onclick="toggleMobileMenu()" aria-label="Menu">
+                ≡
+            </button>
             <img src="{% static 'images/insumed_icon.png' %}" alt="insumed_icon">
             <h1 class="insumed">INSUMED</h1>
         </div>
