@@ -4,7 +4,7 @@
 {% block title %}Relatório Financeiro{% endblock %}
 
 {% block content %}
-<div class="financeiro-container" style="max-width: 95%; width: 95%; margin: 0 auto; background: #e8e8e8; padding: 20px; border-radius: 30px;">
+<div class="financeiro-container">
     <div class="print-header" style="display: none;">
         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; padding: 0 80px;">
             <img src="{% static 'images/insumed_icon.png' %}" style="width: 100px; height: 100px;" alt="Logo">
@@ -127,27 +127,53 @@ function filtrarPeriodo(periodo) {
 </script>
 
 <style>
+.financeiro-container {
+    max-width: 95%;
+    width: 95%;
+    margin: 30px auto;
+    background: #e8e8e8;
+    padding: 20px;
+    border-radius: 30px;
+}
+
 .table-responsive {
     margin-top: 20px;
-    overflow-x: auto;
     width: 100%;
+    overflow: visible;
 }
 
 .table {
     margin-bottom: 0;
-    font-size: 14px;
-    min-width: 1200px;
+    font-size: 12px;
     width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    table-layout: auto;
 }
 
 .table th {
-    border: none;
+    background: #026a84;
+    color: white;
+    padding: 8px 6px;
+    text-align: center;
+    font-weight: bold;
+    border: 1px solid #dee2e6;
     vertical-align: middle;
+    font-size: 11px;
+    word-wrap: break-word;
 }
 
 .table td {
+    padding: 6px 4px;
     border: 1px solid #dee2e6;
     vertical-align: middle;
+    font-size: 11px;
+    word-wrap: break-word;
+    max-width: 150px;
+    text-align: center;
 }
 
 .table tbody tr:hover {
@@ -232,16 +258,7 @@ function filtrarPeriodo(periodo) {
     }
 }
 
-.financeiro-container {
-    border-radius: 30px 30px 30px 30px !important;
-    margin-top: 20px !important;
-}
-
-.lista-container {
-    border-radius: 30px 30px 30px 30px !important;
-}
-
-/* Responsividade para Dev Tools - Header */
+/* Responsividade para Dev Tools */
 @media screen and (max-width: 1400px) {
     header {
         width: 100vw !important;
@@ -259,6 +276,21 @@ function filtrarPeriodo(periodo) {
         margin: 20px 0 0 0 !important;
         padding: 15px !important;
         box-sizing: border-box !important;
+    }
+    
+    .table {
+        font-size: 10px !important;
+    }
+    
+    .table th {
+        padding: 6px 4px !important;
+        font-size: 10px !important;
+    }
+    
+    .table td {
+        padding: 4px 3px !important;
+        font-size: 10px !important;
+        max-width: 120px !important;
     }
 }
 
@@ -292,23 +324,26 @@ function filtrarPeriodo(periodo) {
 
 @media screen and (max-width: 768px) {
     .financeiro-container {
+        margin: 10px !important;
         padding: 10px !important;
         border-radius: 15px !important;
-    }
-    
-    .table-responsive {
-        overflow-x: auto !important;
-        -webkit-overflow-scrolling: touch !important;
+        max-width: 98% !important;
+        width: 98% !important;
     }
     
     .table {
-        min-width: 1000px !important;
-        font-size: 12px !important;
+        font-size: 9px !important;
     }
     
-    .table th, .table td {
-        padding: 8px 4px !important;
-        white-space: nowrap !important;
+    .table th {
+        padding: 4px 2px !important;
+        font-size: 9px !important;
+    }
+    
+    .table td {
+        padding: 3px 2px !important;
+        font-size: 9px !important;
+        max-width: 80px !important;
     }
     
     .search-controls select {
@@ -344,11 +379,13 @@ function filtrarPeriodo(periodo) {
     }
     
     .table {
-        font-size: 10px !important;
+        font-size: 8px !important;
     }
     
     .table th, .table td {
-        padding: 4px 2px !important;
+        padding: 2px 1px !important;
+        font-size: 8px !important;
+        max-width: 60px !important;
     }
 }
 </style>

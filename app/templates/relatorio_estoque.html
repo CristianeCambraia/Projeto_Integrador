@@ -4,17 +4,30 @@
 {% block title %}Relatório de Estoque{% endblock %}
 
 {% block content %}
-<div class="estoque-container" style="max-width: 95%; width: 95%; margin: 0 auto;">
+<div class="estoque-container">
+    <!-- Header Section -->
+    <div class="header-section">
+        <div class="icon-title">
+            <div class="icon-circle">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                    <path d="M20 7h-3V6a4 4 0 0 0-8 0v1H5a1 1 0 0 0-1 1v11a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V8a1 1 0 0 0-1-1zM10 6a2 2 0 0 1 4 0v1h-4V6zm8 13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V9h2v1a1 1 0 0 0 2 0V9h4v1a1 1 0 0 0 2 0V9h2v10z" fill="#2d3748"/>
+                </svg>
+            </div>
+            <div>
+                <h1>Relatório de Estoque</h1>
+                <p>Controle completo do inventário</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Print Header -->
     <div class="print-header" style="display: none;">
         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; padding: 0 80px;">
             <img src="{% static 'images/insumed_icon.png' %}" style="width: 100px; height: 100px;" alt="Logo">
             <h1 style="font-size: 48px; font-weight: bold; color: rgba(0, 0, 0, 0.12); margin: 0 120px; word-wrap: break-word; line-height: 1.2;">INSUMED</h1>
             <img src="{% static 'images/insumed_icon.png' %}" style="width: 100px; height: 100px;" alt="Logo">
         </div>
-
     </div>
-    
-    <h2 class="titulo screen-only">Relatório de Estoque</h2>
     
     <div class="print-info" style="display: none;">
         <h3 style="text-align: center; margin: 0 0 10px 0; color: #026a84; font-size: 24px;">Relatório de Estoque</h3>
@@ -22,86 +35,120 @@
         {% if request.GET.q %}<p style="text-align: center; margin: 5px 0 0 0; color: #026a84;">Filtro aplicado: "{{ request.GET.q }}"</p>{% endif %}
     </div>
 
-    <!-- Token CSRF oculto -->
-    {% csrf_token %}
-    
-    <!-- Barra de pesquisa -->
-    <div class="search-controls" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <div style="display: flex; align-items: center; gap: 10px;">
-            <input type="text" id="filtroEstoque" placeholder="Buscar por produto, fornecedor, descrição ou código de barras" style="width: 450px; padding: 8px; height: 35px; border: 1px solid #ddd; border-radius: 15px; font-size: 14px;">
-            <button onclick="limparFiltro()" class="btn" style="background: #6c757d; padding: 12px 16px; height: 45px; font-size: 14px;">Limpar</button>
+    <!-- Controls Section -->
+    <div class="controls-section">
+        <div class="section-header">
+            <h3>🔍 Busca e Controles</h3>
         </div>
-        <div style="display: flex; gap: 10px; margin-right: 40px;">
-            <button onclick="location.reload()" class="btn" style="background: #007bff; padding: 12px 16px; height: 45px; font-size: 14px;">Atualizar Lista</button>
-            <button type="button" onclick="window.print()" class="btn" style="background: #17a2b8; padding: 12px 16px; height: 45px; font-size: 14px;">Imprimir</button>
-            <button type="button" onclick="enviarEmail()" class="btn" style="background: #28a745; padding: 12px 16px; height: 45px; font-size: 14px;">Email</button>
-            <a href="{% url 'exportar_estoque_pdf' %}?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.periodo %}periodo={{ request.GET.periodo }}{% endif %}" class="btn" style="background: #dc3545; padding: 12px 16px; height: 45px; font-size: 14px; display: flex; align-items: center;">PDF</a>
+        <div class="controls-content">
+            <div class="search-group">
+                <input type="text" id="filtroEstoque" placeholder="Buscar por produto, fornecedor, descrição ou código de barras">
+                <button onclick="limparFiltro()" class="btn-clear">Limpar</button>
+            </div>
+            <div class="action-buttons">
+                <button onclick="location.reload()" class="btn-action btn-primary">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="23,4 23,10 17,10"></polyline>
+                        <path d="M20.49,15a9,9,0,1,1-2.12-9.36L23,10"></path>
+                    </svg>
+                    Atualizar
+                </button>
+                <button type="button" onclick="window.print()" class="btn-action btn-info">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="6,9 6,2 18,2 18,9"></polyline>
+                        <path d="M6,18H4a2,2 0 0,1-2-2v-5a2,2 0 0,1,2-2H20a2,2 0 0,1,2,2v5a2,2 0 0,1-2,2H18"></path>
+                        <polyline points="6,14 18,14 18,22 6,22 6,14"></polyline>
+                    </svg>
+                    Imprimir
+                </button>
+                <button type="button" onclick="enviarEmail()" class="btn-action btn-success">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                        <polyline points="22,6 12,13 2,6"></polyline>
+                    </svg>
+                    Email
+                </button>
+                <a href="{% url 'exportar_estoque_pdf' %}?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.periodo %}periodo={{ request.GET.periodo }}{% endif %}" class="btn-action btn-danger">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14,2 14,8 20,8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                    </svg>
+                    PDF
+                </a>
+            </div>
         </div>
     </div>
 
-    <!-- Tabela -->
-    <div class="table-responsive">
-        <table class="table table-striped table-hover" style="background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-            <thead style="background: #026a84; color: white;">
-                <tr>
-                    <th style="text-align: center; padding: 12px; font-weight: bold; width: 12%;">Fornecedor</th>
-                    <th style="text-align: center; padding: 12px; font-weight: bold; width: 15%;">Produto</th>
-                    <th style="text-align: center; padding: 12px; font-weight: bold; width: 12%;">Quantidade Cadastrada</th>
-                    <th style="text-align: center; padding: 12px; font-weight: bold; width: 12%;">Última Entrada</th>
-                    <th style="text-align: center; padding: 12px; font-weight: bold; width: 12%;">Última Saída</th>
-                    <th style="text-align: center; padding: 12px; font-weight: bold; width: 8%;">Estoque Atual</th>
-                    <th style="text-align: center; padding: 12px; font-weight: bold; width: 8%;">Unidade</th>
-                    <th style="text-align: center; padding: 12px; font-weight: bold; width: 8%;">Preço</th>
-                    <th style="text-align: center; padding: 12px; font-weight: bold; width: 13%;">Descrição</th>
-                </tr>
-            </thead>
-        <tbody>
-            {% for produto in produtos %}
-            <tr class="produto-row" data-fornecedor="{{ produto.fornecedor.nome|lower }}" data-produto="{{ produto.nome|lower }}" data-descricao="{{ produto.descricao|default:''|lower }}" data-codigo="{{ produto.codigo_barras|default:''|lower }}">
-                <td style="padding: 10px; text-align: center;">{{ produto.fornecedor.nome }}</td>
-                <td style="padding: 10px; text-align: center;">{{ produto.nome }}</td>
-                <td style="padding: 10px; text-align: center;">
-                    {{ produto.data_hora|date:"d/m/Y H:i" }}<br>
-                    <small>({{ produto.quantidade }} inicial)</small>
-                </td>
-                <td style="padding: 10px; text-align: center;">
-                    {% if produto.ultima_entrada %}
-                        {{ produto.ultima_entrada.data_hora|date:"d/m/Y H:i" }}
-                        <small>(+{{ produto.ultima_entrada.quantidade }})</small>
-                    {% else %}
-                        <small>Sem entrada</small>
-                    {% endif %}
-                </td>
-                <td style="padding: 10px; text-align: center;">
-                    {% if produto.ultima_saida %}
-                        {{ produto.ultima_saida.data_hora|date:"d/m/Y H:i" }}
-                        <small>(-{{ produto.ultima_saida.quantidade }})</small>
-                    {% else %}
-                        <small>Sem saída</small>
-                    {% endif %}
-                </td>
-                <td style="padding: 10px; text-align: center; font-weight: bold;">{{ produto.quantidade }}</td>
-                <td style="padding: 10px; text-align: center;">{{ produto.unidade }}</td>
-                <td style="padding: 10px; text-align: center;">R$ {{ produto.preco }}</td>
-                <td class="descricao-cell" style="padding: 10px; text-align: center;">
-                    {% if produto.descricao %}
-                        <span class="descricao-preview">{{ produto.descricao|truncatechars:30 }}</span>
-                        <span class="descricao-completa" style="display: none;">{{ produto.descricao }}</span>
-                        {% if produto.descricao|length > 30 %}
-                            <button type="button" class="btn-expandir-desc" onclick="toggleDescricaoTabela(this)">+</button>
-                        {% endif %}
-                    {% else %}
-                        <small>Sem descrição</small>
-                    {% endif %}
-                </td>
-            </tr>
-            {% empty %}
-            <tr id="nenhumProdutoEstoque">
-                <td colspan="9" style="text-align: center; padding: 20px; color: #666;">Nenhum produto encontrado</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-        </table>
+    <!-- Data Section -->
+    <div class="data-section">
+        <div class="section-header">
+            <h3>📦 Dados do Estoque</h3>
+        </div>
+        <div class="table-responsive">
+            <table class="modern-table">
+                <thead>
+                    <tr>
+                        <th>Fornecedor</th>
+                        <th>Produto</th>
+                        <th>Quantidade Cadastrada</th>
+                        <th>Última Entrada</th>
+                        <th>Última Saída</th>
+                        <th>Estoque Atual</th>
+                        <th>Unidade</th>
+                        <th>Preço</th>
+                        <th>Descrição</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for produto in produtos %}
+                    <tr class="produto-row" data-fornecedor="{{ produto.fornecedor.nome|lower }}" data-produto="{{ produto.nome|lower }}" data-descricao="{{ produto.descricao|default:''|lower }}" data-codigo="{{ produto.codigo_barras|default:''|lower }}">
+                        <td>{{ produto.fornecedor.nome }}</td>
+                        <td>{{ produto.nome }}</td>
+                        <td class="text-center">
+                            {{ produto.data_hora|date:"d/m/Y H:i" }}<br>
+                            <small>({{ produto.quantidade }} inicial)</small>
+                        </td>
+                        <td class="text-center">
+                            {% if produto.ultima_entrada %}
+                                {{ produto.ultima_entrada.data_hora|date:"d/m/Y H:i" }}
+                                <small>(+{{ produto.ultima_entrada.quantidade }})</small>
+                            {% else %}
+                                <small>Sem entrada</small>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            {% if produto.ultima_saida %}
+                                {{ produto.ultima_saida.data_hora|date:"d/m/Y H:i" }}
+                                <small>(-{{ produto.ultima_saida.quantidade }})</small>
+                            {% else %}
+                                <small>Sem saída</small>
+                            {% endif %}
+                        </td>
+                        <td class="text-center estoque-atual">{{ produto.quantidade }}</td>
+                        <td class="text-center">{{ produto.unidade }}</td>
+                        <td class="text-right">R$ {{ produto.preco }}</td>
+                        <td class="descricao-cell">
+                            {% if produto.descricao %}
+                                <span class="descricao-preview">{{ produto.descricao|truncatechars:30 }}</span>
+                                <span class="descricao-completa" style="display: none;">{{ produto.descricao }}</span>
+                                {% if produto.descricao|length > 30 %}
+                                    <button type="button" class="btn-expandir-desc" onclick="toggleDescricaoTabela(this)">+</button>
+                                {% endif %}
+                            {% else %}
+                                <small>Sem descrição</small>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr id="nenhumProdutoEstoque">
+                        <td colspan="9" class="text-center no-data">Nenhum produto encontrado</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
     
     <div class="print-footer" style="display: none;">
@@ -110,12 +157,9 @@
             <p>Relatório gerado automaticamente pelo Sistema INSUMED</p>
         </div>
     </div>
-
-
-    
-    <!-- Espaço extra para garantir scroll -->
-    <div style="height: 200px;"></div>
 </div>
+
+{% csrf_token %}
 
 <script>
 function toggleDescricaoTabela(btn) {
@@ -163,332 +207,9 @@ function limparFiltro() {
     filtrarEstoque();
 }
 
-document.getElementById('filtroEstoque').addEventListener('input', filtrarEstoque);
-</script>
-
-<style>
-@media print {
-    @page {
-        margin: 0;
-        size: A4 landscape;
-        background: #013e6a !important;
-    }
-    * {
-        -webkit-print-color-adjust: exact !important;
-        color-adjust: exact !important;
-        print-color-adjust: exact !important;
-    }
-    body * {
-        visibility: hidden;
-    }
-    html {
-        background: #013e6a !important;
-        -webkit-print-color-adjust: exact !important;
-        color-adjust: exact !important;
-        print-color-adjust: exact !important;
-    }
-    body {
-        margin: 0;
-        padding: 0;
-        background: #013e6a !important;
-        -webkit-print-color-adjust: exact !important;
-        color-adjust: exact !important;
-        print-color-adjust: exact !important;
-        min-height: 100vh;
-        visibility: visible;
-    }
-    .estoque-container, .estoque-container * {
-        visibility: visible;
-    }
-    .barra-pesquisa, .botoes, .screen-only, .search-controls {
-        display: none !important;
-    }
-    .print-header, .print-footer {
-        display: block !important;
-    }
-    .print-info {
-        display: block !important;
-        background: #e8e8e8 !important;
-        padding: 15px;
-        margin-bottom: 20px;
-        border-radius: 5px;
-        margin-top: 130px;
-    }
-    .screen-only {
-        display: none !important;
-    }
-    .estoque-container {
-        position: relative;
-        left: 0;
-        top: 0;
-        width: 100%;
-        max-width: 100%;
-        margin: 0 auto;
-    }
-    .print-header {
-        background: #013e6a !important;
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 120px;
-        z-index: 10;
-        padding: 20px 0 !important;
-        margin: 0 !important;
-    }
-    .estoque-container {
-        margin-top: 0 !important;
-        padding: 20px;
-        position: relative;
-    }
-    .print-header {
-        padding: 0 !important;
-        margin: 0 !important;
-    }
-    .print-header h1 {
-        color: rgba(255, 255, 255, 0.3) !important;
-    }
-    .print-header h3 {
-        color: #026a84 !important;
-        margin: 10px 0 !important;
-    }
-    .print-header p {
-        color: #026a84 !important;
-    }
-    table {
-        font-size: 14px;
-        width: 100%;
-        background: white !important;
-    }
-    th, td {
-        padding: 6px;
-    }
-    
-    div.estoque-container {
-        border-radius: 0 !important;
-        border-top-left-radius: 0 !important;
-        border-top-right-radius: 0 !important;
-        border-bottom-left-radius: 0 !important;
-        border-bottom-right-radius: 0 !important;
-    }
-    
-    div[style*="border-radius"] {
-        border-radius: 0 !important;
-    }
-
-}
-
-.estoque-container {
-    border-radius: 30px 30px 30px 30px !important;
-    margin-top: 20px !important;
-}
-
-/* Responsividade para Dev Tools - Header e Container */
-@media screen and (max-width: 2560px) {
-    .table-responsive {
-        overflow-x: auto !important;
-        -webkit-overflow-scrolling: touch !important;
-        width: 100% !important;
-        max-width: 100% !important;
-    }
-}
-
-@media screen and (max-width: 1400px) {
-    header {
-        width: 100vw !important;
-        padding: 12px 5px !important;
-        box-sizing: border-box !important;
-        margin: 0 !important;
-        position: relative !important;
-        left: 0 !important;
-        right: 0 !important;
-    }
-    
-    .estoque-container {
-        max-width: 100% !important;
-        width: 100% !important;
-        margin: 20px 0 0 0 !important;
-        padding: 15px !important;
-        box-sizing: border-box !important;
-    }
-    
-    .search-controls {
-        flex-direction: column !important;
-        align-items: stretch !important;
-        gap: 15px !important;
-    }
-    
-    .search-controls > div {
-        width: 100% !important;
-        display: flex !important;
-        flex-wrap: wrap !important;
-        gap: 8px !important;
-        justify-content: center !important;
-    }
-    
-    .search-controls input {
-        width: 100% !important;
-        max-width: none !important;
-        min-width: 250px !important;
-        flex: 1 !important;
-        margin-bottom: 10px !important;
-    }
-    
-    .search-controls .btn, .search-controls a.btn {
-        flex: 1 1 auto !important;
-        min-width: 80px !important;
-        max-width: 120px !important;
-        padding: 8px 10px !important;
-        font-size: 12px !important;
-        height: 35px !important;
-        box-sizing: border-box !important;
-        text-align: center !important;
-        white-space: nowrap !important;
-    }
-}
-
-@media screen and (max-width: 1200px) {
-    .search-controls {
-        flex-direction: column !important;
-        align-items: stretch !important;
-        gap: 15px !important;
-    }
-    
-    .search-controls > div {
-        width: 100% !important;
-        display: flex !important;
-        flex-wrap: wrap !important;
-        gap: 10px !important;
-        justify-content: center !important;
-    }
-    
-    .search-controls input {
-        width: 100% !important;
-        max-width: none !important;
-        min-width: 300px !important;
-        flex: 1 !important;
-    }
-    
-    .search-controls .btn, .search-controls a.btn {
-        flex: 0 0 auto !important;
-        min-width: 100px !important;
-        padding: 10px 12px !important;
-        font-size: 13px !important;
-        height: auto !important;
-        box-sizing: border-box !important;
-    }
-}
-
-@media screen and (max-width: 768px) {
-    .estoque-container {
-        padding: 10px !important;
-        border-radius: 15px !important;
-    }
-    
-    .table-responsive {
-        overflow-x: auto !important;
-        -webkit-overflow-scrolling: touch !important;
-    }
-    
-    .table {
-        min-width: 800px !important;
-        font-size: 12px !important;
-    }
-    
-    .table th, .table td {
-        padding: 8px 4px !important;
-        white-space: nowrap !important;
-    }
-    
-    .search-controls input {
-        min-width: 250px !important;
-        font-size: 16px !important;
-    }
-    
-    .search-controls .btn {
-        padding: 10px 12px !important;
-        font-size: 12px !important;
-    }
-    
-    h2.titulo {
-        font-size: 20px !important;
-        margin-bottom: 20px !important;
-    }
-}
-
-@media screen and (max-width: 480px) {
-    .estoque-container {
-        padding: 5px !important;
-        margin: 5px !important;
-        width: calc(100% - 10px) !important;
-    }
-    
-    .search-controls > div {
-        flex-direction: column !important;
-    }
-    
-    .search-controls .btn {
-        width: 100% !important;
-        margin: 2px 0 !important;
-    }
-    
-    .table {
-        font-size: 10px !important;
-    }
-    
-    .table th, .table td {
-        padding: 4px 2px !important;
-    }
-}
-
-.table-responsive {
-    margin-top: 20px;
-}
-
-@media screen and (min-width: 1401px) and (max-width: 2560px) {
-    .table-responsive {
-        width: calc(100% - 30px) !important;
-        max-width: 100% !important;
-        overflow-x: auto !important;
-        -webkit-overflow-scrolling: touch !important;
-    }
-    
-    .table {
-        width: 100% !important;
-        min-width: 1200px !important;
-    }
-}
-
-
-
-.table {
-    margin-bottom: 0;
-    font-size: 14px;
-    border-collapse: collapse;
-}
-
-.table th {
-    border: 1px solid #dee2e6;
-    vertical-align: middle;
-}
-
-.table td {
-    border: 1px solid #dee2e6;
-    vertical-align: middle;
-}
-
-.table tbody tr:hover {
-    background-color: #f8f9fa;
-}
-</style>
-
-<script>
-// Atualizar data/hora atual
 document.addEventListener('DOMContentLoaded', function() {
-    // Inicializar filtro
-    if (document.getElementById('filtroEstoque')) {
-        document.getElementById('filtroEstoque').addEventListener('input', filtrarEstoque);
-    }
+    document.getElementById('filtroEstoque').addEventListener('input', filtrarEstoque);
+    
     const agora = new Date();
     const dataFormatada = agora.toLocaleString('pt-BR', {
         day: '2-digit',
@@ -497,11 +218,7 @@ document.addEventListener('DOMContentLoaded', function() {
         hour: '2-digit',
         minute: '2-digit'
     });
-    const elementoData = document.getElementById('data-geracao');
     const elementoDataPrint = document.getElementById('data-geracao-print');
-    if (elementoData) {
-        elementoData.textContent = 'Data: ' + dataFormatada;
-    }
     if (elementoDataPrint) {
         elementoDataPrint.textContent = 'Data: ' + dataFormatada;
     }
@@ -617,13 +334,11 @@ async function enviarEmail() {
         const busca = new URLSearchParams(window.location.search).get('q') || '';
         const periodo = new URLSearchParams(window.location.search).get('periodo') || '';
         
-        // Obter CSRF token
         let csrfToken = '';
         const csrfInput = document.querySelector('[name=csrfmiddlewaretoken]');
         if (csrfInput) {
             csrfToken = csrfInput.value;
         } else {
-            // Tentar obter do cookie
             const cookies = document.cookie.split(';');
             for (let cookie of cookies) {
                 const [name, value] = cookie.trim().split('=');
@@ -650,7 +365,6 @@ async function enviarEmail() {
         })
         .then(data => {
             if (data.success) {
-                // Criar mensagem de sucesso no estilo padrão
                 const mensagem = document.createElement('div');
                 mensagem.className = 'alert alert-success';
                 mensagem.style.cssText = 'position: fixed; top: 80px; right: 20px; z-index: 9999; background: white; color: #28a745; border: 2px solid #28a745; padding: 15px 20px; border-radius: 5px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); font-weight: bold;';
@@ -668,4 +382,421 @@ async function enviarEmail() {
     }
 }
 </script>
+
+<style>
+/* Container Principal */
+.estoque-container {
+    max-width: 95%;
+    width: 95%;
+    margin: 30px auto;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+/* Header Section */
+.header-section {
+    background: #cbd5e0;
+    padding: 30px;
+    color: #2d3748;
+}
+
+.icon-title {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    justify-content: center;
+    text-align: center;
+}
+
+.icon-circle {
+    width: 60px;
+    height: 60px;
+    background: rgba(255,255,255,0.3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(10px);
+}
+
+.header-section h1 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 600;
+}
+
+.header-section p {
+    margin: 5px 0 0 0;
+    opacity: 0.9;
+    font-size: 16px;
+}
+
+/* Form Sections */
+.controls-section, .data-section {
+    padding: 30px 40px;
+    margin-bottom: 0;
+}
+
+.section-header {
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.section-header h3 {
+    margin: 0;
+    color: #333;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+/* Controls */
+.controls-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.search-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+}
+
+.search-group input {
+    flex: 1;
+    padding: 12px 16px;
+    border: 2px solid #e1e5e9;
+    border-radius: 10px;
+    font-size: 14px;
+    background: #fafbfc;
+    transition: all 0.3s ease;
+    min-width: 300px;
+}
+
+.search-group input:focus {
+    outline: none;
+    border-color: #cbd5e0;
+    background: white;
+}
+
+.btn-clear {
+    padding: 12px 16px;
+    border: 2px solid #6c757d;
+    border-radius: 8px;
+    background: #6c757d;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-clear:hover {
+    background: #5a6268;
+    border-color: #5a6268;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.btn-action {
+    padding: 12px 16px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    color: white;
+}
+
+.btn-primary { background: #007bff; }
+.btn-info { background: #17a2b8; }
+.btn-success { background: #28a745; }
+.btn-danger { background: #dc3545; }
+
+.btn-action:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Table */
+.table-responsive {
+    margin-top: 15px;
+    width: 100%;
+    overflow: visible;
+}
+
+.modern-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    font-size: 12px;
+    table-layout: auto;
+}
+
+.modern-table th {
+    background: #026a84;
+    color: white;
+    padding: 8px 6px;
+    text-align: center;
+    font-weight: bold;
+    border: 1px solid #dee2e6;
+    vertical-align: middle;
+    font-size: 11px;
+    word-wrap: break-word;
+}
+
+.modern-table td {
+    padding: 6px 4px;
+    border: 1px solid #dee2e6;
+    vertical-align: middle;
+    font-size: 11px;
+    word-wrap: break-word;
+    max-width: 150px;
+}
+
+.modern-table tbody tr:hover {
+    background: #f8f9fa;
+}
+
+.modern-table tbody tr:hover {
+    background: #f8f9fa;
+}
+
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+
+.estoque-atual {
+    font-weight: bold;
+    color: #026a84;
+}
+
+.no-data {
+    padding: 20px;
+    color: #666;
+    font-style: italic;
+}
+
+.btn-expandir-desc {
+    background: #e9ecef;
+    border: 1px solid #ced4da;
+    border-radius: 3px;
+    padding: 2px 6px;
+    font-size: 12px;
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+.btn-expandir-desc:hover {
+    background: #dee2e6;
+}
+
+/* Print Styles */
+@media print {
+    @page {
+        margin: 0;
+        size: A4 landscape;
+        background: #013e6a !important;
+    }
+    * {
+        -webkit-print-color-adjust: exact !important;
+        color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+    body * {
+        visibility: hidden;
+    }
+    html {
+        background: #013e6a !important;
+        -webkit-print-color-adjust: exact !important;
+        color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+    body {
+        margin: 0;
+        padding: 0;
+        background: #013e6a !important;
+        -webkit-print-color-adjust: exact !important;
+        color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        min-height: 100vh;
+        visibility: visible;
+    }
+    .estoque-container, .estoque-container * {
+        visibility: visible;
+    }
+    .controls-section, .header-section {
+        display: none !important;
+    }
+    .print-header, .print-footer {
+        display: block !important;
+    }
+    .print-info {
+        display: block !important;
+        background: #e8e8e8 !important;
+        padding: 15px;
+        margin-bottom: 20px;
+        border-radius: 5px;
+        margin-top: 130px;
+    }
+    .print-header {
+        background: #013e6a !important;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 120px;
+        z-index: 10;
+        padding: 20px 0 !important;
+        margin: 0 !important;
+    }
+    .print-header h1 {
+        color: rgba(255, 255, 255, 0.3) !important;
+    }
+    .modern-table {
+        font-size: 8px;
+        width: 100%;
+        background: white !important;
+        min-width: auto !important;
+    }
+    .modern-table th, .modern-table td {
+        padding: 2px;
+        font-size: 8px;
+        white-space: nowrap;
+    }
+    .modern-table thead th {
+        background: #026a84 !important;
+        color: white !important;
+    }
+}
+
+/* Responsividade para Dev Tools */
+@media screen and (max-width: 1400px) {
+    header {
+        width: 100vw !important;
+        padding: 12px 5px !important;
+        box-sizing: border-box !important;
+        margin: 0 !important;
+        position: relative !important;
+        left: 0 !important;
+        right: 0 !important;
+    }
+    
+    .estoque-container {
+        max-width: 100% !important;
+        width: 100% !important;
+        margin: 20px 0 0 0 !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+    }
+    
+    .controls-section, .data-section {
+        padding: 15px 10px !important;
+    }
+    
+    .modern-table {
+        font-size: 10px !important;
+    }
+    
+    .modern-table th {
+        padding: 6px 4px !important;
+        font-size: 10px !important;
+    }
+    
+    .modern-table td {
+        padding: 4px 3px !important;
+        font-size: 10px !important;
+        max-width: 120px !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .estoque-container {
+        margin: 10px;
+        border-radius: 15px;
+        max-width: 98% !important;
+        width: 98% !important;
+    }
+    
+    .header-section {
+        padding: 15px;
+    }
+    
+    .icon-title {
+        gap: 10px;
+    }
+    
+    .icon-circle {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .header-section h1 {
+        font-size: 20px;
+    }
+    
+    .controls-content {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+    
+    .search-group {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .search-group input {
+        min-width: auto;
+    }
+    
+    .action-buttons {
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+    
+    .btn-action {
+        padding: 8px 12px !important;
+        font-size: 12px !important;
+    }
+    
+    .controls-section, .data-section {
+        padding: 10px 8px !important;
+    }
+    
+    .modern-table {
+        font-size: 9px !important;
+    }
+    
+    .modern-table th {
+        padding: 4px 2px !important;
+        font-size: 9px !important;
+    }
+    
+    .modern-table td {
+        padding: 3px 2px !important;
+        font-size: 9px !important;
+        max-width: 80px !important;
+    }
+}
+</style>
+
 {% endblock %}

@@ -10,92 +10,91 @@
     {% endfor %}
 </script> 
 {% endif %}
-<div class="estoque-container" style="max-width: 95%; width: 95%; margin: 20px auto 0 auto;">
+
+<div class="saida-container">
     <h2 class="titulo">Lançamento de Saída</h2>
     
     <!-- Campo de Código de Barras -->
-    <div class="barcode-field" style="margin-bottom: 20px;">
+    <div class="barcode-field">
         <div class="barcode-input-container">
-            <input type="text" id="codigo_barras_saida" placeholder="Escaneie ou digite o código de barras..." autocomplete="off" style="width: 100%; height: 50px; font-size: 16px; padding: 12px; border: 2px solid #ddd; border-radius: 5px; background-color: #f9f9f9;">
+            <input type="text" id="codigo_barras_saida" placeholder="Escaneie ou digite o código de barras..." autocomplete="off">
         </div>
     </div>
     
     <!-- Filtros -->
-    <div style="margin-bottom: 30px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-        <input type="text" id="filtroSaida" placeholder="Filtrar por fornecedor, produto ou descrição" style="width: 380px; padding: 8px; border: 1px solid #ddd; border-radius: 3px;">
-        <button onclick="limparFiltroTexto()" style="background: #6c757d; color: white; border: none; padding: 8px 20px; font-size: 12px; border-radius: 3px; cursor: pointer;">Limpar</button>
+    <div class="filtros-container">
+        <input type="text" id="filtroSaida" placeholder="Filtrar por fornecedor, produto ou descrição">
+        <button onclick="limparFiltroTexto()" class="btn-limpar">Limpar</button>
         
-        <form method="GET" id="formPeriodo" style="display: flex; gap: 10px; align-items: center; margin: 0; margin-left: 30px;">
-            <select name="periodo" id="selectPeriodo" onchange="document.getElementById('formPeriodo').submit()" style="padding: 8px 12px; font-size: 12px; border: 1px solid #ddd; border-radius: 3px; min-width: 80px;">
+        <form method="GET" id="formPeriodo">
+            <select name="periodo" id="selectPeriodo" onchange="document.getElementById('formPeriodo').submit()">
                 <option value="">Todos</option>
                 <option value="1" {% if request.GET.periodo == '1' %}selected{% endif %}>1 dia</option>
                 <option value="7" {% if request.GET.periodo == '7' %}selected{% endif %}>7 dias</option>
                 <option value="30" {% if request.GET.periodo == '30' %}selected{% endif %}>30 dias</option>
             </select>
-            <a href="{% url 'relatorio_saida' %}" style="background: #6c757d; color: white; text-decoration: none; padding: 8px 20px; font-size: 12px; border-radius: 3px;">Limpar</a>
+            <a href="{% url 'relatorio_saida' %}" class="btn-limpar-periodo">Limpar</a>
         </form>
     </div>
 
-    <!-- Formulário -->
     <form method="post">
         {% csrf_token %}
-        <table class="tabela-estoque">
-            <thead class="table-light">
-                <tr>
-                    <th>Fornecedor</th>
-                    <th>Produto</th>
-                    <th>Descrição</th>
-                    <th>Estoque Atual</th>
-                    <th>Última Saída</th>
-                    <th>Qtd Retirada</th>
-                    <th>Unidade</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for produto in produtos %}
-                <tr class="produto-saida-row" data-fornecedor="{{ produto.fornecedor.nome|lower }}" data-produto="{{ produto.nome|lower }}" data-descricao="{{ produto.descricao|default:''|lower }}">
-                    <td>{{ produto.fornecedor.nome }}</td>
-                    <td>{{ produto.nome }}</td>
-                    <td class="descricao-cell">
-                        {% if produto.descricao %}
-                            <span class="descricao-preview">{{ produto.descricao|truncatechars:30 }}</span>
-                            <span class="descricao-completa" style="display: none;">{{ produto.descricao }}</span>
-                            {% if produto.descricao|length > 30 %}
-                                <button type="button" class="btn-expandir-desc" onclick="toggleDescricaoTabela(this)">+</button>
+        <div class="table-responsive">
+            <table class="tabela-saida">
+                <thead>
+                    <tr>
+                        <th>Fornecedor</th>
+                        <th>Produto</th>
+                        <th>Descrição</th>
+                        <th>Estoque Atual</th>
+                        <th>Última Saída</th>
+                        <th>Qtd Retirada</th>
+                        <th>Unidade</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for produto in produtos %}
+                    <tr class="produto-saida-row" data-fornecedor="{{ produto.fornecedor.nome|lower }}" data-produto="{{ produto.nome|lower }}" data-descricao="{{ produto.descricao|default:''|lower }}">
+                        <td>{{ produto.fornecedor.nome }}</td>
+                        <td>{{ produto.nome }}</td>
+                        <td class="descricao-cell">
+                            {% if produto.descricao %}
+                                <span class="descricao-preview">{{ produto.descricao|truncatechars:30 }}</span>
+                                <span class="descricao-completa" style="display: none;">{{ produto.descricao }}</span>
+                                {% if produto.descricao|length > 30 %}
+                                    <button type="button" class="btn-expandir-desc" onclick="toggleDescricaoTabela(this)">+</button>
+                                {% endif %}
+                            {% else %}
+                                <small>Sem descrição</small>
                             {% endif %}
-                        {% else %}
-                            <small>Sem descrição</small>
-                        {% endif %}
-                    </td>
-                    <td><strong>{{ produto.quantidade }}</strong></td>
-                    <td>
-                        {% if produto.ultima_saida %}
-                            {{ produto.ultima_saida.data_hora|date:"d/m/Y H:i" }}
-                            <small>(-{{ produto.ultima_saida.quantidade }})</small>
-                        {% else %}
-                            <small>Primeira saída</small>
-                        {% endif %}
-                    </td>
-                    <td>
-                        <input type="number" name="quantidade_{{ produto.id }}" min="0" value="0" style="width: 80px;">
-                    </td>
-                    <td>{{ produto.unidade }}</td>
-                </tr>
-                {% empty %}
-                <tr id="nenhumProdutoSaida"><td colspan="7">Nenhum produto encontrado</td></tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                        </td>
+                        <td class="estoque-atual">{{ produto.quantidade }}</td>
+                        <td class="ultima-saida">
+                            {% if produto.ultima_saida %}
+                                {{ produto.ultima_saida.data_hora|date:"d/m/Y H:i" }}
+                                <small>(-{{ produto.ultima_saida.quantidade }})</small>
+                            {% else %}
+                                <small>Primeira saída</small>
+                            {% endif %}
+                        </td>
+                        <td class="quantidade-input">
+                            <input type="number" name="quantidade_{{ produto.id }}" min="0" value="0">
+                        </td>
+                        <td>{{ produto.unidade }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr id="nenhumProdutoSaida">
+                        <td colspan="7" class="no-data">Nenhum produto encontrado</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
 
         <div class="botoes">
-        <button type="submit" class="btn-confirmar">Confirmar</button>
+            <button type="submit" class="btn-confirmar">Confirmar Saída</button>
         </div>
     </form>
-
-
-    
-    <!-- Espaço extra para garantir scroll -->
-    <div style="height: 200px;"></div>
 </div>
 
 <script>
@@ -268,27 +267,199 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <style>
-.estoque-container {
-    border-radius: 30px 30px 30px 30px !important;
+/* Container Principal */
+.saida-container {
+    max-width: 95%;
+    width: 95%;
+    margin: 30px auto;
+    background: #e8e8e8;
+    padding: 20px;
+    border-radius: 30px;
 }
 
+.titulo {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #333;
+    font-size: 24px;
+}
+
+/* Campo de Código de Barras */
 .barcode-field {
-    width: 100% !important;
-    box-sizing: border-box !important;
+    margin-bottom: 20px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .barcode-input-container {
-    width: 100% !important;
-    box-sizing: border-box !important;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .barcode-input-container input {
-    width: 100% !important;
-    box-sizing: border-box !important;
-    max-width: 100% !important;
+    width: 100%;
+    height: 50px;
+    font-size: 16px;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    box-sizing: border-box;
+    max-width: 100%;
 }
 
-/* Responsividade para Dev Tools - Header */
+/* Filtros */
+.filtros-container {
+    margin-bottom: 30px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.filtros-container input {
+    width: 380px;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+}
+
+.btn-limpar, .btn-limpar-periodo {
+    background: #6c757d;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    font-size: 12px;
+    border-radius: 3px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-limpar:hover, .btn-limpar-periodo:hover {
+    background: #5a6268;
+}
+
+#formPeriodo {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin: 0;
+    margin-left: 30px;
+}
+
+#selectPeriodo {
+    padding: 8px 12px;
+    font-size: 12px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    min-width: 80px;
+}
+
+/* Tabela */
+.table-responsive {
+    width: 100%;
+    overflow: visible;
+}
+
+.tabela-saida {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    font-size: 12px;
+    table-layout: auto;
+}
+
+.tabela-saida th {
+    background: #026a84;
+    color: white;
+    padding: 8px 6px;
+    text-align: center;
+    font-weight: bold;
+    border: 1px solid #dee2e6;
+    vertical-align: middle;
+    font-size: 11px;
+    word-wrap: break-word;
+}
+
+.tabela-saida td {
+    padding: 6px 4px;
+    border: 1px solid #dee2e6;
+    vertical-align: middle;
+    font-size: 11px;
+    word-wrap: break-word;
+    max-width: 150px;
+    text-align: center;
+}
+
+.tabela-saida tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+.estoque-atual {
+    font-weight: bold;
+    color: #026a84;
+}
+
+.ultima-saida {
+    font-size: 10px;
+}
+
+.quantidade-input input {
+    width: 60px;
+    padding: 4px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    text-align: center;
+}
+
+.no-data {
+    padding: 20px;
+    color: #666;
+    font-style: italic;
+}
+
+.btn-expandir-desc {
+    background: #e9ecef;
+    border: 1px solid #ced4da;
+    border-radius: 3px;
+    padding: 2px 6px;
+    font-size: 12px;
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+.btn-expandir-desc:hover {
+    background: #dee2e6;
+}
+
+/* Botões */
+.botoes {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.btn-confirmar {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+    color: white;
+    border: none;
+    padding: 14px 28px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-confirmar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(220, 53, 69, 0.3);
+}
+
+/* Responsividade para Dev Tools */
 @media screen and (max-width: 1400px) {
     header {
         width: 100vw !important;
@@ -300,7 +471,7 @@ document.addEventListener('DOMContentLoaded', function() {
         right: 0 !important;
     }
     
-    .estoque-container {
+    .saida-container {
         max-width: 100% !important;
         width: 100% !important;
         margin: 20px 0 0 0 !important;
@@ -308,14 +479,91 @@ document.addEventListener('DOMContentLoaded', function() {
         box-sizing: border-box !important;
     }
     
-    .barcode-field {
-        margin-bottom: 15px !important;
-    }
-    
     .barcode-input-container input {
         height: 35px !important;
         font-size: 14px !important;
         padding: 8px !important;
+    }
+    
+    .tabela-saida {
+        font-size: 10px !important;
+    }
+    
+    .tabela-saida th {
+        padding: 6px 4px !important;
+        font-size: 10px !important;
+    }
+    
+    .tabela-saida td {
+        padding: 4px 3px !important;
+        font-size: 10px !important;
+        max-width: 120px !important;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .saida-container {
+        margin: 10px !important;
+        padding: 10px !important;
+        border-radius: 15px !important;
+        max-width: 98% !important;
+        width: 98% !important;
+    }
+    
+    .filtros-container {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+    
+    .filtros-container input {
+        width: 100%;
+    }
+    
+    #formPeriodo {
+        margin-left: 0;
+        justify-content: center;
+    }
+    
+    .tabela-saida {
+        font-size: 9px !important;
+    }
+    
+    .tabela-saida th {
+        padding: 4px 2px !important;
+        font-size: 9px !important;
+    }
+    
+    .tabela-saida td {
+        padding: 3px 2px !important;
+        font-size: 9px !important;
+        max-width: 80px !important;
+    }
+    
+    .quantidade-input input {
+        width: 50px !important;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .saida-container {
+        padding: 5px !important;
+        margin: 5px !important;
+        width: calc(100% - 10px) !important;
+    }
+    
+    .tabela-saida {
+        font-size: 8px !important;
+    }
+    
+    .tabela-saida th, .tabela-saida td {
+        padding: 2px 1px !important;
+        font-size: 8px !important;
+        max-width: 60px !important;
+    }
+    
+    .quantidade-input input {
+        width: 40px !important;
     }
 }
 </style>

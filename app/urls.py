@@ -26,6 +26,8 @@ urlpatterns = [
     # ----- SERVIÇOS -----
     path('servicos/cadastrar/', views.cadastrar_servico, name='cadastrar_servico'),
     path('servicos/lista/', views.lista_servicos, name='lista_servicos'),
+    path('servicos/editar/<int:servico_id>/', views.editar_servico, name='editar_servico'),
+    path('servicos/excluir/<int:servico_id>/', views.excluir_servico, name='excluir_servico'),
 
     # ----- CLIENTES -----
     path('clientes/', views.abrir_cliente, name='clientes'),

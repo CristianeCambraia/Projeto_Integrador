@@ -347,6 +347,7 @@ footer a:visited {
     margin: 0;
     display: flex;
     gap: 15px;
+    justify-content: flex-start;
 }
 
 .social-media li {
@@ -369,6 +370,7 @@ footer a:visited {
     margin: 0;
     display: flex;
     gap: 15px;
+    justify-content: flex-end;
 }
 
 .contact li {
