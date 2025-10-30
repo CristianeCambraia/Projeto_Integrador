@@ -10,6 +10,7 @@ from .forms import LoginForm
 from .decorators import login_required_custom
 from django.conf import settings
 from django.db import models
+from .views_teste_notificacoes import criar_produtos_teste_notificacoes
 
 def formatar_valor_brasileiro(valor):
     """Formata valor para padrão brasileiro: 1.234,56"""
@@ -1303,7 +1304,15 @@ def detalhes_notificacao(request, produto_id, tipo):
     
     hoje = timezone.now().date()
     
-    if tipo == 'VALIDADE':
+    if tipo == 'VENCIDO':
+        if hasattr(produto, 'validade') and produto.validade:
+            dias_vencidos = (hoje - produto.validade).days
+        else:
+            dias_vencidos = 5  # Valor padrão para teste
+        context['dias_vencidos'] = dias_vencidos
+        context['mensagem'] = f'⚠️ PRODUTO VENCIDO - Este produto está vencido há {dias_vencidos} dias e deve ser descartado imediatamente para evitar riscos à saúde. Não comercialize ou utilize este produto.'
+        
+    elif tipo == 'VALIDADE':
         if hasattr(produto, 'validade') and produto.validade:
             dias_restantes = (produto.validade - hoje).days
         else:
@@ -1394,22 +1403,42 @@ def obter_notificacoes(request):
             from datetime import timedelta
             hoje = timezone.now().date()
             
-            # 1. Produtos próximos da validade (60 dias)
+            # 1. Produtos vencidos
+            produtos_vencidos = Produto.objects.filter(
+                validade__isnull=False,
+                validade__lt=hoje
+            )[:10]
+            
+            # 2. Produtos próximos da validade (60 dias, mas não vencidos)
             produtos_validade = Produto.objects.filter(
                 validade__isnull=False,
+                validade__gte=hoje,
                 validade__lte=hoje + timedelta(days=60)
             )[:10]
             
-            # 2. Produtos com estoque crítico (≤ 5 unidades)
+            # 3. Produtos com estoque crítico (≤ 5 unidades)
             produtos_criticos = Produto.objects.filter(quantidade__lte=5)[:10]
             
-            # 3. Produtos com baixa saída (90 dias sem movimentação)
+            # 4. Produtos com baixa saída (90 dias sem movimentação)
             data_limite = timezone.now() - timedelta(days=90)
             produtos_sem_saida = Produto.objects.filter(data_hora__lt=data_limite)[:10]
             
             tipo_filtro = request.GET.get('tipo')
             
-            if tipo_filtro == 'VALIDADE':
+            if tipo_filtro == 'VENCIDO':
+                notificacoes = []
+                for produto in produtos_vencidos:
+                    dias_vencidos = (hoje - produto.validade).days
+                    notificacoes.append({
+                        'id': produto.id,
+                        'produto_id': produto.id,
+                        'produto_nome': produto.nome,
+                        'mensagem': f'Vencido há {dias_vencidos} dias',
+                        'tipo': 'VENCIDO'
+                    })
+                return JsonResponse({'notificacoes': notificacoes, 'total': len(notificacoes)})
+            
+            elif tipo_filtro == 'VALIDADE':
                 notificacoes = []
                 for produto in produtos_validade:
                     dias_restantes = (produto.validade - hoje).days
@@ -1450,9 +1479,10 @@ def obter_notificacoes(request):
             else:
                 # Retornar contadores por categoria
                 categorias = [
+                    {'tipo': 'VENCIDO', 'titulo': 'Produto vencido', 'icone': '❌', 'count': produtos_vencidos.count()},
                     {'tipo': 'VALIDADE', 'titulo': 'Produto próximo da validade', 'icone': '⚠️', 'count': produtos_validade.count()},
                     {'tipo': 'ESTOQUE_CRITICO', 'titulo': 'Estoque crítico', 'icone': '🔴', 'count': produtos_criticos.count()},
-                    {'tipo': 'BAIXA_SAIDA', 'titulo': 'Baixa saída', 'icone': '📦', 'count': produtos_sem_saida.count()}
+                    {'tipo': 'BAIXA_SAIDA', 'titulo': 'Produto com baixa movimentação', 'icone': '📦', 'count': produtos_sem_saida.count()}
                 ]
                 
                 total = sum(cat['count'] for cat in categorias)
@@ -2263,3 +2293,108 @@ def enviar_financeiro_email(request):
             return JsonResponse({'success': False, 'error': str(e)})
     
     return JsonResponse({'success': False, 'error': 'Método não permitido'})
+# ----- CRIAR PRODUTOS VENCIDOS PARA TESTE -----
+
+    from datetime import date, timedelta
+    
+    # Buscar ou criar fornecedor
+    fornecedor, created = Fornecedor.objects.get_or_create(
+        nome="Farmácia Teste",
+        defaults={
+            'cnpj': '12345678000199',
+            'endereco': 'Rua Teste, 123',
+            'cidade': 'Cidade Teste',
+            'telefone': '(35) 99999-9999',
+            'email': 'teste@farmacia.com'
+        }
+    )
+    
+    # Produtos vencidos
+    produtos_vencidos = [
+        {
+            'nome': 'Aspirina 500mg VENCIDA',
+            'quantidade': 15,
+            'unidade': 'Comprimido',
+            'preco': 12.50,
+            'preco_compra': 8.00,
+            'validade': date.today() - timedelta(days=30),
+            'descricao': 'Aspirina para dor de cabeça - PRODUTO VENCIDO'
+        },
+        {
+            'nome': 'Dipirona 500mg VENCIDA',
+            'quantidade': 8,
+            'unidade': 'Comprimido',
+            'preco': 15.00,
+            'preco_compra': 10.00,
+            'validade': date.today() - timedelta(days=15),
+            'descricao': 'Dipirona para febre - PRODUTO VENCIDO'
+        },
+        {
+            'nome': 'Xarope Infantil VENCIDO',
+            'quantidade': 3,
+            'unidade': 'Frasco',
+            'preco': 25.00,
+            'preco_compra': 18.00,
+            'validade': date.today() - timedelta(days=60),
+            'descricao': 'Xarope para tosse infantil - PRODUTO VENCIDO'
+        },
+        {
+            'nome': 'Vitamina C VENCIDA',
+            'quantidade': 20,
+            'unidade': 'Comprimido',
+            'preco': 18.00,
+            'preco_compra': 12.00,
+            'validade': date.today() - timedelta(days=5),
+            'descricao': 'Vitamina C 1000mg - PRODUTO VENCIDO'
+        }
+    ]
+    
+    produtos_criados = []
+    for produto_data in produtos_vencidos:
+        produto, created = Produto.objects.get_or_create(
+            nome=produto_data['nome'],
+            defaults={
+                'quantidade': produto_data['quantidade'],
+                'unidade': produto_data['unidade'],
+                'preco': produto_data['preco'],
+                'preco_compra': produto_data['preco_compra'],
+                'validade': produto_data['validade'],
+                'descricao': produto_data['descricao'],
+                'fornecedor': fornecedor
+            }
+        )
+        
+        if created:
+            produtos_criados.append(produto.nome)
+    
+    if produtos_criados:
+        messages.success(request, f'Produtos vencidos criados: {", ".join(produtos_criados)}')
+    else:
+        messages.info(request, 'Produtos vencidos já existem no sistema')
+    
+    return redirect('home')
+# ----- DEBUG PRODUTOS VENCIDOS -----
+def debug_produtos_vencidos(request):
+    from datetime import date
+    hoje = date.today()
+    
+    # Buscar todos os produtos com validade
+    produtos_com_validade = Produto.objects.filter(validade__isnull=False).order_by('validade')
+    
+    debug_info = []
+    for produto in produtos_com_validade:
+        dias_diff = (hoje - produto.validade).days if produto.validade else 0
+        status = "VENCIDO" if produto.validade < hoje else "VÁLIDO"
+        
+        debug_info.append({
+            'nome': produto.nome,
+            'validade': produto.validade,
+            'dias_diff': dias_diff,
+            'status': status
+        })
+    
+    return JsonResponse({
+        'hoje': str(hoje),
+        'total_produtos_com_validade': len(debug_info),
+        'produtos': debug_info
+    })

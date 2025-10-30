@@ -115,6 +115,10 @@ urlpatterns = [
     path('enviar-financeiro-email/', views.enviar_financeiro_email, name='enviar_financeiro_email'),
     
     # ----- CADASTROS MENU -----
-    path('cadastros/', views.cadastros, name='cadastros')
+    path('cadastros/', views.cadastros, name='cadastros'),
+    
+    # ----- TESTE PRODUTOS VENCIDOS -----
+    path('debug-produtos-vencidos/', views.debug_produtos_vencidos, name='debug_produtos_vencidos'),
+    path('criar-produtos-teste-notificacoes/', views.criar_produtos_teste_notificacoes, name='criar_produtos_teste_notificacoes'),
 
 ]

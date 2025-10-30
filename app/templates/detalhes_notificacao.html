@@ -4,11 +4,12 @@
 <div style="max-width: 800px; margin: 20px auto; padding: 20px;">
     <h2 style="color: white; margin-bottom: 20px;">📋 Detalhes da Notificação</h2>
     
-    <div style="background: #f8f9fa; border-left: 4px solid {% if tipo == 'VALIDADE' %}#ffc107{% elif tipo == 'ESTOQUE_CRITICO' %}#dc3545{% else %}#17a2b8{% endif %}; padding: 20px; margin-bottom: 20px; border-radius: 5px;">
-        <h3 style="margin: 0 0 10px 0; color: {% if tipo == 'VALIDADE' %}#856404{% elif tipo == 'ESTOQUE_CRITICO' %}#721c24{% else %}#0c5460{% endif %};">
+    <div style="background: #f8f9fa; border-left: 4px solid {% if tipo == 'VALIDADE' %}#ffc107{% elif tipo == 'ESTOQUE_CRITICO' %}#dc3545{% elif tipo == 'VENCIDO' %}#dc3545{% else %}#17a2b8{% endif %}; padding: 20px; margin-bottom: 20px; border-radius: 5px;">
+        <h3 style="margin: 0 0 10px 0; color: {% if tipo == 'VALIDADE' %}#856404{% elif tipo == 'ESTOQUE_CRITICO' %}#721c24{% elif tipo == 'VENCIDO' %}#721c24{% else %}#0c5460{% endif %};">
             {% if tipo == 'VALIDADE' %}⚠️ Produto Próximo da Validade
             {% elif tipo == 'ESTOQUE_CRITICO' %}🔴 Estoque Crítico
-            {% else %}📦 Baixa Saída{% endif %}
+            {% elif tipo == 'VENCIDO' %}❌ Produto Vencido
+            {% else %}📦 Produto com Baixa Movimentação{% endif %}
         </h3>
         <p style="margin: 0; font-size: 14px;">{{ mensagem }}</p>
     </div>
@@ -62,7 +63,24 @@
         </div>
         <div style="background: #f8d7da; border: 1px solid #f5c6cb; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
             <strong style="color: #721c24;">🔴 Estoque Crítico:</strong>
-            <p style="margin: 5px 0 0 0; color: #721c24;">Verifique a disponibilidade com fornecedores e programe a reposição urgente deste produto.</p>
+            <p style="margin: 5px 0 0 0; color: #721c24;">Verifique a disponibilidade com fornecedores e programe a reposição urgente desses produtos.</p>
+        </div>
+        {% endif %}
+
+        {% if tipo == 'VENCIDO' %}
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+            <div>
+                <label style="font-weight: bold; color: #666; display: block; margin-bottom: 5px;">Data de Validade:</label>
+                <span style="font-size: 16px; color: #dc3545; font-weight: bold;">{{ produto.validade|date:"d/m/Y" }}</span>
+            </div>
+            <div>
+                <label style="font-weight: bold; color: #666; display: block; margin-bottom: 5px;">Dias Vencido:</label>
+                <span style="font-size: 16px; color: #dc3545; font-weight: bold;">{{ dias_vencidos }} dias</span>
+            </div>
+        </div>
+        <div style="background: #f8d7da; border: 1px solid #f5c6cb; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+            <strong style="color: #721c24;">❌ Produto Vencido - Ação Necessária:</strong>
+            <p style="margin: 5px 0 0 0; color: #721c24;">Este produto deve ser descartado imediatamente conforme normas sanitárias. Não comercialize ou utilize este produto vencido.</p>
         </div>
         {% endif %}
 

@@ -272,6 +272,11 @@
             visibility: visible;
             transform: translateX(-50%) translateY(0);
         }
+        
+        .dropdown:hover ~ * .message,
+        .dropdown:hover ~ .message {
+            display: none !important;
+        }
 
         .dropdown-content::before {
             content: '';
@@ -457,9 +462,10 @@
                             
                             <div id="notificationDropdown" style="display: none; position: fixed; top: 80px; right: 20px; background: white; border: 1px solid #ccc; width: 320px; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.2); z-index: 99999;">
                                 <h3 style="margin: 0 0 10px 0; color: #333; text-align: center; font-size: 18px;">Notificações de Estoque</h3>
-                                <div style="margin-bottom: 10px; display: flex; gap: 5px;">
-                                    <button onclick="zerarContador()" style="background: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 3px; font-size: 14px;">Marcar Todas como Lidas</button>
-                                    <button onclick="marcarTodasNaoLidas()" style="background: #28a745; color: white; border: none; padding: 5px 10px; border-radius: 3px; font-size: 14px;">Marcar Todas como Não Lidas</button>
+                                <div style="margin-bottom: 10px; display: flex; gap: 5px; flex-wrap: wrap;">
+                                    <button onclick="zerarContador()" style="background: #dc3545; color: white; border: none; padding: 5px 8px; border-radius: 3px; font-size: 12px;">Marcar Todas como Lidas</button>
+                                    <button onclick="marcarTodasNaoLidas()" style="background: #28a745; color: white; border: none; padding: 5px 8px; border-radius: 3px; font-size: 12px;">Marcar como Não Lidas</button>
+                                    <button onclick="descartarTodas()" style="background: #6c757d; color: white; border: none; padding: 5px 8px; border-radius: 3px; font-size: 12px;">Descartar Todas</button>
                                 </div>
                                 <div id="notificationContent">
                                     <div style="text-align: center; padding: 20px; color: #666;">Carregando...</div>
@@ -549,20 +555,10 @@
                     if (data.categorias && data.categorias.length > 0) {
                         let html = '';
                         data.categorias.forEach(categoria => {
-                            // Calcular count real descontando apagadas
-                            const apagadas = JSON.parse(localStorage.getItem('notificacoesApagadas') || '[]');
-                            let countReal = 0;
-                            for (let i = 1; i <= categoria.count; i++) {
-                                const key = `${i}_${categoria.tipo}`;
-                                if (!apagadas.includes(key)) {
-                                    countReal++;
-                                }
-                            }
-                            
-                            if (countReal > 0) {
+                            if (categoria.count > 0) {
                                 html += `
                                     <div style="border-bottom: 1px solid #eee; padding: 10px 0; margin: 5px 0; cursor: pointer; background: #f8f9fa; border-radius: 5px; padding: 10px;" onclick="expandCategory('${categoria.tipo}')">
-                                        <strong>${categoria.icone} ${categoria.titulo} (${countReal})</strong>
+                                        <strong>${categoria.icone} ${categoria.titulo} (${categoria.count})</strong>
                                         <div id="items-${categoria.tipo}" style="display: none; margin-top: 10px; padding-left: 20px;"></div>
                                     </div>
                                 `;
@@ -570,18 +566,23 @@
                         });
                         content.innerHTML = html;
                         
-                        // Calcular notificações não lidas
+                        // Calcular total de notificações considerando localStorage
+                        let totalNaoLidas = 0;
                         const lidas = JSON.parse(localStorage.getItem('notificacoesLidas') || '[]');
                         const apagadas = JSON.parse(localStorage.getItem('notificacoesApagadas') || '[]');
-                        let totalNaoLidas = 0;
                         
                         data.categorias.forEach(cat => {
-                            for (let i = 1; i <= cat.count; i++) {
-                                const key = `${i}_${cat.tipo}`;
-                                if (!lidas.includes(key) && !apagadas.includes(key)) {
-                                    totalNaoLidas++;
-                                }
+                            let countCategoria = cat.count;
+                            // Subtrair notificações lidas e apagadas desta categoria
+                            if (cat.notificacoes) {
+                                cat.notificacoes.forEach(notif => {
+                                    const key = `${notif.produto_id}_${notif.tipo}`;
+                                    if (lidas.includes(key) || apagadas.includes(key)) {
+                                        countCategoria--;
+                                    }
+                                });
                             }
+                            totalNaoLidas += Math.max(0, countCategoria);
                         });
                         
                         const counter = document.getElementById('notificationCounter');
@@ -645,7 +646,7 @@
                             } else {
                                 html += `
                                     <div style="border-bottom: 1px solid #ddd; padding: 8px; margin: 5px 0; background: white; border-radius: 3px; word-wrap: break-word; display: flex; justify-content: space-between; align-items: center;">
-                                        <div onclick="marcarLida('${key}'); window.location.href='/notificacao/${notif.produto_id}/${notif.tipo}/'" style="cursor: pointer; flex: 1;">
+                                        <div onclick="marcarLida('${key}')" style="cursor: pointer; flex: 1;">
                                             <strong>${notif.produto_nome}</strong><br>
                                             <small>${notif.mensagem}</small>
                                         </div>
@@ -677,32 +678,43 @@
                 // Atualizar contador imediatamente
                 const counter = document.getElementById('notificationCounter');
                 if (counter) {
-                    let count = Math.max(0, parseInt(counter.textContent) - 1);
+                    let count = Math.max(0, parseInt(counter.textContent || '0') - 1);
                     counter.textContent = count;
-                    if (count <= 0) {
-                        counter.style.display = 'none';
-                    }
+                    if (count <= 0) counter.style.display = 'none';
                 }
+                
+                // Extrair produto_id e tipo do key
+                const parts = key.split('_');
+                const produto_id = parts[0];
+                const tipo = parts[1];
+                
+                // Redirecionar para a página de detalhes
+                window.location.href = `/notificacao/${produto_id}/${tipo}/`;
             }
         }
         
         function initializeNotifications() {
-            // Carregar notificações e calcular contador na inicialização
             fetch('/notificacoes/')
                 .then(response => response.json())
                 .then(data => {
                     if (data.categorias) {
+                        // Calcular total considerando localStorage
+                        let totalNaoLidas = 0;
                         const lidas = JSON.parse(localStorage.getItem('notificacoesLidas') || '[]');
                         const apagadas = JSON.parse(localStorage.getItem('notificacoesApagadas') || '[]');
-                        let totalNaoLidas = 0;
                         
                         data.categorias.forEach(cat => {
-                            for (let i = 1; i <= cat.count; i++) {
-                                const key = `${i}_${cat.tipo}`;
-                                if (!lidas.includes(key) && !apagadas.includes(key)) {
-                                    totalNaoLidas++;
-                                }
+                            let countCategoria = cat.count;
+                            // Subtrair notificações lidas e apagadas desta categoria
+                            if (cat.notificacoes) {
+                                cat.notificacoes.forEach(notif => {
+                                    const key = `${notif.produto_id}_${notif.tipo}`;
+                                    if (lidas.includes(key) || apagadas.includes(key)) {
+                                        countCategoria--;
+                                    }
+                                });
                             }
+                            totalNaoLidas += Math.max(0, countCategoria);
                         });
                         
                         const counter = document.getElementById('notificationCounter');
@@ -751,22 +763,27 @@
         }
         
         function marcarTodasNaoLidas() {
-            localStorage.removeItem('notificacoesLidas');
-            loadNotifications(); // Recarregar para calcular contador correto
+            localStorage.clear(); // Limpar tudo
+            loadNotifications();
+        }
+        
+        function descartarTodas() {
+            zerarContador();
         }
         
         function zerarContador() {
+            const counter = document.getElementById('notificationCounter');
+            counter.textContent = '0';
+            counter.style.display = 'none';
+            
             const todasLidas = [];
-            for (let i = 1; i <= 50; i++) {
+            for (let i = 1; i <= 100; i++) {
+                todasLidas.push(`${i}_VENCIDO`);
                 todasLidas.push(`${i}_VALIDADE`);
                 todasLidas.push(`${i}_ESTOQUE_CRITICO`);
                 todasLidas.push(`${i}_BAIXA_SAIDA`);
             }
             localStorage.setItem('notificacoesLidas', JSON.stringify(todasLidas));
-            
-            const counter = document.getElementById('notificationCounter');
-            counter.textContent = '0';
-            counter.style.display = 'none';
             
             loadNotifications();
         }
@@ -778,8 +795,18 @@
         // Inicializar ao carregar a página
         document.addEventListener('DOMContentLoaded', function() {
             initializeNotifications();
-            // Atualizar contador a cada 30 segundos
-            setInterval(initializeNotifications, 30000);
+            // Remover atualização automática para evitar conflitos
+            
+            // Ocultar mensagens quando dropdowns são abertos
+            const dropdowns = document.querySelectorAll('.dropdown');
+            dropdowns.forEach(dropdown => {
+                dropdown.addEventListener('mouseenter', function() {
+                    const messages = document.querySelectorAll('.message');
+                    messages.forEach(msg => {
+                        msg.style.display = 'none';
+                    });
+                });
+            });
         });
         
 
