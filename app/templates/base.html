@@ -566,30 +566,8 @@
                         });
                         content.innerHTML = html;
                         
-                        // Calcular total de notificações considerando localStorage
-                        let totalNaoLidas = 0;
-                        const lidas = JSON.parse(localStorage.getItem('notificacoesLidas') || '[]');
-                        const apagadas = JSON.parse(localStorage.getItem('notificacoesApagadas') || '[]');
-                        
-                        data.categorias.forEach(cat => {
-                            let countCategoria = cat.count;
-                            // Subtrair notificações lidas e apagadas desta categoria
-                            if (cat.notificacoes) {
-                                cat.notificacoes.forEach(notif => {
-                                    const key = `${notif.produto_id}_${notif.tipo}`;
-                                    if (lidas.includes(key) || apagadas.includes(key)) {
-                                        countCategoria--;
-                                    }
-                                });
-                            }
-                            totalNaoLidas += Math.max(0, countCategoria);
-                        });
-                        
-                        const counter = document.getElementById('notificationCounter');
-                        if (counter) {
-                            counter.textContent = totalNaoLidas;
-                            counter.style.display = totalNaoLidas > 0 ? 'flex' : 'none';
-                        }
+                        // Atualizar contador do sino
+                        updateNotificationCounter(data.categorias);
                     } else {
                         content.innerHTML = '<div style="text-align: center; padding: 20px; color: #666;">Nenhuma notificação</div>';
                         const counter = document.getElementById('notificationCounter');
@@ -600,6 +578,28 @@
                     console.error('Erro ao carregar notificações:', error);
                     document.getElementById('notificationContent').innerHTML = '<div style="text-align: center; padding: 20px; color: #ff0000;">Erro ao carregar</div>';
                 });
+        }
+        
+        function updateNotificationCounter(categorias) {
+            // Contar notificações não lidas de forma simples
+            let totalNaoLidas = 0;
+            const lidas = JSON.parse(localStorage.getItem('notificacoesLidas') || '[]');
+            const apagadas = JSON.parse(localStorage.getItem('notificacoesApagadas') || '[]');
+            
+            // Somar todas as categorias
+            categorias.forEach(cat => {
+                totalNaoLidas += cat.count;
+            });
+            
+            // Subtrair apenas as que foram realmente lidas/apagadas
+            const totalMarcadas = lidas.length + apagadas.length;
+            totalNaoLidas = Math.max(0, totalNaoLidas - totalMarcadas);
+            
+            const counter = document.getElementById('notificationCounter');
+            if (counter) {
+                counter.textContent = totalNaoLidas;
+                counter.style.display = totalNaoLidas > 0 ? 'flex' : 'none';
+            }
         }
         
         function expandCategory(tipo) {
@@ -646,7 +646,7 @@
                             } else {
                                 html += `
                                     <div style="border-bottom: 1px solid #ddd; padding: 8px; margin: 5px 0; background: white; border-radius: 3px; word-wrap: break-word; display: flex; justify-content: space-between; align-items: center;">
-                                        <div onclick="marcarLida('${key}')" style="cursor: pointer; flex: 1;">
+                                        <div onclick="window.location.href='/notificacao/${notif.produto_id}/${notif.tipo}/'; marcarLidaSemRedirect('${key}')" style="cursor: pointer; flex: 1;">
                                             <strong>${notif.produto_nome}</strong><br>
                                             <small>${notif.mensagem}</small>
                                         </div>
@@ -688,8 +688,27 @@
                 const produto_id = parts[0];
                 const tipo = parts[1];
                 
+                console.log('DEBUG: Redirecionando para:', `/notificacao/${produto_id}/${tipo}/`);
+                console.log('DEBUG: produto_id =', produto_id, 'tipo =', tipo);
+                
                 // Redirecionar para a página de detalhes
                 window.location.href = `/notificacao/${produto_id}/${tipo}/`;
+            }
+        }
+        
+        function marcarLidaSemRedirect(key) {
+            const lidas = JSON.parse(localStorage.getItem('notificacoesLidas') || '[]');
+            if (!lidas.includes(key)) {
+                lidas.push(key);
+                localStorage.setItem('notificacoesLidas', JSON.stringify(lidas));
+                
+                // Atualizar contador imediatamente
+                const counter = document.getElementById('notificationCounter');
+                if (counter) {
+                    let count = Math.max(0, parseInt(counter.textContent || '0') - 1);
+                    counter.textContent = count;
+                    if (count <= 0) counter.style.display = 'none';
+                }
             }
         }
         
@@ -698,30 +717,7 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.categorias) {
-                        // Calcular total considerando localStorage
-                        let totalNaoLidas = 0;
-                        const lidas = JSON.parse(localStorage.getItem('notificacoesLidas') || '[]');
-                        const apagadas = JSON.parse(localStorage.getItem('notificacoesApagadas') || '[]');
-                        
-                        data.categorias.forEach(cat => {
-                            let countCategoria = cat.count;
-                            // Subtrair notificações lidas e apagadas desta categoria
-                            if (cat.notificacoes) {
-                                cat.notificacoes.forEach(notif => {
-                                    const key = `${notif.produto_id}_${notif.tipo}`;
-                                    if (lidas.includes(key) || apagadas.includes(key)) {
-                                        countCategoria--;
-                                    }
-                                });
-                            }
-                            totalNaoLidas += Math.max(0, countCategoria);
-                        });
-                        
-                        const counter = document.getElementById('notificationCounter');
-                        if (counter) {
-                            counter.textContent = totalNaoLidas;
-                            counter.style.display = totalNaoLidas > 0 ? 'flex' : 'none';
-                        }
+                        updateNotificationCounter(data.categorias);
                     }
                 })
                 .catch(error => console.error('Erro ao inicializar notificações:', error));
@@ -772,20 +768,56 @@
         }
         
         function zerarContador() {
+            // Zerar contador imediatamente
             const counter = document.getElementById('notificationCounter');
-            counter.textContent = '0';
-            counter.style.display = 'none';
-            
-            const todasLidas = [];
-            for (let i = 1; i <= 100; i++) {
-                todasLidas.push(`${i}_VENCIDO`);
-                todasLidas.push(`${i}_VALIDADE`);
-                todasLidas.push(`${i}_ESTOQUE_CRITICO`);
-                todasLidas.push(`${i}_BAIXA_SAIDA`);
+            if (counter) {
+                counter.textContent = '0';
+                counter.style.display = 'none';
             }
-            localStorage.setItem('notificacoesLidas', JSON.stringify(todasLidas));
             
-            loadNotifications();
+            // Buscar todas as notificações atuais e marcar como lidas
+            fetch('/notificacoes/')
+                .then(response => response.json())
+                .then(data => {
+                    const lidas = JSON.parse(localStorage.getItem('notificacoesLidas') || '[]');
+                    
+                    // Para cada categoria, buscar os itens e marcar como lidos
+                    const promises = [];
+                    data.categorias.forEach(categoria => {
+                        if (categoria.count > 0) {
+                            promises.push(
+                                fetch(`/notificacoes/?tipo=${categoria.tipo}`)
+                                    .then(response => response.json())
+                                    .then(categoryData => {
+                                        if (categoryData.notificacoes) {
+                                            categoryData.notificacoes.forEach(notif => {
+                                                const key = `${notif.produto_id}_${notif.tipo}`;
+                                                if (!lidas.includes(key)) {
+                                                    lidas.push(key);
+                                                }
+                                            });
+                                        }
+                                    })
+                            );
+                        }
+                    });
+                    
+                    Promise.all(promises).then(() => {
+                        localStorage.setItem('notificacoesLidas', JSON.stringify(lidas));
+                        
+                        // Fechar todas as categorias expandidas
+                        const itemsDivs = document.querySelectorAll('[id^="items-"]');
+                        itemsDivs.forEach(div => {
+                            div.style.display = 'none';
+                        });
+                        
+                        // Recarregar notificações
+                        loadNotifications();
+                    });
+                })
+                .catch(error => {
+                    console.error('Erro ao marcar todas como lidas:', error);
+                });
         }
         
 

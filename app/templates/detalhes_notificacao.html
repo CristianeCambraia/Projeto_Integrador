@@ -9,13 +9,13 @@
             {% if tipo == 'VALIDADE' %}⚠️ Produto Próximo da Validade
             {% elif tipo == 'ESTOQUE_CRITICO' %}🔴 Estoque Crítico
             {% elif tipo == 'VENCIDO' %}❌ Produto Vencido
-            {% else %}📦 Produto com Baixa Movimentação{% endif %}
+            {% else %}📦 Baixa Saída{% endif %}
         </h3>
         <p style="margin: 0; font-size: 14px;">{{ mensagem }}</p>
     </div>
 
     <div style="background: white; border: 1px solid #ddd; border-radius: 8px; padding: 20px;">
-        <h4 style="margin: 0 0 15px 0; color: white;">Informações do Produto</h4>
+        <h4 style="margin: 0 0 15px 0; color: #333;">Informações do Produto</h4>
         
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
             <div>

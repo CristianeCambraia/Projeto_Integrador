@@ -84,7 +84,7 @@
         th, td {
             border: 1px solid #ddd;
             padding: 4px;
-            text-align: left;
+            text-align: center;
         }
         
         th {
@@ -133,14 +133,13 @@
         <table>
             <thead>
                 <tr>
-                    <th>Produto</th>
                     <th>Fornecedor</th>
+                    <th>Produto</th>
                     <th>Qtd</th>
                     <th>Unidade</th>
                     <th>Valor Compra</th>
-                    <th>Valor Venda</th>
-                    <th>Estoque Atual</th>
                     <th>Total Compra</th>
+                    <th>Valor Venda</th>
                     <th>Total Venda</th>
                     <th>Lucro Unit.</th>
                     <th>Lucro Total</th>
@@ -149,25 +148,24 @@
             <tbody>
                 {% for produto in produtos %}
                 <tr>
-                    <td>{{ produto.nome }}</td>
-                    <td>{{ produto.fornecedor.nome|default:"Sem fornecedor" }}</td>
+                    <td style="text-align: center;">{{ produto.fornecedor.nome|default:"Sem fornecedor" }}</td>
+                    <td style="text-align: center;">{{ produto.nome }}</td>
                     <td>{{ produto.quantidade }}</td>
                     <td>{{ produto.unidade }}</td>
                     <td>R$ {{ produto.preco_compra|default:"0,00" }}</td>
-                    <td>R$ {{ produto.preco }}</td>
-                    <td>{{ produto.quantidade }}</td>
                     <td>R$ {{ produto.valor_total_compra }}</td>
+                    <td>R$ {{ produto.preco }}</td>
                     <td>R$ {{ produto.valor_total_venda }}</td>
                     <td>R$ {{ produto.lucro_unitario }}</td>
                     <td>R$ {{ produto.lucro_total }}</td>
                 </tr>
                 {% empty %}
-                <tr><td colspan="11">Nenhum produto encontrado</td></tr>
+                <tr><td colspan="10">Nenhum produto encontrado</td></tr>
                 {% endfor %}
             </tbody>
             <tfoot>
                 <tr class="totals">
-                    <td colspan="7">TOTAIS:</td>
+                    <td colspan="6">TOTAIS:</td>
                     <td>R$ {{ total_compra }}</td>
                     <td>R$ {{ total_venda }}</td>
                     <td>-</td>

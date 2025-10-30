@@ -1257,44 +1257,17 @@ def teste_notificacoes(request):
 
 def detalhes_notificacao(request, produto_id, tipo):
     """Exibe detalhes de uma notificação específica"""
+    print(f"DEBUG: produto_id={produto_id}, tipo={tipo}")  # Debug
+    
     # Marcar como lida ao acessar
     Notificacao.objects.filter(produto_id=produto_id, tipo=tipo, lida=False).update(lida=True)
     
     try:
         produto = Produto.objects.get(id=produto_id)
+        print(f"DEBUG: Produto encontrado: {produto.nome}, quantidade: {produto.quantidade}")  # Debug
     except Produto.DoesNotExist:
-        # Criar produto de teste se não existir
-        produtos_teste = {
-            1: {'nome': 'Medicamento A', 'descricao': 'Medicamento para teste', 'preco': 25.50, 'quantidade': 10},
-            2: {'nome': 'Medicamento B', 'descricao': 'Medicamento para teste', 'preco': 35.00, 'quantidade': 15},
-            3: {'nome': 'Produto C', 'descricao': 'Produto com estoque crítico', 'preco': 45.00, 'quantidade': 2},
-            4: {'nome': 'Produto D', 'descricao': 'Produto com baixa saída', 'preco': 55.00, 'quantidade': 50},
-            5: {'nome': 'Insulina Regular', 'descricao': 'Insulina para diabetes', 'preco': 85.00, 'quantidade': 8},
-            6: {'nome': 'Soro Fisiológico', 'descricao': 'Soro para hidratação', 'preco': 12.50, 'quantidade': 20},
-            7: {'nome': 'Máscara N95', 'descricao': 'Máscara de proteção', 'preco': 8.90, 'quantidade': 1},
-            8: {'nome': 'Luvas Cirúrgicas', 'descricao': 'Luvas descartáveis', 'preco': 15.00, 'quantidade': 3},
-            9: {'nome': 'Termômetro Digital', 'descricao': 'Termômetro infravermelho', 'preco': 120.00, 'quantidade': 25},
-            10: {'nome': 'Estetoscópio', 'descricao': 'Estetoscópio clínico', 'preco': 180.00, 'quantidade': 15}
-        }
-        
-        if produto_id in produtos_teste:
-            dados = produtos_teste[produto_id]
-            # Criar objeto temporário para o template
-            class ProdutoTeste:
-                def __init__(self, id, nome, descricao, preco, quantidade):
-                    self.id = id
-                    self.nome = nome
-                    self.descricao = descricao
-                    self.preco = preco
-                    self.quantidade = quantidade
-                    self.data_hora = timezone.now()
-                    self.validade = timezone.now().date() + timedelta(days=30 if id <= 2 else 365)
-                    self.fornecedor = None
-            
-            produto = ProdutoTeste(produto_id, dados['nome'], dados['descricao'], dados['preco'], dados['quantidade'])
-        else:
-            messages.error(request, 'Produto não encontrado')
-            return redirect('lista_produtos')
+        messages.error(request, 'Produto não encontrado')
+        return redirect('lista_produtos')
     
     context = {
         'produto': produto,
@@ -1482,7 +1455,7 @@ def obter_notificacoes(request):
                     {'tipo': 'VENCIDO', 'titulo': 'Produto vencido', 'icone': '❌', 'count': produtos_vencidos.count()},
                     {'tipo': 'VALIDADE', 'titulo': 'Produto próximo da validade', 'icone': '⚠️', 'count': produtos_validade.count()},
                     {'tipo': 'ESTOQUE_CRITICO', 'titulo': 'Estoque crítico', 'icone': '🔴', 'count': produtos_criticos.count()},
-                    {'tipo': 'BAIXA_SAIDA', 'titulo': 'Produto com baixa movimentação', 'icone': '📦', 'count': produtos_sem_saida.count()}
+                    {'tipo': 'BAIXA_SAIDA', 'titulo': 'Baixa saída', 'icone': '📦', 'count': produtos_sem_saida.count()}
                 ]
                 
                 total = sum(cat['count'] for cat in categorias)
@@ -2107,30 +2080,61 @@ def relatorio_financeiro(request):
         data_limite = timezone.now() - timedelta(days=dias)
         produtos = produtos.filter(data_hora__gte=data_limite)
     
-    # Calcular valores financeiros para cada produto
+    # Agrupar produtos por nome e fornecedor (case-insensitive)
+    produtos_agrupados = {}
+    
+    for produto in produtos:
+        fornecedor_nome = produto.fornecedor.nome if produto.fornecedor else "Sem fornecedor"
+        # Usar nome em lowercase para agrupamento case-insensitive
+        chave = f"{produto.nome.lower().strip()}_{fornecedor_nome.lower().strip()}"
+        
+        if chave in produtos_agrupados:
+            # Somar quantidades
+            produtos_agrupados[chave]['quantidade'] += produto.quantidade or 0
+        else:
+            # Criar novo item agrupado
+            produtos_agrupados[chave] = {
+                'nome': produto.nome,
+                'fornecedor': produto.fornecedor,
+                'quantidade': produto.quantidade or 0,
+                'unidade': produto.unidade,
+                'preco_compra': produto.preco_compra or 0,
+                'preco': produto.preco or 0
+            }
+    
+    # Calcular valores financeiros para produtos agrupados
     produtos_financeiros = []
     total_compra = 0
     total_venda = 0
     
-    for produto in produtos:
-        preco_compra = produto.preco_compra or 0
-        preco_venda = produto.preco or 0
-        quantidade = produto.quantidade or 0
+    for item in produtos_agrupados.values():
+        preco_compra = item['preco_compra']
+        preco_venda = item['preco']
+        quantidade = item['quantidade']
         
         valor_total_compra = preco_compra * quantidade
         valor_total_venda = preco_venda * quantidade
         lucro_unitario = preco_venda - preco_compra
         lucro_total = lucro_unitario * quantidade
         
-        produto.valor_total_compra = f"{valor_total_compra:.2f}".replace('.', ',')
-        produto.valor_total_venda = f"{valor_total_venda:.2f}".replace('.', ',')
-        produto.lucro_unitario = f"{lucro_unitario:.2f}".replace('.', ',')
-        produto.lucro_total = f"{lucro_total:.2f}".replace('.', ',')
+        # Criar objeto similar ao produto para o template
+        produto_agrupado = type('obj', (object,), {
+            'nome': item['nome'],
+            'fornecedor': item['fornecedor'],
+            'quantidade': quantidade,
+            'unidade': item['unidade'],
+            'preco_compra': f"{preco_compra:.2f}".replace('.', ','),
+            'preco': f"{preco_venda:.2f}".replace('.', ','),
+            'valor_total_compra': f"{valor_total_compra:.2f}".replace('.', ','),
+            'valor_total_venda': f"{valor_total_venda:.2f}".replace('.', ','),
+            'lucro_unitario': f"{lucro_unitario:.2f}".replace('.', ','),
+            'lucro_total': f"{lucro_total:.2f}".replace('.', ',')
+        })
         
         total_compra += valor_total_compra
         total_venda += valor_total_venda
         
-        produtos_financeiros.append(produto)
+        produtos_financeiros.append(produto_agrupado)
     
     lucro_geral = total_venda - total_compra
     
@@ -2153,29 +2157,56 @@ def exportar_financeiro_pdf(request):
         data_limite = timezone.now() - timedelta(days=dias)
         produtos = produtos.filter(data_hora__gte=data_limite)
     
+    # Agrupar produtos por nome e fornecedor
+    produtos_agrupados = {}
+    
+    for produto in produtos:
+        fornecedor_nome = produto.fornecedor.nome if produto.fornecedor else "Sem fornecedor"
+        chave = f"{produto.nome}_{fornecedor_nome}"
+        
+        if chave in produtos_agrupados:
+            produtos_agrupados[chave]['quantidade'] += produto.quantidade or 0
+        else:
+            produtos_agrupados[chave] = {
+                'nome': produto.nome,
+                'fornecedor': produto.fornecedor,
+                'quantidade': produto.quantidade or 0,
+                'unidade': produto.unidade,
+                'preco_compra': produto.preco_compra or 0,
+                'preco': produto.preco or 0
+            }
+    
     produtos_financeiros = []
     total_compra = 0
     total_venda = 0
     
-    for produto in produtos:
-        preco_compra = produto.preco_compra or 0
-        preco_venda = produto.preco or 0
-        quantidade = produto.quantidade or 0
+    for item in produtos_agrupados.values():
+        preco_compra = item['preco_compra']
+        preco_venda = item['preco']
+        quantidade = item['quantidade']
         
         valor_total_compra = preco_compra * quantidade
         valor_total_venda = preco_venda * quantidade
         lucro_unitario = preco_venda - preco_compra
         lucro_total = lucro_unitario * quantidade
         
-        produto.valor_total_compra = f"{valor_total_compra:.2f}".replace('.', ',')
-        produto.valor_total_venda = f"{valor_total_venda:.2f}".replace('.', ',')
-        produto.lucro_unitario = f"{lucro_unitario:.2f}".replace('.', ',')
-        produto.lucro_total = f"{lucro_total:.2f}".replace('.', ',')
+        produto_agrupado = type('obj', (object,), {
+            'nome': item['nome'],
+            'fornecedor': item['fornecedor'],
+            'quantidade': quantidade,
+            'unidade': item['unidade'],
+            'preco_compra': f"{preco_compra:.2f}".replace('.', ','),
+            'preco': f"{preco_venda:.2f}".replace('.', ','),
+            'valor_total_compra': f"{valor_total_compra:.2f}".replace('.', ','),
+            'valor_total_venda': f"{valor_total_venda:.2f}".replace('.', ','),
+            'lucro_unitario': f"{lucro_unitario:.2f}".replace('.', ','),
+            'lucro_total': f"{lucro_total:.2f}".replace('.', ',')
+        })
         
         total_compra += valor_total_compra
         total_venda += valor_total_venda
         
-        produtos_financeiros.append(produto)
+        produtos_financeiros.append(produto_agrupado)
     
     lucro_geral = total_venda - total_compra
     
