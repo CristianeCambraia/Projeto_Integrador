@@ -4,10 +4,10 @@
 
 {% block content %}
 <div class="form-container">
-    <h2 class="titulo" style="margin-bottom: 50px;">👤 Minha Conta</h2>
-    
-    <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px; margin-left: 150px;">
-        <h3 style="margin: 0 0 15px 0; color: #026a84;">Informações da Conta</h3>
+    <h2 class="titulo" style="margin-bottom: 30px; text-align: center;">👤 Minha Conta</h2>
+        
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+            <h3 style="margin: 0 0 15px 0; color: #026a84;">Informações da Conta</h3>
         <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
             <div>
                 <strong>Nome:</strong>
@@ -36,14 +36,15 @@
         </div>
     </div>
 
-    <div class="botoes">
-        <a href="{% url 'editar_conta' %}" class="btn-salvar">✏️ Editar Dados</a>
-        <a href="{% url 'home' %}" class="btn-cancelar">⤴ Voltar</a>
-    </div>
+        <div class="botoes" style="text-align: center; margin-top: 30px;">
+            <a href="{% url 'editar_conta' %}" class="btn-salvar">✏️ Editar Dados</a>
+            <a href="{% url 'home' %}" class="btn-cancelar">⤴ Voltar</a>
+        </div>
 </div>
 
 <style>
 .form-container {
+    background-color: #e8e8e8 !important;
     border-radius: 30px 30px 30px 30px !important;
 }
 
