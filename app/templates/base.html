@@ -1311,8 +1311,8 @@
     </main>
 
     <footer style="display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 15px 20px;">
-        <div style="display: flex; align-items: center; gap: 300px;">
-            <div>
+        <div style="display: flex; align-items: center; gap: 150px;">
+            <div style="margin-left: 0;">
                 <p class="Rede-social">Redes Sociais</p>
                 <ul class="social-media">
                     <li><a href="https://wa.me/5535997548034" target="_blank"><img src="{% static 'images/whatsapp.svg' %}" alt="WhatsApp"></a></li>
@@ -1320,13 +1320,13 @@
                     <li><a href="https://facebook.com/insumed" target="_blank"><img src="{% static 'images/facebook.svg' %}" alt="Facebook"></a></li>
                 </ul>
             </div>
-            <div>
+            <div style="margin: 0 30px;">
                 <p>Todos os direitos reservados &copy;</p>
                 <p>Develop By: Bessa, Cristiane, Eduardo, Leonardo, Lucas.</p>
                 <p>Telefone - (35) 98412-3236</p>
             </div>
             {% if not admin_logado %}
-            <div>
+            <div style="margin-right: 0;">
                 <ul class="contact" style="list-style: none; padding: 0; margin: 0;">
                     <li><a href="{% url 'sobre_nos' %}">Sobre nós</a></li>
                     <li><a href="{% url 'criar_suporte' %}">Contato</a></li>

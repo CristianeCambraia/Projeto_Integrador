@@ -152,7 +152,7 @@ def lista_produtos(request):
         produtos = produtos.filter(data_hora__gte=data_limite)
         print(f"Filtro últimos {dias} dias: {produtos.count()} produtos")  # Debug
     
-    produtos = produtos.order_by('nome')
+    produtos = produtos.order_by('-data_hora')
     print(f"Total final: {produtos.count()} produtos")  # Debug
 
     return render(request, 'produtos/lista_produtos.html', {

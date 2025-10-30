@@ -97,7 +97,6 @@
                         <th>Última Saída</th>
                         <th>Estoque Atual</th>
                         <th>Unidade</th>
-                        <th>Preço</th>
                         <th>Descrição</th>
                     </tr>
                 </thead>
@@ -128,7 +127,6 @@
                         </td>
                         <td class="text-center estoque-atual">{{ produto.quantidade }}</td>
                         <td class="text-center">{{ produto.unidade }}</td>
-                        <td class="text-right">R$ {{ produto.preco }}</td>
                         <td class="descricao-cell">
                             {% if produto.descricao %}
                                 <span class="descricao-preview">{{ produto.descricao|truncatechars:30 }}</span>
@@ -143,7 +141,7 @@
                     </tr>
                     {% empty %}
                     <tr id="nenhumProdutoEstoque">
-                        <td colspan="9" class="text-center no-data">Nenhum produto encontrado</td>
+                        <td colspan="8" class="text-center no-data">Nenhum produto encontrado</td>
                     </tr>
                     {% endfor %}
                 </tbody>
