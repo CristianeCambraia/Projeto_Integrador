@@ -6,35 +6,63 @@
 <div class="form-container">
     <h2 class="titulo" style="margin-bottom: 30px; text-align: center;">👤 Minha Conta</h2>
         
-        <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
-            <h3 style="margin: 0 0 15px 0; color: #026a84;">Informações da Conta</h3>
-        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
-            <div>
-                <strong>Nome:</strong>
-                <p style="margin: 5px 0; color: #666;">{{ usuario.nome }}</p>
+        <div style="background: white; padding: 30px; border-radius: 15px; margin-bottom: 30px;">
+            <h3 style="margin: 0 0 25px 0; color: #026a84; text-align: center; font-size: 22px;">📋 Informações da Conta</h3>
+            
+            <div style="display: flex; flex-wrap: wrap; gap: 25px; justify-content: space-between;">
+                <div style="flex: 1; min-width: 250px; background: #f8f9fa; padding: 15px; border-radius: 8px;">
+                    <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                        <span style="color: #026a84; font-weight: bold; margin-right: 8px;">👤</span>
+                        <strong style="color: #333;">Nome Completo</strong>
+                    </div>
+                    <p style="margin: 0; color: #555; font-size: 16px;">{{ usuario.nome }}</p>
+                </div>
+                
+                <div style="flex: 1; min-width: 250px; background: #f8f9fa; padding: 15px; border-radius: 8px;">
+                    <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                        <span style="color: #026a84; font-weight: bold; margin-right: 8px;">📧</span>
+                        <strong style="color: #333;">Email</strong>
+                    </div>
+                    <p style="margin: 0; color: #555; font-size: 16px;">{{ usuario.email }}</p>
+                </div>
             </div>
-            <div>
-                <strong>Email:</strong>
-                <p style="margin: 5px 0; color: #666;">{{ usuario.email }}</p>
+            
+            <div style="display: flex; flex-wrap: wrap; gap: 25px; justify-content: space-between; margin-top: 20px;">
+                <div style="flex: 1; min-width: 250px; background: #f8f9fa; padding: 15px; border-radius: 8px;">
+                    <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                        <span style="color: #026a84; font-weight: bold; margin-right: 8px;">🆔</span>
+                        <strong style="color: #333;">CPF</strong>
+                    </div>
+                    <p style="margin: 0; color: #555; font-size: 16px;">{{ usuario.cpf }}</p>
+                </div>
+                
+                <div style="flex: 1; min-width: 250px; background: #f8f9fa; padding: 15px; border-radius: 8px;">
+                    <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                        <span style="color: #026a84; font-weight: bold; margin-right: 8px;">📱</span>
+                        <strong style="color: #333;">Telefone</strong>
+                    </div>
+                    <p style="margin: 0; color: #555; font-size: 16px;">{{ usuario.telefone|default:"Não informado" }}</p>
+                </div>
             </div>
-            <div>
-                <strong>CPF:</strong>
-                <p style="margin: 5px 0; color: #666;">{{ usuario.cpf }}</p>
-            </div>
-            <div>
-                <strong>Telefone:</strong>
-                <p style="margin: 5px 0; color: #666;">{{ usuario.telefone|default:"Não informado" }}</p>
-            </div>
-            <div>
-                <strong>Endereço:</strong>
-                <p style="margin: 5px 0; color: #666;">{{ usuario.endereco|default:"Não informado" }}</p>
-            </div>
-            <div>
-                <strong>Cidade:</strong>
-                <p style="margin: 5px 0; color: #666;">{{ usuario.cidade|default:"Não informado" }}</p>
+            
+            <div style="display: flex; flex-wrap: wrap; gap: 25px; justify-content: space-between; margin-top: 20px;">
+                <div style="flex: 1; min-width: 250px; background: #f8f9fa; padding: 15px; border-radius: 8px;">
+                    <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                        <span style="color: #026a84; font-weight: bold; margin-right: 8px;">🏠</span>
+                        <strong style="color: #333;">Endereço</strong>
+                    </div>
+                    <p style="margin: 0; color: #555; font-size: 16px;">{{ usuario.endereco|default:"Não informado" }}</p>
+                </div>
+                
+                <div style="flex: 1; min-width: 250px; background: #f8f9fa; padding: 15px; border-radius: 8px;">
+                    <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                        <span style="color: #026a84; font-weight: bold; margin-right: 8px;">🏙️</span>
+                        <strong style="color: #333;">Cidade</strong>
+                    </div>
+                    <p style="margin: 0; color: #555; font-size: 16px;">{{ usuario.cidade|default:"Não informado" }}</p>
+                </div>
             </div>
         </div>
-    </div>
 
         <div class="botoes" style="text-align: center; margin-top: 30px;">
             <a href="{% url 'editar_conta' %}" class="btn-salvar">✏️ Editar Dados</a>
