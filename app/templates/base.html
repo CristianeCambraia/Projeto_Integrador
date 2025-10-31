@@ -1,1176 +1,116 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>
-        {% block title %}INSUMED{% endblock %}
-    </title>
-    <link rel="icon" type="image/png" href="{% static 'images/insumed_icon.png' %}">
-    <link rel="shortcut icon" type="image/png" href="{% static 'images/insumed_icon.png' %}">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <title>{% block title %}INSUMED{% endblock %}</title>
+    {% load static %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="icon" href="{% static 'images/insumed_icon.png' %}" type="image/png">
     <style>
-        h1, h2, h3, h4, h5, h6 {
-            font-family: 'Open Sans', sans-serif;
-        }
-        
-        button, .btn, input[type="submit"], input[type="button"], a.btn, .btn-padrao, .btn-info, .btn-limpar, .btn-expandir-obs, .filter-btn, .mark-all-read, .bell-btn, .btn-adicionar, .btn-login, .suporte-btn, .btn-status, .btn-expandir, .btn-expandir-desc, .btn-salvar, .btn-editar, .btn-voltar, .btn-cancelar, .btn-cadastrar-produto, .btn-cadastrar-cliente, .btn-confirmar, .btn-filtrar, .btn-emitidos, .btn-pesquisar {
-            font-family: 'Roboto', sans-serif !important;
-        }
-
-        .notification-bell {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
-        .bell-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 24px;
-            position: relative;
-        }
-        /* CSS preparado para contador de notificações */
-        .notification-count {
-            position: absolute;
-            top: 2px;
-            right: 2px;
-            background: #ff4444;
-            color: white;
-            border-radius: 50%;
-            min-width: 16px;
-            height: 16px;
-            font-size: 10px;
-            display: none; /* Oculto por padrão */
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-        }
-        .notification-count.show {
-            display: flex;
-        }
-        
-        /* Dropdown de notificações */
-        .notification-dropdown {
-            position: absolute;
-            top: 100%;
-            right: 0;
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            width: 350px;
-            max-height: 400px;
-            overflow-y: auto;
-            z-index: 1000;
-            display: none;
-        }
-        
-        #notificationDropdown {
-            max-height: 400px;
-            overflow-y: auto;
-            word-wrap: break-word;
-            overflow-wrap: break-word;
-        }
-        
-        #notificationDropdown div {
-            word-wrap: break-word;
-            overflow-wrap: break-word;
-            white-space: normal;
-        }
-        
-        .notification-dropdown.show {
-            display: block;
-        }
-        
-        .notification-header {
-            padding: 15px;
-            border-bottom: 1px solid #eee;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #f8f9fa;
-            border-radius: 8px 8px 0 0;
-        }
-        
-        .notification-header h3 {
-            margin: 0;
-            font-size: 16px;
-            color: #333;
-        }
-        
-        .notification-filters {
-            padding: 10px 15px;
-            border-bottom: 1px solid #eee;
-            display: flex;
-            gap: 5px;
-        }
-        
-        .filter-btn {
-            padding: 5px 10px;
-            border: 1px solid #ddd;
-            background: white;
-            border-radius: 15px;
-            font-size: 12px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .filter-btn.active {
-            background: #007bff;
-            color: white;
-            border-color: #007bff;
-        }
-        
-        .notification-list {
-            max-height: 250px;
-            overflow-y: auto;
-        }
-        
-        .notification-item {
-            padding: 12px 15px;
-            border-bottom: 1px solid #f0f0f0;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        
-        .notification-item:hover {
-            background-color: #f8f9fa;
-        }
-        
-        .notification-item:last-child {
-            border-bottom: none;
-        }
-        
-        .notification-content {
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-        }
-        
-        .notification-icon {
-            font-size: 18px;
-            margin-top: 2px;
-        }
-        
-        .notification-text {
-            flex: 1;
-        }
-        
-        .notification-title {
-            font-weight: bold;
-            font-size: 13px;
-            color: #333;
-            margin-bottom: 3px;
-        }
-        
-        .notification-message {
-            font-size: 12px;
-            color: #666;
-            line-height: 1.4;
-        }
-        
-        .notification-time {
-            font-size: 11px;
-            color: #999;
-            margin-top: 5px;
-        }
-        
-        .notification-empty {
-            padding: 30px 15px;
-            text-align: center;
-            color: #666;
-            font-size: 14px;
-        }
-        
-        .notification-actions {
-            padding: 10px 15px;
-            border-top: 1px solid #eee;
-            text-align: center;
-        }
-        
-        .mark-all-read {
-            background: none;
-            border: none;
-            color: #007bff;
-            font-size: 12px;
-            cursor: pointer;
-            text-decoration: underline;
-        }
-        
-        /* Padronização de tamanho para desktop */
-        @media screen and (min-width: 769px) {
-            .hamburger {
-                display: none !important;
-            }
-            
-            .desktop-nav {
-                display: block !important;
-            }
-            
-            .mobile-nav {
-                display: none !important;
-            }
-            
-            /* Footer desktop original */
-            footer {
-                display: flex !important;
-                justify-content: space-between !important;
-                align-items: center !important;
-                width: 100% !important;
-                padding: 15px 20px !important;
-            }
-            
-            footer > div {
-                display: flex !important;
-                align-items: center !important;
-                justify-content: space-between !important;
-                width: 100% !important;
-            }
-            
-            footer > div > div:last-child {
-                margin-right: 50px !important;
-            }
-            
-
-            
-
-
-        }
-
-        /* ===== PREVENÇÃO DE OVERFLOW HORIZONTAL ===== */
+        /* Responsividade geral */
         @media screen and (max-width: 768px) {
-            * {
-                max-width: 100% !important;
-                box-sizing: border-box !important;
-            }
-            
-            body {
-                overflow-x: hidden !important;
-                overflow-y: auto !important;
-                width: 100% !important;
-                height: auto !important;
-                min-height: 100vh !important;
-            }
-            
-            main {
-                padding-bottom: 10px !important;
-                min-height: auto !important;
-            }
-            
-            /* Prevenir elementos que saem da tela */
-            div, section, article, main, aside, nav, header, footer {
-                max-width: 100% !important;
-                overflow-x: auto !important;
-            }
-            
-            /* Textos longos */
-            p, span, label, td, th {
-                word-wrap: break-word !important;
-                overflow-wrap: break-word !important;
-                hyphens: auto !important;
-            }
-            
-            /* Imagens responsivas - corrigir distorção */
-            img {
-                max-width: 100% !important;
-                height: auto !important;
-                object-fit: contain !important;
-                aspect-ratio: auto !important;
-            }
-            
-            /* Imagens específicas que podem distorcer */
-            .suporte-container img,
-            .form-container img,
-            .container img {
-                width: auto !important;
-                max-width: 90% !important;
-                height: auto !important;
-                object-fit: contain !important;
-                display: block !important;
-                margin: 0 auto !important;
-            }
-            
-            /* Tabelas sempre com scroll horizontal */
-            table {
-                display: block !important;
-                overflow-x: auto !important;
-                white-space: nowrap !important;
-            }
-            
-            /* Dica de rotação para tabelas grandes */
-            .table-responsive::before {
-                content: '🔄 Vire o celular para melhor visualização';
-                display: block;
-                background: #e3f2fd;
-                color: #1976d2;
-                padding: 8px;
-                text-align: center;
-                font-size: 12px;
-                border-radius: 4px;
-                margin-bottom: 10px;
-                border: 1px solid #bbdefb;
-            }
-            
-            /* Inputs nunca maiores que o container */
-            input, select, textarea {
-                max-width: 100% !important;
-                min-width: 0 !important;
-            }
-        }
-        
-        /* ===== MENU HAMBÚRGUER E RESPONSIVIDADE MOBILE ===== */
-        
-        /* Botão Hambúrguer - OCULTO POR PADRÃO */
-        .hamburger {
-            display: none !important;
-            justify-content: center;
-            align-items: center;
-            width: 30px;
-            height: 30px;
-            background: #0066cc;
-            border: 2px solid #004499;
-            border-radius: 6px;
-            cursor: pointer;
-            z-index: 1001;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-            color: white;
-            font-size: 18px;
-            font-weight: bold;
-            margin-left: auto;
-        }
-        
-        .hamburger:hover {
-            background: #0052a3;
-            border-color: #003366;
-            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
-        }
-        
-        .hamburger span {
-            display: block;
-            width: 18px;
-            height: 3px;
-            background: white;
-            border-radius: 1px;
-            margin: 2px 0;
-            transition: all 0.3s ease;
-            transform-origin: center;
-        }
-        
-        .hamburger.active span:nth-child(1) {
-            transform: rotate(45deg) translate(4px, 4px);
-        }
-        
-        .hamburger.active span:nth-child(2) {
-            opacity: 0;
-        }
-        
-        .hamburger.active span:nth-child(3) {
-            transform: rotate(-45deg) translate(4px, -4px);
-        }
-        
-        /* Menu Mobile - OCULTO POR PADRÃO */
-        .mobile-nav {
-            display: none !important;
-            position: fixed;
-            top: 65px;
-            left: 0;
-            width: 100%;
-            height: calc(100vh - 65px);
-            background: linear-gradient(135deg, rgba(1, 62, 106, 0.98), rgba(0, 48, 85, 0.98));
-            backdrop-filter: blur(25px) saturate(180%);
-            z-index: 1001;
-            overflow-y: auto;
-            transform: translateX(-100%);
-            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 
-                inset -1px 0 0 rgba(255, 255, 255, 0.15),
-                0 0 50px rgba(4, 186, 252, 0.1);
-        }
-        
-        .mobile-nav::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: 
-                radial-gradient(circle at 20% 20%, rgba(4, 186, 252, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(0, 123, 255, 0.1) 0%, transparent 50%);
-            pointer-events: none;
-        }
-        
-        .mobile-nav.active {
-            transform: translateX(0);
-        }
-        
-        .mobile-nav-content {
-            padding: 80px 20px 20px 20px;
-            max-width: 400px;
-            margin: 0 auto;
-        }
-        
-        .mobile-nav-item {
-            display: block;
-            color: white !important;
-            text-decoration: none;
-            padding: 18px 24px;
-            margin: 8px 0;
-            border-radius: 16px;
-            font-size: 16px;
-            font-weight: 600;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.08));
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            box-shadow: 
-                0 4px 15px rgba(0, 0, 0, 0.1),
-                inset 0 1px 0 rgba(255, 255, 255, 0.2);
-            position: relative;
-            overflow: hidden;
-            backdrop-filter: blur(10px);
-        }
-        
-        .mobile-nav-item::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(4, 186, 252, 0.3), transparent);
-            transition: left 0.8s ease;
-        }
-        
-        .mobile-nav-item::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            right: 20px;
-            width: 6px;
-            height: 6px;
-            background: #04bafc;
-            border-radius: 50%;
-            transform: translateY(-50%) scale(0);
-            transition: transform 0.3s ease;
-            box-shadow: 0 0 10px #04bafc;
-        }
-        
-        .mobile-nav-item:hover {
-            background: linear-gradient(135deg, #04bafc, #007bff);
-            color: white !important;
-            transform: translateY(-3px) scale(1.03);
-            box-shadow: 
-                0 12px 35px rgba(4, 186, 252, 0.4),
-                0 0 0 1px rgba(255, 255, 255, 0.1),
-                inset 0 1px 0 rgba(255, 255, 255, 0.3);
-            border-color: rgba(255, 255, 255, 0.4);
-        }
-        
-        .mobile-nav-item:hover::before {
-            left: 100%;
-        }
-        
-        .mobile-nav-item:hover::after {
-            transform: translateY(-50%) scale(1);
-        }
-        
-        /* Dropdown Mobile */
-        .mobile-dropdown {
-            margin: 8px 0;
-            width: 100%;
-        }
-        
-        .mobile-dropdown-btn {
-            width: 100%;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.08));
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            padding: 18px 24px;
-            border-radius: 16px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            display: block;
-            text-align: left;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 
-                0 4px 15px rgba(0, 0, 0, 0.1),
-                inset 0 1px 0 rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
-            position: relative;
-            overflow: hidden;
-            margin: 15px 0;
-            min-height: 60px;
-            box-sizing: border-box;
-        }
-        
-        .mobile-dropdown-btn .arrow {
-            float: right;
-            margin-top: 2px;
-        }
-        
-        .mobile-dropdown-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(40, 167, 69, 0.1), rgba(30, 126, 52, 0.1));
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        
-        .mobile-dropdown-btn:hover {
-            background: linear-gradient(135deg, rgba(40, 167, 69, 0.7), rgba(30, 126, 52, 0.7));
-            color: white;
-            transform: translateY(-1px);
-            box-shadow: 0 2px 6px rgba(40, 167, 69, 0.1);
-        }
-        
-        .mobile-dropdown-btn:hover::before {
-            opacity: 1;
-        }
-        
-        .mobile-dropdown-btn .arrow {
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            font-size: 16px;
-            filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.3));
-        }
-        
-        .mobile-dropdown-btn.active {
-            background: linear-gradient(135deg, rgba(40, 167, 69, 0.8), rgba(30, 126, 52, 0.8));
-            color: white;
-            box-shadow: 0 2px 6px rgba(40, 167, 69, 0.1);
-        }
-        
-        .mobile-dropdown-btn.active .arrow {
-            transform: rotate(180deg);
-        }
-        
-        .mobile-dropdown-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 0 0 12px 12px;
-            margin-top: -8px;
-            padding-top: 8px;
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-        
-        .mobile-dropdown-content.active {
-            max-height: 500px;
-        }
-        
-        .mobile-nav-subitem {
-            display: block;
-            color: rgba(255, 255, 255, 0.9) !important;
-            text-decoration: none;
-            padding: 14px 28px;
-            font-size: 14px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            border-left: 4px solid transparent;
-            margin: 4px 12px;
-            border-radius: 10px;
-            backdrop-filter: blur(5px);
-        }
-        
-
-        
-        .mobile-nav-subitem::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 50%;
-            width: 0;
-            height: 2px;
-            background: linear-gradient(90deg, #04bafc, #007bff);
-            transform: translateY(-50%);
-            transition: width 0.3s ease;
-            border-radius: 1px;
-        }
-        
-        .mobile-nav-subitem:hover,
-        .mobile-nav-subitem:active {
-            background: linear-gradient(135deg, #04bafc, #007bff) !important;
-            color: white !important;
-            transform: translateX(8px) !important;
-            border-left-color: #ffffff !important;
-        }
-        
-        @media (hover: none) {
-            .mobile-nav-subitem:active {
-                background: linear-gradient(135deg, #04bafc, #007bff) !important;
-                transform: translateX(8px) !important;
-                border-left-color: #ffffff !important;
-            }
-        }
-        
-        .mobile-nav-subitem:hover::before {
-            width: 100%;
-        }
-        
-        /* Notificações Mobile - Estilo Aprimorado */
-        .mobile-notifications {
-            margin: 8px 0;
-        }
-        
-        .mobile-notification-btn {
-            width: 100%;
-            background: linear-gradient(135deg, rgba(255, 193, 7, 0.3), rgba(255, 193, 7, 0.2));
-            color: white;
-            border: none;
-            padding: 18px 25px;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: all 0.3s ease;
-            min-height: 60px;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
-        }
-        
-        .mobile-notification-btn:hover {
-            background: linear-gradient(135deg, rgba(255, 193, 7, 0.4), rgba(255, 193, 7, 0.3));
-            transform: translateY(-1px);
-            box-shadow: 0 2px 6px rgba(255, 193, 7, 0.4);
-        }
-        
-        .mobile-notification-counter {
-            background: linear-gradient(135deg, #ff4444, #cc0000);
-            color: white;
-            border-radius: 50%;
-            min-width: 16px;
-            height: 16px;
-            font-size: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            border: 1px solid white;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.3);
-        }
-        
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-        
-        .mobile-notification-dropdown {
-            display: none;
-            background: rgba(0, 0, 0, 0.4);
-            border-radius: 10px;
-            margin-top: 10px;
-            padding: 15px;
-            max-height: 350px;
-            overflow-y: auto;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            backdrop-filter: blur(5px);
-        }
-        
-        .mobile-notification-dropdown.active {
-            display: block !important;
-            animation: slideDown 0.3s ease;
-        }
-        
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .mobile-notification-item {
-            background: rgba(255, 255, 255, 0.15);
-            padding: 12px;
-            margin: 8px 0;
-            border-radius: 8px;
-            color: white;
-            border-left: 4px solid #ffc107;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-        
-        .mobile-notification-item:hover {
-            background: rgba(255, 255, 255, 0.25);
-            transform: translateX(3px);
-        }
-        
-        .mobile-notification-item strong {
-            display: block;
-            margin-bottom: 6px;
-            font-size: 14px;
-            font-weight: 600;
-        }
-        
-        .mobile-notification-item small {
-            font-size: 12px;
-            opacity: 0.9;
-            font-style: italic;
-        }
-        
-        /* ===== RESPONSIVIDADE GLOBAL PARA MOBILE ===== */
-        @media screen and (max-width: 768px) {
-            input, select, textarea, button {
-                width: auto !important;
-                box-sizing: border-box;
-                font-size: 16px !important;
-                /* padding: 12px !important; */
-            }
-            
-            /* Menu */
-            .hamburger {
-                display: flex !important;
-            }
-            
-            .desktop-nav {
-                display: none !important;
-            }
-            
-            .mobile-nav {
-                display: block !important;
-            }
-            
-            /* Notificações desktop ocultas no mobile */
-            #notificationDropdown {
-                display: none !important;
-            }
-            
-            /* Botão de notificação desktop oculto */
-            .desktop-nav li:has(button[onclick="toggleNotifications()"]) {
-                display: none !important;
-            }
-            
-            /* TODOS os containers */
             .container, .form-container, .lista-container, 
             .emitir-orcamento-container, .container-lista-orcamentos, 
             .suporte-container, .financeiro-container,
-            .orcamento-container, .produto-container, .cliente-container,
-            .fornecedor-container, .servico-container, .usuario-container,
-            .estoque-container, .movimentacao-container {
-                margin: 10px 10px 50px 10px !important;
-                padding: 10px 10px 30px 10px !important;
+            .orcamento-container, .produto-container, .cliente-container {
+                margin: 10px !important;
+                padding: 15px !important;
                 width: calc(100% - 20px) !important;
                 max-width: none !important;
-                border-radius: 15px 15px 15px 15px !important;
-                overflow-x: auto !important;
+                box-sizing: border-box !important;
             }
             
-            /* Ocultar links do footer no mobile */
-            .contact {
-                display: none !important;
-            }
-            
-            /* TODAS as tabelas */
             .table-responsive {
                 overflow-x: auto !important;
                 -webkit-overflow-scrolling: touch !important;
-                margin: 0 -10px !important;
-                padding: 0 10px !important;
             }
             
             .table {
-                min-width: 800px !important;
-                font-size: 11px !important;
-                width: 100% !important;
+                font-size: 12px !important;
+                min-width: 600px !important;
             }
             
             .table th, .table td {
-                padding: 6px 3px !important;
+                padding: 8px 4px !important;
+                font-size: 12px !important;
                 white-space: nowrap !important;
-                font-size: 11px !important;
             }
             
-            /* TODOS os formulários */
-            .form-group {
-                margin-bottom: 15px !important;
-                width: 100% !important;
-            }
-            
-            .form-group label {
-                display: block !important;
-                margin-bottom: 5px !important;
-                font-weight: 500 !important;
-                width: 100% !important;
-            }
-            
-            .form-group input, 
-            .form-group select, 
-            .form-group textarea {
-                width: 100% !important;
-                padding: 12px !important;
-                border: 1px solid #ddd !important;
-                border-radius: 6px !important;
-                font-size: 16px !important;
-                box-sizing: border-box !important;
-                margin: 0 !important;
-            }
-            
-            /* TODOS os botões */
-            .btn, .btn-padrao, .btn-info, .btn-salvar, 
-            .btn-editar, .btn-voltar, .btn-cancelar,
-            .btn-adicionar, .btn-confirmar, .btn-filtrar,
-            .btn-pesquisar, .btn-limpar, .btn-expandir {
-                width: 100% !important;
-                padding: 12px !important;
-                margin: 5px 0 !important;
+            .btn {
+                padding: 12px 15px !important;
                 font-size: 14px !important;
-                border-radius: 6px !important;
-                box-sizing: border-box !important;
+                margin: 5px 2px !important;
+                width: auto !important;
+                min-width: 80px !important;
             }
             
-            /* Grupos de botões lado a lado */
             .btn-group {
                 display: flex !important;
+                flex-direction: column !important;
                 gap: 5px !important;
-                flex-wrap: wrap !important;
             }
             
             .btn-group .btn {
-                flex: 1 !important;
-                min-width: 120px !important;
-            }
-            
-            /* Controles de busca/filtros */
-            .search-controls, .filter-controls {
-                flex-direction: column !important;
-                align-items: stretch !important;
-                gap: 10px !important;
-            }
-            
-            .search-controls > div,
-            .filter-controls > div {
                 width: 100% !important;
-                display: flex !important;
-                flex-direction: column !important;
-                gap: 10px !important;
+                margin: 2px 0 !important;
             }
             
-            .search-controls select,
-            .filter-controls select {
-                width: 100% !important;
-                font-size: 16px !important;
-                padding: 12px !important;
-            }
-            
-            /* Títulos */
             h1, h2, h3 {
                 font-size: 18px !important;
                 margin: 10px 0 !important;
-                text-align: center !important;
             }
             
-            /* Cards/Itens de lista */
-            .card, .item, .produto-item, .cliente-item {
-                margin: 5px 0 !important;
-                padding: 10px !important;
-                border-radius: 8px !important;
-            }
-            
-            /* Modais */
-            .modal-content {
-                width: 95% !important;
-                max-width: none !important;
-                margin: 10px !important;
-                padding: 15px !important;
-            }
-            
-            /* Alertas/Mensagens */
-            .alert, .message {
-                margin: 10px !important;
-                padding: 10px !important;
-                font-size: 14px !important;
-                border-radius: 6px !important;
-            }
-            
-            /* Paginação */
-            .pagination {
-                justify-content: center !important;
-                flex-wrap: wrap !important;
-            }
-            
-            .pagination a, .pagination span {
-                padding: 8px 12px !important;
-                margin: 2px !important;
-                font-size: 14px !important;
-            }
-            
-            /* Logo da home - descer um pouco no mobile */
-            .logo {
-                margin-top: 140px !important;
-                margin-bottom: 20px !important;
-            }
-            
-            /* Login responsivo para mobile */
-            .login-container {
-                flex-direction: column !important;
-                height: auto !important;
-                min-height: calc(100vh - 120px) !important;
-                padding: 10px !important;
-                margin: 0 !important;
-            }
-            
-            .login-side {
-                width: 100% !important;
-                height: auto !important;
-                padding: 20px 0 !important;
-                display: flex !important;
-                justify-content: center !important;
-                align-items: center !important;
-            }
-            
-            .logo-side {
-                max-width: 150px !important;
-                height: auto !important;
-            }
-            
-            .login-box {
-                width: 100% !important;
-                max-width: 350px !important;
-                margin: 0 auto !important;
-                padding: 20px !important;
-                box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
-                border-radius: 15px !important;
-            }
-            
-            .login-box h1 {
-                font-size: 24px !important;
-                margin-bottom: 20px !important;
-                text-align: center !important;
-            }
-            
-            .login-box .form-group {
-                margin-bottom: 15px !important;
-            }
-            
-            .login-box input[type="email"],
-            .login-box input[type="password"] {
-                width: 100% !important;
-                padding: 12px !important;
-                font-size: 16px !important;
-                border: 1px solid #ddd !important;
-                border-radius: 8px !important;
-                box-sizing: border-box !important;
-            }
-            
-            .login-box .btn-login {
-                width: 100% !important;
-                padding: 12px !important;
-                font-size: 16px !important;
-                border-radius: 8px !important;
-                margin: 15px 0 !important;
-            }
-            
-            .login-box p {
-                text-align: center !important;
-                font-size: 14px !important;
-                margin: 10px 0 !important;
-            }
-            
-            .login-box a {
-                font-size: 14px !important;
-            }
-            
-            .form-check {
-                display: flex !important;
-                align-items: center !important;
-                gap: 8px !important;
-            }
-            
-            .form-check input[type="checkbox"] {
-                width: auto !important;
-                margin: 0 !important;
-            }
-            
-            .form-check label {
-                font-size: 14px !important;
-                margin: 0 !important;
-            }
-            
-            /* Lista de serviços responsiva */
-            .list-header {
+            /* Footer responsivo */
+            footer {
                 flex-direction: column !important;
                 text-align: center !important;
-                padding: 20px 15px !important;
-                position: relative !important;
-            }
-            
-            .list-header > div {
-                width: 100% !important;
-                margin-bottom: 15px !important;
-            }
-            
-            .list-header h1 {
-                font-size: 22px !important;
-                margin-bottom: 8px !important;
-            }
-            
-            .list-header p {
-                font-size: 14px !important;
-                margin: 0 !important;
-            }
-            
-            .list-header a {
-                position: static !important;
-                right: auto !important;
-                width: 100% !important;
-                max-width: 200px !important;
-                margin: 0 auto !important;
-                justify-content: center !important;
-                padding: 12px 20px !important;
-                font-size: 14px !important;
-            }
-            
-            .search-section {
-                padding: 15px !important;
-            }
-            
-            .services-content {
-                padding: 15px !important;
-            }
-            
-            .services-grid {
-                grid-template-columns: 1fr !important;
+                padding: 20px 10px !important;
                 gap: 15px !important;
             }
             
-            .service-card {
-                padding: 15px !important;
-            }
-            
-            .service-card > div:nth-child(3) {
-                grid-template-columns: 1fr 1fr !important;
-                gap: 10px !important;
-            }
-            
-
-        }
-            
-            header {
-                padding: 8px 0 !important;
-                display: flex !important;
+            footer > div {
+                gap: 20px !important;
+                flex-direction: column !important;
                 align-items: center !important;
-                gap: 0 !important;
-                position: fixed !important;
-                top: 0 !important;
-                left: 0 !important;
-                width: 100% !important;
-                height: 65px !important;
-                z-index: 1002 !important;
             }
             
-            header img {
-                width: 49px;
-                height: 50px;
-                margin: 0;
-                margin-top: 5px !important;
-                margin-left: 15px !important;
+            .social-media {
+                justify-content: center !important;
+                margin: 10px 0 !important;
             }
             
-            header h1 {
-                font-size: 20px;
-                margin: 0;
-                margin-left: -204px !important;
-                margin-top: -5px !important;
+            .contact {
+                text-align: center !important;
             }
-            
-            .hamburger {
-                margin-left: auto !important;
-                margin-top: -45px !important;
-                margin-right: 5px !important;
-            }
-            
-
         }
         
-        /* ===== ORIENTAÇÃO LANDSCAPE NO MOBILE ===== */
+        /* Landscape em celulares */
         @media screen and (max-width: 768px) and (orientation: landscape) {
-            /* Ocultar dica de rotação quando já está em landscape */
-            .table-responsive::before {
-                display: none !important;
-            }
-            /* Header mais compacto */
-            header {
-                padding: 8px 15px !important;
-                min-height: 50px !important;
-            }
-            
-            .logo-header h1 {
-                font-size: 16px !important;
-            }
-            
-            .logo-header img {
-                width: 28px !important;
-                height: 28px !important;
-            }
-            
-            /* Containers otimizados para landscape */
             .container, .form-container, .lista-container, 
             .emitir-orcamento-container, .container-lista-orcamentos, 
             .suporte-container, .financeiro-container,
             .orcamento-container, .produto-container, .cliente-container {
                 margin: 5px !important;
-                padding: 8px !important;
+                padding: 10px !important;
                 width: calc(100% - 10px) !important;
-                max-height: calc(100vh - 80px) !important;
-                overflow-y: auto !important;
-            }
-            
-            /* Tabelas otimizadas para landscape */
-            .table-responsive {
-                max-height: calc(100vh - 150px) !important;
-                overflow: auto !important;
-                margin: 0 !important;
-                padding: 0 !important;
             }
             
             .table {
-                font-size: 12px !important;
-                min-width: 1000px !important;
-                margin: 0 !important;
+                font-size: 11px !important;
+                min-width: 800px !important;
             }
             
             .table th, .table td {
-                padding: 6px 4px !important;
-                font-size: 12px !important;
-                white-space: nowrap !important;
+                padding: 6px 3px !important;
+                font-size: 11px !important;
             }
             
-            /* Controles de busca mais compactos */
-            .search-controls, .filter-controls {
-                flex-direction: row !important;
-                flex-wrap: wrap !important;
-                gap: 8px !important;
-                margin-bottom: 10px !important;
-            }
-            
-            .search-controls > div {
-                flex: 1 !important;
-                min-width: 200px !important;
-            }
-            
-            .search-controls select {
-                padding: 8px !important;
-                font-size: 14px !important;
-            }
-            
-            .search-controls .btn {
+            .btn {
                 padding: 8px 12px !important;
                 font-size: 12px !important;
-                white-space: nowrap !important;
             }
             
-            /* Títulos mais compactos */
             h1, h2, h3 {
                 font-size: 16px !important;
                 margin: 5px 0 !important;
@@ -1266,7 +206,18 @@
             }
         }
         
-
+        /* Responsividade do Header para Dev Tools */
+        @media screen and (max-width: 1400px) {
+            header {
+                width: 100vw !important;
+                padding: 12px 5px !important;
+                box-sizing: border-box !important;
+                margin: 0 !important;
+                position: relative !important;
+                left: 0 !important;
+                right: 0 !important;
+            }
+        }
 
         /* Dropdown CSS - Estilo Ultra Premium Profissional */
         .dropdown {
@@ -1419,15 +370,657 @@
             animation: dropdownFadeIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
+        /* ===== MENU MOBILE PROFISSIONAL ULTRA PREMIUM ===== */
+        
+        /* Botão Hambúrguer Profissional */
+        .hamburger {
+            display: none;
+            position: relative;
+            background: linear-gradient(145deg, #013e6a, #01186a);
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 12px 16px;
+            border-radius: 12px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 
+                0 8px 25px rgba(1, 24, 106, 0.3),
+                0 4px 12px rgba(1, 62, 106, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+            width: 12% !important;
+            margin-left: auto !important;
+            margin-top: -40px !important;
+            align-self: flex-start !important;
+            z-index: 10000;
+        }
+
+        .hamburger::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .hamburger:hover {
+            background: linear-gradient(145deg, #01186a, #013e6a);
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 
+                0 12px 35px rgba(1, 24, 106, 0.4),
+                0 6px 18px rgba(1, 62, 106, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        .hamburger:hover::before {
+            left: 100%;
+        }
+
+        .hamburger:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        /* Menu Mobile Container */
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            top: 80px;
+            right: 0;
+            width: 100%;
+            height: calc(100vh - 80px);
+            background: linear-gradient(135deg, #013e6a 0%, #01186a 50%, #013e6a 100%);
+            z-index: 9999;
+            transform: translateX(100%);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            backdrop-filter: blur(20px);
+            overflow: hidden;
+            box-shadow: -12px 0 35px rgba(1, 62, 106, 0.3);
+        }
+
+        .mobile-nav::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .mobile-nav.active {
+            display: block;
+            transform: translateX(0);
+        }
+
+        /* Conteúdo do Menu */
+        .mobile-nav-content {
+            padding: 25px 25px 25px 25px;
+            height: 100%;
+            overflow-y: auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Itens do Menu Principal */
+        .mobile-nav-item {
+            display: block;
+            color: #ffffff;
+            text-decoration: none;
+            padding: 20px 28px;
+            margin: 20px 0;
+            border-radius: 16px;
+            font-weight: 500;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(145deg, rgba(1, 62, 106, 0.4), rgba(1, 24, 106, 0.3));
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 6px 20px rgba(1, 62, 106, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .mobile-nav-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .mobile-nav-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateX(8px) scale(1.02);
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 
+                0 8px 25px rgba(0, 0, 0, 0.2),
+                0 4px 12px rgba(255, 255, 255, 0.1);
+        }
+
+        .mobile-nav-item:hover::before {
+            left: 100%;
+        }
+
+        /* Dropdowns Mobile */
+        .mobile-dropdown {
+            margin: 20px 0;
+        }
+
+        .mobile-dropdown-btn {
+            width: 100%;
+            background: linear-gradient(145deg, rgba(1, 62, 106, 0.5), rgba(1, 24, 106, 0.4));
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            color: #ffffff;
+            text-align: left;
+            padding: 35px 40px;
+            font-weight: 600;
+            font-size: 22px;
+            cursor: pointer;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 8px 25px rgba(1, 62, 106, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .mobile-dropdown-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .mobile-dropdown-btn:hover {
+            background: rgba(255, 255, 255, 0.18);
+            transform: translateX(8px) scale(1.02);
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 
+                0 8px 25px rgba(0, 0, 0, 0.2),
+                0 4px 12px rgba(255, 255, 255, 0.1);
+        }
+
+        .mobile-dropdown-btn:hover::before {
+            left: 100%;
+        }
+
+        .mobile-dropdown-content {
+            display: none;
+            padding: 15px 0 15px 25px;
+            margin-top: 10px;
+            border-left: 3px solid rgba(255, 255, 255, 0.3);
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 0 15px 15px 0;
+        }
+
+        .mobile-dropdown-content.active {
+            display: block;
+            animation: slideDown 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes slideDown {
+            0% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Subitens dos Dropdowns */
+        .mobile-nav-subitem {
+            display: block;
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            padding: 12px 20px;
+            margin: 4px 0;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .mobile-nav-subitem::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .mobile-nav-subitem:hover {
+            background: rgba(255, 255, 255, 0.12);
+            transform: translateX(6px);
+            color: white;
+        }
+
+        .mobile-nav-subitem:hover::before {
+            left: 100%;
+        }
+
+        /* Seta dos Dropdowns */
+        .arrow {
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            font-size: 14px;
+        }
+
+        .mobile-dropdown-btn.active .arrow {
+            transform: rotate(180deg);
+        }
+
+        /* Notificações Mobile Premium */
+        .mobile-notifications {
+            margin: 15px 0;
+        }
+
+        .mobile-notification-btn {
+            width: 100%;
+            background: linear-gradient(145deg, rgba(1, 62, 106, 0.5), rgba(1, 24, 106, 0.4));
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            color: #ffffff;
+            padding: 22px 28px;
+            border-radius: 16px;
+            font-weight: 600;
+            font-size: 17px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 8px 25px rgba(1, 62, 106, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .mobile-notification-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .mobile-notification-btn:hover {
+            background: linear-gradient(145deg, rgba(1, 62, 106, 0.5), rgba(1, 24, 106, 0.4));
+            transform: translateX(8px) scale(1.02);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .mobile-notification-btn:hover::before {
+            left: 100%;
+        }
+
+        .mobile-notification-counter {
+            background: linear-gradient(145deg, #ff0000, #cc0000);
+            color: white;
+            border-radius: 50%;
+            min-width: 24px;
+            height: 24px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(255, 0, 0, 0.3);
+        }
+
+        .mobile-notification-dropdown {
+            display: none;
+            background: linear-gradient(145deg, rgba(1, 24, 106, 0.95), rgba(1, 62, 106, 0.9));
+            margin-top: 12px;
+            border-radius: 15px;
+            padding: 20px;
+            max-height: 350px;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(20px);
+            box-shadow: 
+                0 15px 35px rgba(0, 0, 0, 0.3),
+                0 8px 20px rgba(1, 24, 106, 0.2);
+        }
+
+        .mobile-notification-dropdown.active {
+            display: block;
+            animation: slideDown 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .mobile-notification-item {
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 12px;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+        }
+
+        .mobile-notification-item:hover {
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.1));
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Responsividade */
+        .desktop-nav {
+            display: flex;
+        }
+
+        @media screen and (max-width: 1024px) {
+            .desktop-nav {
+                display: none;
+            }
+
+            .hamburger {
+                display: block;
+            }
+        }
+
+        /* Scrollbar personalizada para mobile */
+        .mobile-nav-content::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .mobile-nav-content::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+
+        .mobile-nav-content::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+        }
+
+        .mobile-nav-content::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        /* ===== FOOTER PROFISSIONAL PERFEITO ===== */
+        
+        .footer-premium {
+            background: #04bafc;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            margin-top: auto;
+            border-top: 3px solid #0399d6;
+        }
+
+        .footer-premium::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 25% 25%, rgba(66, 153, 225, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(129, 230, 217, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .footer-container {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 30px;
+            padding: 20px 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+            align-items: center;
+        }
+
+        /* Seção Redes Sociais */
+        .social-section {
+            text-align: center;
+        }
+
+        .footer-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #1e3a8a;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .social-section .footer-title {
+            margin-left: -35px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 10px;
+        }
+
+        .social-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: #1e3a8a;
+            border: 2px solid #2563eb;
+            border-radius: 50%;
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .social-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(66, 153, 225, 0.2), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+
+        .social-link:hover {
+            background: #2563eb;
+            border-color: #3b82f6;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);
+        }
+
+        .social-link:hover::before {
+            transform: translateX(100%);
+        }
+
+        .social-link img {
+            width: 22px;
+            height: 22px;
+            transition: transform 0.3s ease;
+        }
+
+        .social-link:hover img {
+            transform: scale(1.1);
+        }
+
+        /* Seção Central */
+        .info-section {
+            text-align: center;
+        }
+
+        .company-info {
+            background: #1e3a8a;
+            padding: 10px 20px;
+            border-radius: 12px;
+            border: 1px solid #2563eb;
+            backdrop-filter: blur(10px);
+        }
+
+        .company-info h3 {
+            font-size: 20px;
+            margin-bottom: 8px;
+            background: linear-gradient(45deg, #4299e1, #63b3ed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+        }
+
+        .copyright {
+            font-size: 13px;
+            color: #cbd5e0;
+            margin: 4px 0;
+            font-weight: 500;
+        }
+
+        .developers {
+            font-size: 12px;
+            color: #a0aec0;
+            margin: 4px 0;
+            font-style: italic;
+        }
+
+        .phone {
+            font-size: 13px;
+            color: #63b3ed;
+            margin: 4px 0;
+            font-weight: 600;
+        }
+
+        /* Seção Links */
+        .links-section {
+            text-align: center;
+        }
+
+        .quick-links {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .footer-link {
+            padding: 8px 16px;
+            background: #1e3a8a;
+            border: 1px solid #2563eb;
+            border-radius: 20px;
+            text-decoration: none;
+            color: greenyellow;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .footer-link:hover {
+            background: #2563eb;
+            border-color: #3b82f6;
+            color: white;
+            transform: translateX(-5px);
+        }
+
+        /* Responsividade Mobile */
+        @media screen and (max-width: 768px) {
+            .footer-container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                padding: 20px 15px;
+                text-align: center;
+            }
+
+            .social-section,
+            .links-section {
+                text-align: center;
+            }
+
+            .social-links {
+                justify-content: center;
+            }
+
+            .quick-links {
+                flex-direction: row;
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .footer-link {
+                font-size: 12px;
+                padding: 6px 12px;
+            }
+
+            .company-info {
+                padding: 12px 15px;
+            }
+
+            .company-info h3 {
+                font-size: 18px;
+            }
+
+            .copyright,
+            .phone {
+                font-size: 12px;
+            }
+
+            .developers {
+                font-size: 11px;
+            }
+        }
+
+        /* Responsividade Tablet */
+        @media screen and (min-width: 769px) and (max-width: 1024px) {
+            .footer-container {
+                grid-template-columns: 1fr 1fr;
+                gap: 25px;
+            }
+
+            .info-section {
+                grid-column: 1 / -1;
+                order: -1;
+            }
+        }
+
     </style>
 </head>
 <body>
     <header>
-        <img src="{% static 'images/insumed_icon.png' %}" alt="insumed_icon">
-        <h1 class="insumed">INSUMED</h1>
+        <div class="logo-header">
+            <img src="{% static 'images/insumed_icon.png' %}" alt="insumed_icon">
+            <h1 class="insumed">INSUMED</h1>
+        </div>
+        
         <!-- Botão Hambúrguer à direita -->
         <button class="hamburger" onclick="toggleMobileMenu()" aria-label="Menu">
-            ≡
+            ☰
         </button>
                              
         <nav class="desktop-nav">
@@ -1525,11 +1118,9 @@
                 {% else %}
                     <a href="/" class="mobile-nav-item">Home</a>
                     
-
-                    
                     <!-- Cadastros -->
-                    <div class="mobile-dropdown" style="margin-top: 20px;">
-                        <a href="#" class="mobile-nav-item" onclick="toggleMobileDropdown('cadastros'); return false;">Cadastros <span class="arrow">▼</span></a>
+                    <div class="mobile-dropdown">
+                        <button class="mobile-dropdown-btn" onclick="toggleMobileDropdown('cadastros')">Cadastros <span class="arrow">▼</span></button>
                         <div class="mobile-dropdown-content" id="cadastros">
                             <a href="{% url 'clientes' %}" class="mobile-nav-subitem">Cadastrar Cliente</a>
                             <a href="{% url 'lista_cliente' %}" class="mobile-nav-subitem">Listar Clientes</a>
@@ -1545,7 +1136,7 @@
                     
                     <!-- Orçamentos -->
                     <div class="mobile-dropdown">
-                        <a href="#" class="mobile-nav-item" onclick="toggleMobileDropdown('orcamentos'); return false;">Orçamentos <span class="arrow">▼</span></a>
+                        <button class="mobile-dropdown-btn" onclick="toggleMobileDropdown('orcamentos')">Orçamentos <span class="arrow">▼</span></button>
                         <div class="mobile-dropdown-content" id="orcamentos">
                             <a href="{% url 'emitir_orcamento' %}" class="mobile-nav-subitem">Emitir Orçamento</a>
                             <a href="{% url 'orcamentos_emitidos' %}" class="mobile-nav-subitem">Orçamentos Emitidos</a>
@@ -1554,7 +1145,7 @@
                     
                     <!-- Relatórios -->
                     <div class="mobile-dropdown">
-                        <a href="#" class="mobile-nav-item" onclick="toggleMobileDropdown('relatorios'); return false;">Relatórios <span class="arrow">▼</span></a>
+                        <button class="mobile-dropdown-btn" onclick="toggleMobileDropdown('relatorios')">Relatórios <span class="arrow">▼</span></button>
                         <div class="mobile-dropdown-content" id="relatorios">
                             <a href="{% url 'relatorio_estoque' %}" class="mobile-nav-subitem">Relatório de Estoque</a>
                             <a href="{% url 'relatorio_financeiro' %}" class="mobile-nav-subitem">Relatório Financeiro</a>
@@ -1564,28 +1155,34 @@
                             <a href="{% url 'relatorio_movimentacao_saida' %}" class="mobile-nav-subitem">Ver Históricos - Saída</a>
                         </div>
                     </div>
-                    
-                    <!-- Notificações -->
-                    <div class="mobile-dropdown">
-                        <a href="#" class="mobile-nav-item" onclick="toggleMobileDropdown('notificacoes'); return false;" style="position: relative;"><span id="mobileNotificationCounter" style="position: absolute; top: 18px; left: 20px; background: #dc3545; color: white; border-radius: 50%; min-width: 18px; height: 18px; font-size: 10px; display: none; align-items: center; justify-content: center; font-weight: bold; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3);">0</span><span style="font-size: 20px;">🔔</span> Notificações <span class="arrow">▼</span></a>
-                        <div class="mobile-dropdown-content" id="notificacoes">
-                            <div id="mobileNotificationContent" style="padding: 15px; max-height: 300px; overflow-y: auto;">
-                                <div style="text-align: center; padding: 20px; color: #666;">Carregando...</div>
-                            </div>
-                        </div>
-                    </div>
 
                     {% if usuario_logado %}
-                        <a href="{% url 'minha_conta' %}" class="mobile-nav-item" style="margin-top: 20px;">Minha Conta</a>
-                        <a href="{% url 'sobre_nos' %}" class="mobile-nav-item" style="margin-top: 20px;">Sobre nós</a>
-                        <a href="{% url 'criar_suporte' %}" class="mobile-nav-item" style="margin-top: 20px;">Contato</a>
-                        <a href="{% url 'logout' %}" class="mobile-nav-item" style="margin-top: 20px;">Sair</a>
-
+                        <!-- Notificações Mobile -->
+                        <div class="mobile-notifications">
+                            <button onclick="toggleMobileNotifications()" class="mobile-notification-btn" style="justify-content: flex-start;">
+                                <span id="mobileNotificationCounter" class="mobile-notification-counter" style="display: none; margin-right: 8px;">0</span>🔔 Notificações
+                            </button>
+                            <div id="mobileNotificationDropdown" class="mobile-notification-dropdown">
+                                <div style="padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.2); margin-bottom: 10px;">
+                                    <h4 style="margin: 0; color: white; font-size: 14px;">Notificações de Estoque</h4>
+                                </div>
+                                <div id="mobileNotificationContent">
+                                    <div style="text-align: center; padding: 20px; color: rgba(255,255,255,0.7);">Carregando...</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <a href="{% url 'minha_conta' %}" class="mobile-nav-item">Minha Conta</a>
                     {% else %}
                         <a href="{% url 'cadastrar_usuario' %}" class="mobile-nav-item">Cadastrar Usuário</a>
                         <a href="{% url 'login' %}" class="mobile-nav-item">Login</a>
-                        <a href="{% url 'sobre_nos' %}" class="mobile-nav-item" style="margin-top: 20px;">Sobre nós</a>
-                        <a href="{% url 'criar_suporte' %}" class="mobile-nav-item" style="margin-top: 20px;">Contato</a>
+                    {% endif %}
+                    
+                    <a href="{% url 'sobre_nos' %}" class="mobile-nav-item">Sobre nós</a>
+                    <a href="{% url 'criar_suporte' %}" class="mobile-nav-item">Contato</a>
+                    
+                    {% if usuario_logado %}
+                        <a href="{% url 'logout' %}" class="mobile-nav-item">Sair</a>
                     {% endif %}
                 {% endif %}
             </div>
@@ -1597,31 +1194,45 @@
         {% endblock %}
     </main>
 
-    <footer style="display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 15px 20px;">
-        <div style="display: flex; align-items: center; gap: 150px;">
-            <div style="margin-left: 0;">
-                <p class="Rede-social">Redes Sociais</p>
-                <ul class="social-media">
-                    <li><a href="https://wa.me/5535997548034" target="_blank"><img src="{% static 'images/whatsapp.svg' %}" alt="WhatsApp"></a></li>
-                    <li><a href="https://instagram.com/insumed" target="_blank"><img src="{% static 'images/instagram.svg' %}" alt="Instagram"></a></li>
-                    <li><a href="https://facebook.com/insumed" target="_blank"><img src="{% static 'images/facebook.svg' %}" alt="Facebook"></a></li>
-                </ul>
+    <footer class="footer-premium">
+        <div class="footer-container">
+            <!-- Redes Sociais -->
+            <div class="social-section">
+                <h3 class="footer-title">Redes Sociais</h3>
+                <div class="social-links">
+                    <a href="https://wa.me/5535997548034" target="_blank" class="social-link" title="WhatsApp">
+                        <img src="{% static 'images/whatsapp.svg' %}" alt="WhatsApp">
+                    </a>
+                    <a href="https://instagram.com/insumed" target="_blank" class="social-link" title="Instagram">
+                        <img src="{% static 'images/instagram.svg' %}" alt="Instagram">
+                    </a>
+                    <a href="https://facebook.com/insumed" target="_blank" class="social-link" title="Facebook">
+                        <img src="{% static 'images/facebook.svg' %}" alt="Facebook">
+                    </a>
+                </div>
             </div>
-            <div style="margin: 0 30px;">
-                <p>Todos os direitos reservados &copy;</p>
-                <p>Develop By: Bessa, Cristiane, Eduardo, Leonardo, Lucas.</p>
-                <p>Telefone - (35) 98412-3236</p>
+
+            <!-- Informações da Empresa -->
+            <div class="info-section">
+                <div class="company-info">
+                    <h3>INSUMED</h3>
+                    <p class="copyright">© 2024 Todos os direitos reservados</p>
+                    <p class="developers">Desenvolvido por: Bessa, Cristiane, Eduardo, Leonardo, Lucas</p>
+                    <p class="phone"><svg width="16" height="16" viewBox="0 0 24 24" fill="#22c55e" style="display: inline; margin-right: 5px;"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg> (35) 98412-3236</p>
+                </div>
             </div>
+
+            <!-- Links Rápidos -->
             {% if not admin_logado %}
-            <div style="margin-right: 0;">
-                <ul class="contact" style="list-style: none; padding: 0; margin: 0;">
-                    <li><a href="{% url 'sobre_nos' %}">Sobre nós</a></li>
-                    <li><a href="{% url 'criar_suporte' %}">Contato</a></li>
-                </ul>
+            <div class="links-section">
+                <h3 class="footer-title">Links Úteis</h3>
+                <div class="quick-links">
+                    <a href="{% url 'sobre_nos' %}" class="footer-link" style="color: greenyellow;">Sobre Nós</a>
+                    <a href="{% url 'criar_suporte' %}" class="footer-link" style="color: greenyellow;">Contato</a>
+                </div>
             </div>
             {% endif %}
         </div>
-
     </footer>
 
     <!-- Botão Voltar ao Topo -->
@@ -2012,22 +1623,16 @@
             
             dropdown.classList.toggle('active');
             btn.classList.toggle('active');
-            
-            // Carregar notificações se for o dropdown de notificações
-            if (id === 'notificacoes' && dropdown.classList.contains('active')) {
-                loadMobileNotifications();
-            }
         }
         
         function toggleMobileNotifications() {
             const dropdown = document.getElementById('mobileNotificationDropdown');
             
             if (dropdown) {
-                if (dropdown.style.display === 'none' || dropdown.style.display === '') {
-                    dropdown.style.display = 'block';
+                dropdown.classList.toggle('active');
+                
+                if (dropdown.classList.contains('active')) {
                     loadMobileNotifications();
-                } else {
-                    dropdown.style.display = 'none';
                 }
             } else {
                 console.error('Dropdown de notificações mobile não encontrado');
@@ -2039,25 +1644,37 @@
                 .then(response => response.json())
                 .then(data => {
                     const content = document.getElementById('mobileNotificationContent');
+                    const counter = document.getElementById('mobileNotificationCounter');
                     
                     if (data.categorias && data.categorias.length > 0) {
                         let html = '';
+                        let totalCount = 0;
                         
                         data.categorias.forEach(categoria => {
                             if (categoria.count > 0) {
+                                totalCount += categoria.count;
                                 html += `
-                                    <div class="mobile-notification-item" onclick="expandMobileCategory('${categoria.tipo}')" style="cursor: pointer; color: #333; background: #f8f9fa; padding: 12px; margin: 8px 0; border-radius: 8px; border-left: 4px solid #007bff;">
-                                        <strong style="color: #333;">${categoria.icone} ${categoria.titulo} (${categoria.count})</strong><br>
-                                        <small style="color: #666;">Toque para ver detalhes</small>
-                                        <div id="mobile-items-${categoria.tipo}" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #ddd;"></div>
+                                    <div class="mobile-notification-item" onclick="expandMobileCategory('${categoria.tipo}')" style="cursor: pointer;">
+                                        <strong>${categoria.icone} ${categoria.titulo} (${categoria.count})</strong>
+                                        <small>Toque para ver detalhes</small>
+                                        <div id="mobile-items-${categoria.tipo}" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.2);"></div>
                                     </div>
                                 `;
                             }
                         });
                         
+                        // Ajustar contador considerando itens lidos/apagados
+                        const lidas = JSON.parse(localStorage.getItem('notificacoesLidas') || '[]');
+                        const apagadas = JSON.parse(localStorage.getItem('notificacoesApagadas') || '[]');
+                        const totalMarcadas = lidas.length + apagadas.length;
+                        totalCount = Math.max(0, totalCount - totalMarcadas);
+                        
                         content.innerHTML = html;
+                        counter.textContent = totalCount;
+                        counter.style.display = totalCount > 0 ? 'flex' : 'none';
                     } else {
-                        content.innerHTML = '<div style="text-align: center; padding: 20px; color: #666;">Nenhuma notificação</div>';
+                        content.innerHTML = '<div style="text-align: center; padding: 20px; color: rgba(255,255,255,0.7);">Nenhuma notificação</div>';
+                        counter.style.display = 'none';
                     }
                 })
                 .catch(error => {
@@ -2147,7 +1764,7 @@
         
         // Fechar menu mobile ao clicar em link
         document.addEventListener('DOMContentLoaded', function() {
-            const mobileNavItems = document.querySelectorAll('.mobile-nav-item:not([onclick*="toggleMobileDropdown"]), .mobile-nav-subitem');
+            const mobileNavItems = document.querySelectorAll('.mobile-nav-item, .mobile-nav-subitem');
             mobileNavItems.forEach(item => {
                 item.addEventListener('click', function() {
                     const mobileNav = document.getElementById('mobileNav');
@@ -2158,11 +1775,8 @@
                     document.body.style.overflow = '';
                 });
             });
-            
-
-
         });
-o        
+        
         // Fechar dropdown ao clicar fora
         document.addEventListener('click', function(event) {
             const bell = event.target.closest('li');
