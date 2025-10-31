@@ -239,6 +239,7 @@ document.getElementById('filtroCliente').addEventListener('input', filtrarClient
     display: flex;
     justify-content: space-between;
     align-items: center;
+    min-height: 80px;
 }
 
 .cliente-card:hover {
@@ -252,6 +253,7 @@ document.getElementById('filtroCliente').addEventListener('input', filtrarClient
     align-items: center;
     gap: 15px;
     flex: 1;
+    min-width: 0;
 }
 
 .cliente-avatar {
@@ -264,17 +266,28 @@ document.getElementById('filtroCliente').addEventListener('input', filtrarClient
     justify-content: center;
 }
 
+.cliente-details {
+    min-width: 0;
+    flex: 1;
+}
+
 .cliente-details h3 {
     margin: 0 0 5px 0;
     font-size: 18px;
     font-weight: 600;
     color: #2d3748;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .cliente-details p {
     margin: 0 0 3px 0;
     color: #4a5568;
     font-size: 14px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .cliente-details small {
@@ -296,6 +309,8 @@ document.getElementById('filtroCliente').addEventListener('input', filtrarClient
     gap: 6px;
     transition: all 0.3s ease;
     text-decoration: none;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .btn-edit:hover {

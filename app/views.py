@@ -2113,13 +2113,14 @@ def relatorio_financeiro(request):
         data_limite = timezone.now() - timedelta(days=dias)
         produtos = produtos.filter(data_hora__gte=data_limite)
     
-    # Agrupar produtos por nome e fornecedor (case-insensitive)
+    # Agrupar produtos por nome, fornecedor e preço (case-insensitive)
     produtos_agrupados = {}
     
     for produto in produtos:
         fornecedor_nome = produto.fornecedor.nome if produto.fornecedor else "Sem fornecedor"
-        # Usar nome em lowercase para agrupamento case-insensitive
-        chave = f"{produto.nome.lower().strip()}_{fornecedor_nome.lower().strip()}"
+        preco_venda = produto.preco or 0
+        # Usar nome, fornecedor e preço para agrupamento
+        chave = f"{produto.nome.lower().strip()}_{fornecedor_nome.lower().strip()}_{preco_venda}"
         
         if chave in produtos_agrupados:
             # Somar quantidades
@@ -2190,12 +2191,13 @@ def exportar_financeiro_pdf(request):
         data_limite = timezone.now() - timedelta(days=dias)
         produtos = produtos.filter(data_hora__gte=data_limite)
     
-    # Agrupar produtos por nome e fornecedor
+    # Agrupar produtos por nome, fornecedor e preço
     produtos_agrupados = {}
     
     for produto in produtos:
         fornecedor_nome = produto.fornecedor.nome if produto.fornecedor else "Sem fornecedor"
-        chave = f"{produto.nome}_{fornecedor_nome}"
+        preco_venda = produto.preco or 0
+        chave = f"{produto.nome.lower().strip()}_{fornecedor_nome.lower().strip()}_{preco_venda}"
         
         if chave in produtos_agrupados:
             produtos_agrupados[chave]['quantidade'] += produto.quantidade or 0
