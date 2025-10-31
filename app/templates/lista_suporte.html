@@ -1,23 +1,36 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container-lista-orcamentos">
-    <h2 class="titulo">Lista de Chamadas de Suporte</h2>
-
-    <!-- Filtro por ID -->
-    <div class="filtro-orcamentos">
-        <form method="get">
-            <input type="text" name="filtro" placeholder="Filtrar por ID, Nome, Email, Telefone ou Descrição" value="{{ filtro|default:'' }}" style="margin-right: 10px;" id="filtroSuporte">
-            <select name="periodo" onchange="this.form.submit()" style="margin-right: 10px; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
-                <option value="">Todos os períodos</option>
-                <option value="7" {% if request.GET.periodo == '7' %}selected{% endif %}>Últimos 7 dias</option>
-                <option value="30" {% if request.GET.periodo == '30' %}selected{% endif %}>Últimos 30 dias</option>
-                <option value="90" {% if request.GET.periodo == '90' %}selected{% endif %}>Últimos 90 dias</option>
-            </select>
-            <button type="submit" class="btn-filtrar">Filtrar</button>
-            <a href="{% url 'lista_suporte' %}" class="btn-limpar" style="background: #6c757d;">Limpar</a>
-        </form>
+<div class="lista-suporte-container">
+    <div class="header-section">
+        <div class="icon-title">
+            <div class="icon-circle">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                    <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-5 2.5l.72.72c.39.39.39 1.02 0 1.41L11.41 13l4.31 4.31c.39.39.39 1.02 0 1.41L15 19.44l-4.31-4.31L6.38 19.44l-.72-.72c-.39-.39-.39-1.02 0-1.41L10.59 13 6.28 8.69c-.39-.39-.39-1.02 0-1.41L7 6.56l4.31 4.31L15.62 6.56z" fill="#2d3748"/>
+                </svg>
+            </div>
+            <div>
+                <h1>Chamadas de Suporte</h1>
+                <p>Gerencie as solicitações de suporte</p>
+            </div>
+        </div>
     </div>
+
+    <div class="content-section">
+        <!-- Filtro -->
+        <div class="filter-section">
+            <div class="search-box">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" fill="#666"/>
+                </svg>
+                <input type="text" id="filtroSuporte" placeholder="Buscar por ID, nome, email ou descrição...">
+                <button onclick="limparFiltro()" class="clear-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" fill="#666"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
 
     {% if demandas %}
         <div class="tabela-container">
