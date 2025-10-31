@@ -481,10 +481,10 @@
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
-            background: linear-gradient(145deg, rgba(1, 62, 106, 0.4), rgba(1, 24, 106, 0.3));
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.15));
+            border: 1px solid rgba(255, 255, 255, 0.3);
             backdrop-filter: blur(12px);
-            box-shadow: 0 6px 20px rgba(1, 62, 106, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2);
         }
 
         .mobile-nav-item::before {
@@ -499,12 +499,12 @@
         }
 
         .mobile-nav-item:hover {
-            background: rgba(255, 255, 255, 0.15);
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.25));
             transform: translateX(8px) scale(1.02);
-            border-color: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.4);
             box-shadow: 
-                0 8px 25px rgba(0, 0, 0, 0.2),
-                0 4px 12px rgba(255, 255, 255, 0.1);
+                0 8px 25px rgba(0, 0, 0, 0.3),
+                0 4px 12px rgba(255, 255, 255, 0.2);
         }
 
         .mobile-nav-item:hover::before {
@@ -518,8 +518,8 @@
 
         .mobile-dropdown-btn {
             width: 100%;
-            background: linear-gradient(145deg, rgba(1, 62, 106, 0.5), rgba(1, 24, 106, 0.4));
-            border: 1px solid rgba(255, 255, 255, 0.25);
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.2));
+            border: 1px solid rgba(255, 255, 255, 0.35);
             color: #ffffff;
             text-align: left;
             padding: 35px 40px;
@@ -534,7 +534,7 @@
             position: relative;
             overflow: hidden;
             backdrop-filter: blur(15px);
-            box-shadow: 0 8px 25px rgba(1, 62, 106, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2);
         }
 
         .mobile-dropdown-btn::before {
@@ -549,12 +549,12 @@
         }
 
         .mobile-dropdown-btn:hover {
-            background: rgba(255, 255, 255, 0.18);
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.3));
             transform: translateX(8px) scale(1.02);
-            border-color: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.45);
             box-shadow: 
-                0 8px 25px rgba(0, 0, 0, 0.2),
-                0 4px 12px rgba(255, 255, 255, 0.1);
+                0 8px 25px rgba(0, 0, 0, 0.3),
+                0 4px 12px rgba(255, 255, 255, 0.2);
         }
 
         .mobile-dropdown-btn:hover::before {
@@ -589,7 +589,7 @@
         /* Subitens dos Dropdowns */
         .mobile-nav-subitem {
             display: block;
-            color: rgba(255, 255, 255, 0.9);
+            color: rgba(255, 255, 255, 0.95);
             text-decoration: none;
             padding: 12px 20px;
             margin: 4px 0;
@@ -599,7 +599,8 @@
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             position: relative;
             overflow: hidden;
-            background: rgba(255, 255, 255, 0.03);
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .mobile-nav-subitem::before {
@@ -614,9 +615,10 @@
         }
 
         .mobile-nav-subitem:hover {
-            background: rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.25);
             transform: translateX(6px);
             color: white;
+            border-color: rgba(255, 255, 255, 0.4);
         }
 
         .mobile-nav-subitem:hover::before {
@@ -640,8 +642,8 @@
 
         .mobile-notification-btn {
             width: 100%;
-            background: linear-gradient(145deg, rgba(1, 62, 106, 0.5), rgba(1, 24, 106, 0.4));
-            border: 1px solid rgba(255, 255, 255, 0.25);
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.15));
+            border: 1px solid rgba(255, 255, 255, 0.3);
             color: #ffffff;
             padding: 22px 28px;
             border-radius: 16px;
@@ -655,7 +657,7 @@
             position: relative;
             overflow: hidden;
             backdrop-filter: blur(15px);
-            box-shadow: 0 8px 25px rgba(1, 62, 106, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2);
         }
 
         .mobile-notification-btn::before {
@@ -670,9 +672,12 @@
         }
 
         .mobile-notification-btn:hover {
-            background: linear-gradient(145deg, rgba(1, 62, 106, 0.5), rgba(1, 24, 106, 0.4));
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.25));
             transform: translateX(8px) scale(1.02);
             border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 
+                0 8px 25px rgba(0, 0, 0, 0.3),
+                0 4px 12px rgba(255, 255, 255, 0.2);
         }
 
         .mobile-notification-btn:hover::before {
@@ -680,8 +685,8 @@
         }
 
         .mobile-notification-counter {
-            background: linear-gradient(145deg, #ff0000, #cc0000);
-            color: white;
+            background: linear-gradient(145deg, #ffffff, #f0f0f0);
+            color: #ff0000;
             border-radius: 50%;
             min-width: 24px;
             height: 24px;
@@ -690,7 +695,8 @@
             align-items: center;
             justify-content: center;
             font-weight: bold;
-            box-shadow: 0 4px 12px rgba(255, 0, 0, 0.3);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            border: 2px solid rgba(1, 62, 106, 0.3);
         }
 
         .mobile-notification-dropdown {
@@ -714,21 +720,22 @@
         }
 
         .mobile-notification-item {
-            background: linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.15));
             padding: 15px;
             margin: 10px 0;
             border-radius: 12px;
             color: white;
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.25);
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             cursor: pointer;
             backdrop-filter: blur(10px);
         }
 
         .mobile-notification-item:hover {
-            background: linear-gradient(145deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.1));
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.25));
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
         }
 
         /* Responsividade */
@@ -1083,7 +1090,7 @@
                                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M12 2C13.1 2 14 2.9 14 4C14 4.74 13.6 5.39 13 5.73V7C13 10.76 16.05 13.81 19.81 14H4.19C7.95 13.81 11 10.76 11 7V5.73C10.4 5.39 10 4.74 10 4C10 2.9 10.9 2 12 2ZM21 16V17H3V16L5 14V7C5 3.69 7.69 1 11 1H13C16.31 1 19 3.69 19 7V14L21 16ZM9.5 18H14.5C14.5 19.66 13.16 21 11.5 21H12.5C10.84 21 9.5 19.66 9.5 18Z" fill="white"/>
                                 </svg>
-                                <span id="notificationCounter" style="position: absolute; top: 0; right: 0; background: #ff0000; color: white; border-radius: 50%; min-width: 16px; height: 16px; font-size: 10px; display: none; align-items: center; justify-content: center; font-weight: bold; border: 2px solid white;">0</span>
+                                <span id="notificationCounter" style="position: absolute; top: 0; right: 0; background: white; color: #ff0000; border-radius: 50%; min-width: 16px; height: 16px; font-size: 10px; display: none; align-items: center; justify-content: center; font-weight: bold; border: 2px solid #013e6a;">0</span>
                             </button>
                             
                             <div id="notificationDropdown" style="display: none; position: fixed; top: 80px; right: 20px; background: white; border: 1px solid #ccc; width: 320px; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.2); z-index: 99999;">
@@ -1117,6 +1124,23 @@
                     <a href="{% url 'admin_logout' %}" class="mobile-nav-item">Sair Admin</a>
                 {% else %}
                     <a href="/" class="mobile-nav-item">Home</a>
+                    
+                    {% if usuario_logado %}
+                        <!-- Notificações Mobile -->
+                        <div class="mobile-notifications">
+                            <button onclick="toggleMobileNotifications()" class="mobile-notification-btn" style="justify-content: flex-start;">
+                                <span id="mobileNotificationCounter" class="mobile-notification-counter" style="display: none; margin-right: 8px;">0</span>Notificações
+                            </button>
+                            <div id="mobileNotificationDropdown" class="mobile-notification-dropdown">
+                                <div style="padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.2); margin-bottom: 10px; text-align: center;">
+                                    <h4 style="margin: 0; color: white; font-size: 18px; font-weight: 600;">Notificações de Estoque</h4>
+                                </div>
+                                <div id="mobileNotificationContent">
+                                    <div style="text-align: center; padding: 20px; color: rgba(255,255,255,0.7);">Carregando...</div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
                     
                     <!-- Cadastros -->
                     <div class="mobile-dropdown">
@@ -1157,21 +1181,6 @@
                     </div>
 
                     {% if usuario_logado %}
-                        <!-- Notificações Mobile -->
-                        <div class="mobile-notifications">
-                            <button onclick="toggleMobileNotifications()" class="mobile-notification-btn" style="justify-content: flex-start;">
-                                <span id="mobileNotificationCounter" class="mobile-notification-counter" style="display: none; margin-right: 8px;">0</span>🔔 Notificações
-                            </button>
-                            <div id="mobileNotificationDropdown" class="mobile-notification-dropdown">
-                                <div style="padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.2); margin-bottom: 10px;">
-                                    <h4 style="margin: 0; color: white; font-size: 14px;">Notificações de Estoque</h4>
-                                </div>
-                                <div id="mobileNotificationContent">
-                                    <div style="text-align: center; padding: 20px; color: rgba(255,255,255,0.7);">Carregando...</div>
-                                </div>
-                            </div>
-                        </div>
-                        
                         <a href="{% url 'minha_conta' %}" class="mobile-nav-item">Minha Conta</a>
                     {% else %}
                         <a href="{% url 'cadastrar_usuario' %}" class="mobile-nav-item">Cadastrar Usuário</a>
