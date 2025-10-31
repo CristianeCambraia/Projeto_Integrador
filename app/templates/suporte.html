@@ -1,16 +1,277 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="lista-container">
-    <h2 class="titulo">Suporte Técnico</h2>
-    
-    <div class="suporte-info">
-        <p><strong>Entre em contato conosco:</strong></p>
-        <p>📧 Email: suporte@insumed.com</p>
-        <p>📞 Telefone: (35) 99877-8346</p>
-        <p>🕒 Horário: Segunda a Sexta, 8h às 18h</p>
+<div class="cliente-container">
+    <div class="header-section">
+        <div class="icon-title">
+            <div class="icon-circle">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                    <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" fill="#2d3748"/>
+                </svg>
+            </div>
+            <div>
+                <h1>Suporte Técnico</h1>
+                <p>Entre em contato conosco</p>
+            </div>
+        </div>
     </div>
 
-    <a href="{% url 'home' %}" class="btn-salvar">Voltar ⤴</a>
+    <div class="modern-form">
+        <!-- Seção Informações de Contato -->
+        <div class="form-section">
+            <div class="section-header">
+                <h3>📞 Informações de Contato</h3>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>E-mail</label>
+                    <div class="contact-info-box">
+                        <div class="contact-icon">📧</div>
+                        <span>suporte@insumed.com</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Telefone</label>
+                    <div class="contact-info-box">
+                        <div class="contact-icon">📞</div>
+                        <span>(35) 99877-8346</span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group" style="grid-column: 1 / -1;">
+                    <label>Horário de Atendimento</label>
+                    <div class="contact-info-box">
+                        <div class="contact-icon">🕒</div>
+                        <span>Segunda a Sexta, 8h às 18h</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botões -->
+        <div class="form-actions">
+            <a href="{% url 'home' %}" class="btn-secondary">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" fill="#2d3748"/>
+                </svg>
+                Voltar
+            </a>
+        </div>
+    </div>
 </div>
+
+<style>
+.cliente-container {
+    max-width: 1000px;
+    margin: 30px auto;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.header-section {
+    background: #cbd5e0;
+    padding: 30px;
+    color: #2d3748;
+}
+
+.icon-title {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    justify-content: center;
+    text-align: center;
+}
+
+.icon-circle {
+    width: 60px;
+    height: 60px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(10px);
+}
+
+.header-section h1 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 600;
+}
+
+.header-section p {
+    margin: 5px 0 0 0;
+    opacity: 0.9;
+    font-size: 16px;
+}
+
+.modern-form {
+    padding: 40px;
+}
+
+.form-section {
+    margin-bottom: 35px;
+}
+
+.section-header {
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.section-header h3 {
+    margin: 0;
+    color: #333;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.form-row:last-child {
+    margin-bottom: 0;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.contact-info-box {
+    padding: 12px 16px;
+    border: 2px solid #e1e5e9;
+    border-radius: 10px;
+    font-size: 16px;
+    background: #fafbfc;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.3s ease;
+}
+
+.contact-info-box:hover {
+    border-color: #026a84;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(2, 106, 132, 0.1);
+}
+
+.contact-icon {
+    font-size: 20px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(2, 106, 132, 0.1);
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.contact-info-box span {
+    color: #333;
+    font-weight: 500;
+}
+
+.form-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end;
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 2px solid #f0f0f0;
+}
+
+.btn-secondary {
+    background: #cbd5e0;
+    color: #2d3748;
+    border: 2px solid #a0aec0;
+    padding: 12px 26px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.btn-secondary:hover {
+    background: #a0aec0;
+    border-color: #718096;
+    transform: translateY(-1px);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .cliente-container {
+        margin: 20px;
+        border-radius: 15px;
+    }
+    
+    .header-section {
+        padding: 20px;
+    }
+    
+    .icon-title {
+        gap: 15px;
+    }
+    
+    .icon-circle {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .header-section h1 {
+        font-size: 24px;
+    }
+    
+    .modern-form {
+        padding: 25px;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .btn-secondary {
+        justify-content: center;
+        width: 100%;
+    }
+}
+
+@media screen and (max-width: 1400px) {
+    header {
+        width: 100vw !important;
+        padding: 12px 5px !important;
+        box-sizing: border-box !important;
+        margin: 0 !important;
+        position: relative !important;
+        left: 0 !important;
+        right: 0 !important;
+    }
+}
+</style>
+
 {% endblock %}

@@ -113,9 +113,28 @@
         </div>
     </div>
 
-    <div style="text-align: center; margin-top: 30px;">
-        <a href="{% url 'lista_produtos' %}" style="background: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-right: 10px;">Ver Todos os Produtos</a>
-        <button onclick="history.back()" style="background: #6c757d; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">Voltar</button>
+    <div style="text-align: center; margin-top: 30px;" class="notification-buttons">
+        <a href="{% url 'lista_produtos' %}" style="background: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-right: 10px;" class="btn-produtos">Ver Todos os Produtos</a>
+        <button onclick="history.back()" style="background: #6c757d; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;" class="btn-voltar">Voltar</button>
     </div>
 </div>
+
+<style>
+@media (max-width: 768px) {
+    .notification-buttons {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 10px !important;
+        align-items: center !important;
+    }
+    
+    .btn-produtos, .btn-voltar {
+        width: auto !important;
+        margin: 0 !important;
+        display: inline-block !important;
+        text-align: center !important;
+    }
+}
+</style>
+
 {% endblock %}
