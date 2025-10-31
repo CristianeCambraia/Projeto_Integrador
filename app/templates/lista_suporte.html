@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="lista-suporte-container">
+<div class="cliente-container">
     <div class="header-section">
         <div class="icon-title">
             <div class="icon-circle">
                 <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-                    <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-5 2.5l.72.72c.39.39.39 1.02 0 1.41L11.41 13l4.31 4.31c.39.39.39 1.02 0 1.41L15 19.44l-4.31-4.31L6.38 19.44l-.72-.72c-.39-.39-.39-1.02 0-1.41L10.59 13 6.28 8.69c-.39-.39-.39-1.02 0-1.41L7 6.56l4.31 4.31L15.62 6.56z" fill="#2d3748"/>
+                    <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" fill="#026a84"/>
                 </svg>
             </div>
             <div>
@@ -16,120 +16,87 @@
         </div>
     </div>
 
-    <div class="content-section">
-        <!-- Filtro -->
-        <div class="filter-section">
-            <div class="search-box">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                    <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" fill="#666"/>
-                </svg>
-                <input type="text" id="filtroSuporte" placeholder="Buscar por ID, nome, email ou descrição...">
-                <button onclick="limparFiltro()" class="clear-btn">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" fill="#666"/>
-                    </svg>
-                </button>
+    <div class="modern-form">
+        <!-- Seção Filtros -->
+        <div class="form-section">
+            <div class="section-header">
+                <h3>🔍 Filtros de Busca</h3>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="filtroSuporte">Buscar</label>
+                    <input type="text" id="filtroSuporte" placeholder="Buscar por ID, nome, email ou descrição...">
+                </div>
+                <div class="form-group">
+                    <label>&nbsp;</label>
+                    <button onclick="limparFiltro()" class="btn-secondary" style="align-self: flex-end;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" fill="#2d3748"/>
+                        </svg>
+                        Limpar
+                    </button>
+                </div>
             </div>
         </div>
 
-    {% if demandas %}
-        <div class="tabela-container">
-            <table class="tabela-lista">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Nome</th>
-                        <th>Email</th>
-                        <th>Telefone</th>
-                        <th>Descrição</th>
-                        <th>Data</th>
-                    </tr>
-                </thead>
-                <tbody id="suporteTable">
-                    {% for demanda in demandas %}
-                    <tr>
-                        <td>#{{ demanda.id }}</td>
-                        <td>{{ demanda.nome }}</td>
-                        <td>{{ demanda.email }}</td>
-                        <td>{{ demanda.telefone }}</td>
-                        <td class="descricao-cell">{{ demanda.descreva|truncatechars:100 }}</td>
-                        <td>{{ demanda.data_criacao|date:"d/m/Y H:i" }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        <!-- Seção Lista de Chamadas -->
+        <div class="form-section">
+            <div class="section-header">
+                <h3>📋 Lista de Chamadas</h3>
+            </div>
+            
+            {% if demandas %}
+                <div class="tabela-container">
+                    <table class="tabela-lista">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nome</th>
+                                <th>Email</th>
+                                <th>Telefone</th>
+                                <th>Descrição</th>
+                                <th>Data</th>
+                            </tr>
+                        </thead>
+                        <tbody id="suporteTable">
+                            {% for demanda in demandas %}
+                            <tr>
+                                <td><strong>#{{ demanda.id }}</strong></td>
+                                <td>{{ demanda.nome }}</td>
+                                <td>{{ demanda.email }}</td>
+                                <td>{{ demanda.telefone }}</td>
+                                <td class="descricao-cell">{{ demanda.descreva|truncatechars:100 }}</td>
+                                <td>{{ demanda.data_criacao|date:"d/m/Y H:i" }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="sem-dados">
+                    <div style="text-align: center; padding: 40px; color: #666;">
+                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" style="margin-bottom: 20px;">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" fill="#ccc"/>
+                        </svg>
+                        <p style="font-size: 18px; margin: 0;">Nenhuma chamada de suporte encontrada.</p>
+                    </div>
+                </div>
+            {% endif %}
         </div>
-    {% else %}
-        <div class="sem-dados">
-            <p>Nenhuma chamada de suporte encontrada.</p>
-        </div>
-    {% endif %}
 
-    <div style="text-align: right;">
-        <button type="button" onclick="location.href='{% url 'home' %}'" class="btn-filtrar">Voltar ⤴</button>
+        <!-- Botões -->
+        <div class="form-actions">
+            <a href="{% url 'home' %}" class="btn-secondary">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" fill="#2d3748"/>
+                </svg>
+                Voltar
+            </a>
+        </div>
     </div>
 </div>
 
-<style>
-.container-lista-orcamentos {
-    border-radius: 30px 30px 30px 30px !important;
-}
-
-/* Responsividade para Dev Tools - Header */
-@media screen and (max-width: 1400px) {
-    header {
-        width: 100vw !important;
-        padding: 12px 5px !important;
-        box-sizing: border-box !important;
-        margin: 0 !important;
-        position: relative !important;
-        left: 0 !important;
-        right: 0 !important;
-        overflow: hidden !important;
-    }
-    
-    header nav {
-        width: 100% !important;
-        box-sizing: border-box !important;
-    }
-    
-    header nav ul {
-        width: 100% !important;
-        box-sizing: border-box !important;
-        justify-content: flex-end !important;
-        flex-wrap: wrap !important;
-    }
-    
-    .container-lista-orcamentos {
-        max-width: 100% !important;
-        width: 100% !important;
-        margin: 20px 0 0 0 !important;
-        padding: 15px !important;
-        box-sizing: border-box !important;
-    }
-}
-</style>
-{% endblock %}
-
-<!-- Botão Voltar ao Topo -->
-<button class="voltar-topo" onclick="voltarAoTopo()">⬆️</button>
-
 <script>
-// Função voltar ao topo
-function voltarAoTopo() {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-// Mostrar/ocultar botão baseado no scroll
-window.addEventListener('scroll', function() {
-    const botao = document.querySelector('.voltar-topo');
-    if (window.scrollY > 300) {
-        botao.classList.add('show');
-    } else {
-        botao.classList.remove('show');
-    }
-});
-
 // Filtro em tempo real
 document.getElementById('filtroSuporte').addEventListener('input', function() {
     const filtro = this.value.toLowerCase();
@@ -144,4 +111,241 @@ document.getElementById('filtroSuporte').addEventListener('input', function() {
         }
     });
 });
+
+function limparFiltro() {
+    document.getElementById('filtroSuporte').value = '';
+    const linhas = document.querySelectorAll('#suporteTable tr');
+    linhas.forEach(function(linha) {
+        linha.style.display = '';
+    });
+}
 </script>
+
+<style>
+.cliente-container {
+    max-width: 1200px;
+    margin: 30px auto;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.header-section {
+    background: #cbd5e0;
+    padding: 30px;
+    color: #2d3748;
+}
+
+.icon-title {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    justify-content: center;
+    text-align: center;
+}
+
+.icon-circle {
+    width: 60px;
+    height: 60px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(10px);
+}
+
+.header-section h1 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 600;
+}
+
+.header-section p {
+    margin: 5px 0 0 0;
+    opacity: 0.9;
+    font-size: 16px;
+}
+
+.modern-form {
+    padding: 40px;
+}
+
+.form-section {
+    margin-bottom: 35px;
+}
+
+.section-header {
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.section-header h3 {
+    margin: 0;
+    color: #333;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.form-group input {
+    padding: 12px 16px;
+    border: 2px solid #e1e5e9;
+    border-radius: 10px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    background: #fafbfc;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #026a84;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(2, 106, 132, 0.1);
+}
+
+.tabela-container {
+    overflow-x: auto;
+    border-radius: 10px;
+    border: 2px solid #f0f0f0;
+}
+
+.tabela-lista {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+}
+
+.tabela-lista th {
+    background: #f8f9fa;
+    padding: 15px 12px;
+    text-align: left;
+    font-weight: 600;
+    color: #333;
+    border-bottom: 2px solid #e1e5e9;
+}
+
+.tabela-lista td {
+    padding: 15px 12px;
+    border-bottom: 1px solid #f0f0f0;
+    color: #555;
+}
+
+.tabela-lista tr:hover {
+    background: #f8f9fa;
+}
+
+.descricao-cell {
+    max-width: 300px;
+    word-wrap: break-word;
+}
+
+.form-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end;
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 2px solid #f0f0f0;
+}
+
+.btn-secondary {
+    background: #cbd5e0;
+    color: #2d3748;
+    border: 2px solid #a0aec0;
+    padding: 12px 26px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.btn-secondary:hover {
+    background: #a0aec0;
+    border-color: #718096;
+    transform: translateY(-1px);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .cliente-container {
+        margin: 20px;
+        border-radius: 15px;
+    }
+    
+    .header-section {
+        padding: 20px;
+    }
+    
+    .icon-title {
+        gap: 15px;
+    }
+    
+    .icon-circle {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .header-section h1 {
+        font-size: 24px;
+    }
+    
+    .modern-form {
+        padding: 25px;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .tabela-lista th,
+    .tabela-lista td {
+        padding: 10px 8px;
+        font-size: 14px;
+    }
+    
+    .descricao-cell {
+        max-width: 200px;
+    }
+}
+
+@media screen and (max-width: 1400px) {
+    header {
+        width: 100vw !important;
+        padding: 12px 5px !important;
+        box-sizing: border-box !important;
+        margin: 0 !important;
+        position: relative !important;
+        left: 0 !important;
+        right: 0 !important;
+    }
+}
+</style>
+
+{% endblock %}
