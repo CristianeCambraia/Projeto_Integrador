@@ -8,76 +8,351 @@
   {% endfor %}
 {% endif %}
 
-<div class="suporte-container">
-    <div class="suporte-form">
-        <h2>Suporte</h2>
-        <form method="post">
-            {% csrf_token %}
-            <div class="campo-form">
-                {{ form.nome.label_tag }}
-                {{ form.nome }}
+<div class="cliente-container">
+    <div class="header-section">
+        <div class="icon-title">
+            <div class="icon-circle">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                    <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" fill="#2d3748"/>
+                </svg>
             </div>
-            <div class="campo-form">
-                {{ form.email.label_tag }}
-                {{ form.email }}
+            <div>
+                <h1>Entre em Contato</h1>
+                <p>Estamos aqui para ajudar você</p>
             </div>
-            <div class="campo-form">
-                {{ form.telefone.label_tag }}
-                {{ form.telefone }}
-            </div>
-            <div class="campo-form">
-                {{ form.descreva.label_tag }}
-                {{ form.descreva }}
-            </div>
-            <button type="submit" class="suporte-btn">Enviar</button>
-        </form>
+        </div>
     </div>
 
-    <div class="suporte-imagem">
-        <img src="{% static 'images/suporte.png' %}" alt="Atendente Suporte">
-        <p class="suporte-slogan">Sua satisfação é nossa prioridade!</p>
-        <p class="suporte-msg">Fique tranquilo, em breve um de nossos consultores entrarão em contato com você.</p>
+    <div class="contact-content">
+        <div class="modern-form">
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-section">
+                    <div class="section-header">
+                        <h3>📝 Formulário de Contato</h3>
+                    </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>{{ form.nome.label }}</label>
+                        {{ form.nome }}
+                    </div>
+                    <div class="form-group">
+                        <label>{{ form.email.label }}</label>
+                        {{ form.email }}
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>{{ form.telefone.label }}</label>
+                        {{ form.telefone }}
+                    </div>
+                    <div class="form-group">
+                        <label>Assunto</label>
+                        <select class="form-input">
+                            <option>Suporte Técnico</option>
+                            <option>Dúvidas Comerciais</option>
+                            <option>Reclamações</option>
+                            <option>Sugestões</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label>{{ form.descreva.label }}</label>
+                        {{ form.descreva }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="section-header">
+                    <h3>📞 Informações de Contato</h3>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>E-mail</label>
+                        <div class="contact-info-box">
+                            <div class="contact-icon">📧</div>
+                            <span>suporte@insumed.com</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Telefone</label>
+                        <div class="contact-info-box">
+                            <div class="contact-icon">📞</div>
+                            <span>(35) 98412-3236</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <a href="{% url 'home' %}" class="btn-secondary">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                        <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" fill="#2d3748"/>
+                    </svg>
+                    Voltar
+                </a>
+                <button type="submit" class="btn-primary">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" fill="white"/>
+                    </svg>
+                    Enviar Mensagem
+                </button>
+            </div>
+            </form>
+        </div>
+        
+        <div class="suporte-imagem">
+            <img src="{% static 'images/suporte.png' %}" alt="Atendente Suporte">
+            <p class="suporte-slogan">Sua satisfação é nossa prioridade!</p>
+            <p class="suporte-msg">Fique tranquilo, em breve um de nossos consultores entrarão em contato com você.</p>
+        </div>
     </div>
 </div>
 
 <style>
-.suporte-container {
-    border-radius: 30px 30px 30px 30px !important;
+.cliente-container {
+    max-width: 1000px;
+    margin: 30px auto;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    overflow: hidden;
 }
 
-/* Responsividade para Dev Tools - Header */
-@media screen and (max-width: 1400px) {
-    header {
-        width: 100vw !important;
-        padding: 12px 5px !important;
-        box-sizing: border-box !important;
-        margin: 0 !important;
-        position: relative !important;
-        left: 0 !important;
-        right: 0 !important;
+.header-section {
+    background: #cbd5e0;
+    padding: 40px 30px;
+    color: #2d3748;
+}
+
+.icon-title {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    justify-content: center;
+    text-align: center;
+}
+
+.icon-circle {
+    width: 60px;
+    height: 60px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(10px);
+}
+
+.header-section h1 {
+    margin: 0 0 8px 0;
+    font-size: 28px;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.header-section p {
+    margin: 0;
+    opacity: 0.9;
+    font-size: 16px;
+    line-height: 1.4;
+}
+
+.contact-content {
+    display: flex;
+    gap: 40px;
+    padding: 40px;
+}
+
+.modern-form {
+    flex: 1;
+}
+
+.suporte-imagem {
+    flex: 0 0 300px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.suporte-imagem img {
+    width: 100%;
+    border-radius: 15px;
+    margin-bottom: 20px;
+}
+
+.suporte-slogan {
+    font-size: 18px;
+    font-weight: 600;
+    color: #026a84;
+    margin: 15px 0 10px 0;
+}
+
+.suporte-msg {
+    font-size: 14px;
+    color: #666;
+    font-style: italic;
+    line-height: 1.5;
+}
+
+.form-section {
+    margin-bottom: 35px;
+}
+
+.section-header h3 {
+    margin: 0 0 20px 0;
+    color: #333;
+    font-size: 18px;
+    font-weight: 600;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.form-group input, .form-group textarea, .form-group select {
+    padding: 14px 16px;
+    border: 2px solid #e1e5e9;
+    border-radius: 10px;
+    font-size: 16px;
+    background: #fafbfc;
+    transition: all 0.3s ease;
+    line-height: 1.4;
+    height: auto;
+    min-height: 48px;
+}
+
+.form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+    outline: none;
+    border-color: #026a84;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(2, 106, 132, 0.1);
+}
+
+.contact-info-box {
+    padding: 12px 16px;
+    border: 2px solid #e1e5e9;
+    border-radius: 10px;
+    background: #fafbfc;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.contact-icon {
+    font-size: 20px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(2, 106, 132, 0.1);
+    border-radius: 50%;
+}
+
+.form-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end;
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 2px solid #f0f0f0;
+}
+
+.btn-primary {
+    background: #026a84;
+    color: white;
+    border: 2px solid #026a84;
+    padding: 12px 26px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background: #024a5c;
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background: #cbd5e0;
+    color: #2d3748;
+    border: 2px solid #a0aec0;
+    padding: 12px 26px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.btn-secondary:hover {
+    background: #a0aec0;
+    transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+    .cliente-container {
+        margin: 20px;
+        border-radius: 15px;
     }
     
-    .suporte-container {
-        max-width: 100% !important;
-        width: 100% !important;
-        margin: 20px 0 0 0 !important;
-        padding: 15px !important;
-        box-sizing: border-box !important;
-    }
-}
-
-@media screen and (max-width: 768px) {
-    .suporte-form {
-        margin-left: 80px !important;
+    .contact-content {
+        flex-direction: column;
+        padding: 25px;
+        gap: 25px;
     }
     
     .suporte-imagem {
-        text-align: right !important;
-        padding-right: 20px !important;
+        flex: none;
+        order: -1;
     }
     
-    .suporte-slogan, .suporte-msg {
-        text-align: right !important;
+    .suporte-imagem img {
+        width: 100%;
+        max-width: 250px;
+        height: auto;
+        object-fit: contain;
+        margin: 0 auto 15px auto;
+        display: block;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .form-actions {
+        flex-direction: column;
     }
 }
 </style>
