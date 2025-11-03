@@ -74,15 +74,15 @@
                         </div>
                         <div class="form-group">
                             <label for="{{ form.unidade.id_for_label }}" style="display: block; margin-bottom: 8px; font-weight: 600; color: #2d3748; font-size: 14px;">
-                                Unidade
+                                Cobrança
                             </label>
                             <select name="{{ form.unidade.name }}" id="{{ form.unidade.id_for_label }}" style="width: 100%; height: 45px; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 16px; transition: all 0.3s ease; box-sizing: border-box; background: white;">
-                                <option value="">Selecione a unidade</option>
+                                <option value="">Selecione a cobrança</option>
                                 <option value="Hora" {% if form.unidade.value == 'Hora' %}selected{% endif %}>Hora</option>
+                                <option value="Semana" {% if form.unidade.value == 'Semana' %}selected{% endif %}>Semana</option>
+                                <option value="Mês" {% if form.unidade.value == 'Mês' %}selected{% endif %}>Mês</option>
+                                <option value="Ano" {% if form.unidade.value == 'Ano' %}selected{% endif %}>Ano</option>
                                 <option value="Serviço" {% if form.unidade.value == 'Serviço' %}selected{% endif %}>Serviço</option>
-                                <option value="Consulta" {% if form.unidade.value == 'Consulta' %}selected{% endif %}>Consulta</option>
-                                <option value="Sessão" {% if form.unidade.value == 'Sessão' %}selected{% endif %}>Sessão</option>
-                                <option value="Projeto" {% if form.unidade.value == 'Projeto' %}selected{% endif %}>Projeto</option>
                             </select>
                             {% if form.unidade.errors %}
                                 <span style="color: #e53e3e; font-size: 12px; margin-top: 5px; display: block;">{{ form.unidade.errors.0 }}</span>

@@ -415,6 +415,29 @@ document.getElementById('filtroCliente').addEventListener('input', filtrarClient
         padding: 25px;
     }
     
+    .search-box {
+        width: 100%;
+        max-width: none;
+    }
+    
+    .search-box svg:first-child {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 1;
+    }
+    
+    .search-box input {
+        width: 100%;
+        padding: 15px 20px 15px 45px;
+        text-indent: 20px;
+    }
+    
+    .clear-btn {
+        display: none;
+    }
+    
     .clientes-grid {
         grid-template-columns: 1fr;
         gap: 15px;
