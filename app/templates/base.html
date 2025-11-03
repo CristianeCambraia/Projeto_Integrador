@@ -231,6 +231,48 @@
             }
         }
 
+        /* Correção para notificações desktop */
+        #notificationDropdown {
+            width: 380px !important;
+            max-width: 380px !important;
+            right: 20px !important;
+            left: auto !important;
+        }
+        
+        #notificationDropdown > div:first-child {
+            display: flex !important;
+            flex-wrap: wrap !important;
+            gap: 5px !important;
+            margin-bottom: 10px !important;
+        }
+        
+        #notificationDropdown > div:first-child button {
+            flex: 1 !important;
+            min-width: 0 !important;
+            padding: 5px 8px !important;
+            font-size: 11px !important;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+        }
+        
+        #notificationContent div[style*="display: flex"] {
+            flex-direction: column !important;
+            gap: 8px !important;
+        }
+        
+        #notificationContent div[style*="display: flex"] > div:last-child {
+            display: flex !important;
+            gap: 5px !important;
+            justify-content: flex-end !important;
+        }
+        
+        #notificationContent div[style*="display: flex"] > div:last-child button {
+            padding: 3px 6px !important;
+            font-size: 10px !important;
+            min-width: 60px !important;
+        }
+        
         /* Dropdown CSS - Estilo Ultra Premium Profissional */
         .dropdown {
             position: relative;
@@ -1105,12 +1147,12 @@
                                 <span id="notificationCounter" style="position: absolute; top: 0; right: 0; background: white; color: #ff0000; border-radius: 50%; min-width: 16px; height: 16px; font-size: 10px; display: none; align-items: center; justify-content: center; font-weight: bold; border: 2px solid #013e6a;">0</span>
                             </button>
                             
-                            <div id="notificationDropdown" style="display: none; position: fixed; top: 80px; right: 20px; background: white; border: 1px solid #ccc; width: 320px; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.2); z-index: 99999;">
+                            <div id="notificationDropdown" style="display: none; position: fixed; top: 80px; right: 20px; background: white; border: 1px solid #ccc; width: 320px; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.2); z-index: 99999; max-height: 400px; overflow-y: auto;">
                                 <h3 style="margin: 0 0 10px 0; color: #333; text-align: center; font-size: 18px;">Notificações de Estoque</h3>
-                                <div style="margin-bottom: 10px; display: flex; gap: 5px; flex-wrap: wrap;">
-                                    <button onclick="zerarContador()" style="background: #dc3545; color: white; border: none; padding: 5px 8px; border-radius: 3px; font-size: 12px;">Marcar Todas como Lidas</button>
-                                    <button onclick="marcarTodasNaoLidas()" style="background: #28a745; color: white; border: none; padding: 5px 8px; border-radius: 3px; font-size: 12px;">Marcar como Não Lidas</button>
-                                    <button onclick="descartarTodas()" style="background: #6c757d; color: white; border: none; padding: 5px 8px; border-radius: 3px; font-size: 12px;">Descartar Todas</button>
+                                <div style="margin-bottom: 10px; display: flex; gap: 3px; justify-content: space-between;">
+                                    <button onclick="zerarContador()" style="background: #dc3545; color: white; border: none; padding: 4px 6px; border-radius: 3px; font-size: 10px; flex: 1;">Marcar Todas como Lidas</button>
+                                    <button onclick="marcarTodasNaoLidas()" style="background: #28a745; color: white; border: none; padding: 4px 6px; border-radius: 3px; font-size: 10px; flex: 1;">Marcar como Não Lidas</button>
+                                    <button onclick="descartarTodas()" style="background: #6c757d; color: white; border: none; padding: 4px 6px; border-radius: 3px; font-size: 10px; flex: 1;">Descartar Todas</button>
                                 </div>
                                 <div id="notificationContent">
                                     <div style="text-align: center; padding: 20px; color: #666;">Carregando...</div>
@@ -1145,7 +1187,12 @@
                             </button>
                             <div id="mobileNotificationDropdown" class="mobile-notification-dropdown">
                                 <div style="padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.2); margin-bottom: 10px; text-align: center;">
-                                    <h4 style="margin: 0; color: white; font-size: 18px; font-weight: 600;">Notificações de Estoque</h4>
+                                    <h4 style="margin: 0 0 10px 0; color: white; font-size: 18px; font-weight: 600;">Notificações de Estoque</h4>
+                                    <div style="display: flex; gap: 5px; flex-wrap: wrap; justify-content: center;">
+                                        <button onclick="zerarContadorMobile()" style="background: #dc3545; color: white; border: none; padding: 4px 8px; border-radius: 15px; font-size: 10px;">Marcar Todas como Lidas</button>
+                                        <button onclick="marcarTodasNaoLidasMobile()" style="background: #28a745; color: white; border: none; padding: 4px 8px; border-radius: 15px; font-size: 10px;">Marcar como Não Lidas</button>
+                                        <button onclick="descartarTodasMobile()" style="background: #6c757d; color: white; border: none; padding: 4px 8px; border-radius: 15px; font-size: 10px;">Descartar Todas</button>
+                                    </div>
                                 </div>
                                 <div id="mobileNotificationContent">
                                     <div style="text-align: center; padding: 20px; color: rgba(255,255,255,0.7);">Carregando...</div>
@@ -1301,18 +1348,28 @@
                         let html = '';
                         data.categorias.forEach(categoria => {
                             if (categoria.count > 0) {
-                                html += `
-                                    <div style="border-bottom: 1px solid #eee; padding: 10px 0; margin: 5px 0; cursor: pointer; background: #f8f9fa; border-radius: 5px; padding: 10px;" onclick="expandCategory('${categoria.tipo}')">
-                                        <strong>${categoria.icone} ${categoria.titulo} (${categoria.count})</strong>
-                                        <div id="items-${categoria.tipo}" style="display: none; margin-top: 10px; padding-left: 20px;"></div>
-                                    </div>
-                                `;
+                                // Calcular quantas foram apagadas desta categoria
+                                const apagadas = JSON.parse(localStorage.getItem('notificacoesApagadas') || '[]');
+                                const apagadasDestaCategoria = apagadas.filter(key => key.endsWith('_' + categoria.tipo)).length;
+                                const countAjustado = Math.max(0, categoria.count - apagadasDestaCategoria);
+                                
+                                if (countAjustado > 0) {
+                                    html += `
+                                        <div style="border-bottom: 1px solid #eee; padding: 10px 0; margin: 5px 0; cursor: pointer; background: #f8f9fa; border-radius: 5px; padding: 10px;" onclick="expandCategory('${categoria.tipo}')">
+                                            <strong>${categoria.icone} ${categoria.titulo} (${countAjustado})</strong>
+                                            <div id="items-${categoria.tipo}" style="display: none; margin-top: 10px; padding-left: 20px;"></div>
+                                        </div>
+                                    `;
+                                }
                             }
                         });
                         content.innerHTML = html;
                         
-                        // Atualizar contador do sino
-                        updateNotificationCounter(data.categorias);
+                        // Só atualizar contador se não foi uma ação de apagar
+                        if (!window.skipCounterUpdate) {
+                            updateNotificationCounter(data.categorias);
+                        }
+                        window.skipCounterUpdate = false;
                     } else {
                         content.innerHTML = '<div style="text-align: center; padding: 20px; color: #666;">Nenhuma notificação</div>';
                         const counter = document.getElementById('notificationCounter');
@@ -1326,24 +1383,20 @@
         }
         
         function updateNotificationCounter(categorias) {
-            // Contar notificações não lidas de forma simples
-            let totalNaoLidas = 0;
+            let totalCount = 0;
             const lidas = JSON.parse(localStorage.getItem('notificacoesLidas') || '[]');
             const apagadas = JSON.parse(localStorage.getItem('notificacoesApagadas') || '[]');
             
-            // Somar todas as categorias
-            categorias.forEach(cat => {
-                totalNaoLidas += cat.count;
-            });
+            categorias.forEach(cat => totalCount += cat.count);
             
-            // Subtrair apenas as que foram realmente lidas/apagadas
+            // Subtrair notificações já lidas e apagadas
             const totalMarcadas = lidas.length + apagadas.length;
-            totalNaoLidas = Math.max(0, totalNaoLidas - totalMarcadas);
+            totalCount = Math.max(0, totalCount - totalMarcadas);
             
             const counter = document.getElementById('notificationCounter');
             if (counter) {
-                counter.textContent = totalNaoLidas;
-                counter.style.display = totalNaoLidas > 0 ? 'flex' : 'none';
+                counter.textContent = totalCount;
+                counter.style.display = totalCount > 0 ? 'flex' : 'none';
             }
         }
         
@@ -1396,6 +1449,7 @@
                                             <small>${notif.mensagem}</small>
                                         </div>
                                         <div style="display: flex; gap: 5px;">
+                                            <button onclick="marcarNaoLida('${key}')" style="background: #28a745; color: white; border: none; padding: 3px 6px; border-radius: 3px; font-size: 10px;">Não Lida</button>
                                             <button onclick="apagarNotif('${key}')" style="background: #dc3545; color: white; border: none; padding: 3px 6px; border-radius: 3px; font-size: 10px;">Apagar</button>
                                         </div>
                                     </div>
@@ -1489,18 +1543,41 @@
         
         function apagarNotif(key) {
             const apagadas = JSON.parse(localStorage.getItem('notificacoesApagadas') || '[]');
-            apagadas.push(key);
-            localStorage.setItem('notificacoesApagadas', JSON.stringify(apagadas));
-            
             const lidas = JSON.parse(localStorage.getItem('notificacoesLidas') || '[]');
-            if (!lidas.includes(key)) {
-                const counter = document.getElementById('notificationCounter');
-                let count = Math.max(0, parseInt(counter.textContent) - 1);
+            
+            // Só adicionar se não estiver já apagada
+            if (!apagadas.includes(key)) {
+                apagadas.push(key);
+                localStorage.setItem('notificacoesApagadas', JSON.stringify(apagadas));
+                
+                // Se não estava lida, diminuir contador imediatamente
+                if (!lidas.includes(key)) {
+                    updateCountersAfterDelete();
+                }
+                
+                // Definir flag para não recalcular contador
+                window.skipCounterUpdate = true;
+                
+                // Recarregar notificações
+                loadNotifications();
+            }
+        }
+        
+        function updateCountersAfterDelete() {
+            const counter = document.getElementById('notificationCounter');
+            const mobileCounter = document.getElementById('mobileNotificationCounter');
+            
+            if (counter) {
+                let count = Math.max(0, parseInt(counter.textContent || '0') - 1);
                 counter.textContent = count;
                 if (count <= 0) counter.style.display = 'none';
             }
             
-            loadNotifications();
+            if (mobileCounter) {
+                let count = Math.max(0, parseInt(mobileCounter.textContent || '0') - 1);
+                mobileCounter.textContent = count;
+                if (count <= 0) mobileCounter.style.display = 'none';
+            }
         }
         
         function marcarTodasNaoLidas() {
@@ -1733,9 +1810,15 @@
                                 const status = jaLida ? ' (LIDA)' : '';
                                 
                                 html += `
-                                    <div onclick="marcarLidaMobile('${key}', '${notif.produto_id}', '${notif.tipo}')" style="background: rgba(255,255,255,0.05); padding: 8px; margin: 3px 0; border-radius: 5px; font-size: 12px; cursor: pointer; opacity: ${opacity};">
-                                        <strong>${notif.produto_nome}${status}</strong><br>
-                                        <span style="opacity: 0.8;">${notif.mensagem}</span>
+                                    <div style="background: rgba(255,255,255,0.05); padding: 8px; margin: 3px 0; border-radius: 5px; font-size: 12px; opacity: ${opacity};">
+                                        <div onclick="marcarLidaMobile('${key}', '${notif.produto_id}', '${notif.tipo}')" style="cursor: pointer; margin-bottom: 5px;">
+                                            <strong>${notif.produto_nome}${status}</strong><br>
+                                            <span style="opacity: 0.8;">${notif.mensagem}</span>
+                                        </div>
+                                        <div style="display: flex; gap: 5px; justify-content: flex-end;">
+                                            <button onclick="marcarNaoLidaMobile('${key}')" style="background: #28a745; color: white; border: none; padding: 2px 6px; border-radius: 15px; font-size: 10px;">Não Lida</button>
+                                            <button onclick="apagarNotifMobile('${key}')" style="background: #dc3545; color: white; border: none; padding: 2px 6px; border-radius: 15px; font-size: 10px;">Apagar</button>
+                                        </div>
                                     </div>
                                 `;
                             }
@@ -1781,6 +1864,78 @@
             
             // Redirecionar para a página da notificação
             window.location.href = `/notificacao/${produto_id}/${tipo}/`;
+        }
+        
+        function marcarNaoLidaMobile(key) {
+            const lidas = JSON.parse(localStorage.getItem('notificacoesLidas') || '[]');
+            const index = lidas.indexOf(key);
+            if (index > -1) {
+                lidas.splice(index, 1);
+                localStorage.setItem('notificacoesLidas', JSON.stringify(lidas));
+                
+                // Atualizar contadores
+                const mobileCounter = document.getElementById('mobileNotificationCounter');
+                const desktopCounter = document.getElementById('notificationCounter');
+                
+                if (mobileCounter) {
+                    let count = parseInt(mobileCounter.textContent || '0') + 1;
+                    mobileCounter.textContent = count;
+                    mobileCounter.style.display = 'flex';
+                }
+                
+                if (desktopCounter) {
+                    let count = parseInt(desktopCounter.textContent || '0') + 1;
+                    desktopCounter.textContent = count;
+                    desktopCounter.style.display = 'flex';
+                }
+                
+                loadMobileNotifications();
+            }
+        }
+        
+        function apagarNotifMobile(key) {
+            const apagadas = JSON.parse(localStorage.getItem('notificacoesApagadas') || '[]');
+            const lidas = JSON.parse(localStorage.getItem('notificacoesLidas') || '[]');
+            
+            if (!apagadas.includes(key)) {
+                apagadas.push(key);
+                localStorage.setItem('notificacoesApagadas', JSON.stringify(apagadas));
+                
+                // Se não estava lida, diminuir contador
+                if (!lidas.includes(key)) {
+                    const mobileCounter = document.getElementById('mobileNotificationCounter');
+                    const desktopCounter = document.getElementById('notificationCounter');
+                    
+                    if (mobileCounter) {
+                        let count = Math.max(0, parseInt(mobileCounter.textContent || '0') - 1);
+                        mobileCounter.textContent = count;
+                        if (count <= 0) mobileCounter.style.display = 'none';
+                    }
+                    
+                    if (desktopCounter) {
+                        let count = Math.max(0, parseInt(desktopCounter.textContent || '0') - 1);
+                        desktopCounter.textContent = count;
+                        if (count <= 0) desktopCounter.style.display = 'none';
+                    }
+                }
+                
+                loadMobileNotifications();
+            }
+        }
+        
+        function zerarContadorMobile() {
+            zerarContador();
+            loadMobileNotifications();
+        }
+        
+        function marcarTodasNaoLidasMobile() {
+            marcarTodasNaoLidas();
+            loadMobileNotifications();
+        }
+        
+        function descartarTodasMobile() {
+            zerarContador();
+            loadMobileNotifications();
         }
         
         // Fechar menu mobile ao clicar em link
