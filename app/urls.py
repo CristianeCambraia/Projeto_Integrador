@@ -64,6 +64,7 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     
     # ----- ADMIN -----
+    path('admin/', views.admin_login, name='admin'),
     path('admin/login/', views.admin_login, name='admin_login'),
     path('admin-login/', views.admin_login, name='admin_login_alt'),
     path('admin/logout/', views.admin_logout, name='admin_logout'),
