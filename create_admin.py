@@ -8,11 +8,11 @@ django.setup()
 from app.models import Admin
 
 # Criar admin customizado
-if not Admin.objects.filter(email='insumed.sistema2025@hotmail.com').exists():
+if not Admin.objects.filter(email='insumed.sistema2025@gmail.com').exists():
     Admin.objects.create(
-        email='insumed.sistema2025@hotmail.com',
+        email='insumed.sistema2025@gmail.com',
         senha='Insumed2025'
     )
-    print('Admin criado: insumed.sistema2025@hotmail.com / Insumed2025')
+    print('Admin criado: insumed.sistema2025@gmail.com / Insumed2025')
 else:
     print('Admin já existe')
