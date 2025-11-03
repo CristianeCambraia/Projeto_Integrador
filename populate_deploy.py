@@ -14,9 +14,9 @@ def populate_data():
     
     # Fornecedores
     fornecedores_data = [
-        {"nome": "MedSupply Ltda", "cnpj": "12.345.678/0001-90", "telefone": "(11) 3456-7890", "email": "contato@medsupply.com", "endereco": "Rua das Flores, 123", "cidade": "São Paulo", "estado": "SP", "cep": "01234-567"},
-        {"nome": "FarmaDistribuidora", "cnpj": "98.765.432/0001-10", "telefone": "(21) 2345-6789", "email": "vendas@farmadist.com", "endereco": "Av. Brasil, 456", "cidade": "Rio de Janeiro", "estado": "RJ", "cep": "20123-456"},
-        {"nome": "EquipMed Brasil", "cnpj": "11.222.333/0001-44", "telefone": "(31) 3333-4444", "email": "equipmed@gmail.com", "endereco": "Rua Minas, 789", "cidade": "Belo Horizonte", "estado": "MG", "cep": "30123-789"},
+        {"nome": "MedSupply Ltda", "cnpj": "12.345.678/0001-90", "telefone": "(11) 3456-7890", "email": "contato@medsupply.com", "endereco": "Rua das Flores, 123", "bairro": "Centro", "cidade": "São Paulo", "uf": "SP", "cep": "01234-567", "data_nascimento": datetime.now().date()},
+        {"nome": "FarmaDistribuidora", "cnpj": "98.765.432/0001-10", "telefone": "(21) 2345-6789", "email": "vendas@farmadist.com", "endereco": "Av. Brasil, 456", "bairro": "Copacabana", "cidade": "Rio de Janeiro", "uf": "RJ", "cep": "20123-456", "data_nascimento": datetime.now().date()},
+        {"nome": "EquipMed Brasil", "cnpj": "11.222.333/0001-44", "telefone": "(31) 3333-4444", "email": "equipmed@gmail.com", "endereco": "Rua Minas, 789", "bairro": "Savassi", "cidade": "Belo Horizonte", "uf": "MG", "cep": "30123-789", "data_nascimento": datetime.now().date()},
     ]
     
     for f_data in fornecedores_data:
@@ -69,15 +69,15 @@ def populate_data():
     
     # Clientes
     clientes_data = [
-        {"nome": "Hospital São Lucas", "cpf_cnpj": "12.345.678/0001-90", "telefone": "(11) 3456-7890", "email": "compras@saolucas.com", "endereco": "Av. Paulista, 1000", "cidade": "São Paulo", "estado": "SP", "cep": "01310-100"},
-        {"nome": "Clínica Vida Nova", "cpf_cnpj": "98.765.432/0001-10", "telefone": "(21) 2345-6789", "email": "clinica@vidanova.com", "endereco": "Rua Copacabana, 500", "cidade": "Rio de Janeiro", "estado": "RJ", "cep": "22070-010"},
-        {"nome": "Dr. João Silva", "cpf_cnpj": "123.456.789-01", "telefone": "(31) 9876-5432", "email": "drjoao@gmail.com", "endereco": "Rua das Acácias, 200", "cidade": "Belo Horizonte", "estado": "MG", "cep": "30112-000"},
-        {"nome": "Farmácia Popular", "cpf_cnpj": "11.222.333/0001-44", "telefone": "(85) 3333-4444", "email": "popular@farmacia.com", "endereco": "Av. Beira Mar, 300", "cidade": "Fortaleza", "estado": "CE", "cep": "60165-121"},
+        {"nome": "Hospital São Lucas", "cpf": "12.345.678/0001-90", "telefone": "(11) 3456-7890", "email": "compras@saolucas.com", "endereco": "Av. Paulista, 1000", "bairro": "Bela Vista", "cidade": "São Paulo", "uf": "SP", "cep": "01310-100", "data_nascimento": datetime.now().date()},
+        {"nome": "Clínica Vida Nova", "cpf": "98.765.432/0001-10", "telefone": "(21) 2345-6789", "email": "clinica@vidanova.com", "endereco": "Rua Copacabana, 500", "bairro": "Copacabana", "cidade": "Rio de Janeiro", "uf": "RJ", "cep": "22070-010", "data_nascimento": datetime.now().date()},
+        {"nome": "Dr. João Silva", "cpf": "123.456.789-01", "telefone": "(31) 9876-5432", "email": "drjoao@gmail.com", "endereco": "Rua das Acácias, 200", "bairro": "Centro", "cidade": "Belo Horizonte", "uf": "MG", "cep": "30112-000", "data_nascimento": datetime.now().date()},
+        {"nome": "Farmácia Popular", "cpf": "11.222.333/0001-44", "telefone": "(85) 3333-4444", "email": "popular@farmacia.com", "endereco": "Av. Beira Mar, 300", "bairro": "Meireles", "cidade": "Fortaleza", "uf": "CE", "cep": "60165-121", "data_nascimento": datetime.now().date()},
     ]
     
     for c_data in clientes_data:
         cliente, created = Cliente.objects.get_or_create(
-            cpf_cnpj=c_data["cpf_cnpj"],
+            cpf=c_data["cpf"],
             defaults=c_data
         )
         if created:
@@ -85,9 +85,9 @@ def populate_data():
     
     # Usuários
     usuarios_data = [
-        {"nome": "Maria Santos", "email": "maria@insumed.com", "telefone": "(11) 9999-8888", "senha": "senha123"},
-        {"nome": "Pedro Oliveira", "email": "pedro@insumed.com", "telefone": "(21) 8888-7777", "senha": "senha123"},
-        {"nome": "Ana Costa", "email": "ana@insumed.com", "telefone": "(31) 7777-6666", "senha": "senha123"},
+        {"nome": "Maria Santos", "email": "maria@insumed.com", "cpf": "111.222.333-44", "endereco": "Rua A, 100", "telefone": "(11) 9999-8888", "data_nascimento": datetime.now().date(), "senha": "senha123"},
+        {"nome": "Pedro Oliveira", "email": "pedro@insumed.com", "cpf": "222.333.444-55", "endereco": "Rua B, 200", "telefone": "(21) 8888-7777", "data_nascimento": datetime.now().date(), "senha": "senha123"},
+        {"nome": "Ana Costa", "email": "ana@insumed.com", "cpf": "333.444.555-66", "endereco": "Rua C, 300", "telefone": "(31) 7777-6666", "data_nascimento": datetime.now().date(), "senha": "senha123"},
     ]
     
     for u_data in usuarios_data:
