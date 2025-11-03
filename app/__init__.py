@@ -1,2 +1,1 @@
-import pymysql
-pymysql.install_as_MySQLdb()
+# MySQL não necessário para deploy com SQLite
