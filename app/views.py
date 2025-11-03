@@ -214,7 +214,7 @@ def cadastrar_servico(request):
                 form.save()
                 messages.success(request, 'Serviço cadastrado com sucesso.')
 
-            return redirect('lista_servicos')
+            return redirect('cadastrar_servico')
     else:
         form = ServicoForm()
     return render(request, 'produtos/cadastrar_servico.html', {
