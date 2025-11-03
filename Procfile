@@ -1,0 +1,1 @@
+web: gunicorn insumed_pi.wsgi:application
