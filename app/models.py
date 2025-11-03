@@ -56,9 +56,11 @@ class Produto(models.Model):
 
 class Servico(models.Model):
     UNIDADE_CHOICES = [
-        ('Diário', 'Diário'),
-        ('Mensal', 'Mensal'),
-        ('Anual', 'Anual'),
+        ('Hora', 'Hora'),
+        ('Semana', 'Semana'),
+        ('Mês', 'Mês'),
+        ('Ano', 'Ano'),
+        ('Serviço', 'Serviço'),
     ]
     
     nome = models.CharField(max_length=100)
@@ -67,7 +69,7 @@ class Servico(models.Model):
     descricao = models.TextField(blank=True, null=True)
     fornecedor = models.ForeignKey(Fornecedor, on_delete=models.CASCADE, related_name="servicos", null=True, blank=True)
     data_hora = models.DateTimeField(default=timezone.now)
-    unidade = models.CharField(max_length=50, choices=UNIDADE_CHOICES, default="Diário")
+    unidade = models.CharField(max_length=50, choices=UNIDADE_CHOICES, default="Hora")
     quantidade = models.IntegerField(default=1)
     validade = models.DateField(blank=True, null=True)
     observacao = models.TextField(blank=True, null=True)

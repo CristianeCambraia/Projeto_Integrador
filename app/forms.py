@@ -94,7 +94,7 @@ class ServicoForm(forms.ModelForm):
             'preco': forms.NumberInput(attrs={'placeholder': 'Preço'}),
             'descricao': forms.Textarea(attrs={'placeholder': 'Descrição', 'rows': 4, 'style': 'width: 100%; grid-column: 1 / -1;'}),
             'fornecedor': forms.Select(attrs={'placeholder': 'Selecione o Fornecedor'}),
-            'unidade': forms.Select(attrs={'placeholder': 'Selecione a Unidade'}),
+            'unidade': forms.Select(attrs={'placeholder': 'Selecione a Cobrança'}),
             'quantidade': forms.NumberInput(attrs={'placeholder': 'Quantidade', 'min': '0'}),
             'observacao': forms.Textarea(attrs={'placeholder': 'Observações', 'rows': 4, 'style': 'width: 100%; grid-column: 1 / -1;'})
         }
@@ -103,10 +103,19 @@ class ServicoForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
             field.label = ''
+        
+        # Definir campos obrigatórios
+        self.fields['nome'].required = True
+        self.fields['preco'].required = True
+        self.fields['unidade'].required = True
+        self.fields['descricao'].required = False
+        self.fields['quantidade'].required = False
+        self.fields['observacao'].required = False
+        
         # Mostrar apenas fornecedores ativos
         self.fields['fornecedor'].queryset = Fornecedor.objects.filter(ativo=True)
+        self.fields['fornecedor'].required = False
         if not Fornecedor.objects.filter(ativo=True).exists():
-            self.fields['fornecedor'].required = False
             self.fields['fornecedor'].empty_label = 'Nenhum fornecedor ativo'
         else:
             self.fields['fornecedor'].empty_label = 'Fornecedor'
