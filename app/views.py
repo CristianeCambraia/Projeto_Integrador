@@ -170,7 +170,7 @@ def lista_produtos(request):
     
     produtos = produtos.order_by('-data_hora')
 
-    return render(request, 'produtos/lista_produtos.html', {
+    return render(request, 'Produtos/lista_produtos.html', {
         'produtos': produtos,
         'filtro': filtro
     })
