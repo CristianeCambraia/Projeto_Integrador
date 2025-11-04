@@ -116,51 +116,80 @@
 
 <script>
 function toggleDescricao(btn) {
-    const preview = btn.parentElement.querySelector('.descricao-preview');
-    const completa = btn.parentElement.querySelector('.descricao-completa');
-    
-    if (preview.style.display === 'none') {
-        preview.style.display = 'inline';
-        completa.style.display = 'none';
-        btn.textContent = 'Ver mais';
-    } else {
-        preview.style.display = 'none';
-        completa.style.display = 'inline';
-        btn.textContent = 'Ver menos';
+    try {
+        const preview = btn.parentElement.querySelector('.descricao-preview');
+        const completa = btn.parentElement.querySelector('.descricao-completa');
+        
+        if (preview && completa) {
+            if (preview.style.display === 'none') {
+                preview.style.display = 'inline';
+                completa.style.display = 'none';
+                btn.textContent = 'Ver mais';
+            } else {
+                preview.style.display = 'none';
+                completa.style.display = 'inline';
+                btn.textContent = 'Ver menos';
+            }
+        }
+    } catch (e) {
+        console.log('Erro ao expandir descrição');
     }
 }
 
 function filtrarProdutos() {
-    const filtro = document.getElementById('filtroProduto').value.toLowerCase();
-    const items = document.querySelectorAll('.produto-card[data-nome]');
-    let visivel = 0;
-    
-    items.forEach(item => {
-        const nome = item.getAttribute('data-nome');
-        const id = item.getAttribute('data-id');
-        const fornecedor = item.getAttribute('data-fornecedor');
-        const codigo = item.getAttribute('data-codigo');
+    try {
+        const filtroInput = document.getElementById('filtroProduto');
+        if (!filtroInput) return;
         
-        if (nome.includes(filtro) || id.includes(filtro) || fornecedor.includes(filtro) || codigo.includes(filtro)) {
-            item.style.display = 'block';
-            visivel++;
-        } else {
-            item.style.display = 'none';
+        const filtro = filtroInput.value.toLowerCase();
+        const items = document.querySelectorAll('.produto-card[data-nome]');
+        let visivel = 0;
+        
+        items.forEach(item => {
+            const nome = item.getAttribute('data-nome') || '';
+            const id = item.getAttribute('data-id') || '';
+            const fornecedor = item.getAttribute('data-fornecedor') || '';
+            const codigo = item.getAttribute('data-codigo') || '';
+            
+            if (nome.includes(filtro) || id.includes(filtro) || fornecedor.includes(filtro) || codigo.includes(filtro)) {
+                item.style.display = 'block';
+                visivel++;
+            } else {
+                item.style.display = 'none';
+            }
+        });
+        
+        const nenhumItem = document.getElementById('nenhumProduto');
+        if (nenhumItem) {
+            nenhumItem.style.display = visivel === 0 && filtro !== '' ? 'block' : 'none';
         }
-    });
-    
-    const nenhumItem = document.getElementById('nenhumProduto');
-    if (nenhumItem) {
-        nenhumItem.style.display = visivel === 0 && filtro !== '' ? 'block' : 'none';
+    } catch (e) {
+        console.log('Erro ao filtrar produtos');
     }
 }
 
 function limparFiltro() {
-    document.getElementById('filtroProduto').value = '';
-    filtrarProdutos();
+    try {
+        const filtroInput = document.getElementById('filtroProduto');
+        if (filtroInput) {
+            filtroInput.value = '';
+            filtrarProdutos();
+        }
+    } catch (e) {
+        console.log('Erro ao limpar filtro');
+    }
 }
 
-document.getElementById('filtroProduto').addEventListener('input', filtrarProdutos);
+document.addEventListener('DOMContentLoaded', function() {
+    try {
+        const filtroInput = document.getElementById('filtroProduto');
+        if (filtroInput) {
+            filtroInput.addEventListener('input', filtrarProdutos);
+        }
+    } catch (e) {
+        console.log('Erro ao inicializar filtro');
+    }
+});
 </script>
 
 <style>
