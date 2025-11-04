@@ -55,32 +55,26 @@ class ProdutoForm(forms.ModelForm):
         fields = ['nome', 'codigo_barras', 'preco', 'preco_compra', 'descricao', 'fornecedor', 'unidade', 'quantidade', 'validade', 'observacao']
 
         widgets = {
-            'nome': forms.TextInput(attrs={'placeholder': 'Nome do Produto', 'required': True}),
-            'codigo_barras': forms.TextInput(attrs={'placeholder': 'Escaneie ou digite o código de barras...', 'id': 'codigo_barras', 'autocomplete': 'off', 'required': True}),
-            'preco': forms.NumberInput(attrs={'placeholder': 'Preço de Venda', 'required': True}),
-            'preco_compra': forms.NumberInput(attrs={'placeholder': 'Preço de Compra', 'required': False}),
-            'descricao': forms.Textarea(attrs={'placeholder': 'Descrição', 'rows': 4, 'style': 'width: 100%; grid-column: 1 / -1;', 'required': True}),
-            'fornecedor': forms.Select(attrs={'placeholder': 'Selecione o Fornecedor', 'required': True}),
-            'unidade': forms.Select(attrs={'placeholder': 'Selecione a Unidade', 'required': True}),
-            'quantidade': forms.NumberInput(attrs={'placeholder': 'Quantidade', 'min': '0', 'required': True, 'value': ''}),
-            'validade': forms.DateInput(attrs={'placeholder': 'Data de Validade', 'type': 'date', 'required': True}),
-            'observacao': forms.Textarea(attrs={'placeholder': 'Observações', 'rows': 4, 'style': 'width: 100%; grid-column: 1 / -1;', 'required': True})
+            'nome': forms.TextInput(attrs={'placeholder': 'Nome do Produto'}),
+            'codigo_barras': forms.TextInput(attrs={'placeholder': 'Escaneie ou digite o código de barras...', 'id': 'codigo_barras'}),
+            'preco': forms.NumberInput(attrs={'placeholder': 'Preço de Venda'}),
+            'preco_compra': forms.NumberInput(attrs={'placeholder': 'Preço de Compra'}),
+            'descricao': forms.Textarea(attrs={'placeholder': 'Descrição', 'rows': 4}),
+            'fornecedor': forms.Select(),
+            'unidade': forms.Select(),
+            'quantidade': forms.NumberInput(attrs={'placeholder': 'Quantidade', 'min': '0'}),
+            'validade': forms.DateInput(attrs={'type': 'date'}),
+            'observacao': forms.Textarea(attrs={'placeholder': 'Observações', 'rows': 4})
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        for field in self.fields.values():
-            field.label = ''
-            field.required = True
-        # Preço de compra é opcional
-        self.fields['preco_compra'].required = False
         # Mostrar apenas fornecedores ativos
-        self.fields['fornecedor'].queryset = Fornecedor.objects.filter(ativo=True)
-        if not Fornecedor.objects.filter(ativo=True).exists():
-            self.fields['fornecedor'].required = False
-            self.fields['fornecedor'].empty_label = 'Nenhum fornecedor ativo'
-        else:
+        try:
+            self.fields['fornecedor'].queryset = Fornecedor.objects.filter(ativo=True)
             self.fields['fornecedor'].empty_label = 'Selecione o Fornecedor'
+        except:
+            pass
 
 
 # Formulário de Serviço
