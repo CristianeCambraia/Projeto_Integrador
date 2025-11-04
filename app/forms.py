@@ -178,7 +178,7 @@ class UsuarioForm(forms.ModelForm):
         widgets = {
             'nome': forms.TextInput(attrs={'placeholder': 'Nome'}),
             'email': forms.EmailInput(attrs={'placeholder': 'Email'}),
-            'cpf': forms.TextInput(attrs={'placeholder': 'CPF', 'maxlength': '14', 'onkeypress': 'return event.charCode >= 48 && event.charCode <= 57', 'oninput': 'this.value = this.value.replace(/\D/g, "").replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4").substring(0, 14)'}),
+            'cpf': forms.TextInput(attrs={'placeholder': 'CPF', 'maxlength': '14', 'onkeypress': 'return event.charCode >= 48 && event.charCode <= 57', 'oninput': r'this.value = this.value.replace(/\D/g, "").replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4").substring(0, 14)'}),
             'endereco': forms.TextInput(attrs={'placeholder': 'Endereço'}),
             'telefone': forms.TextInput(attrs={'placeholder': 'Telefone', 'onkeypress': 'return event.charCode >= 48 && event.charCode <= 57', 'oninput': 'this.value = this.value.replace(/[^0-9]/g, "")'}),
             # 'data_nascimento' e 'senha' já declarados acima

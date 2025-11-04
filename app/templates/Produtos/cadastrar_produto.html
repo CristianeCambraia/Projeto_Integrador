@@ -458,7 +458,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (codigo.length >= 8) {
             timeout = setTimeout(() => {
-                fetch('/buscar-produto-por-codigo/', {
+                fetch('{% url "buscar_produto_por_codigo" %}', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -531,7 +531,20 @@ document.addEventListener('DOMContentLoaded', function() {
     async function monitorarClipboard() {
         if (!monitorAtivo) return;
         
+        // Verificar se clipboard API está disponível e se temos permissão
+        if (!navigator.clipboard || !navigator.clipboard.readText) {
+            console.log('Clipboard API não disponível');
+            return;
+        }
+        
         try {
+            // Verificar permissão antes de tentar ler
+            const permission = await navigator.permissions.query({name: 'clipboard-read'});
+            if (permission.state === 'denied') {
+                console.log('Permissão de clipboard negada');
+                return;
+            }
+            
             const texto = await navigator.clipboard.readText();
             const codigo = texto.replace(/\D/g, '');
             
@@ -556,29 +569,50 @@ document.addEventListener('DOMContentLoaded', function() {
                 }, 3000);
             }
         } catch (err) {
-            // Clipboard não acessível, continuar monitorando
+            // Clipboard não acessível ou erro de permissão
+            console.log('Erro ao acessar clipboard:', err.message);
         }
         
         // Verificar novamente em 500ms
         setTimeout(monitorarClipboard, 500);
     }
     
-    // Iniciar monitoramento
-    setTimeout(() => {
-        monitorarClipboard();
-    }, 1000);
+    // Iniciar monitoramento apenas se estivermos em HTTPS ou localhost
+    if (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+        setTimeout(() => {
+            monitorarClipboard();
+        }, 1000);
+    } else {
+        console.log('Monitoramento de clipboard desabilitado em HTTP');
+    }
     
 
     
     // Auto-focus e feedback visual
     codigoBarrasField.focus();
     
-    // Manter campo sempre focado para receber dados
-    setInterval(() => {
-        if (document.activeElement !== codigoBarrasField && !document.querySelector('input:focus')) {
+    // Auto-focus mais suave (apenas se não há outro input focado)
+    let autoFocusInterval = setInterval(() => {
+        if (document.activeElement !== codigoBarrasField && 
+            !document.querySelector('input:focus, select:focus, textarea:focus, button:focus')) {
             codigoBarrasField.focus();
         }
-    }, 2000);
+    }, 5000); // Reduzido para 5 segundos
+    
+    // Parar auto-focus se usuário interagir com outros elementos
+    document.addEventListener('click', (e) => {
+        if (e.target !== codigoBarrasField && (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' || e.target.tagName === 'TEXTAREA')) {
+            clearInterval(autoFocusInterval);
+            setTimeout(() => {
+                autoFocusInterval = setInterval(() => {
+                    if (document.activeElement !== codigoBarrasField && 
+                        !document.querySelector('input:focus, select:focus, textarea:focus, button:focus')) {
+                        codigoBarrasField.focus();
+                    }
+                }, 5000);
+            }, 10000); // Reativar após 10 segundos
+        }
+    });
     
     codigoBarrasField.addEventListener('focus', function() {
         this.style.borderColor = '#007bff';

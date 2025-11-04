@@ -1,6 +1,7 @@
-Django
-gunicorn
-whitenoise
-reportlab
-Pillow
-xhtml2pdf
+Django==5.2.6
+whitenoise==6.5.0
+dj-database-url==2.1.0
+psycopg2-binary==2.9.7
+xhtml2pdf==0.2.11
+reportlab==4.0.4
+Pillow==10.0.0

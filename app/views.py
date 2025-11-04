@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from .models import Fornecedor, Produto, Servico, Cliente, Usuario, Orcamento, MovimentacaoEstoque, RecuperacaoSenha, Suporte, Admin, Notificacao
 from .forms import FornecedorForm, ProdutoForm, ServicoForm, ClienteForm, UsuarioForm, SuporteForm, EditarProdutoForm, RecuperarSenhaForm, VerificarCodigoForm, NovaSenhaForm, AdminLoginForm
 from django.utils.dateparse import parse_date
-from django.http import HttpResponseBadRequest
+from django.http import HttpResponseBadRequest, JsonResponse, HttpResponse
 from django.utils import timezone
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
@@ -10,7 +10,9 @@ from .forms import LoginForm
 from .decorators import login_required_custom
 from django.conf import settings
 from django.db import models
-from .views_teste_notificacoes import criar_produtos_teste_notificacoes
+from django.views.decorators.csrf import csrf_exempt
+import json
+from datetime import datetime, timedelta
 
 def formatar_valor_brasileiro(valor):
     """Formata valor para padrão brasileiro: 1.234,56"""
@@ -75,46 +77,15 @@ def cadastrar(request):
     if request.method == "POST":
         form = ProdutoForm(request.POST)
         if form.is_valid():
-            # Se já existir produto com mesmo nome (case-insensitive), somar quantitades
-            nome = form.cleaned_data.get('nome', '').strip()
-            quantidade_nova = form.cleaned_data.get('quantidade') or 0
             try:
-                quantidade_nova = int(quantidade_nova)
-            except (TypeError, ValueError):
-                quantidade_nova = 0
-
-            preco_novo = form.cleaned_data.get('preco')
-            descricao_nova = form.cleaned_data.get('descricao')
-            if descricao_nova is None:
-                descricao_nova = ''
-            descricao_nova = descricao_nova.strip()
-            fornecedor_novo = form.cleaned_data.get('fornecedor')
-            unidade_nova = form.cleaned_data.get('unidade')
-
-            # Somar apenas se nome (case-insensitive), descricao (trim) e preco coincidirem
-            existente = None
-            try:
-                existente = Produto.objects.filter(
-                    nome__iexact=nome,
-                    descricao__iexact=descricao_nova,
-                    preco=preco_novo
-                ).first()
-            except Exception:
-                # Em caso de qualquer problema com a query (ex: preco None), garantir que existente seja None
-                existente = None
-
-            if existente:
-                existente.quantidade = (existente.quantidade or 0) + quantidade_nova
-                existente.data_hora = timezone.now()
-                existente.save()
-                messages.success(request, f'Produto "{existente.nome}" atualizado: quantidade somada.')
-            else:
                 form.save()
                 messages.success(request, 'Produto cadastrado com sucesso.')
-
-            return redirect('cadastrar_produto')
+                return redirect('cadastrar_produto')
+            except Exception as e:
+                messages.error(request, f'Erro ao cadastrar produto: {str(e)}')
     else:
         form = ProdutoForm()
+    
     return render(request, 'produtos/cadastrar_produto.html', {
         'form': form,
         'titulo_pagina': 'Cadastro de Produto' 
@@ -122,6 +93,7 @@ def cadastrar(request):
 
     
 
+@login_required_custom
 def lista_produtos(request):
     filtro = request.GET.get('filtro')
     periodo = request.GET.get('periodo')
@@ -131,18 +103,15 @@ def lista_produtos(request):
     # Filtro por busca
     if filtro:
         filtro = filtro.strip()
-        print(f"Filtro aplicado: '{filtro}'")  # Debug
         
         if filtro.isdigit() and len(filtro) <= 6:  # IDs normalmente são menores
             produtos = produtos.filter(id=filtro)
-            print(f"Busca por ID: {produtos.count()} produtos encontrados")  # Debug
         else:
             produtos = produtos.filter(
                 models.Q(nome__icontains=filtro) |
                 models.Q(fornecedor__nome__icontains=filtro) |
                 models.Q(codigo_barras__icontains=filtro)
             )
-            print(f"Busca por texto: {produtos.count()} produtos encontrados")  # Debug
     
     # Filtro por período
     if periodo and periodo.isdigit():
@@ -150,10 +119,8 @@ def lista_produtos(request):
         dias = int(periodo)
         data_limite = timezone.now() - timedelta(days=dias)
         produtos = produtos.filter(data_hora__gte=data_limite)
-        print(f"Filtro últimos {dias} dias: {produtos.count()} produtos")  # Debug
     
     produtos = produtos.order_by('-data_hora')
-    print(f"Total final: {produtos.count()} produtos")  # Debug
 
     return render(request, 'produtos/lista_produtos.html', {
         'produtos': produtos,
@@ -177,51 +144,21 @@ def cadastrar_servico(request):
     if request.method == "POST":
         form = ServicoForm(request.POST)
         if form.is_valid():
-            # Se já existir serviço com mesmo nome (case-insensitive), somar quantitades
-            nome = form.cleaned_data.get('nome', '').strip()
-            quantidade_nova = form.cleaned_data.get('quantidade') or 0
             try:
-                quantidade_nova = int(quantidade_nova)
-            except (TypeError, ValueError):
-                quantidade_nova = 0
-
-            preco_novo = form.cleaned_data.get('preco')
-            descricao_nova = form.cleaned_data.get('descricao')
-            if descricao_nova is None:
-                descricao_nova = ''
-            descricao_nova = descricao_nova.strip()
-            fornecedor_novo = form.cleaned_data.get('fornecedor')
-            unidade_nova = form.cleaned_data.get('unidade')
-
-            # Somar apenas se nome (case-insensitive), descricao (trim) e preco coincidirem
-            existente = None
-            try:
-                existente = Servico.objects.filter(
-                    nome__iexact=nome,
-                    descricao__iexact=descricao_nova,
-                    preco=preco_novo
-                ).first()
-            except Exception:
-                # Em caso de qualquer problema com a query (ex: preco None), garantir que existente seja None
-                existente = None
-
-            if existente:
-                existente.quantidade = (existente.quantidade or 0) + quantidade_nova
-                existente.data_hora = timezone.now()
-                existente.save()
-                messages.success(request, f'Serviço "{existente.nome}" atualizado: quantidade somada.')
-            else:
                 form.save()
                 messages.success(request, 'Serviço cadastrado com sucesso.')
-
-            return redirect('cadastrar_servico')
+                return redirect('cadastrar_servico')
+            except Exception as e:
+                messages.error(request, f'Erro ao cadastrar serviço: {str(e)}')
     else:
         form = ServicoForm()
+    
     return render(request, 'produtos/cadastrar_servico.html', {
         'form': form,
         'titulo_pagina': 'Cadastro de Serviço' 
     })
 
+@login_required_custom
 def lista_servicos(request):
     filtro = request.GET.get('filtro')
     
@@ -571,7 +508,6 @@ def relatorio_estoque(request):
         dias = int(periodo)
         data_limite = timezone.now() - timedelta(days=dias)
         produtos = produtos.filter(data_hora__gte=data_limite)
-        print(f"Filtro últimos {dias} dias (desde {data_limite}): {produtos.count()} produtos")  # Debug
     
     # Adicionar informações de movimentação para cada produto
     produtos_com_movimentacao = []
@@ -587,8 +523,6 @@ def relatorio_estoque(request):
         produto.ultima_entrada = ultima_entrada
         produto.ultima_saida = ultima_saida
         produtos_com_movimentacao.append(produto)
-    
-    print(f"Total produtos final: {len(produtos_com_movimentacao)}")  # Debug
     return render(request, 'relatorio_estoque.html', {'produtos': produtos_com_movimentacao})
 
 def relatorio_entrada(request):
@@ -628,7 +562,6 @@ def relatorio_entrada(request):
                     tipo='ENTRADA',
                     quantidade=qtd
                 )
-                print(f"Movimentação criada: {mov.produto.nome} - ENTRADA - {mov.quantidade} - {mov.data_hora}")
         return redirect('relatorio_entrada')
 
     return render(request, 'relatorio_entrada.html', {'produtos': produtos_com_entrada})
@@ -672,7 +605,6 @@ def relatorio_saida(request):
                         tipo='SAIDA',
                         quantidade=qtd_retirada
                     )
-                    print(f"Movimentação criada: {mov.produto.nome} - SAIDA - {mov.quantidade} - {mov.data_hora}")
                 else:
                     messages.error(request, f"O produto {produto.nome} não pode sofrer de retirada por falta de estoque!")
 
@@ -869,9 +801,6 @@ def editar_cliente(request, cliente_id):
 @login_required_custom
 def relatorio_movimentacao_entrada(request):
     movimentacoes = MovimentacaoEstoque.objects.filter(tipo='ENTRADA').select_related('produto', 'produto__fornecedor').order_by('-data_hora')
-    print(f"Total de movimentações de entrada: {movimentacoes.count()}")
-    for mov in movimentacoes[:5]:  # Mostrar apenas as 5 primeiras
-        print(f"Entrada: {mov.produto.nome} - {mov.quantidade} - {mov.data_hora}")
     return render(request, 'relatorio_movimentacao_entrada.html', {'movimentacoes': movimentacoes})
 
 @login_required_custom
@@ -881,10 +810,8 @@ def relatorio_movimentacao_saida(request):
 import random
 import string
 from django.core.mail import send_mail
-from django.conf import settings
 from .models import RecuperacaoSenha
 from .forms import RecuperarSenhaForm, VerificarCodigoForm, NovaSenhaForm
-from datetime import timedelta
 
 def recuperar_senha(request):
     if request.method == 'POST':
@@ -1073,7 +1000,6 @@ def buscar_clientes(request):
     return JsonResponse({'clientes': []})
 
 # ----- EXPORTAR PDF ORÇAMENTO -----
-from django.http import HttpResponse
 from django.template.loader import get_template
 from xhtml2pdf import pisa
 
@@ -1122,9 +1048,6 @@ def exportar_pdf_orcamento(request, orcamento_id):
     return response
 
 # ----- BUSCAR PRODUTO POR CÓDIGO -----
-import json
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
 
 @csrf_exempt
 def buscar_produto_por_codigo(request):
@@ -1133,13 +1056,10 @@ def buscar_produto_por_codigo(request):
             data = json.loads(request.body)
             codigo_barras = data.get('codigo_barras', '').strip()
             
-            print(f"Buscando produto com código: '{codigo_barras}'")  # Debug
-            
             if codigo_barras:
                 try:
                     # Buscar produto pelo código de barras exato
                     produto = Produto.objects.get(codigo_barras=codigo_barras)
-                    print(f"Produto encontrado: {produto.nome}")  # Debug
                     
                     return JsonResponse({
                         'encontrado': True,
@@ -1151,13 +1071,10 @@ def buscar_produto_por_codigo(request):
                         'observacao': produto.observacao or ''
                     })
                 except Produto.DoesNotExist:
-                    print(f"Produto não encontrado com código: '{codigo_barras}'")  # Debug
-                    
                     # Tentar buscar por código similar (caso tenha espaços ou caracteres extras)
                     produtos_similares = Produto.objects.filter(codigo_barras__icontains=codigo_barras)
                     if produtos_similares.exists():
                         produto = produtos_similares.first()
-                        print(f"Produto similar encontrado: {produto.nome}")  # Debug
                         
                         return JsonResponse({
                             'encontrado': True,
@@ -1173,7 +1090,6 @@ def buscar_produto_por_codigo(request):
             
             return JsonResponse({'encontrado': False, 'erro': 'Código vazio'})
         except Exception as e:
-            print(f"Erro na busca: {str(e)}")  # Debug
             return JsonResponse({'encontrado': False, 'erro': str(e)})
     
     return JsonResponse({'encontrado': False, 'erro': 'Método não permitido'})
@@ -1290,14 +1206,14 @@ def teste_notificacoes(request):
 
 def detalhes_notificacao(request, produto_id, tipo):
     """Exibe detalhes de uma notificação específica"""
-    print(f"DEBUG: produto_id={produto_id}, tipo={tipo}")  # Debug
-    
     # Marcar como lida ao acessar
-    Notificacao.objects.filter(produto_id=produto_id, tipo=tipo, lida=False).update(lida=True)
+    try:
+        Notificacao.objects.filter(produto_id=produto_id, tipo=tipo, lida=False).update(lida=True)
+    except:
+        pass
     
     try:
         produto = Produto.objects.get(id=produto_id)
-        print(f"DEBUG: Produto encontrado: {produto.nome}, quantidade: {produto.quantidade}")  # Debug
     except Produto.DoesNotExist:
         messages.error(request, 'Produto não encontrado')
         return redirect('lista_produtos')
@@ -1340,7 +1256,6 @@ def detalhes_notificacao(request, produto_id, tipo):
     return render(request, 'detalhes_notificacao.html', context)
 
 # ----- NOTIFICAÇÕES DE ESTOQUE -----
-from datetime import datetime, timedelta
 
 def gerar_notificacoes_estoque():
     """Gera notificações automáticas baseadas nas regras de estoque"""
@@ -1748,9 +1663,9 @@ def gerar_senha_temporaria(request):
     
     return JsonResponse({'success': False, 'error': 'Método não permitido'})
 
-# ----- BALANCETE -----
+# ----- RELATÓRIO FINANCEIRO -----
 @login_required_custom
-def balancete(request):
+def relatorio_financeiro(request):
     periodo = request.GET.get('periodo', 'mes')
     
     from datetime import datetime, timedelta
@@ -1858,6 +1773,86 @@ def balancete(request):
     }
     
     return render(request, 'balancete.html', context)
+
+# ----- RELATÓRIO FINANCEIRO -----
+@login_required_custom
+def relatorio_financeiro(request):
+    periodo = request.GET.get('periodo')
+    
+    produtos = Produto.objects.all()
+    
+    # Filtro por período
+    if periodo and periodo.isdigit():
+        dias = int(periodo)
+        data_limite = timezone.now() - timedelta(days=dias)
+        produtos = produtos.filter(data_hora__gte=data_limite)
+    
+    # Agrupar produtos por nome, fornecedor e preço (case-insensitive)
+    produtos_agrupados = {}
+    
+    for produto in produtos:
+        fornecedor_nome = produto.fornecedor.nome if produto.fornecedor else "Sem fornecedor"
+        preco_venda = produto.preco or 0
+        # Usar nome, fornecedor e preço para agrupamento
+        chave = f"{produto.nome.lower().strip()}_{fornecedor_nome.lower().strip()}_{preco_venda}"
+        
+        if chave in produtos_agrupados:
+            # Somar quantidades
+            produtos_agrupados[chave]['quantidade'] += produto.quantidade or 0
+        else:
+            # Criar novo item agrupado
+            produtos_agrupados[chave] = {
+                'nome': produto.nome,
+                'fornecedor': produto.fornecedor,
+                'quantidade': produto.quantidade or 0,
+                'unidade': produto.unidade,
+                'preco_compra': produto.preco_compra or 0,
+                'preco': produto.preco or 0
+            }
+    
+    # Calcular valores financeiros para produtos agrupados
+    produtos_financeiros = []
+    total_compra = 0
+    total_venda = 0
+    
+    for item in produtos_agrupados.values():
+        preco_compra = item['preco_compra']
+        preco_venda = item['preco']
+        quantidade = item['quantidade']
+        
+        valor_total_compra = preco_compra * quantidade
+        valor_total_venda = preco_venda * quantidade
+        lucro_unitario = preco_venda - preco_compra
+        lucro_total = lucro_unitario * quantidade
+        
+        # Criar objeto similar ao produto para o template
+        produto_agrupado = type('obj', (object,), {
+            'nome': item['nome'],
+            'fornecedor': item['fornecedor'],
+            'quantidade': quantidade,
+            'unidade': item['unidade'],
+            'preco_compra': f"{preco_compra:.2f}".replace('.', ','),
+            'preco': f"{preco_venda:.2f}".replace('.', ','),
+            'valor_total_compra': f"{valor_total_compra:.2f}".replace('.', ','),
+            'valor_total_venda': f"{valor_total_venda:.2f}".replace('.', ','),
+            'lucro_unitario': f"{lucro_unitario:.2f}".replace('.', ','),
+            'lucro_total': f"{lucro_total:.2f}".replace('.', ',')
+        })
+        
+        total_compra += valor_total_compra
+        total_venda += valor_total_venda
+        
+        produtos_financeiros.append(produto_agrupado)
+    
+    lucro_geral = total_venda - total_compra
+    
+    return render(request, 'relatorio_financeiro.html', {
+        'produtos': produtos_financeiros,
+        'total_compra': f"{total_compra:.2f}".replace('.', ','),
+        'total_venda': f"{total_venda:.2f}".replace('.', ','),
+        'lucro_geral': f"{lucro_geral:.2f}".replace('.', ','),
+        'periodo': periodo
+    })
 
 # ----- BALANCETE PDF/EMAIL -----
 def exportar_balancete_pdf(request):
@@ -2099,87 +2094,6 @@ def usuarios_cadastrados(request):
         'usuarios': usuarios
     })
 
-# ----- RELATÓRIO FINANCEIRO -----
-@login_required_custom
-def relatorio_financeiro(request):
-    periodo = request.GET.get('periodo')
-    
-    produtos = Produto.objects.all()
-    
-    # Filtro por período
-    if periodo and periodo.isdigit():
-        from datetime import timedelta
-        dias = int(periodo)
-        data_limite = timezone.now() - timedelta(days=dias)
-        produtos = produtos.filter(data_hora__gte=data_limite)
-    
-    # Agrupar produtos por nome, fornecedor e preço (case-insensitive)
-    produtos_agrupados = {}
-    
-    for produto in produtos:
-        fornecedor_nome = produto.fornecedor.nome if produto.fornecedor else "Sem fornecedor"
-        preco_venda = produto.preco or 0
-        # Usar nome, fornecedor e preço para agrupamento
-        chave = f"{produto.nome.lower().strip()}_{fornecedor_nome.lower().strip()}_{preco_venda}"
-        
-        if chave in produtos_agrupados:
-            # Somar quantidades
-            produtos_agrupados[chave]['quantidade'] += produto.quantidade or 0
-        else:
-            # Criar novo item agrupado
-            produtos_agrupados[chave] = {
-                'nome': produto.nome,
-                'fornecedor': produto.fornecedor,
-                'quantidade': produto.quantidade or 0,
-                'unidade': produto.unidade,
-                'preco_compra': produto.preco_compra or 0,
-                'preco': produto.preco or 0
-            }
-    
-    # Calcular valores financeiros para produtos agrupados
-    produtos_financeiros = []
-    total_compra = 0
-    total_venda = 0
-    
-    for item in produtos_agrupados.values():
-        preco_compra = item['preco_compra']
-        preco_venda = item['preco']
-        quantidade = item['quantidade']
-        
-        valor_total_compra = preco_compra * quantidade
-        valor_total_venda = preco_venda * quantidade
-        lucro_unitario = preco_venda - preco_compra
-        lucro_total = lucro_unitario * quantidade
-        
-        # Criar objeto similar ao produto para o template
-        produto_agrupado = type('obj', (object,), {
-            'nome': item['nome'],
-            'fornecedor': item['fornecedor'],
-            'quantidade': quantidade,
-            'unidade': item['unidade'],
-            'preco_compra': f"{preco_compra:.2f}".replace('.', ','),
-            'preco': f"{preco_venda:.2f}".replace('.', ','),
-            'valor_total_compra': f"{valor_total_compra:.2f}".replace('.', ','),
-            'valor_total_venda': f"{valor_total_venda:.2f}".replace('.', ','),
-            'lucro_unitario': f"{lucro_unitario:.2f}".replace('.', ','),
-            'lucro_total': f"{lucro_total:.2f}".replace('.', ',')
-        })
-        
-        total_compra += valor_total_compra
-        total_venda += valor_total_venda
-        
-        produtos_financeiros.append(produto_agrupado)
-    
-    lucro_geral = total_venda - total_compra
-    
-    return render(request, 'relatorio_financeiro.html', {
-        'produtos': produtos_financeiros,
-        'total_compra': f"{total_compra:.2f}".replace('.', ','),
-        'total_venda': f"{total_venda:.2f}".replace('.', ','),
-        'lucro_geral': f"{lucro_geral:.2f}".replace('.', ','),
-        'periodo': periodo
-    })
-
 def exportar_financeiro_pdf(request):
     periodo = request.GET.get('periodo')
     
@@ -2360,8 +2274,8 @@ def enviar_financeiro_email(request):
     
     return JsonResponse({'success': False, 'error': 'Método não permitido'})
 # ----- CRIAR PRODUTOS VENCIDOS PARA TESTE -----
-
-    from datetime import date, timedelta
+def criar_produtos_teste_notificacoes(request):
+    from datetime import date
     
     # Buscar ou criar fornecedor
     fornecedor, created = Fornecedor.objects.get_or_create(
