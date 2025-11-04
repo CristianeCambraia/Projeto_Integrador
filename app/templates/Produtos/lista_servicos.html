@@ -120,35 +120,58 @@
 
 <script>
 function filtrarServicos() {
-  const filtro = document.getElementById('filtroServico').value.toLowerCase();
-  const items = document.querySelectorAll('.servico-item');
-  let visivel = 0;
-  
-  items.forEach(item => {
-    const id = item.getAttribute('data-id');
-    const nome = item.getAttribute('data-nome');
-    const descricao = item.getAttribute('data-descricao');
-    
-    if (id.includes(filtro) || nome.includes(filtro) || descricao.includes(filtro)) {
-      item.style.display = 'block';
-      visivel++;
-    } else {
-      item.style.display = 'none';
+    try {
+        const filtroInput = document.getElementById('filtroServico');
+        if (!filtroInput) return;
+        
+        const filtro = filtroInput.value.toLowerCase();
+        const items = document.querySelectorAll('.servico-item[data-nome]');
+        let visivel = 0;
+        
+        items.forEach(item => {
+            const id = item.getAttribute('data-id') || '';
+            const nome = item.getAttribute('data-nome') || '';
+            const descricao = item.getAttribute('data-descricao') || '';
+            
+            if (id.includes(filtro) || nome.includes(filtro) || descricao.includes(filtro)) {
+                item.style.display = 'block';
+                visivel++;
+            } else {
+                item.style.display = 'none';
+            }
+        });
+        
+        const nenhumItem = document.getElementById('nenhumServico');
+        if (nenhumItem) {
+            nenhumItem.style.display = visivel === 0 && filtro !== '' ? 'block' : 'none';
+        }
+    } catch (e) {
+        console.log('Erro ao filtrar serviços');
     }
-  });
-  
-  const nenhumItem = document.getElementById('nenhumServico');
-  if (nenhumItem) {
-    nenhumItem.style.display = visivel === 0 && filtro !== '' ? 'block' : 'none';
-  }
 }
 
 function limparFiltro() {
-  document.getElementById('filtroServico').value = '';
-  filtrarServicos();
+    try {
+        const filtroInput = document.getElementById('filtroServico');
+        if (filtroInput) {
+            filtroInput.value = '';
+            filtrarServicos();
+        }
+    } catch (e) {
+        console.log('Erro ao limpar filtro');
+    }
 }
 
-document.getElementById('filtroServico').addEventListener('input', filtrarServicos);
+document.addEventListener('DOMContentLoaded', function() {
+    try {
+        const filtroInput = document.getElementById('filtroServico');
+        if (filtroInput) {
+            filtroInput.addEventListener('input', filtrarServicos);
+        }
+    } catch (e) {
+        console.log('Erro ao inicializar filtro');
+    }
+});
 </script>
 
 <style>
