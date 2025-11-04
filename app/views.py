@@ -667,12 +667,12 @@ def criar_suporte(request):
                 send_mail(
                     f'Nova Solicitação de Suporte - #{suporte.id}',
                     f'Nome: {suporte.nome}\nEmail: {suporte.email}\nTelefone: {suporte.telefone}\nDescrição: {suporte.descreva}',
-                    settings.DEFAULT_FROM_EMAIL,
-                    ['insumed.sistema2025@gmail.com'],
+                    settings.EMAIL_HOST_USER,
+                    [settings.EMAIL_HOST_USER],
                     fail_silently=False,
                 )
             except Exception as e:
-                messages.warning(request, 'Solicitação salva, mas houve problema no envio do email.')
+                messages.warning(request, f'Solicitação salva, mas erro no email: {str(e)}')
             
             messages.success(request, 'Solicitação enviada por email com sucesso!')
             return redirect("criar_suporte")
@@ -871,20 +871,20 @@ def recuperar_senha(request):
                 # Salvar código no banco
                 RecuperacaoSenha.objects.create(email=email, codigo=codigo)
                 
-                # Enviar email (simulado - você precisa configurar SMTP)
+                # Enviar email
                 try:
                     send_mail(
                         'Código de Recuperação - INSUMED',
                         f'Seu código de recuperação é: {codigo}',
-                        settings.DEFAULT_FROM_EMAIL,
+                        settings.EMAIL_HOST_USER,
                         [email],
                         fail_silently=False,
                     )
                     messages.success(request, 'Código enviado para seu email!')
                     request.session['email_recuperacao'] = email
                     return redirect('verificar_codigo')
-                except:
-                    messages.error(request, 'Erro ao enviar email. Tente novamente.')
+                except Exception as e:
+                    messages.error(request, f'Erro ao enviar email: {str(e)}')
                     request.session['email_recuperacao'] = email
                     return redirect('verificar_codigo')
                     
@@ -1210,15 +1210,18 @@ def enviar_orcamento_email(request):
             pdf_buffer.seek(0)
             
             # Enviar email com anexo
-            from django.core.mail import EmailMessage
-            email = EmailMessage(
-                f'Orçamento #{orcamento.id} - {orcamento.cliente}',
-                f'Segue em anexo o orçamento solicitado.\n\nCliente: {orcamento.cliente}\nData: {orcamento.data.strftime("%d/%m/%Y")}\n\nAtenciosamente,\nEquipe INSUMED',
-                settings.DEFAULT_FROM_EMAIL,
-                [email_destino]
-            )
-            email.attach(f'orcamento_{orcamento.id}.pdf', pdf_buffer.getvalue(), 'application/pdf')
-            email.send()
+            try:
+                from django.core.mail import EmailMessage
+                email = EmailMessage(
+                    f'Orçamento #{orcamento.id} - {orcamento.cliente}',
+                    f'Segue em anexo o orçamento solicitado.\n\nCliente: {orcamento.cliente}\nData: {orcamento.data.strftime("%d/%m/%Y")}\n\nAtenciosamente,\nEquipe INSUMED',
+                    settings.EMAIL_HOST_USER,
+                    [email_destino]
+                )
+                email.attach(f'orcamento_{orcamento.id}.pdf', pdf_buffer.getvalue(), 'application/pdf')
+                email.send()
+            except Exception as email_error:
+                return JsonResponse({'success': False, 'error': f'Erro no envio: {str(email_error)}'})
             
             return JsonResponse({'success': True})
             
