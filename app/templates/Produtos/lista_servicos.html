@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="list-container" style="max-width: 1200px; margin: 20px auto; background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+<div class="servico-container" style="max-width: 1200px; margin: 20px auto; background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
         <!-- Header -->
         <div class="list-header" style="background: #cbd5e0; padding: 25px 40px; display: flex; justify-content: space-between; align-items: center;">
             <div style="flex: 1; text-align: center;">
@@ -178,7 +178,7 @@ button:hover, a:hover {
         padding: 10px !important;
     }
     
-    .list-container {
+    .servico-container {
         margin: 20px 10px 0 10px !important;
     }
     
@@ -229,6 +229,15 @@ button:hover, a:hover {
         grid-template-columns: 1fr !important;
         gap: 10px !important;
     }
+}
+
+.servico-container {
+    max-width: 1200px;
+    margin: 20px auto;
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
 }
 </style>
 {% endblock %}
