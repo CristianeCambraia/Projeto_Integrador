@@ -76,29 +76,66 @@ def lista_fornecedores(request):
 def cadastrar(request):
     if request.method == "POST":
         try:
+            # Dados obrigatórios
+            nome = request.POST.get('nome', '').strip()
+            preco = request.POST.get('preco', '0')
+            unidade = request.POST.get('unidade', 'Unidade')
+            quantidade = request.POST.get('quantidade', '0')
+            
+            if not nome or not preco or not unidade or not quantidade:
+                messages.error(request, 'Preencha todos os campos obrigatórios.')
+                return render(request, 'Produtos/cadastrar_produto.html')
+            
+            # Criar produto com dados básicos
             produto = Produto(
-                nome=request.POST.get('nome'),
-                codigo_barras=request.POST.get('codigo_barras', ''),
-                preco=request.POST.get('preco'),
-                preco_compra=request.POST.get('preco_compra') or 0,
-                descricao=request.POST.get('descricao', ''),
-                unidade=request.POST.get('unidade'),
-                quantidade=request.POST.get('quantidade'),
-                validade=request.POST.get('validade') if request.POST.get('validade') else None,
-                observacao=request.POST.get('observacao', '')
+                nome=nome,
+                preco=float(preco),
+                unidade=unidade,
+                quantidade=int(quantidade)
             )
             
-            fornecedor_id = request.POST.get('fornecedor')
-            if fornecedor_id:
-                produto.fornecedor_id = fornecedor_id
+            # Dados opcionais
+            codigo_barras = request.POST.get('codigo_barras', '').strip()
+            if codigo_barras:
+                produto.codigo_barras = codigo_barras
+                
+            preco_compra = request.POST.get('preco_compra', '').strip()
+            if preco_compra:
+                produto.preco_compra = float(preco_compra)
+            else:
+                produto.preco_compra = 0
+                
+            descricao = request.POST.get('descricao', '').strip()
+            if descricao:
+                produto.descricao = descricao
+                
+            observacao = request.POST.get('observacao', '').strip()
+            if observacao:
+                produto.observacao = observacao
+                
+            validade = request.POST.get('validade', '').strip()
+            if validade:
+                from datetime import datetime
+                produto.validade = datetime.strptime(validade, '%Y-%m-%d').date()
+            
+            fornecedor_id = request.POST.get('fornecedor', '').strip()
+            if fornecedor_id and fornecedor_id.isdigit():
+                try:
+                    fornecedor = Fornecedor.objects.get(id=int(fornecedor_id))
+                    produto.fornecedor = fornecedor
+                except Fornecedor.DoesNotExist:
+                    pass
                 
             produto.save()
-            messages.success(request, 'Produto cadastrado com sucesso.')
+            messages.success(request, 'Produto cadastrado com sucesso!')
             return redirect('cadastrar_produto')
+            
+        except ValueError as e:
+            messages.error(request, 'Erro nos dados informados. Verifique os valores numéricos.')
         except Exception as e:
             messages.error(request, f'Erro ao cadastrar produto: {str(e)}')
     
-    return render(request, 'produtos/cadastrar_produto.html', {
+    return render(request, 'Produtos/cadastrar_produto.html', {
         'titulo_pagina': 'Cadastro de Produto' 
     })
 
@@ -139,14 +176,8 @@ def lista_produtos(request):
     })
 
 def salvar_produto(request):
-    if request.method == "POST":
-        form = ProdutoForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('lista_produtos')
-    else:
-        form = ProdutoForm()
-    return render(request, 'produtos.html', {'form': form, 'titulo_pagina': 'Novo Produto'})
+    # Redirecionar para a view cadastrar que já funciona
+    return redirect('cadastrar_produto')
 
 
 # ----- SERVIÇOS -----

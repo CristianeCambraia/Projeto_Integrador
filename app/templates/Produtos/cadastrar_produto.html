@@ -55,6 +55,9 @@
                     <label for="id_fornecedor">Fornecedor</label>
                     <select name="fornecedor" id="id_fornecedor">
                         <option value="">Selecione o fornecedor</option>
+                        <option value="1">Fornecedor Padrão</option>
+                        <option value="2">Distribuidora ABC</option>
+                        <option value="3">Farmácia Central</option>
                     </select>
                 </div>
             </div>
@@ -79,8 +82,8 @@
                     <input type="number" name="quantidade" id="id_quantidade" placeholder="Quantidade" min="0" required>
                 </div>
                 <div class="form-group">
-                    <label for="id_validade">Data de Validade *</label>
-                    <input type="date" name="validade" id="id_validade" required>
+                    <label for="id_validade">Data de Validade</label>
+                    <input type="date" name="validade" id="id_validade">
                 </div>
             </div>
         </div>
@@ -434,7 +437,7 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Bloquear datas anteriores no calendário
+    // Configuração básica de data
     const validadeField = document.getElementById('id_validade');
     if (validadeField) {
         const hoje = new Date();
@@ -444,204 +447,13 @@ document.addEventListener('DOMContentLoaded', function() {
         const dataHoje = `${ano}-${mes}-${dia}`;
         
         validadeField.min = dataHoje;
-        console.log('Data mínima definida:', dataHoje);
-        
-        // Mensagem personalizada para data inválida
-        validadeField.addEventListener('invalid', function() {
-            this.setCustomValidity('Cadastre um produto com data válida, esse está vencido!');
-        });
-        
-        validadeField.addEventListener('input', function() {
-            this.setCustomValidity('');
-        });
     }
+    
+    // Foco inicial no código de barras
     const codigoBarrasField = document.getElementById('id_codigo_barras');
-    const startScanBtn = document.getElementById('startScan');
-    const stopScanBtn = document.getElementById('stopScan');
-    const scannerDiv = document.getElementById('scanner');
-    const video = document.getElementById('video');
-    
-    let codeReader = null;
-    let stream = null;
-    
-    // Auto-busca produto
-    let timeout;
-    codigoBarrasField.addEventListener('input', function() {
-        clearTimeout(timeout);
-        const codigo = this.value.trim();
-        
-        if (codigo.length >= 8) {
-            timeout = setTimeout(() => {
-                fetch('{% url "buscar_produto_por_codigo" %}', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-                    },
-                    body: JSON.stringify({codigo_barras: codigo})
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.encontrado) {
-                        document.getElementById('id_nome').value = data.nome;
-                        document.getElementById('id_preco').value = data.preco;
-                        if (data.descricao) document.getElementById('id_descricao').value = data.descricao;
-                        if (data.fornecedor) document.getElementById('id_fornecedor').value = data.fornecedor;
-                        document.getElementById('id_unidade').value = data.unidade;
-                        if (data.observacao) document.getElementById('id_observacao').value = data.observacao;
-                        showNotification('✅ Produto encontrado: ' + data.nome);
-                    }
-                    document.getElementById('id_nome').focus();
-                })
-                .catch(() => document.getElementById('id_nome').focus());
-            }, 300);
-        }
-    });
-    
-
-    
-    // Detectar entrada rápida (leitor físico ou app que digita)
-    let entradaRapida = '';
-    let timeoutEntrada;
-    
-    document.addEventListener('keydown', function(e) {
-        if (document.activeElement === codigoBarrasField) {
-            clearTimeout(timeoutEntrada);
-            
-            if (e.key.length === 1 && /[0-9]/.test(e.key)) {
-                entradaRapida += e.key;
-                
-                // Se chegou a 8+ dígitos, processar
-                if (entradaRapida.length >= 8) {
-                    timeoutEntrada = setTimeout(() => {
-                        codigoBarrasField.value = entradaRapida;
-                        showNotification('🔄 Auto-digitado: ' + entradaRapida);
-                        
-                        const event = new Event('input', { bubbles: true });
-                        codigoBarrasField.dispatchEvent(event);
-                        
-                        entradaRapida = '';
-                    }, 100);
-                } else {
-                    // Reset se parar de digitar
-                    timeoutEntrada = setTimeout(() => entradaRapida = '', 1000);
-                }
-            }
-        }
-    });
-    
-    function showNotification(message) {
-        const notification = document.createElement('div');
-        notification.style.cssText = 'position: fixed; top: 20px; right: 20px; padding: 15px; background: #28a745; color: white; border-radius: 5px; z-index: 10000;';
-        notification.textContent = message;
-        document.body.appendChild(notification);
-        setTimeout(() => notification.remove(), 2000);
+    if (codigoBarrasField) {
+        codigoBarrasField.focus();
     }
-    
-    // Monitor automático de clipboard
-    let ultimoClipboard = '';
-    let monitorAtivo = true;
-    
-    async function monitorarClipboard() {
-        if (!monitorAtivo) return;
-        
-        // Verificar se clipboard API está disponível e se temos permissão
-        if (!navigator.clipboard || !navigator.clipboard.readText) {
-            console.log('Clipboard API não disponível');
-            return;
-        }
-        
-        try {
-            // Verificar permissão antes de tentar ler
-            const permission = await navigator.permissions.query({name: 'clipboard-read'});
-            if (permission.state === 'denied') {
-                console.log('Permissão de clipboard negada');
-                return;
-            }
-            
-            const texto = await navigator.clipboard.readText();
-            const codigo = texto.replace(/\D/g, '');
-            
-            // Se é um código novo e válido
-            if (codigo !== ultimoClipboard && codigo.length >= 8 && codigo.length <= 20) {
-                ultimoClipboard = codigo;
-                
-                document.getElementById('id_codigo_barras').value = codigo;
-                document.getElementById('status').innerHTML = '✅ Código detectado: ' + codigo;
-                document.getElementById('status').style.background = '#d1ecf1';
-                
-                showNotification('🔄 Auto-detectado: ' + codigo);
-                
-                // Disparar busca do produto
-                const event = new Event('input', { bubbles: true });
-                document.getElementById('id_codigo_barras').dispatchEvent(event);
-                
-                // Resetar status após 3 segundos
-                setTimeout(() => {
-                    document.getElementById('status').innerHTML = '🔍 Monitorando... Pronto para receber códigos';
-                    document.getElementById('status').style.background = '#d4edda';
-                }, 3000);
-            }
-        } catch (err) {
-            // Clipboard não acessível ou erro de permissão
-            console.log('Erro ao acessar clipboard:', err.message);
-        }
-        
-        // Verificar novamente em 500ms
-        setTimeout(monitorarClipboard, 500);
-    }
-    
-    // Iniciar monitoramento apenas se estivermos em HTTPS ou localhost
-    if (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
-        setTimeout(() => {
-            monitorarClipboard();
-        }, 1000);
-    } else {
-        console.log('Monitoramento de clipboard desabilitado em HTTP');
-    }
-    
-
-    
-    // Auto-focus e feedback visual
-    codigoBarrasField.focus();
-    
-    // Auto-focus mais suave (apenas se não há outro input focado)
-    let autoFocusInterval = setInterval(() => {
-        if (document.activeElement !== codigoBarrasField && 
-            !document.querySelector('input:focus, select:focus, textarea:focus, button:focus')) {
-            codigoBarrasField.focus();
-        }
-    }, 5000); // Reduzido para 5 segundos
-    
-    // Parar auto-focus se usuário interagir com outros elementos
-    document.addEventListener('click', (e) => {
-        if (e.target !== codigoBarrasField && (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' || e.target.tagName === 'TEXTAREA')) {
-            clearInterval(autoFocusInterval);
-            setTimeout(() => {
-                autoFocusInterval = setInterval(() => {
-                    if (document.activeElement !== codigoBarrasField && 
-                        !document.querySelector('input:focus, select:focus, textarea:focus, button:focus')) {
-                        codigoBarrasField.focus();
-                    }
-                }, 5000);
-            }, 10000); // Reativar após 10 segundos
-        }
-    });
-    
-    codigoBarrasField.addEventListener('focus', function() {
-        this.style.borderColor = '#007bff';
-        this.style.backgroundColor = '#fff';
-        this.style.boxShadow = '0 0 10px rgba(0, 123, 255, 0.3)';
-    });
-    
-    codigoBarrasField.addEventListener('blur', function() {
-        // Manter foco para receber dados automaticamente
-        setTimeout(() => this.focus(), 100);
-    });
-    
-
-    
-
 });
 
 
