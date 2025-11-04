@@ -216,7 +216,7 @@ def lista_servicos(request):
     else:
         servicos = Servico.objects.all().order_by('nome')
 
-    return render(request, 'produtos/lista_servicos.html', {
+    return render(request, 'Produtos/lista_servicos.html', {
         'servicos': servicos,
         'filtro': filtro
     })
@@ -238,7 +238,7 @@ def editar_servico(request, servico_id):
     else:
         form = ServicoForm(instance=servico)
     
-    return render(request, 'produtos/editar_servico.html', {
+    return render(request, 'Produtos/editar_servico.html', {
         'form': form,
         'servico': servico,
         'titulo_pagina': 'Editar Serviço'
