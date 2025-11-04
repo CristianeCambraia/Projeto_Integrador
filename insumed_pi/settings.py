@@ -101,9 +101,9 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'insumed.sistema2025@gmail.com'
-EMAIL_HOST_PASSWORD = 'xhvw voek xsqd amif'
-DEFAULT_FROM_EMAIL = 'INSUMED <insumed.sistema2025@gmail.com>'
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'insumed.sistema2025@gmail.com')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'xhvw voek xsqd amif')
+DEFAULT_FROM_EMAIL = f'INSUMED <{EMAIL_HOST_USER}>'
 
 # Configurações para acesso à câmera
 SECURE_CROSS_ORIGIN_OPENER_POLICY = None
