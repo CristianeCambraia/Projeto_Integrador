@@ -75,19 +75,30 @@ def lista_fornecedores(request):
 @login_required_custom
 def cadastrar(request):
     if request.method == "POST":
-        form = ProdutoForm(request.POST)
-        if form.is_valid():
-            try:
-                form.save()
-                messages.success(request, 'Produto cadastrado com sucesso.')
-                return redirect('cadastrar_produto')
-            except Exception as e:
-                messages.error(request, f'Erro ao cadastrar produto: {str(e)}')
-    else:
-        form = ProdutoForm()
+        try:
+            produto = Produto(
+                nome=request.POST.get('nome'),
+                codigo_barras=request.POST.get('codigo_barras', ''),
+                preco=request.POST.get('preco'),
+                preco_compra=request.POST.get('preco_compra') or 0,
+                descricao=request.POST.get('descricao', ''),
+                unidade=request.POST.get('unidade'),
+                quantidade=request.POST.get('quantidade'),
+                validade=request.POST.get('validade') if request.POST.get('validade') else None,
+                observacao=request.POST.get('observacao', '')
+            )
+            
+            fornecedor_id = request.POST.get('fornecedor')
+            if fornecedor_id:
+                produto.fornecedor_id = fornecedor_id
+                
+            produto.save()
+            messages.success(request, 'Produto cadastrado com sucesso.')
+            return redirect('cadastrar_produto')
+        except Exception as e:
+            messages.error(request, f'Erro ao cadastrar produto: {str(e)}')
     
     return render(request, 'produtos/cadastrar_produto.html', {
-        'form': form,
         'titulo_pagina': 'Cadastro de Produto' 
     })
 

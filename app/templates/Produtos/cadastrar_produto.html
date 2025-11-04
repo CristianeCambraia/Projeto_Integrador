@@ -33,9 +33,10 @@
             <div class="section-header">
                 <h3>📷 Código de Barras</h3>
             </div>
-            <div class="barcode-field">
-                <div class="barcode-input-container">
-                    {{ form.codigo_barras }}
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="id_codigo_barras">Código de Barras</label>
+                    <input type="text" name="codigo_barras" id="id_codigo_barras" placeholder="Escaneie ou digite o código">
                 </div>
             </div>
         </div>
@@ -46,23 +47,36 @@
                 <h3>📝 Informações Básicas</h3>
             </div>
             <div class="form-row">
-                <div class="form-group nome-group">
-                    <label for="{{ form.nome.id_for_label }}">Nome do Produto *</label>
-                    {{ form.nome }}
+                <div class="form-group">
+                    <label for="id_nome">Nome do Produto *</label>
+                    <input type="text" name="nome" id="id_nome" placeholder="Digite o nome do produto" required>
                 </div>
                 <div class="form-group">
-                    <label for="{{ form.fornecedor.id_for_label }}">Fornecedor *</label>
-                    {{ form.fornecedor }}
+                    <label for="id_fornecedor">Fornecedor</label>
+                    <select name="fornecedor" id="id_fornecedor">
+                        <option value="">Selecione o fornecedor</option>
+                    </select>
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group">
-                    <label for="{{ form.unidade.id_for_label }}">Unidade *</label>
-                    {{ form.unidade }}
+                    <label for="id_unidade">Unidade *</label>
+                    <select name="unidade" id="id_unidade" required>
+                        <option value="">Selecione a unidade</option>
+                        <option value="Unidade">Unidade</option>
+                        <option value="Caixa">Caixa</option>
+                        <option value="Pacote">Pacote</option>
+                        <option value="Frasco">Frasco</option>
+                        <option value="Comprimido">Comprimido</option>
+                        <option value="Ml">Ml</option>
+                        <option value="Litro">Litro</option>
+                        <option value="Kg">Kg</option>
+                        <option value="Grama">Grama</option>
+                    </select>
                 </div>
                 <div class="form-group">
-                    <label for="{{ form.quantidade.id_for_label }}">Quantidade *</label>
-                    {{ form.quantidade }}
+                    <label for="id_quantidade">Quantidade *</label>
+                    <input type="number" name="quantidade" id="id_quantidade" placeholder="Quantidade" min="0" required>
                 </div>
                 <div class="form-group">
                     <label for="id_validade">Data de Validade *</label>
@@ -78,12 +92,12 @@
             </div>
             <div class="form-row">
                 <div class="form-group">
-                    <label for="{{ form.preco_compra.id_for_label }}">Preço de Compra *</label>
-                    {{ form.preco_compra }}
+                    <label for="id_preco_compra">Preço de Compra</label>
+                    <input type="number" name="preco_compra" id="id_preco_compra" placeholder="0.00" step="0.01" min="0">
                 </div>
                 <div class="form-group">
-                    <label for="{{ form.preco.id_for_label }}">Preço de Venda *</label>
-                    {{ form.preco }}
+                    <label for="id_preco">Preço de Venda *</label>
+                    <input type="number" name="preco" id="id_preco" placeholder="0.00" step="0.01" min="0" required>
                 </div>
             </div>
         </div>
@@ -95,12 +109,12 @@
             </div>
             <div class="form-row">
                 <div class="form-group">
-                    <label for="{{ form.descricao.id_for_label }}">Descrição</label>
-                    {{ form.descricao }}
+                    <label for="id_descricao">Descrição</label>
+                    <textarea name="descricao" id="id_descricao" rows="3" placeholder="Descrição do produto"></textarea>
                 </div>
                 <div class="form-group">
-                    <label for="{{ form.observacao.id_for_label }}">Observação</label>
-                    {{ form.observacao }}
+                    <label for="id_observacao">Observação</label>
+                    <textarea name="observacao" id="id_observacao" rows="3" placeholder="Observações adicionais"></textarea>
                 </div>
             </div>
         </div>
