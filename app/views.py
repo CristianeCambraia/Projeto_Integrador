@@ -195,7 +195,7 @@ def cadastrar_servico(request):
     else:
         form = ServicoForm()
     
-    return render(request, 'produtos/cadastrar_servico.html', {
+    return render(request, 'Produtos/cadastrar_servico.html', {
         'form': form,
         'titulo_pagina': 'Cadastro de Serviço' 
     })
