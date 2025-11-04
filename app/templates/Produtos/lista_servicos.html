@@ -3,16 +3,16 @@
 {% block content %}
 <div class="servico-container">
     <!-- Header -->
-        <div class="form-header" style="background: #cbd5e0; padding: 25px 40px; display: flex; justify-content: space-between; align-items: center;">
+    <div class="form-header" style="background: #cbd5e0; padding: 25px 40px; display: flex; justify-content: space-between; align-items: center;">
             <div style="flex: 1; text-align: center;">
                 <h1 style="color: #2d3748; margin: 0; font-size: 28px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 12px;">
                     <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"></path>
                         <circle cx="12" cy="13" r="3"></circle>
                     </svg>
-                    Serviços Cadastrados
+                    Servicos Cadastrados
                 </h1>
-                <p style="color: #4a5568; margin: 8px 0 0 0; font-size: 16px;">Gerencie todos os serviços do sistema</p>
+                <p style="color: #4a5568; margin: 8px 0 0 0; font-size: 16px;">Gerencie todos os servicos do sistema</p>
             </div>
             <a href="{% url 'cadastrar_servico' %}" style="background: linear-gradient(135deg, #026a84 0%, #04bafc 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; text-decoration: none; display: flex; align-items: center; gap: 8px; flex-shrink: 0; margin-right: 80px;">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -21,10 +21,10 @@
                 </svg>
                 Novo Serviço
             </a>
-        </div>
+    </div>
 
-        <!-- Search Section -->
-        <div class="search-section" style="padding: 30px 40px 20px 40px; border-bottom: 1px solid #e2e8f0;">
+    <!-- Search Section -->
+    <div class="search-section" style="padding: 30px 40px 20px 40px; border-bottom: 1px solid #e2e8f0;">
             <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
                 <div style="flex: 1; min-width: 300px;">
                     <input type="text" id="filtroServico" placeholder="Buscar por ID, nome ou descrição..." style="width: 100%; height: 45px; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 16px; transition: all 0.3s ease; box-sizing: border-box;">
@@ -37,10 +37,10 @@
                     Limpar
                 </button>
             </div>
-        </div>
+    </div>
 
-        <!-- Services Grid -->
-        <div class="services-content" style="padding: 30px 40px;">
+    <!-- Services Grid -->
+    <div class="services-content" style="padding: 30px 40px;">
             <div class="services-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 25px;">
                 {% for servico in servicos %}
                     <div class="service-card servico-item" data-id="{{ servico.id }}" data-nome="{{ servico.nome|lower }}" data-descricao="{{ servico.descricao|default:''|lower }}" style="background: #f8f9fa; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; transition: all 0.3s ease; position: relative;">
@@ -75,7 +75,7 @@
                         <!-- Description -->
                         {% if servico.descricao %}
                             <div style="margin-bottom: 15px;">
-                                <label style="color: #4a5568; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Descrição</label>
+                                <label style="color: #4a5568; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Descricao</label>
                                 <p style="color: #2d3748; font-size: 14px; margin: 4px 0 0 0; line-height: 1.5;">{{ servico.descricao }}</p>
                             </div>
                         {% endif %}
@@ -83,7 +83,7 @@
                         <!-- Observations -->
                         {% if servico.observacao %}
                             <div style="margin-bottom: 15px;">
-                                <label style="color: #4a5568; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Observações</label>
+                                <label style="color: #4a5568; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Observacoes</label>
                                 <p style="color: #2d3748; font-size: 14px; margin: 4px 0 0 0; line-height: 1.5;">{{ servico.observacao }}</p>
                             </div>
                         {% endif %}
@@ -99,23 +99,23 @@
                             <path d="m21 12-6 3-6-3-6 3-6-3"></path>
                             <path d="M1 12l6-3 6 3 6-3 6 3"></path>
                         </svg>
-                        <h3 style="color: #2d3748; font-size: 20px; margin: 0 0 10px 0;">Nenhum serviço encontrado</h3>
-                        <p style="color: #4a5568; margin: 0;">Cadastre o primeiro serviço para começar</p>
+                        <h3 style="color: #2d3748; font-size: 20px; margin: 0 0 10px 0;">Nenhum servico encontrado</h3>
+                        <p style="color: #4a5568; margin: 0;">Cadastre o primeiro servico para comecar</p>
                     </div>
                 {% endfor %}
             </div>
-        </div>
+    </div>
 
-        <!-- Footer Actions -->
-        <div style="padding: 20px 40px; border-top: 1px solid #e2e8f0; display: flex; justify-content: center;">
-            <a href="{% url 'home' %}" style="background: #718096; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; text-decoration: none; display: flex; align-items: center; gap: 8px;">
+    <!-- Footer Actions -->
+    <div style="padding: 20px 40px; border-top: 1px solid #e2e8f0; display: flex; justify-content: center;">
+        <a href="{% url 'home' %}" style="background: #718096; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; text-decoration: none; display: flex; align-items: center; gap: 8px;">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M19 12H5"></path>
                     <path d="M12 19l-7-7 7-7"></path>
                 </svg>
                 Voltar
-            </a>
-        </div>
+        </a>
+    </div>
 </div>
 
 <script>
