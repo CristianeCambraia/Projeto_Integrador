@@ -112,13 +112,26 @@ class Orcamento(models.Model):
         return f'Orçamento para {self.cliente} em {self.data}'
 
 class Usuario(models.Model):
+    UF_CHOICES = [
+        ('AC', 'Acre'), ('AL', 'Alagoas'), ('AP', 'Amapá'), ('AM', 'Amazonas'),
+        ('BA', 'Bahia'), ('CE', 'Ceará'), ('DF', 'Distrito Federal'), ('ES', 'Espírito Santo'),
+        ('GO', 'Goiás'), ('MA', 'Maranhão'), ('MT', 'Mato Grosso'), ('MS', 'Mato Grosso do Sul'),
+        ('MG', 'Minas Gerais'), ('PA', 'Pará'), ('PB', 'Paraíba'), ('PR', 'Paraná'),
+        ('PE', 'Pernambuco'), ('PI', 'Piauí'), ('RJ', 'Rio de Janeiro'), ('RN', 'Rio Grande do Norte'),
+        ('RS', 'Rio Grande do Sul'), ('RO', 'Rondônia'), ('RR', 'Roraima'), ('SC', 'Santa Catarina'),
+        ('SP', 'São Paulo'), ('SE', 'Sergipe'), ('TO', 'Tocantins')
+    ]
+    
     nome = models.CharField(max_length=200)
     email = models.EmailField(max_length=200, unique=True)
     cpf = models.CharField(max_length=20, unique=True)
     endereco = models.CharField(max_length=200)
+    cidade = models.CharField(max_length=200, default='Não informado')
+    uf = models.CharField(max_length=2, choices=UF_CHOICES, default='SP')
     telefone = models.CharField(max_length=20)
     data_nascimento = models.DateField()
     senha = models.CharField(max_length=128)
+    ativo = models.BooleanField(default=True)
 
     def __str__(self):
         return self.nome

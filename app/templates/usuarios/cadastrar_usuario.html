@@ -44,7 +44,7 @@
                                     {% elif field.name == 'cpf' %}
                                         <input type="text" name="{{ field.name }}" id="{{ field.id_for_label }}" value="{{ field.value|default:'' }}" placeholder="000.000.000-00" maxlength="14" style="width: 100%; height: 45px; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 16px; transition: all 0.3s ease; box-sizing: border-box; background: white;" oninput="formatarCPF(this)" onkeypress="return somenteNumeros(event)">
                                     {% else %}
-                                        <input type="text" name="{{ field.name }}" id="{{ field.id_for_label }}" value="{{ field.value|default:'' }}" placeholder="Digite o {{ field.label|lower }}" style="width: 100%; height: 45px; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 16px; transition: all 0.3s ease; box-sizing: border-box; background: white;">
+                                        <input type="text" name="{{ field.name }}" id="{{ field.id_for_label }}" value="{{ field.value|default:'' }}" placeholder="Digite seu nome completo" style="width: 100%; height: 45px; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 16px; transition: all 0.3s ease; box-sizing: border-box; background: white;">
                                     {% endif %}
                                     {% if field.errors %}
                                         <span style="color: #e53e3e; font-size: 12px; margin-top: 5px; display: block;">{{ field.errors.0 }}</span>
@@ -99,13 +99,39 @@
                     </h3>
                     <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                         {% for field in form %}
-                            {% if field.name == 'cargo' or field.name == 'endereco' %}
-                                <div class="form-group" style="{% if field.name == 'endereco' %}grid-column: 1 / -1;{% endif %}">
+                            {% if field.name == 'endereco' %}
+                                <div class="form-group" style="grid-column: 1 / -1;">
                                     <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #2d3748; font-size: 14px;">
-                                        {% if field.name == 'cargo' %}Cargo{% endif %}
-                                        {% if field.name == 'endereco' %}Endereço{% endif %}
+                                        Endereço
                                     </label>
-                                    <input type="text" name="{{ field.name }}" id="{{ field.id_for_label }}" value="{{ field.value|default:'' }}" placeholder="Digite o {{ field.label|lower }}" style="width: 100%; height: 45px; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 16px; transition: all 0.3s ease; box-sizing: border-box; background: white;">
+                                    <input type="text" name="{{ field.name }}" id="{{ field.id_for_label }}" value="{{ field.value|default:'' }}" placeholder="Digite o endereço" style="width: 100%; height: 45px; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 16px; transition: all 0.3s ease; box-sizing: border-box; background: white;">
+                                    {% if field.errors %}
+                                        <span style="color: #e53e3e; font-size: 12px; margin-top: 5px; display: block;">{{ field.errors.0 }}</span>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                            {% if field.name == 'cidade' %}
+                                <div class="form-group">
+                                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #2d3748; font-size: 14px;">
+                                        Cidade
+                                    </label>
+                                    <input type="text" name="{{ field.name }}" id="{{ field.id_for_label }}" value="{{ field.value|default:'' }}" placeholder="Digite a cidade" style="width: 100%; height: 45px; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 16px; transition: all 0.3s ease; box-sizing: border-box; background: white;">
+                                    {% if field.errors %}
+                                        <span style="color: #e53e3e; font-size: 12px; margin-top: 5px; display: block;">{{ field.errors.0 }}</span>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                            {% if field.name == 'uf' %}
+                                <div class="form-group">
+                                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #2d3748; font-size: 14px;">
+                                        UF
+                                    </label>
+                                    <select name="{{ field.name }}" id="{{ field.id_for_label }}" style="width: 100%; height: 45px; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 16px; transition: all 0.3s ease; box-sizing: border-box; background: white;">
+                                        <option value="">Selecione o estado</option>
+                                        {% for choice in field.field.choices %}
+                                            <option value="{{ choice.0 }}" {% if field.value == choice.0 %}selected{% endif %}>{{ choice.0 }} - {{ choice.1 }}</option>
+                                        {% endfor %}
+                                    </select>
                                     {% if field.errors %}
                                         <span style="color: #e53e3e; font-size: 12px; margin-top: 5px; display: block;">{{ field.errors.0 }}</span>
                                     {% endif %}

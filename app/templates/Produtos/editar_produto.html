@@ -19,18 +19,6 @@
     <form method="post" class="modern-form">
         {% csrf_token %}
         
-        <!-- Seção Código de Barras -->
-        <div class="form-section">
-            <div class="section-header">
-                <h3>📷 Código de Barras</h3>
-            </div>
-            <div class="barcode-field">
-                <div class="barcode-input-container">
-                    {{ form.codigo_barras }}
-                </div>
-            </div>
-        </div>
-        
         <!-- Seção Informações Básicas -->
         <div class="form-section">
             <div class="section-header">
@@ -42,39 +30,8 @@
                     {{ form.nome }}
                 </div>
                 <div class="form-group">
-                    <label for="{{ form.fornecedor.id_for_label }}">Fornecedor *</label>
+                    <label for="{{ form.fornecedor.id_for_label }}">Fornecedor</label>
                     {{ form.fornecedor }}
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="{{ form.unidade.id_for_label }}">Unidade *</label>
-                    {{ form.unidade }}
-                </div>
-                <div class="form-group">
-                    <label for="{{ form.quantidade.id_for_label }}">Quantidade *</label>
-                    {{ form.quantidade }}
-                </div>
-                <div class="form-group">
-                    <label for="{{ form.validade.id_for_label }}">Data de Validade</label>
-                    {{ form.validade }}
-                </div>
-            </div>
-        </div>
-
-        <!-- Seção Preços -->
-        <div class="form-section">
-            <div class="section-header">
-                <h3>💰 Preços</h3>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="{{ form.preco_compra.id_for_label }}">Preço de Compra *</label>
-                    {{ form.preco_compra }}
-                </div>
-                <div class="form-group">
-                    <label for="{{ form.preco.id_for_label }}">Preço de Venda *</label>
-                    {{ form.preco }}
                 </div>
             </div>
         </div>
@@ -82,16 +39,12 @@
         <!-- Seção Detalhes -->
         <div class="form-section">
             <div class="section-header">
-                <h3>📜 Detalhes</h3>
+                <h3>📜 Descrição</h3>
             </div>
             <div class="form-row">
-                <div class="form-group">
+                <div class="form-group nome-group">
                     <label for="{{ form.descricao.id_for_label }}">Descrição</label>
                     {{ form.descricao }}
-                </div>
-                <div class="form-group">
-                    <label for="{{ form.observacao.id_for_label }}">Observação</label>
-                    {{ form.observacao }}
                 </div>
             </div>
         </div>

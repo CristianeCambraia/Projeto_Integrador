@@ -72,6 +72,7 @@
                                 <th>Telefone</th>
                                 <th>Cidade</th>
                                 <th>Data Nascimento</th>
+                                <th>Status</th>
                                 <th>Ações</th>
                             </tr>
                         </thead>
@@ -86,9 +87,28 @@
                                 <td>{{ usuario.cidade|default:"Não informado" }}</td>
                                 <td>{{ usuario.data_nascimento|date:"d/m/Y"|default:"Não informado" }}</td>
                                 <td>
-                                    <button onclick="abrirModalSenhaTemp({{ usuario.id }}, '{{ usuario.nome|escapejs }}')" class="btn-action">
-                                        🔑 Senha Temp.
-                                    </button>
+                                    {% if usuario.ativo %}
+                                        <span class="status-ativo">✓ Ativo</span>
+                                    {% else %}
+                                        <span class="status-inativo">✗ Inativo</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
+                                        <button onclick="alternarStatus({{ usuario.id }}, {{ usuario.ativo|yesno:'false,true' }}, '{{ usuario.nome|escapejs }}')" class="btn-status">
+                                            {% if usuario.ativo %}
+                                                🚫 Desativar
+                                            {% else %}
+                                                ✓ Ativar
+                                            {% endif %}
+                                        </button>
+                                        <button onclick="abrirModalSenhaTemp({{ usuario.id }}, '{{ usuario.nome|escapejs }}')" class="btn-action" style="margin-top: -4px;">
+                                            🔑 Senha Temp.
+                                        </button>
+                                        <button onclick="confirmarDelecao({{ usuario.id }}, '{{ usuario.nome|escapejs }}')" class="btn-delete">
+                                            🗑️ Deletar
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                             {% endfor %}
@@ -284,6 +304,133 @@ function gerarSenhaTemporaria(usuarioId, novoEmail) {
         mostrarModalErro('Erro ao gerar senha temporária: ' + error);
     });
 }
+
+// Função para confirmar deleção
+function confirmarDelecao(usuarioId, nomeUsuario) {
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+        background: rgba(0,0,0,0.5); z-index: 1000; display: flex; 
+        align-items: center; justify-content: center;
+    `;
+    
+    modal.innerHTML = `
+        <div style="
+            background: white; padding: 30px; border-radius: 15px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3); max-width: 400px; width: 90%;
+        ">
+            <h3 style="margin: 0 0 20px 0; color: #dc3545; text-align: center;">🗑️ Deletar Usuário</h3>
+            <p style="margin: 0 0 15px 0; color: #666; text-align: center;">Tem certeza que deseja deletar o usuário:</p>
+            <p style="margin: 0 0 20px 0; color: #333; text-align: center; font-weight: bold;">${nomeUsuario}</p>
+            <p style="margin: 0 0 20px 0; color: #dc3545; text-align: center; font-size: 14px;">Esta ação não pode ser desfeita!</p>
+            <div style="text-align: center; gap: 10px; display: flex; justify-content: center;">
+                <button onclick="deletarUsuario(${usuarioId})" style="
+                    background: #dc3545; color: white; border: none; 
+                    padding: 12px 20px; border-radius: 10px; cursor: pointer; font-weight: 600;
+                ">Sim, Deletar</button>
+                <button onclick="fecharModal()" style="
+                    background: #cbd5e0; color: #2d3748; border: 2px solid #a0aec0; 
+                    padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: 600;
+                ">Cancelar</button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+}
+
+// Função para deletar usuário
+function deletarUsuario(usuarioId) {
+    fetch('/deletar-usuario/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            usuario_id: usuarioId
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        fecharModal();
+        if (data.success) {
+            mostrarModalSucesso('Usuário deletado com sucesso!');
+            setTimeout(() => {
+                window.location.reload();
+            }, 2000);
+        } else {
+            mostrarModalErro(data.error);
+        }
+    })
+    .catch(error => {
+        fecharModal();
+        mostrarModalErro('Erro ao deletar usuário: ' + error);
+    });
+}
+
+// Função para alternar status do usuário
+function alternarStatus(usuarioId, novoStatus, nomeUsuario) {
+    const acao = novoStatus ? 'ativar' : 'desativar';
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+        background: rgba(0,0,0,0.5); z-index: 1000; display: flex; 
+        align-items: center; justify-content: center;
+    `;
+    
+    modal.innerHTML = `
+        <div style="
+            background: white; padding: 30px; border-radius: 15px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3); max-width: 400px; width: 90%;
+        ">
+            <h3 style="margin: 0 0 20px 0; color: ${novoStatus ? '#28a745' : '#ffc107'}; text-align: center;">${novoStatus ? '✓' : '🚫'} ${acao.charAt(0).toUpperCase() + acao.slice(1)} Usuário</h3>
+            <p style="margin: 0 0 15px 0; color: #666; text-align: center;">Deseja ${acao} o usuário:</p>
+            <p style="margin: 0 0 20px 0; color: #333; text-align: center; font-weight: bold;">${nomeUsuario}</p>
+            <div style="text-align: center; gap: 10px; display: flex; justify-content: center;">
+                <button onclick="confirmarAlterarStatus(${usuarioId}, ${novoStatus})" style="
+                    background: ${novoStatus ? '#28a745' : '#ffc107'}; color: white; border: none; 
+                    padding: 12px 20px; border-radius: 10px; cursor: pointer; font-weight: 600;
+                ">Sim, ${acao.charAt(0).toUpperCase() + acao.slice(1)}</button>
+                <button onclick="fecharModal()" style="
+                    background: #cbd5e0; color: #2d3748; border: 2px solid #a0aec0; 
+                    padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: 600;
+                ">Cancelar</button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+}
+
+// Função para confirmar alteração de status
+function confirmarAlterarStatus(usuarioId, novoStatus) {
+    fetch('/alternar-status-usuario/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            usuario_id: usuarioId,
+            ativo: novoStatus
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        fecharModal();
+        if (data.success) {
+            mostrarModalSucesso(data.message);
+            setTimeout(() => {
+                window.location.reload();
+            }, 2000);
+        } else {
+            mostrarModalErro(data.error);
+        }
+    })
+    .catch(error => {
+        fecharModal();
+        mostrarModalErro('Erro ao alterar status: ' + error);
+    });
+}
 </script>
 
 <style>
@@ -428,17 +575,81 @@ function gerarSenhaTemporaria(usuarioId, novoEmail) {
     background: #e9ecef;
     color: #495057;
     border: none;
-    padding: 8px 12px;
+    width: 140px;
+    height: 32px;
     border-radius: 6px;
     cursor: pointer;
     font-size: 12px;
     font-weight: 600;
     transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .btn-action:hover {
     background: #dee2e6;
     transform: translateY(-1px);
+}
+
+.btn-delete {
+    background: #f8d7da;
+    color: #721c24;
+    border: none;
+    width: 140px;
+    height: 32px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-delete:hover {
+    background: #f5c6cb;
+    transform: translateY(-1px);
+}
+
+.btn-status {
+    background: #fff3cd;
+    color: #856404;
+    border: none;
+    width: 140px;
+    height: 32px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-status:hover {
+    background: #ffeaa7;
+    transform: translateY(-1px);
+}
+
+.status-ativo {
+    background: #d4edda;
+    color: #155724;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.status-inativo {
+    background: #f8d7da;
+    color: #721c24;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
 }
 
 .form-actions {

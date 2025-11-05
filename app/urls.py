@@ -112,6 +112,12 @@ urlpatterns = [
     # ----- GERAR SENHA TEMPORÁRIA -----
     path('gerar-senha-temporaria/', views.gerar_senha_temporaria, name='gerar_senha_temporaria'),
     
+    # ----- DELETAR USUÁRIO -----
+    path('deletar-usuario/', views.deletar_usuario, name='deletar_usuario'),
+    
+    # ----- ALTERNAR STATUS USUÁRIO -----
+    path('alternar-status-usuario/', views.alternar_status_usuario, name='alternar_status_usuario'),
+    
     # ----- RELATÓRIO FINANCEIRO -----
     path('relatorio-financeiro/', views.relatorio_financeiro, name='relatorio_financeiro'),
     path('financeiro/pdf/', views.exportar_financeiro_pdf, name='exportar_financeiro_pdf'),

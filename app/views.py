@@ -1708,6 +1708,73 @@ def gerar_senha_temporaria(request):
     
     return JsonResponse({'success': False, 'error': 'Método não permitido'})
 
+@csrf_exempt
+def deletar_usuario(request):
+    if request.method == 'POST':
+        # Verificar se é admin
+        if 'admin_logado' not in request.session:
+            return JsonResponse({'success': False, 'error': 'Acesso negado'})
+        
+        try:
+            data = json.loads(request.body)
+            usuario_id = data.get('usuario_id')
+            
+            if not usuario_id:
+                return JsonResponse({'success': False, 'error': 'ID do usuário não informado'})
+            
+            # Verificar se usuário existe e deletar
+            try:
+                usuario = Usuario.objects.get(id=usuario_id)
+                nome_usuario = usuario.nome
+                usuario.delete()
+                
+                return JsonResponse({
+                    'success': True, 
+                    'message': f'Usuário {nome_usuario} deletado com sucesso'
+                })
+                
+            except Usuario.DoesNotExist:
+                return JsonResponse({'success': False, 'error': 'Usuário não encontrado'})
+                
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+    
+    return JsonResponse({'success': False, 'error': 'Método não permitido'})
+
+@csrf_exempt
+def alternar_status_usuario(request):
+    if request.method == 'POST':
+        if 'admin_logado' not in request.session:
+            return JsonResponse({'success': False, 'error': 'Acesso negado'})
+        
+        try:
+            data = json.loads(request.body)
+            usuario_id = data.get('usuario_id')
+            ativo = data.get('ativo')
+            
+            if usuario_id is None or ativo is None:
+                return JsonResponse({'success': False, 'error': 'Dados incompletos'})
+            
+            try:
+                usuario = Usuario.objects.get(id=usuario_id)
+                usuario.ativo = ativo
+                usuario.save()
+                
+                status_texto = 'ativado' if ativo else 'desativado'
+                
+                return JsonResponse({
+                    'success': True, 
+                    'message': f'Usuário {usuario.nome} {status_texto} com sucesso'
+                })
+                
+            except Usuario.DoesNotExist:
+                return JsonResponse({'success': False, 'error': 'Usuário não encontrado'})
+                
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+    
+    return JsonResponse({'success': False, 'error': 'Método não permitido'})
+
 # ----- RELATÓRIO FINANCEIRO -----
 @login_required_custom
 def relatorio_financeiro(request):

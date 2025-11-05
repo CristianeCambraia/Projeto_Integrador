@@ -107,14 +107,14 @@
 <script>
 function filtrarFornecedores() {
     const filtro = document.getElementById('filtroFornecedor').value.toLowerCase();
-    const items = document.querySelectorAll('.fornecedor-item[data-nome]');
+    const items = document.querySelectorAll('.fornecedor-card[data-nome]');
     let visivel = 0;
     
     items.forEach(item => {
         const nome = item.getAttribute('data-nome');
         const cnpj = item.getAttribute('data-cnpj');
         if (nome.includes(filtro) || cnpj.includes(filtro)) {
-            item.style.display = 'block';
+            item.style.display = 'flex';
             visivel++;
         } else {
             item.style.display = 'none';
@@ -225,15 +225,18 @@ document.getElementById('filtroFornecedor').addEventListener('input', filtrarFor
 
 .clear-btn {
     position: absolute;
-    right: 15px;
+    left: 450px;
     top: 50%;
     transform: translateY(-50%);
     background: none;
     border: none;
     cursor: pointer;
-    padding: 5px;
+    padding: 8px;
     border-radius: 50%;
     transition: background 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .clear-btn:hover {
