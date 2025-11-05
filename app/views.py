@@ -729,6 +729,8 @@ def cadastrar_usuario(request):
             return redirect('home')  # redireciona para home depois do cadastro
     else:
         form = UsuarioForm()
+        # Garantir que o campo cidade esteja vazio
+        form.fields['cidade'].initial = ''
     return render(request, 'usuarios/cadastrar_usuario.html', {
         'form': form,
         'titulo_pagina': 'Cadastro de Usuário'
@@ -751,6 +753,12 @@ def login_view(request):
             
             try:
                 usuario = Usuario.objects.get(email=email, senha=senha)
+                
+                # Verificar se o usuário está ativo
+                if not usuario.ativo:
+                    messages.error(request, 'Usuário bloqueado. Entre em contato com o administrador.')
+                    return render(request, 'login.html', {'form': form})
+                
                 request.session['usuario_logado'] = usuario.id
                 
                 remember = form.cleaned_data.get('remember', False)

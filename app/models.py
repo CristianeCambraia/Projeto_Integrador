@@ -126,7 +126,7 @@ class Usuario(models.Model):
     email = models.EmailField(max_length=200, unique=True)
     cpf = models.CharField(max_length=20, unique=True)
     endereco = models.CharField(max_length=200)
-    cidade = models.CharField(max_length=200, default='Não informado')
+    cidade = models.CharField(max_length=200)
     uf = models.CharField(max_length=2, choices=UF_CHOICES, default='SP')
     telefone = models.CharField(max_length=20)
     data_nascimento = models.DateField()

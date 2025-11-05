@@ -185,6 +185,12 @@ class UsuarioForm(forms.ModelForm):
         for field_name, field in self.fields.items():
             if field_name != 'data_nascimento':
                 field.label = ''
+        
+        # Garantir que cidade esteja sempre vazia
+        if 'cidade' in self.fields:
+            self.fields['cidade'].initial = ''
+            if self.instance and hasattr(self.instance, 'cidade') and self.instance.cidade == 'Não informado':
+                self.instance.cidade = ''
 
 
 
