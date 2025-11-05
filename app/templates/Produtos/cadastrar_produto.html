@@ -36,7 +36,12 @@
             <div class="form-row">
                 <div class="form-group">
                     <label for="id_codigo_barras">Código de Barras</label>
-                    <input type="text" name="codigo_barras" id="id_codigo_barras" placeholder="Escaneie ou digite o código">
+                    <div class="barcode-input-wrapper">
+                        <input type="text" name="codigo_barras" id="id_codigo_barras" placeholder="Escaneie ou digite o código">
+                        <button type="button" id="btn-colar-codigo" class="btn-colar-mobile" style="display: none;">
+                            📋 Colar Código
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -247,6 +252,35 @@
     transform: scale(1.02);
 }
 
+.barcode-input-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.btn-colar-mobile {
+    background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    align-self: flex-start;
+}
+
+.btn-colar-mobile:hover {
+    background: linear-gradient(135deg, #38a169 0%, #2f855a 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(72, 187, 120, 0.3);
+}
+
+.btn-colar-mobile:active {
+    transform: translateY(0);
+}
+
 .form-row {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -449,10 +483,53 @@ document.addEventListener('DOMContentLoaded', function() {
         validadeField.min = dataHoje;
     }
     
-    // Foco inicial no código de barras
+    // Detectar se é mobile
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
+    
     const codigoBarrasField = document.getElementById('id_codigo_barras');
-    if (codigoBarrasField) {
-        codigoBarrasField.focus();
+    const btnColarCodigo = document.getElementById('btn-colar-codigo');
+    
+    if (isMobile && codigoBarrasField) {
+        // Mostrar botão colar apenas no mobile
+        if (btnColarCodigo) {
+            btnColarCodigo.style.display = 'block';
+        }
+        
+        // Foco automático no mobile
+        setTimeout(() => {
+            codigoBarrasField.focus();
+        }, 500);
+        
+        // Placeholder específico para mobile
+        codigoBarrasField.placeholder = "Leia o código e cole aqui";
+        
+        // Função colar código
+        if (btnColarCodigo) {
+            btnColarCodigo.addEventListener('click', async function() {
+                try {
+                    const texto = await navigator.clipboard.readText();
+                    if (texto) {
+                        codigoBarrasField.value = texto.trim();
+                        codigoBarrasField.focus();
+                        
+                        // Feedback visual
+                        btnColarCodigo.textContent = '✅ Colado!';
+                        setTimeout(() => {
+                            btnColarCodigo.textContent = '📋 Colar Código';
+                        }, 2000);
+                    }
+                } catch (err) {
+                    // Fallback para navegadores que não suportam clipboard API
+                    codigoBarrasField.focus();
+                    document.execCommand('paste');
+                }
+            });
+        }
+    } else {
+        // Desktop: manter comportamento original
+        if (codigoBarrasField) {
+            codigoBarrasField.focus();
+        }
     }
 });
 
