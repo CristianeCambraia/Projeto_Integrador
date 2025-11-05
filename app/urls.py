@@ -95,6 +95,7 @@ urlpatterns = [
     
     # ----- DEBUG -----
     path('debug/produtos/', views.debug_produtos, name='debug_produtos'),
+    path('debug/usuarios/', views.debug_usuarios_view, name='debug_usuarios'),
     
     # ----- ESTOQUE PDF/EMAIL -----
     path('estoque/pdf/', views.exportar_estoque_pdf, name='exportar_estoque_pdf'),

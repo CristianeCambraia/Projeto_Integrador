@@ -725,8 +725,11 @@ def cadastrar_usuario(request):
     if request.method == "POST":
         form = UsuarioForm(request.POST)
         if form.is_valid():
-            form.save()
+            usuario = form.save()
+            messages.success(request, f'Usuário {usuario.nome} cadastrado com sucesso!')
             return redirect('home')  # redireciona para home depois do cadastro
+        else:
+            messages.error(request, 'Erro no formulário. Verifique os dados informados.')
     else:
         form = UsuarioForm()
         # Garantir que o campo cidade esteja vazio
@@ -2208,9 +2211,19 @@ def usuarios_cadastrados(request):
         messages.error(request, 'Acesso negado. Apenas administradores podem acessar esta página.')
         return redirect('home')
     
-    usuarios = Usuario.objects.all().order_by('nome')
+    # Debug: buscar todos os usuários
+    usuarios = Usuario.objects.all().order_by('-id')
+    print(f"DEBUG: Total de usuários encontrados: {usuarios.count()}")
+    for u in usuarios:
+        print(f"DEBUG: ID: {u.id}, Nome: {u.nome}, Email: {u.email}")
     
     return render(request, 'usuarios_cadastrados.html', {
+        'usuarios': usuarios
+    })
+
+def debug_usuarios_view(request):
+    usuarios = Usuario.objects.all().order_by('-id')
+    return render(request, 'debug_usuarios.html', {
         'usuarios': usuarios
     })
 

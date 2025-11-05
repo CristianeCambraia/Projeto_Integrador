@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug Usuários</title>
+</head>
+<body>
+    <h1>Debug - Usuários Cadastrados</h1>
+    
+    <h2>Total de usuários: {{ usuarios.count }}</h2>
+    
+    {% if usuarios %}
+        <table border="1">
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>CPF</th>
+                <th>Ativo</th>
+            </tr>
+            {% for usuario in usuarios %}
+            <tr>
+                <td>{{ usuario.id }}</td>
+                <td>{{ usuario.nome }}</td>
+                <td>{{ usuario.email }}</td>
+                <td>{{ usuario.cpf }}</td>
+                <td>{{ usuario.ativo|yesno:"Sim,Não" }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>Nenhum usuário encontrado!</p>
+    {% endif %}
+    
+    <br>
+    <a href="{% url 'home' %}">Voltar</a>
+</body>
+</html>
