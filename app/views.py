@@ -999,42 +999,11 @@ def usuarios_cadastrados(request):
         messages.error(request, 'Acesso negado. Apenas administradores podem acessar esta página.')
         return redirect('home')
     
-    filtro = request.GET.get('filtro')
-    periodo = request.GET.get('periodo')
-    usuarios = Usuario.objects.all()
-    
-    # Filtro por busca
-    if filtro:
-        filtro = filtro.strip()
-        if filtro.isdigit():
-            usuarios = usuarios.filter(id=filtro)
-        else:
-            usuarios = usuarios.filter(
-                models.Q(nome__icontains=filtro) |
-                models.Q(email__icontains=filtro) |
-                models.Q(cpf__icontains=filtro) |
-                models.Q(telefone__icontains=filtro)
-            )
-    
-    if periodo and periodo.isdigit():
-        from datetime import timedelta
-        dias = int(periodo)
-        data_limite = timezone.now() - timedelta(days=dias)
-        # Como não temos campo de data de cadastro, vamos usar o ID como aproximação
-        # IDs maiores = cadastros mais recentes
-        usuarios_recentes = usuarios.order_by('-id')[:50]  # Pegar os 50 mais recentes
-        if dias <= 7:
-            usuarios = usuarios_recentes[:10]
-        elif dias <= 30:
-            usuarios = usuarios_recentes[:25]
-        else:
-            usuarios = usuarios_recentes
-    else:
-        usuarios = usuarios.order_by('nome')
+    # Buscar TODOS os usuários sem limitação
+    usuarios = Usuario.objects.all().order_by('-id')
     
     return render(request, 'usuarios_cadastrados.html', {
-        'usuarios': usuarios,
-        'filtro': filtro
+        'usuarios': usuarios
     })
 
 # ----- BUSCAR CLIENTES PARA AUTOCOMPLETE -----

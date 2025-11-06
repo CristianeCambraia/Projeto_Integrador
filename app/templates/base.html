@@ -1497,27 +1497,28 @@
                             
                             if (jaLida) {
                                 html += `
-                                    <div style="border-bottom: 1px solid #ddd; padding: 8px; margin: 5px 0; background: #f0f0f0; color: #888; border-radius: 3px; word-wrap: break-word; display: flex; justify-content: space-between; align-items: center;">
+                                    <div style="border-bottom: 1px solid #ddd; padding: 8px; margin: 5px 0; background: #f0f0f0; color: #888; border-radius: 3px; word-wrap: break-word; display: flex; justify-content: space-between; align-items: center; opacity: 0.6;">
                                         <div onclick="window.location.href='/notificacao/${notif.produto_id}/${notif.tipo}/'" style="cursor: pointer; flex: 1;">
                                             <strong>✓ ${notif.produto_nome} (LIDA)</strong><br>
                                             <small>${notif.mensagem}</small>
                                         </div>
                                         <div style="display: flex; gap: 5px;">
-                                            <button onclick="marcarNaoLida('${key}')" style="background: #28a745; color: white; border: none; padding: 3px 6px; border-radius: 3px; font-size: 10px;">Não Lida</button>
-                                            <button onclick="apagarNotif('${key}')" style="background: #dc3545; color: white; border: none; padding: 3px 6px; border-radius: 3px; font-size: 10px;">Apagar</button>
+                                            <button onclick="event.stopPropagation(); marcarNaoLida('${key}');" style="background: #28a745; color: white; border: none; padding: 3px 6px; border-radius: 3px; font-size: 10px;">Não Lida</button>
+                                            <button onclick="event.stopPropagation(); apagarNotif('${key}');" style="background: #dc3545; color: white; border: none; padding: 3px 6px; border-radius: 3px; font-size: 10px;">Apagar</button>
                                         </div>
                                     </div>
                                 `;
                             } else {
+                                const tipoEscapado = notif.tipo.replace(/'/g, "&#39;").replace(/"/g, "&quot;");
                                 html += `
                                     <div style="border-bottom: 1px solid #ddd; padding: 8px; margin: 5px 0; background: white; border-radius: 3px; word-wrap: break-word; display: flex; justify-content: space-between; align-items: center;">
-                                        <div onclick="window.location.href='/notificacao/${notif.produto_id}/${notif.tipo}/'; marcarLidaSemRedirect('${key}')" style="cursor: pointer; flex: 1;">
+                                        <div onclick="marcarLidaClick(this, ${notif.produto_id}, '${tipoEscapado}')" style="cursor: pointer; flex: 1;">
                                             <strong>${notif.produto_nome}</strong><br>
                                             <small>${notif.mensagem}</small>
                                         </div>
                                         <div style="display: flex; gap: 5px;">
-                                            <button onclick="marcarNaoLida('${key}')" style="background: #28a745; color: white; border: none; padding: 3px 6px; border-radius: 3px; font-size: 10px;">Não Lida</button>
-                                            <button onclick="apagarNotif('${key}')" style="background: #dc3545; color: white; border: none; padding: 3px 6px; border-radius: 3px; font-size: 10px;">Apagar</button>
+                                            <button onclick="event.stopPropagation(); marcarNaoLida('${key}');" style="background: #28a745; color: white; border: none; padding: 3px 6px; border-radius: 3px; font-size: 10px;">Não Lida</button>
+                                            <button onclick="event.stopPropagation(); apagarNotif('${key}');" style="background: #dc3545; color: white; border: none; padding: 3px 6px; border-radius: 3px; font-size: 10px;">Apagar</button>
                                         </div>
                                     </div>
                                 `;
@@ -1562,21 +1563,7 @@
             }
         }
         
-        function marcarLidaSemRedirect(key) {
-            const lidas = JSON.parse(localStorage.getItem('notificacoesLidas') || '[]');
-            if (!lidas.includes(key)) {
-                lidas.push(key);
-                localStorage.setItem('notificacoesLidas', JSON.stringify(lidas));
-                
-                // Atualizar contador imediatamente
-                const counter = document.getElementById('notificationCounter');
-                if (counter) {
-                    let count = Math.max(0, parseInt(counter.textContent || '0') - 1);
-                    counter.textContent = count;
-                    if (count <= 0) counter.style.display = 'none';
-                }
-            }
-        }
+
         
         function initializeNotifications() {
             fetch('/notificacoes/')
@@ -1604,7 +1591,10 @@
                     counter.style.display = 'flex';
                 }
                 
-                loadNotifications();
+                // Recarregar a categoria específica
+                const parts = key.split('_');
+                const tipo = parts[1];
+                loadCategoryItems(tipo);
             }
         }
         
@@ -1712,6 +1702,45 @@
 
         
 
+        
+
+        
+        function marcarLidaClick(el, produto_id, tipo) {
+            console.log('DEBUG: produto_id =', produto_id, 'tipo =', tipo);
+            
+            var key = produto_id + '_' + tipo;
+            var lidas = JSON.parse(localStorage.getItem('notificacoesLidas') || '[]');
+            var jaEraLida = lidas.includes(key);
+            
+            if (!jaEraLida) {
+                lidas.push(key);
+                localStorage.setItem('notificacoesLidas', JSON.stringify(lidas));
+                
+                var counter = document.getElementById('notificationCounter');
+                if (counter) {
+                    var count = Math.max(0, parseInt(counter.textContent || '0') - 1);
+                    counter.textContent = count;
+                    if (count <= 0) counter.style.display = 'none';
+                }
+            }
+            
+            // Sempre aplicar visual
+            el.parentElement.style.background = '#f0f0f0';
+            el.parentElement.style.color = '#888';
+            el.parentElement.style.opacity = '0.6';
+            
+            var strong = el.querySelector('strong');
+            if (strong) {
+                var texto = strong.textContent;
+                if (!texto.includes('(LIDA)')) {
+                    strong.innerHTML = '✓ ' + texto + ' (LIDA)';
+                }
+            }
+            
+            var tipoEncoded = encodeURIComponent(tipo);
+            console.log('DEBUG: Redirecionando para /notificacao/' + produto_id + '/' + tipoEncoded + '/');
+            setTimeout(function() { window.location.href = '/notificacao/' + produto_id + '/' + tipoEncoded + '/'; }, 200);
+        }
         
         // Verificar status do usuário periodicamente
         function verificarStatusUsuario() {
