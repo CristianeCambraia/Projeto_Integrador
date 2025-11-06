@@ -772,7 +772,7 @@ def login_view(request):
                 if remember:
                     request.session.set_expiry(None)  # Não expira
                 else:
-                    request.session.set_expiry(1800)  # 30 minutos
+                    request.session.set_expiry(86400)  # 24 horas
                     
                 messages.success(request, f'Bem-vindo, {usuario.nome}!')
                 return redirect('home')

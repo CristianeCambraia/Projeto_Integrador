@@ -127,7 +127,7 @@ class Usuario(models.Model):
     cpf = models.CharField(max_length=20, unique=True)
     endereco = models.CharField(max_length=200)
     cidade = models.CharField(max_length=200)
-    uf = models.CharField(max_length=2, choices=UF_CHOICES, default='SP')
+    uf = models.CharField(max_length=2, choices=UF_CHOICES)
     telefone = models.CharField(max_length=20)
     data_nascimento = models.DateField()
     senha = models.CharField(max_length=128)
