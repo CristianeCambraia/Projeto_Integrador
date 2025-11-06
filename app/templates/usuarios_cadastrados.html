@@ -95,7 +95,7 @@
                                 </td>
                                 <td>
                                     <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
-                                        <button onclick="alternarStatus({{ usuario.id }}, {% if usuario.ativo %}false{% else %}true{% endif %}, '{{ usuario.nome|escapejs }}')" class="btn-status">
+                                        <button onclick="alternarStatus({{ usuario.id }}, {% if usuario.ativo %}false{% else %}true{% endif %}, '{{ usuario.nome|escapejs }}')" class="btn-status {% if usuario.ativo %}btn-desativar{% else %}btn-ativar{% endif %}">
                                             {% if usuario.ativo %}
                                                 🚫 Desativar
                                             {% else %}
@@ -614,8 +614,6 @@ function confirmarAlterarStatus(usuarioId, novoStatus) {
 }
 
 .btn-status {
-    background: #fff3cd;
-    color: #856404;
     border: none;
     width: 140px;
     height: 32px;
@@ -629,7 +627,22 @@ function confirmarAlterarStatus(usuarioId, novoStatus) {
     justify-content: center;
 }
 
-.btn-status:hover {
+.btn-ativar {
+    background: #d4edda;
+    color: #155724;
+}
+
+.btn-ativar:hover {
+    background: #c3e6cb;
+    transform: translateY(-1px);
+}
+
+.btn-desativar {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.btn-desativar:hover {
     background: #ffeaa7;
     transform: translateY(-1px);
 }
