@@ -491,7 +491,8 @@
             transform: translateX(100%);
             transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             backdrop-filter: blur(20px);
-            overflow: hidden;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
             box-shadow: -12px 0 35px rgba(1, 62, 106, 0.3);
         }
 
@@ -518,8 +519,11 @@
             padding: 25px 25px 25px 25px;
             height: 100%;
             overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
             position: relative;
             z-index: 1;
+            max-height: calc(100vh - 80px);
+            box-sizing: border-box;
         }
 
         /* Itens do Menu Principal */
@@ -824,6 +828,35 @@
 
         .mobile-nav-content::-webkit-scrollbar-thumb:hover {
             background: rgba(255, 255, 255, 0.5);
+        }
+        
+        /* Correções específicas para iOS/iPhone */
+        @supports (-webkit-touch-callout: none) {
+            .mobile-nav {
+                -webkit-overflow-scrolling: touch;
+                overflow-y: scroll;
+            }
+            
+            .mobile-nav-content {
+                -webkit-overflow-scrolling: touch;
+                overflow-y: scroll;
+                min-height: calc(100vh - 80px);
+                padding-bottom: 50px;
+            }
+        }
+        
+        /* Correções para iPhone específicos */
+        @media screen and (max-width: 428px) {
+            .mobile-nav {
+                height: calc(100vh - 70px);
+                top: 70px;
+            }
+            
+            .mobile-nav-content {
+                padding: 20px 15px 60px 15px;
+                max-height: none;
+                min-height: calc(100vh - 70px);
+            }
         }
 
         /* ===== FOOTER PROFISSIONAL PERFEITO ===== */
