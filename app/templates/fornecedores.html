@@ -37,7 +37,7 @@
             <div class="form-row">
                 <div class="form-group">
                     <label for="id_data_nascimento">Data de Fundação *</label>
-                    <input type="date" name="data_nascimento" id="id_data_nascimento" max="2006-12-31" onchange="validateAge(this)" required>
+                    <input type="text" name="data_nascimento" id="id_data_nascimento" placeholder="DD/MM/AAAA" maxlength="10" oninput="formatDate(this)" onblur="validateAge(this)" required>
                 </div>
                 <div class="form-group">
                     <label for="id_email">E-mail Corporativo *</label>
@@ -146,35 +146,50 @@ function formatTelefone(input) {
     input.value = v;
 }
 
-function validateAge(input) {
-    let birthDate = new Date(input.value);
-    let today = new Date();
-    let age = today.getFullYear() - birthDate.getFullYear();
-    let monthDiff = today.getMonth() - birthDate.getMonth();
+function formatDate(input) {
+    let value = input.value.replace(/\D/g, '');
     
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+    if (value.length > 8) {
+        value = value.substring(0, 8);
+    }
+    
+    if (value.length >= 2) {
+        value = value.replace(/(\d{2})(\d)/, '$1/$2');
+    }
+    if (value.length >= 5) {
+        value = value.replace(/(\d{2}\/\d{2})(\d)/, '$1/$2');
+    }
+    
+    input.value = value;
+}
+
+function validateAge(input) {
+    if (!input.value || input.value.length !== 10) return;
+    
+    const parts = input.value.split('/');
+    if (parts.length !== 3) return;
+    
+    const day = parseInt(parts[0]);
+    const month = parseInt(parts[1]);
+    const year = parseInt(parts[2]);
+    
+    if (day < 1 || day > 31 || month < 1 || month > 12 || year < 1900) {
+        alert('Data inválida. Use o formato DD/MM/AAAA.');
+        input.value = '';
+        return;
+    }
+    
+    const foundationDate = new Date(year, month - 1, day);
+    const today = new Date();
+    let age = today.getFullYear() - foundationDate.getFullYear();
+    const monthDiff = today.getMonth() - foundationDate.getMonth();
+    
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < foundationDate.getDate())) {
         age--;
     }
     
     if (age < 18) {
-        // Criar mensagem de erro no padrão do sistema
-        const messageDiv = document.createElement('div');
-        messageDiv.className = 'alert alert-error';
-        messageDiv.style.cssText = 'background-color: #f8d7da; color: #721c24; padding: 10px; margin: 10px 0; border: 1px solid #f5c6cb; border-radius: 4px;';
-        messageDiv.innerHTML = 'Erro: Por favor, insira uma data válida. A idade deve ser maior ou igual a 18 anos.';
-        
-        // Inserir mensagem no topo do formulário
-        const form = input.closest('form');
-        const firstChild = form.firstElementChild;
-        form.insertBefore(messageDiv, firstChild);
-        
-        // Remover mensagem após 5 segundos
-        setTimeout(() => {
-            if (messageDiv.parentNode) {
-                messageDiv.parentNode.removeChild(messageDiv);
-            }
-        }, 5000);
-        
+        alert('Erro: A empresa deve ter pelo menos 18 anos de fundação.');
         input.value = '';
         input.focus();
     }
