@@ -1372,6 +1372,44 @@
 
     <!-- Botão Voltar ao Topo -->
     <button class="voltar-topo" onclick="voltarAoTopo()">⬆️</button>
+    
+    <style>
+        .voltar-topo {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #04bafc;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            opacity: 0;
+            visibility: hidden;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+        
+        .voltar-topo.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .voltar-topo:hover {
+            transform: scale(1.1);
+            background: #0299d1;
+        }
+        
+        /* Esconder botão no mobile para não atrapalhar digitação */
+        @media (max-width: 768px) {
+            .voltar-topo {
+                display: none !important;
+            }
+        }
+    </style>
 
     <script>
         // Função voltar ao topo
