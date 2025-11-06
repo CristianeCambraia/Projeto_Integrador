@@ -21,6 +21,22 @@
                 box-sizing: border-box !important;
             }
             
+            /* Ajustar mensagens de boas-vindas em mobile */
+            .alert, .message {
+                margin: -9px 5px !important;
+                padding: 8px 12px !important;
+                font-size: 14px !important;
+                word-wrap: break-word !important;
+                overflow-wrap: break-word !important;
+                max-width: calc(100vw - 20px) !important;
+                box-sizing: border-box !important;
+            }
+            
+            /* Ajustar logo em mobile */
+            .logo-img {
+                margin-top: 30px !important;
+            }
+            
             .table-responsive {
                 overflow-x: auto !important;
                 -webkit-overflow-scrolling: touch !important;
@@ -543,6 +559,30 @@
             border: 1px solid rgba(255, 255, 255, 0.3);
             backdrop-filter: blur(12px);
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Estilo especial para o botão Login quando sozinho */
+        .mobile-nav-item.login-button {
+            background: linear-gradient(145deg, #026a84, #04bafc);
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            font-weight: 600;
+            font-size: 18px;
+            text-align: center;
+            padding: 25px 35px;
+            margin: 250px auto;
+            max-width: 200px;
+            box-shadow: 
+                0 8px 25px rgba(2, 106, 132, 0.4),
+                0 4px 12px rgba(4, 186, 252, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+        
+        .mobile-nav-item.login-button:hover {
+            background: linear-gradient(145deg, #04bafc, #026a84);
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 
+                0 12px 35px rgba(2, 106, 132, 0.5),
+                0 6px 18px rgba(4, 186, 252, 0.4);
         }
 
         .mobile-nav-item::before {
@@ -1210,9 +1250,10 @@
                     <a href="{% url 'usuarios_cadastrados' %}" class="mobile-nav-item">Usuários Cadastrados</a>
                     <a href="{% url 'admin_logout' %}" class="mobile-nav-item">Sair Admin</a>
                 {% else %}
-                    <a href="/" class="mobile-nav-item">Home</a>
-                    
                     {% if usuario_logado %}
+                        <!-- Menu para usuário logado -->
+                        <a href="/" class="mobile-nav-item">Home</a>
+                        
                         <!-- Notificações Mobile -->
                         <div class="mobile-notifications">
                             <button onclick="toggleMobileNotifications()" class="mobile-notification-btn" style="justify-content: flex-start;">
@@ -1232,58 +1273,51 @@
                                 </div>
                             </div>
                         </div>
-                    {% endif %}
-                    
-                    <!-- Cadastros -->
-                    <div class="mobile-dropdown">
-                        <button class="mobile-dropdown-btn" onclick="toggleMobileDropdown('cadastros')">Cadastros <span class="arrow">▼</span></button>
-                        <div class="mobile-dropdown-content" id="cadastros">
-                            <a href="{% url 'clientes' %}" class="mobile-nav-subitem">Cadastrar Cliente</a>
-                            <a href="{% url 'lista_cliente' %}" class="mobile-nav-subitem">Listar Clientes</a>
-                            <a href="{% url 'fornecedores' %}" class="mobile-nav-subitem">Cadastrar Fornecedor</a>
-                            <a href="{% url 'lista_fornecedores' %}" class="mobile-nav-subitem">Listar Fornecedores</a>
-                            <a href="{% url 'cadastrar_produto' %}" class="mobile-nav-subitem">Cadastrar Produto</a>
-                            <a href="{% url 'lista_produtos' %}" class="mobile-nav-subitem">Listar Produtos</a>
-                            <a href="{% url 'cadastrar_usuario' %}" class="mobile-nav-subitem">Cadastrar Usuário</a>
-                            <a href="{% url 'cadastrar_servico' %}" class="mobile-nav-subitem">Cadastrar Serviço</a>
-                            <a href="{% url 'lista_servicos' %}" class="mobile-nav-subitem">Listar Serviços</a>
+                        
+                        <!-- Cadastros -->
+                        <div class="mobile-dropdown">
+                            <button class="mobile-dropdown-btn" onclick="toggleMobileDropdown('cadastros')">Cadastros <span class="arrow">▼</span></button>
+                            <div class="mobile-dropdown-content" id="cadastros">
+                                <a href="{% url 'clientes' %}" class="mobile-nav-subitem">Cadastrar Cliente</a>
+                                <a href="{% url 'lista_cliente' %}" class="mobile-nav-subitem">Listar Clientes</a>
+                                <a href="{% url 'fornecedores' %}" class="mobile-nav-subitem">Cadastrar Fornecedor</a>
+                                <a href="{% url 'lista_fornecedores' %}" class="mobile-nav-subitem">Listar Fornecedores</a>
+                                <a href="{% url 'cadastrar_produto' %}" class="mobile-nav-subitem">Cadastrar Produto</a>
+                                <a href="{% url 'lista_produtos' %}" class="mobile-nav-subitem">Listar Produtos</a>
+                                <a href="{% url 'cadastrar_servico' %}" class="mobile-nav-subitem">Cadastrar Serviço</a>
+                                <a href="{% url 'lista_servicos' %}" class="mobile-nav-subitem">Listar Serviços</a>
+                            </div>
                         </div>
-                    </div>
-                    
-                    <!-- Orçamentos -->
-                    <div class="mobile-dropdown">
-                        <button class="mobile-dropdown-btn" onclick="toggleMobileDropdown('orcamentos')">Orçamentos <span class="arrow">▼</span></button>
-                        <div class="mobile-dropdown-content" id="orcamentos">
-                            <a href="{% url 'emitir_orcamento' %}" class="mobile-nav-subitem">Emitir Orçamento</a>
-                            <a href="{% url 'orcamentos_emitidos' %}" class="mobile-nav-subitem">Orçamentos Emitidos</a>
+                        
+                        <!-- Orçamentos -->
+                        <div class="mobile-dropdown">
+                            <button class="mobile-dropdown-btn" onclick="toggleMobileDropdown('orcamentos')">Orçamentos <span class="arrow">▼</span></button>
+                            <div class="mobile-dropdown-content" id="orcamentos">
+                                <a href="{% url 'emitir_orcamento' %}" class="mobile-nav-subitem">Emitir Orçamento</a>
+                                <a href="{% url 'orcamentos_emitidos' %}" class="mobile-nav-subitem">Orçamentos Emitidos</a>
+                            </div>
                         </div>
-                    </div>
-                    
-                    <!-- Relatórios -->
-                    <div class="mobile-dropdown">
-                        <button class="mobile-dropdown-btn" onclick="toggleMobileDropdown('relatorios')">Relatórios <span class="arrow">▼</span></button>
-                        <div class="mobile-dropdown-content" id="relatorios">
-                            <a href="{% url 'relatorio_estoque' %}" class="mobile-nav-subitem">Relatório de Estoque</a>
-                            <a href="{% url 'relatorio_financeiro' %}" class="mobile-nav-subitem">Relatório Financeiro</a>
-                            <a href="{% url 'relatorio_entrada' %}" class="mobile-nav-subitem">Lançamento de Entrada</a>
-                            <a href="{% url 'relatorio_saida' %}" class="mobile-nav-subitem">Lançamento de Saída</a>
-                            <a href="{% url 'relatorio_movimentacao_entrada' %}" class="mobile-nav-subitem">Ver Históricos - Entrada</a>
-                            <a href="{% url 'relatorio_movimentacao_saida' %}" class="mobile-nav-subitem">Ver Históricos - Saída</a>
+                        
+                        <!-- Relatórios -->
+                        <div class="mobile-dropdown">
+                            <button class="mobile-dropdown-btn" onclick="toggleMobileDropdown('relatorios')">Relatórios <span class="arrow">▼</span></button>
+                            <div class="mobile-dropdown-content" id="relatorios">
+                                <a href="{% url 'relatorio_estoque' %}" class="mobile-nav-subitem">Relatório de Estoque</a>
+                                <a href="{% url 'relatorio_financeiro' %}" class="mobile-nav-subitem">Relatório Financeiro</a>
+                                <a href="{% url 'relatorio_entrada' %}" class="mobile-nav-subitem">Lançamento de Entrada</a>
+                                <a href="{% url 'relatorio_saida' %}" class="mobile-nav-subitem">Lançamento de Saída</a>
+                                <a href="{% url 'relatorio_movimentacao_entrada' %}" class="mobile-nav-subitem">Ver Históricos - Entrada</a>
+                                <a href="{% url 'relatorio_movimentacao_saida' %}" class="mobile-nav-subitem">Ver Históricos - Saída</a>
+                            </div>
                         </div>
-                    </div>
 
-                    {% if usuario_logado %}
                         <a href="{% url 'minha_conta' %}" class="mobile-nav-item">Minha Conta</a>
-                    {% else %}
-                        <a href="{% url 'cadastrar_usuario' %}" class="mobile-nav-item">Cadastrar Usuário</a>
-                        <a href="{% url 'login' %}" class="mobile-nav-item">Login</a>
-                    {% endif %}
-                    
-                    <a href="{% url 'sobre_nos' %}" class="mobile-nav-item">Sobre nós</a>
-                    <a href="{% url 'criar_suporte' %}" class="mobile-nav-item">Contato</a>
-                    
-                    {% if usuario_logado %}
+                        <a href="{% url 'sobre_nos' %}" class="mobile-nav-item">Sobre nós</a>
+                        <a href="{% url 'criar_suporte' %}" class="mobile-nav-item">Contato</a>
                         <a href="{% url 'logout' %}" class="mobile-nav-item">Sair</a>
+                    {% else %}
+                        <!-- Menu para usuário NÃO logado -->
+                        <a href="{% url 'login' %}" class="mobile-nav-item login-button">🔐 Login</a>
                     {% endif %}
                 {% endif %}
             </div>
