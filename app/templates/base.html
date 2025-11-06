@@ -1646,9 +1646,38 @@
         
 
         
+        // Verificar status do usuário periodicamente
+        function verificarStatusUsuario() {
+            {% if usuario_logado %}
+            fetch('/verificar-status-usuario/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({})
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (!data.ativo) {
+                    window.location.href = '/logout/';
+                }
+            })
+            .catch(error => {
+                // Se houver erro na requisição, também deslogar por segurança
+                window.location.href = '/logout/';
+            });
+            {% endif %}
+        }
+        
         // Inicializar ao carregar a página
         document.addEventListener('DOMContentLoaded', function() {
             initializeNotifications();
+            
+            // Verificar status do usuário a cada 5 segundos
+            {% if usuario_logado %}
+            setInterval(verificarStatusUsuario, 5000);
+            verificarStatusUsuario(); // Verificar imediatamente
+            {% endif %}
             
             // Inicializar notificações mobile também
             const mobileCounter = document.getElementById('mobileNotificationCounter');

@@ -11,6 +11,7 @@ from .decorators import login_required_custom
 from django.conf import settings
 from django.db import models
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.sessions.models import Session
 import json
 from datetime import datetime, timedelta
 
@@ -383,7 +384,8 @@ def orcamentos_emitidos(request):
     if filtro:
         filtro = filtro.strip()
         if filtro.isdigit():
-            orcamentos = orcamentos.filter(id=filtro)
+            # Buscar APENAS por ID exato
+            orcamentos = orcamentos.filter(id=int(filtro))
         else:
             # Tentar filtrar por data no formato dd/mm/yyyy
             try:
@@ -392,8 +394,10 @@ def orcamentos_emitidos(request):
                     data_filtro = datetime.strptime(filtro, '%d/%m/%Y').date()
                     orcamentos = orcamentos.filter(data=data_filtro)
                 else:
+                    # Buscar apenas por nome do cliente
                     orcamentos = orcamentos.filter(cliente__icontains=filtro)
             except ValueError:
+                # Se não conseguir converter data, buscar por cliente
                 orcamentos = orcamentos.filter(cliente__icontains=filtro)
     
     orcamentos = orcamentos.order_by('-data')
@@ -759,7 +763,7 @@ def login_view(request):
                 
                 # Verificar se o usuário está ativo
                 if not usuario.ativo:
-                    messages.error(request, 'Usuário bloqueado. Entre em contato com o administrador.')
+                    messages.error(request, 'Usuário bloqueado. Contate o administrador.')
                     return render(request, 'login.html', {'form': form})
                 
                 request.session['usuario_logado'] = usuario.id
@@ -1753,6 +1757,20 @@ def deletar_usuario(request):
     return JsonResponse({'success': False, 'error': 'Método não permitido'})
 
 @csrf_exempt
+def verificar_status_usuario(request):
+    if request.method == 'POST':
+        if 'usuario_logado' in request.session:
+            try:
+                usuario_id = request.session['usuario_logado']
+                usuario = Usuario.objects.get(id=usuario_id)
+                print(f"DEBUG: Verificando usuário {usuario.nome} - Status: {usuario.ativo}")
+                return JsonResponse({'ativo': usuario.ativo})
+            except Usuario.DoesNotExist:
+                return JsonResponse({'ativo': False})
+        return JsonResponse({'ativo': False})
+    return JsonResponse({'ativo': False})
+
+@csrf_exempt
 def alternar_status_usuario(request):
     if request.method == 'POST':
         if 'admin_logado' not in request.session:
@@ -1768,8 +1786,19 @@ def alternar_status_usuario(request):
             
             try:
                 usuario = Usuario.objects.get(id=usuario_id)
-                usuario.ativo = ativo
+                print(f"DEBUG ANTES: {usuario.nome} - Ativo: {usuario.ativo}")
+                usuario.ativo = bool(ativo)
                 usuario.save()
+                usuario.refresh_from_db()
+                print(f"DEBUG DEPOIS: {usuario.nome} - Ativo: {usuario.ativo}")
+                
+                # Se usuário foi desativado, deslogar todas as sessões dele
+                if not ativo:
+                    # Buscar e deletar todas as sessões do usuário
+                    for session in Session.objects.all():
+                        session_data = session.get_decoded()
+                        if session_data.get('usuario_logado') == usuario_id:
+                            session.delete()
                 
                 status_texto = 'ativado' if ativo else 'desativado'
                 
@@ -2211,11 +2240,8 @@ def usuarios_cadastrados(request):
         messages.error(request, 'Acesso negado. Apenas administradores podem acessar esta página.')
         return redirect('home')
     
-    # Debug: buscar todos os usuários
+    # Buscar TODOS os usuários - sem filtros
     usuarios = Usuario.objects.all().order_by('-id')
-    print(f"DEBUG: Total de usuários encontrados: {usuarios.count()}")
-    for u in usuarios:
-        print(f"DEBUG: ID: {u.id}, Nome: {u.nome}, Email: {u.email}")
     
     return render(request, 'usuarios_cadastrados.html', {
         'usuarios': usuarios

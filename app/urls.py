@@ -118,6 +118,7 @@ urlpatterns = [
     
     # ----- ALTERNAR STATUS USUÁRIO -----
     path('alternar-status-usuario/', views.alternar_status_usuario, name='alternar_status_usuario'),
+    path('verificar-status-usuario/', views.verificar_status_usuario, name='verificar_status_usuario'),
     
     # ----- RELATÓRIO FINANCEIRO -----
     path('relatorio-financeiro/', views.relatorio_financeiro, name='relatorio_financeiro'),

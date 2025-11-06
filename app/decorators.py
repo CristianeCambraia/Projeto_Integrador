@@ -17,7 +17,7 @@ def login_required_custom(view_func):
             if not usuario.ativo:
                 # Limpar sessão e redirecionar para login
                 del request.session['usuario_logado']
-                messages.error(request, 'Usuário bloqueado. Entre em contato com o administrador.')
+                messages.error(request, 'Sua conta foi desativada. Contate o administrador.')
                 return redirect('login')
         except Usuario.DoesNotExist:
             # Usuário não existe mais, limpar sessão

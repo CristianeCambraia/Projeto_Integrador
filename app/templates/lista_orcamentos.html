@@ -224,7 +224,19 @@ function filtrarOrcamentos() {
         const cliente = item.getAttribute('data-cliente');
         const data = item.getAttribute('data-data');
         
-        if (id.includes(filtro) || cliente.includes(filtro) || data.includes(filtro)) {
+        let mostrar = false;
+        
+        if (filtro === '') {
+            mostrar = true;
+        } else if (/^\d+$/.test(filtro)) {
+            // Se for apenas números, buscar por ID exato
+            mostrar = id === filtro;
+        } else {
+            // Se não for número, buscar em cliente e data
+            mostrar = cliente.includes(filtro) || data.includes(filtro);
+        }
+        
+        if (mostrar) {
             item.style.display = 'block';
             visivel++;
         } else {

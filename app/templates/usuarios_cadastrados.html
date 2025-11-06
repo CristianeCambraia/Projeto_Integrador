@@ -57,7 +57,7 @@
         <!-- Seção Lista de Usuários -->
         <div class="form-section">
             <div class="section-header">
-                <h3>👥 Lista de Usuários</h3>
+                <h3>👥 Lista de Usuários (Total: {{ usuarios.count }})</h3>
             </div>
             
             {% if usuarios %}
@@ -95,7 +95,7 @@
                                 </td>
                                 <td>
                                     <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
-                                        <button onclick="alternarStatus({{ usuario.id }}, {{ usuario.ativo|yesno:'false,true' }}, '{{ usuario.nome|escapejs }}')" class="btn-status">
+                                        <button onclick="alternarStatus({{ usuario.id }}, {% if usuario.ativo %}false{% else %}true{% endif %}, '{{ usuario.nome|escapejs }}')" class="btn-status">
                                             {% if usuario.ativo %}
                                                 🚫 Desativar
                                             {% else %}
@@ -411,7 +411,7 @@ function confirmarAlterarStatus(usuarioId, novoStatus) {
         },
         body: JSON.stringify({
             usuario_id: usuarioId,
-            ativo: novoStatus
+            ativo: Boolean(novoStatus)
         })
     })
     .then(response => response.json())
