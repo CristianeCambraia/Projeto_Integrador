@@ -191,7 +191,7 @@ Projeto acadêmico - Todos os direitos reservados.
 
 ---
 
-**Desenvolvido por**: Cristiane Cambraia  
-**Instituição**: [Nome da Instituição]  
-**Curso**: [Nome do Curso]  
-**Ano**: 2024
+**Desenvolvido por**: Arilson, Cristiane, Eduardo, Leonardo e Lucas  
+**Instituição**: SENAC-MG  
+**Curso**: Curso Técnico em Desenvolvimento de Sistemas  
+**Ano**: 2025
