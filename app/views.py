@@ -350,6 +350,15 @@ def salvar_orcamento(request):
             except ValueError:
                 desconto_decimal = 0
 
+        # Obter usuário logado
+        usuario_logado = None
+        if 'usuario_logado' in request.session:
+            try:
+                usuario_id = request.session['usuario_logado']
+                usuario_logado = Usuario.objects.get(id=usuario_id)
+            except Usuario.DoesNotExist:
+                pass
+        
         orcamento = Orcamento(
             cliente=cliente,
             cnpj=cnpj,
@@ -364,7 +373,8 @@ def salvar_orcamento(request):
             itens_valores=valores_agregados,
             observacao=observacao,
             desconto=desconto_decimal,
-            data=data_obj
+            data=data_obj,
+            usuario=usuario_logado
         )
         orcamento.save()
         return redirect('orcamentos_emitidos')
@@ -1262,9 +1272,16 @@ def enviar_orcamento_email(request):
             # Enviar email com anexo
             try:
                 from django.core.mail import EmailMessage
+                # Preparar informações do usuário
+                info_usuario = ""
+                if orcamento.usuario:
+                    info_usuario += f"\nCriado por: {orcamento.usuario.nome}"
+                if orcamento.data_hora_criacao:
+                    info_usuario += f"\nEm: {orcamento.data_hora_criacao.strftime('%d/%m/%Y %H:%M')}"
+                
                 email = EmailMessage(
                     f'Orçamento #{orcamento.id} - {orcamento.cliente}',
-                    f'Segue em anexo o orçamento solicitado.\n\nCliente: {orcamento.cliente}\nData: {orcamento.data.strftime("%d/%m/%Y")}\n\nAtenciosamente,\nEquipe INSUMED',
+                    f'Segue em anexo o orçamento solicitado.\n\nCliente: {orcamento.cliente}\nData: {orcamento.data.strftime("%d/%m/%Y")}{info_usuario}\n\nAtenciosamente,\nEquipe INSUMED',
                     settings.EMAIL_HOST_USER,
                     [email_destino]
                 )

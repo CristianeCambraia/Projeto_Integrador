@@ -2,6 +2,7 @@
 {% load static %}
 
 {% block content %}
+{% csrf_token %}
 <div class="modern-container">
     <!-- Header Section -->
     <div class="header-section">
@@ -11,6 +12,12 @@
                 <div class="header-text">
                     <h1>Visualizar Orçamento</h1>
                     <p>Orçamento #{{ orcamento.id }} - {{ orcamento.data|date:"d/m/Y" }}</p>
+                    {% if orcamento.usuario %}
+                    <p style="font-size: 0.9rem; opacity: 0.8;">Criado por: {{ orcamento.usuario.nome }}</p>
+                    {% endif %}
+                    {% if orcamento.data_hora_criacao %}
+                    <p style="font-size: 0.9rem; opacity: 0.8;">Em: {{ orcamento.data_hora_criacao|date:"d/m/Y H:i" }}</p>
+                    {% endif %}
                 </div>
             </div>
             <div class="header-actions">
@@ -36,6 +43,15 @@
             <img src="{% static 'images/insumed_icon.png' %}" alt="Logo">
             <h1>INSUMED</h1>
             <img src="{% static 'images/insumed_icon.png' %}" alt="Logo">
+        </div>
+        <div class="print-info">
+            <p><strong>Orçamento #{{ orcamento.id }}</strong> - {{ orcamento.data|date:"d/m/Y" }}</p>
+            {% if orcamento.usuario %}
+            <p>Criado por: {{ orcamento.usuario.nome }}</p>
+            {% endif %}
+            {% if orcamento.data_hora_criacao %}
+            <p>Em: {{ orcamento.data_hora_criacao|date:"d/m/Y H:i" }}</p>
+            {% endif %}
         </div>
     </div>
 
@@ -286,7 +302,22 @@ function criarModalEmail() {
 async function abrirModalEmail(orcamentoId) {
     const email = await criarModalEmail();
     if (email) {
-        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        // Buscar token CSRF
+        let csrfToken = '';
+        const csrfInput = document.querySelector('[name=csrfmiddlewaretoken]');
+        if (csrfInput) {
+            csrfToken = csrfInput.value;
+        } else {
+            // Buscar no cookie se não encontrar no input
+            const cookies = document.cookie.split(';');
+            for (let cookie of cookies) {
+                const [name, value] = cookie.trim().split('=');
+                if (name === 'csrftoken') {
+                    csrfToken = value;
+                    break;
+                }
+            }
+        }
         
         fetch('/enviar_orcamento_email/', {
             method: 'POST',
@@ -604,6 +635,17 @@ async function abrirModalEmail(orcamentoId) {
         font-weight: bold;
         color: rgba(0, 0, 0, 0.12);
         margin: 0;
+    }
+    
+    .print-info {
+        text-align: center;
+        margin-top: 15px;
+    }
+    
+    .print-info p {
+        margin: 5px 0;
+        font-size: 14px;
+        color: #333;
     }
     
     .form-section {

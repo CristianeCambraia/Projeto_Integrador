@@ -107,6 +107,8 @@ class Orcamento(models.Model):
     observacao = models.TextField(blank=True, null=True)
     desconto = models.DecimalField(max_digits=5, decimal_places=2, default=0, blank=True, null=True)
     data = models.DateField(auto_now_add=True)
+    usuario = models.ForeignKey('Usuario', on_delete=models.SET_NULL, null=True, blank=True)
+    data_hora_criacao = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return f'Orçamento para {self.cliente} em {self.data}'

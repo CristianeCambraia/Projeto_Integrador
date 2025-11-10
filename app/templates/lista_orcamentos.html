@@ -56,6 +56,12 @@
                         <div class="orcamento-id">
                             <span class="id-badge">#{{ o.id }}</span>
                             <span class="data-badge">{{ o.data|date:"d/m/Y" }}</span>
+                            {% if o.usuario %}
+                            <span class="usuario-badge">{{ o.usuario.nome }}</span>
+                            {% endif %}
+                            {% if o.data_hora_criacao %}
+                            <span class="hora-badge">{{ o.data_hora_criacao|date:"H:i" }}</span>
+                            {% endif %}
                         </div>
                         <div class="valor-total">
                             <span class="valor-label">Total</span>
@@ -455,6 +461,21 @@ document.addEventListener('DOMContentLoaded', function() {
 .data-badge {
     color: #4a5568;
     font-size: 12px;
+    font-weight: 500;
+}
+
+.usuario-badge {
+    color: #026a84;
+    font-size: 11px;
+    font-weight: 600;
+    background: rgba(2, 106, 132, 0.1);
+    padding: 2px 6px;
+    border-radius: 3px;
+}
+
+.hora-badge {
+    color: #4a5568;
+    font-size: 11px;
     font-weight: 500;
 }
 
