@@ -158,7 +158,7 @@
                                     <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #2d3748; font-size: 14px;">
                                         Senha <span style="color: #e53e3e;">*</span>
                                     </label>
-                                    <input type="password" name="{{ field.name }}" id="{{ field.id_for_label }}" value="{{ field.value|default:'' }}" placeholder="Digite uma senha segura" autocomplete="new-password" style="width: 100%; height: 45px; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 16px; transition: all 0.3s ease; box-sizing: border-box; background: white;">
+                                    <input type="password" name="{{ field.name }}" id="{{ field.id_for_label }}" value="{{ field.value|default:'' }}" placeholder="Digite uma senha segura" autocomplete="new-password" minlength="8" style="width: 100%; height: 45px; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 16px; transition: all 0.3s ease; box-sizing: border-box; background: white;" oninput="validarSenha(this)">
                                     {% if field.errors %}
                                         <span style="color: #e53e3e; font-size: 12px; margin-top: 5px; display: block;">{{ field.errors.0 }}</span>
                                     {% endif %}
@@ -386,6 +386,15 @@ function mostrarErro(input, mensagem) {
 function removerErro(input) {
     const existingError = input.parentNode.querySelector('.error-message');
     if (existingError) existingError.remove();
+}
+
+function validarSenha(input) {
+    const senha = input.value;
+    if (senha.length > 0 && senha.length < 8) {
+        mostrarErro(input, 'A senha deve ter pelo menos 8 caracteres.');
+    } else {
+        removerErro(input);
+    }
 }
 </script>
 {% endblock %}
