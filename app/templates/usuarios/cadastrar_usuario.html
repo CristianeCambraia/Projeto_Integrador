@@ -44,7 +44,7 @@
                                     {% elif field.name == 'cpf' %}
                                         <input type="text" name="{{ field.name }}" id="{{ field.id_for_label }}" value="{{ field.value|default:'' }}" placeholder="000.000.000-00" maxlength="14" style="width: 100%; height: 45px; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 16px; transition: all 0.3s ease; box-sizing: border-box; background: white;" oninput="formatarCPF(this)" onkeypress="return somenteNumeros(event)">
                                     {% else %}
-                                        <input type="text" name="{{ field.name }}" id="{{ field.id_for_label }}" value="{{ field.value|default:'' }}" placeholder="Digite seu nome completo" style="width: 100%; height: 45px; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 16px; transition: all 0.3s ease; box-sizing: border-box; background: white;">
+                                        <input type="text" name="{{ field.name }}" id="{{ field.id_for_label }}" value="{{ field.value|default:'' }}" placeholder="Digite seu nome completo" pattern="[A-Za-z\u00C0-\u017F\s]+" title="Digite apenas letras e espaços" style="width: 100%; height: 45px; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 16px; transition: all 0.3s ease; box-sizing: border-box; background: white;" oninput="validarNome(this)" onkeypress="return somenteLetras(event)">
                                     {% endif %}
                                     {% if field.errors %}
                                         <span style="color: #e53e3e; font-size: 12px; margin-top: 5px; display: block;">{{ field.errors.0 }}</span>
@@ -395,6 +395,42 @@ function validarSenha(input) {
     } else {
         removerErro(input);
     }
+}
+
+function somenteLetras(event) {
+    const char = String.fromCharCode(event.which);
+    if (!/[a-zA-Z\u00C0-\u017F\s]/.test(char)) {
+        event.preventDefault();
+        return false;
+    }
+    return true;
+}
+
+function validarNome(input) {
+    const nome = input.value;
+    
+    // Verificar se contém @ (email)
+    if (nome.includes('@')) {
+        mostrarErro(input, 'Não é permitido inserir email no campo nome.');
+        input.value = nome.replace(/@.*/, ''); // Remove tudo após @
+        return;
+    }
+    
+    // Verificar se contém números
+    if (/\d/.test(nome)) {
+        mostrarErro(input, 'O nome deve conter apenas letras e espaços.');
+        input.value = nome.replace(/\d/g, ''); // Remove números
+        return;
+    }
+    
+    // Verificar caracteres especiais (exceto espaços e acentos)
+    if (!/^[a-zA-Z\u00C0-\u017F\s]*$/.test(nome)) {
+        mostrarErro(input, 'O nome deve conter apenas letras e espaços.');
+        input.value = nome.replace(/[^a-zA-Z\u00C0-\u017F\s]/g, ''); // Remove caracteres especiais
+        return;
+    }
+    
+    removerErro(input);
 }
 </script>
 {% endblock %}
