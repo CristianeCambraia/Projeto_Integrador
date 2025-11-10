@@ -1,6 +1,6 @@
-# Sistema INSUMED - Gestão de Estoque Farmacêutico
+# Sistema INSUMED - Gerenciamento de Estoque Área da Saúde
 
-Sistema desenvolvido para gerenciamento completo de estoque farmacêutico, incluindo controle de produtos, fornecedores, clientes e emissão de orçamentos.
+Sistema desenvolvido para gerenciamento completo de estoque da área da saúde, incluindo controle de produtos, fornecedores, clientes e emissão de orçamentos.
 
 ## Funcionalidades Principais
 
