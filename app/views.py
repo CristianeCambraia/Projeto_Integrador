@@ -872,15 +872,24 @@ def logout_view(request):
 
 @login_required_custom
 def editar_produto(request, produto_id):
-    produto = Produto.objects.get(id=produto_id)
+    try:
+        produto = Produto.objects.get(id=produto_id)
+    except Produto.DoesNotExist:
+        messages.error(request, 'Produto não encontrado')
+        return redirect('lista_produtos')
+    
     if request.method == "POST":
         form = EditarProdutoForm(request.POST, instance=produto)
         if form.is_valid():
-            form.save()
-            return redirect('lista_produtos')
+            try:
+                form.save()
+                messages.success(request, 'Produto atualizado com sucesso!')
+                return redirect('lista_produtos')
+            except Exception as e:
+                messages.error(request, f'Erro ao salvar produto: {str(e)}')
     else:
         form = EditarProdutoForm(instance=produto)
-    return render(request, 'produtos/editar_produto.html', {
+    return render(request, 'Produtos/editar_produto.html', {
         'form': form,
         'produto': produto,
         'titulo_pagina': 'Editar Produto'

@@ -17,8 +17,8 @@ class Suporte(models.Model):
 
 
 class Fornecedor(models.Model):
-    nome = models.CharField(max_length=200)
-    cnpj = models.CharField(max_length=20)  # Usar CharField pois pode conter caracteres especiais
+    nome = models.CharField(max_length=200, unique=True)
+    cnpj = models.CharField(max_length=20, unique=True)  # Usar CharField pois pode conter caracteres especiais
     endereco = models.CharField(max_length=200)
     bairro = models.CharField(max_length=200)
     complemento = models.CharField(max_length=200, blank=True, null=True)  # Pode ser opcional
@@ -41,7 +41,7 @@ class Produto(models.Model):
     ]
     
     nome = models.CharField(max_length=100)
-    codigo_barras = models.CharField(max_length=50, blank=True, null=True)
+    codigo_barras = models.CharField(max_length=50, blank=True, null=True, unique=True)
     preco = models.DecimalField(max_digits=10, decimal_places=2)
     preco_compra = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     descricao = models.TextField(blank=True, null=True)
@@ -77,8 +77,8 @@ class Servico(models.Model):
         return f"{self.nome} - R${self.preco}"
 
 class Cliente(models.Model):
-    nome = models.CharField(max_length=200)
-    cpf = models.CharField(max_length=20)  # Usar CharField pois pode conter caracteres especiais
+    nome = models.CharField(max_length=200, unique=True)
+    cpf = models.CharField(max_length=20, unique=True)  # Usar CharField pois pode conter caracteres especiais
     endereco = models.CharField(max_length=200)
     bairro = models.CharField(max_length=200)
     complemento = models.CharField(max_length=200, blank=True, null=True)  # Pode ser opcional
@@ -124,7 +124,7 @@ class Usuario(models.Model):
         ('SP', 'São Paulo'), ('SE', 'Sergipe'), ('TO', 'Tocantins')
     ]
     
-    nome = models.CharField(max_length=200)
+    nome = models.CharField(max_length=200, unique=True)
     email = models.EmailField(max_length=200, unique=True)
     cpf = models.CharField(max_length=20, unique=True)
     endereco = models.CharField(max_length=200)

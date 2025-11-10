@@ -163,13 +163,10 @@ function limparFiltro() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    try {
-        const filtroInput = document.getElementById('filtroServico');
-        if (filtroInput) {
-            filtroInput.addEventListener('input', filtrarServicos);
-        }
-    } catch (e) {
-        console.log('Erro ao inicializar filtro');
+    const filtroInput = document.getElementById('filtroServico');
+    if (filtroInput) {
+        filtroInput.addEventListener('input', filtrarServicos);
+        filtroInput.addEventListener('keyup', filtrarServicos);
     }
 });
 </script>

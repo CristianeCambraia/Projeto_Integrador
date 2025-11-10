@@ -170,7 +170,7 @@ class UsuarioForm(forms.ModelForm):
         fields = ['nome', 'email', 'cpf', 'endereco', 'cidade', 'uf', 'telefone', 'data_nascimento', 'senha']
 
         widgets = {
-            'nome': forms.TextInput(attrs={'placeholder': 'Nome'}),
+            'nome': forms.TextInput(attrs={'placeholder': 'Nome', 'pattern': '[A-Za-z\u00C0-\u017F\s]+', 'title': 'Digite apenas letras e espaços', 'oninput': 'this.value = this.value.replace(/[^A-Za-z\u00C0-\u017F\s]/g, "")'}),
             'email': forms.EmailInput(attrs={'placeholder': 'Email'}),
             'cpf': forms.TextInput(attrs={'placeholder': 'CPF', 'maxlength': '14', 'onkeypress': 'return event.charCode >= 48 && event.charCode <= 57', 'oninput': r'this.value = this.value.replace(/\D/g, "").replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4").substring(0, 14)'}),
             'endereco': forms.TextInput(attrs={'placeholder': 'Endereço'}),
@@ -304,3 +304,10 @@ class AdminLoginForm(forms.Form):
             'class': 'form-control'
         })
     )
+    def clean_nome(self):
+        nome = self.cleaned_data.get('nome')
+        if nome:
+            import re
+            if not re.match(r'^[A-Za-z\u00c0-\u017f\s]+$', nome):
+                raise forms.ValidationError('O nome deve conter apenas letras e espaços.')
+        return nome
