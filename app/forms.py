@@ -191,7 +191,14 @@ class UsuarioForm(forms.ModelForm):
             self.fields['cidade'].initial = ''
             if self.instance and hasattr(self.instance, 'cidade') and self.instance.cidade == 'Não informado':
                 self.instance.cidade = ''
-
+    
+    def clean_nome(self):
+        nome = self.cleaned_data.get('nome')
+        if nome:
+            import re
+            if not re.match(r'^[A-Za-z\u00c0-\u017f\s]+$', nome):
+                raise forms.ValidationError('O nome deve conter apenas letras e espaços.')
+        return nome
 
 
 class LoginForm(forms.Form):
@@ -304,10 +311,3 @@ class AdminLoginForm(forms.Form):
             'class': 'form-control'
         })
     )
-    def clean_nome(self):
-        nome = self.cleaned_data.get('nome')
-        if nome:
-            import re
-            if not re.match(r'^[A-Za-z\u00c0-\u017f\s]+$', nome):
-                raise forms.ValidationError('O nome deve conter apenas letras e espaços.')
-        return nome

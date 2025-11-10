@@ -780,17 +780,23 @@ def lista_suporte(request):
 # ----- USUÁRIO -----
 def cadastrar_usuario(request):
     if request.method == "POST":
-        form = UsuarioForm(request.POST)
-        if form.is_valid():
-            usuario = form.save()
-            messages.success(request, f'Usuário {usuario.nome} cadastrado com sucesso!')
-            return redirect('home')  # redireciona para home depois do cadastro
-        else:
-            messages.error(request, 'Erro no formulário. Verifique os dados informados.')
+        try:
+            form = UsuarioForm(request.POST)
+            if form.is_valid():
+                usuario = form.save()
+                messages.success(request, f'Usuário {usuario.nome} cadastrado com sucesso!')
+                return redirect('home')
+            else:
+                # Mostrar erros específicos do formulário
+                for field, errors in form.errors.items():
+                    for error in errors:
+                        messages.error(request, f'{field}: {error}')
+        except Exception as e:
+            messages.error(request, f'Erro ao cadastrar usuário: {str(e)}')
     else:
         form = UsuarioForm()
-        # Garantir que o campo cidade esteja vazio
         form.fields['cidade'].initial = ''
+    
     return render(request, 'usuarios/cadastrar_usuario.html', {
         'form': form,
         'titulo_pagina': 'Cadastro de Usuário'
