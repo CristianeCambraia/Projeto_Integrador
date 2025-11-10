@@ -75,6 +75,7 @@
                         <th>Última Saída</th>
                         <th>Qtd Retirada</th>
                         <th>Unidade</th>
+                        <th>Usuário/Data Saída</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -106,10 +107,21 @@
                             <input type="number" name="quantidade_{{ produto.id }}" min="0" value="0">
                         </td>
                         <td>{{ produto.unidade }}</td>
+                        <td class="usuario-saida">
+                            {% if produto.ultima_saida and produto.ultima_saida.usuario %}
+                                <strong>{{ produto.ultima_saida.usuario.nome }}</strong><br>
+                                <small>{{ produto.ultima_saida.data_hora|date:"d/m/Y H:i" }}</small>
+                            {% elif produto.ultima_saida %}
+                                <small>Usuário não registrado</small><br>
+                                <small>{{ produto.ultima_saida.data_hora|date:"d/m/Y H:i" }}</small>
+                            {% else %}
+                                <small>Primeira saída</small>
+                            {% endif %}
+                        </td>
                     </tr>
                     {% empty %}
                     <tr id="nenhumProdutoSaida">
-                        <td colspan="7" class="no-data">Nenhum produto encontrado</td>
+                        <td colspan="8" class="no-data">Nenhum produto encontrado</td>
                     </tr>
                     {% endfor %}
                 </tbody>

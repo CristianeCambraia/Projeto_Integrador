@@ -132,6 +132,9 @@ class Usuario(models.Model):
     data_nascimento = models.DateField()
     senha = models.CharField(max_length=128)
     ativo = models.BooleanField(default=True)
+    tentativas_login = models.IntegerField(default=0)
+    bloqueado = models.BooleanField(default=False)
+    data_bloqueio = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return self.nome
@@ -146,6 +149,7 @@ class MovimentacaoEstoque(models.Model):
     tipo = models.CharField(max_length=10, choices=TIPO_CHOICES)
     quantidade = models.IntegerField()
     data_hora = models.DateTimeField(default=timezone.now)
+    usuario = models.ForeignKey(Usuario, on_delete=models.SET_NULL, null=True, blank=True)
     
     def __str__(self):
         return f'{self.tipo} - {self.produto.nome} - {self.quantidade}'

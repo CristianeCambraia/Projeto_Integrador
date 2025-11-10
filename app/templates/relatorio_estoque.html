@@ -31,7 +31,6 @@
     
     <div class="print-info" style="display: none;">
         <h3 style="text-align: center; margin: 0 0 10px 0; color: #026a84; font-size: 24px;">Relatório de Estoque</h3>
-        <p id="data-geracao-print" style="text-align: center; margin: 0; color: #026a84;"></p>
         {% if request.GET.q %}<p style="text-align: center; margin: 5px 0 0 0; color: #026a84;">Filtro aplicado: "{{ request.GET.q }}"</p>{% endif %}
     </div>
 
@@ -85,6 +84,11 @@
     <div class="data-section">
         <div class="section-header">
             <h3>📦 Dados do Estoque</h3>
+            {% if usuario_logado %}
+            <div style="font-size: 12px; color: #666; margin-top: 5px;">
+                <strong>Gerado por:</strong> {{ usuario_logado.nome }} | <strong>Data/Hora:</strong> {{ data_hora_relatorio|date:"d/m/Y H:i" }}
+            </div>
+            {% endif %}
         </div>
         <div class="table-responsive">
             <table class="modern-table">

@@ -126,7 +126,11 @@
     <div class="content">
         <div class="report-info">
             <h3>Relatório Financeiro</h3>
+            {% if usuario_logado %}
+            <p>Gerado por: {{ usuario_logado.nome }} | Data/Hora: {{ data_atual }}</p>
+            {% else %}
             <p>Data: {{ data_atual }}</p>
+            {% endif %}
             {% if busca %}<p>Filtro aplicado: "{{ busca }}"</p>{% endif %}
         </div>
         

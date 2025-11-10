@@ -35,7 +35,11 @@
 
     <div class="info">
         <h4 style="margin: 0 0 15px 0; text-align: center; color: black; font-size: 16px;">Informações do Relatório</h4>
+        {% if usuario_logado %}
+        <p style="font-size: 14px;"><strong>Gerado por:</strong> {{ usuario_logado.nome }} | <strong>Data:</strong> {{ data_atual }}</p>
+        {% else %}
         <p style="font-size: 14px;"><strong>Data de Geração:</strong> {{ data_atual }}</p>
+        {% endif %}
         {% if busca %}
         <p style="font-size: 14px;"><strong>Filtro Aplicado:</strong> {{ busca }}</p>
         {% endif %}

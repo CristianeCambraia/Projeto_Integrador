@@ -68,6 +68,7 @@
                         <th>Última Entrada</th>
                         <th>Qtd Recebida</th>
                         <th>Unidade</th>
+                        <th>Usuário/Data Entrada</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -99,10 +100,21 @@
                             <input type="number" name="quantidade_{{ produto.id }}" placeholder="0">
                         </td>
                         <td>{{ produto.unidade }}</td>
+                        <td class="usuario-entrada">
+                            {% if produto.ultima_entrada and produto.ultima_entrada.usuario %}
+                                <strong>{{ produto.ultima_entrada.usuario.nome }}</strong><br>
+                                <small>{{ produto.ultima_entrada.data_hora|date:"d/m/Y H:i" }}</small>
+                            {% elif produto.ultima_entrada %}
+                                <small>Usuário não registrado</small><br>
+                                <small>{{ produto.ultima_entrada.data_hora|date:"d/m/Y H:i" }}</small>
+                            {% else %}
+                                <small>Primeira entrada</small>
+                            {% endif %}
+                        </td>
                     </tr>
                     {% empty %}
                     <tr id="nenhumProdutoEntrada">
-                        <td colspan="7" class="no-data">Nenhum produto encontrado</td>
+                        <td colspan="8" class="no-data">Nenhum produto encontrado</td>
                     </tr>
                     {% endfor %}
                 </tbody>

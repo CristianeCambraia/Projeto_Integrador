@@ -569,7 +569,19 @@ def relatorio_estoque(request):
         produto.ultima_entrada = ultima_entrada
         produto.ultima_saida = ultima_saida
         produtos_com_movimentacao.append(produto)
-    return render(request, 'relatorio_estoque.html', {'produtos': produtos_com_movimentacao})
+    # Obter usuário logado
+    usuario_logado = None
+    if 'usuario_logado' in request.session:
+        try:
+            usuario_logado = Usuario.objects.get(id=request.session['usuario_logado'])
+        except Usuario.DoesNotExist:
+            pass
+    
+    return render(request, 'relatorio_estoque.html', {
+        'produtos': produtos_com_movimentacao,
+        'usuario_logado': usuario_logado,
+        'data_hora_relatorio': timezone.now()
+    })
 
 def relatorio_entrada(request):
     periodo = request.GET.get('periodo')
@@ -602,11 +614,20 @@ def relatorio_entrada(request):
                 produto.data_hora = timezone.now()
                 produto.save()
                 
+                # Obter usuário logado
+                usuario_logado = None
+                if 'usuario_logado' in request.session:
+                    try:
+                        usuario_logado = Usuario.objects.get(id=request.session['usuario_logado'])
+                    except Usuario.DoesNotExist:
+                        pass
+                
                 # Registrar movimentação
                 mov = MovimentacaoEstoque.objects.create(
                     produto=produto,
                     tipo='ENTRADA',
-                    quantidade=qtd
+                    quantidade=qtd,
+                    usuario=usuario_logado
                 )
         return redirect('relatorio_entrada')
 
@@ -614,49 +635,71 @@ def relatorio_entrada(request):
 
 
 def relatorio_saida(request):
-    periodo = request.GET.get('periodo')
-    produtos = Produto.objects.all()
+    if request.method == 'POST':
+        usuario_logado = request.session.get('usuario_logado')
+        if not usuario_logado:
+            messages.error(request, 'Usuário não está logado.')
+            return redirect('login')
+        
+        try:
+            usuario = Usuario.objects.get(id=usuario_logado)
+        except Usuario.DoesNotExist:
+            messages.error(request, 'Usuário não encontrado.')
+            return redirect('login')
+        
+        produtos_com_saida = []
+        
+        for key, value in request.POST.items():
+            if key.startswith('quantidade_') and value and int(value) > 0:
+                produto_id = key.replace('quantidade_', '')
+                quantidade = int(value)
+                
+                try:
+                    produto = Produto.objects.get(id=produto_id)
+                    
+                    if produto.quantidade >= quantidade:
+                        produto.quantidade -= quantidade
+                        produto.save()
+                        
+                        # Registrar movimentação
+                        MovimentacaoEstoque.objects.create(
+                            produto=produto,
+                            tipo='saida',
+                            quantidade=quantidade,
+                            usuario=usuario
+                        )
+                        
+                        produtos_com_saida.append(f"{produto.nome} ({quantidade} {produto.unidade})")
+                    else:
+                        messages.error(request, f'Estoque insuficiente para {produto.nome}. Disponível: {produto.quantidade}')
+                        
+                except Produto.DoesNotExist:
+                    messages.error(request, f'Produto com ID {produto_id} não encontrado.')
+        
+
+        
+        return redirect('relatorio_saida')
     
     # Filtro por período
-    if periodo and periodo.isdigit():
-        from datetime import timedelta
-        dias = int(periodo)
-        data_limite = timezone.now() - timedelta(days=dias)
-        produtos = produtos.filter(data_hora__gte=data_limite)
+    periodo = request.GET.get('periodo')
+    produtos = Produto.objects.all().order_by('nome')
     
-    # Adicionar informações de última saída
-    produtos_com_saida = []
+    if periodo:
+        try:
+            dias = int(periodo)
+            data_limite = timezone.now() - timedelta(days=dias)
+            produtos = produtos.filter(data_cadastro__gte=data_limite)
+        except ValueError:
+            pass
+    
+    # Adicionar última saída para cada produto
     for produto in produtos:
-        ultima_saida = MovimentacaoEstoque.objects.filter(
-            produto=produto, tipo='SAIDA'
+        produto.ultima_saida = MovimentacaoEstoque.objects.filter(
+            produto=produto, 
+            tipo='saida'
         ).order_by('-data_hora').first()
-        
-        produto.ultima_saida = ultima_saida
-        produtos_com_saida.append(produto)
-
-    if request.method == "POST":
-        produtos = produtos_com_saida  # Usar a lista com informações de saída
-        for produto in produtos:
-            qtd_retirada = request.POST.get(f"quantidade_{produto.id}")
-            if qtd_retirada and int(qtd_retirada) > 0:
-                qtd_retirada = int(qtd_retirada)
-
-                if produto.quantidade - qtd_retirada >= 0:
-                    produto.quantidade -= qtd_retirada
-                    produto.save()
-                    
-                    # Registrar movimentação
-                    mov = MovimentacaoEstoque.objects.create(
-                        produto=produto,
-                        tipo='SAIDA',
-                        quantidade=qtd_retirada
-                    )
-                else:
-                    messages.error(request, f"O produto {produto.nome} não pode sofrer de retirada por falta de estoque!")
-
-        return redirect("relatorio_saida")
-
-    return render(request, "relatorio_saida.html", {"produtos": produtos_com_saida})
+    
+    return render(request, 'relatorio_saida.html', {'produtos': produtos})
 
 # ----- SUPORTE -----
 def criar_suporte(request):
@@ -759,25 +802,48 @@ def login_view(request):
                 return render(request, 'login.html', {'form': form})
             
             try:
-                usuario = Usuario.objects.get(email=email, senha=senha)
+                usuario = Usuario.objects.get(email=email)
+                
+                # Verificar se o usuário está bloqueado
+                if usuario.bloqueado:
+                    messages.error(request, 'Usuário bloqueado por excesso de tentativas. Entre em contato com o suporte.')
+                    return render(request, 'login.html', {'form': form})
                 
                 # Verificar se o usuário está ativo
                 if not usuario.ativo:
                     messages.error(request, 'Usuário bloqueado. Contate o administrador.')
                     return render(request, 'login.html', {'form': form})
                 
-                request.session['usuario_logado'] = usuario.id
-                
-                remember = form.cleaned_data.get('remember', False)
-                if remember:
-                    request.session.set_expiry(None)  # Não expira
-                else:
-                    request.session.set_expiry(86400)  # 24 horas
+                # Verificar senha
+                if usuario.senha == senha:
+                    # Login correto - resetar tentativas
+                    usuario.tentativas_login = 0
+                    usuario.save()
                     
-                messages.success(request, f'Bem-vindo, {usuario.nome}!')
-                return redirect('home')
+                    request.session['usuario_logado'] = usuario.id
+                    
+                    remember = form.cleaned_data.get('remember', False)
+                    if remember:
+                        request.session.set_expiry(None)  # Não expira
+                    else:
+                        request.session.set_expiry(86400)  # 24 horas
+                        
+                    messages.success(request, f'Bem-vindo, {usuario.nome}!')
+                    return redirect('home')
+                else:
+                    # Senha incorreta - incrementar tentativas
+                    usuario.tentativas_login += 1
+                    if usuario.tentativas_login >= 5:
+                        usuario.bloqueado = True
+                        usuario.data_bloqueio = timezone.now()
+                        messages.error(request, 'Usuário bloqueado por excesso de tentativas. Entre em contato com o suporte.')
+                    else:
+                        tentativas_restantes = 5 - usuario.tentativas_login
+                        messages.error(request, f'Senha incorreta. Restam {tentativas_restantes} tentativas.')
+                    usuario.save()
+                    
             except Usuario.DoesNotExist:
-                messages.error(request, 'Email ou senha incorretos')
+                messages.error(request, 'Email não encontrado')
         else:
             messages.error(request, 'Dados inválidos')
     else:
@@ -1516,10 +1582,19 @@ def exportar_estoque_pdf(request):
     from datetime import datetime
     static_root = getattr(settings, 'STATIC_ROOT', None) or os.path.join(settings.BASE_DIR, 'static')
     
+    # Obter usuário logado
+    usuario_logado = None
+    if 'usuario_logado' in request.session:
+        try:
+            usuario_logado = Usuario.objects.get(id=request.session['usuario_logado'])
+        except Usuario.DoesNotExist:
+            pass
+    
     context = {
         'produtos': produtos_com_movimentacao,
         'busca': busca,
         'data_atual': datetime.now().strftime('%d/%m/%Y %H:%M'),
+        'usuario_logado': usuario_logado,
         'STATIC_ROOT': static_root
     }
     
@@ -1542,27 +1617,10 @@ def enviar_estoque_email(request):
         try:
             data = json.loads(request.body)
             email_destino = data.get('email')
-            busca = data.get('busca', '')
-            periodo = data.get('periodo', '')
             
             if not email_destino:
                 return JsonResponse({'success': False, 'error': 'Email não informado'})
-            
             produtos = Produto.objects.all()
-            
-            if busca:
-                produtos = produtos.filter(
-                    models.Q(nome__icontains=busca) |
-                    models.Q(fornecedor__nome__icontains=busca) |
-                    models.Q(descricao__icontains=busca) |
-                    models.Q(codigo_barras__icontains=busca)
-                )
-            
-            if periodo and periodo.isdigit():
-                from datetime import timedelta
-                dias = int(periodo)
-                data_limite = timezone.now() - timedelta(days=dias)
-                produtos = produtos.filter(data_hora__gte=data_limite)
             
             produtos_com_movimentacao = []
             for produto in produtos:
@@ -1582,10 +1640,18 @@ def enviar_estoque_email(request):
             from datetime import datetime
             static_root = getattr(settings, 'STATIC_ROOT', None) or os.path.join(settings.BASE_DIR, 'static')
             
+            # Obter usuário logado
+            usuario_logado = None
+            if 'usuario_logado' in request.session:
+                try:
+                    usuario_logado = Usuario.objects.get(id=request.session['usuario_logado'])
+                except Usuario.DoesNotExist:
+                    pass
+            
             context = {
                 'produtos': produtos_com_movimentacao,
-                'busca': busca,
                 'data_atual': datetime.now().strftime('%d/%m/%Y %H:%M'),
+                'usuario_logado': usuario_logado,
                 'STATIC_ROOT': static_root
             }
             
@@ -1881,6 +1947,14 @@ def relatorio_financeiro(request):
     print(f"Total entradas: {valor_entradas_total:.2f} ({total_entradas} itens)")
     print(f"Saídas: {valor_saidas_total:.2f} ({total_saidas} itens)")
     
+    # Obter usuário logado
+    usuario_logado = None
+    if 'usuario_logado' in request.session:
+        try:
+            usuario_logado = Usuario.objects.get(id=request.session['usuario_logado'])
+        except Usuario.DoesNotExist:
+            pass
+    
     context = {
         'periodo': periodo,
         'titulo_periodo': titulo_periodo,
@@ -1890,7 +1964,9 @@ def relatorio_financeiro(request):
         'valor_prejuizo': valor_prejuizo,
         'total_entradas': total_entradas,
         'total_saidas': total_saidas,
-        'data_atual': timezone.now().strftime('%d/%m/%Y %H:%M')
+        'data_atual': timezone.now().strftime('%d/%m/%Y %H:%M'),
+        'usuario_logado': usuario_logado,
+        'data_hora_relatorio': timezone.now()
     }
     
     return render(request, 'balancete.html', context)
@@ -1967,12 +2043,22 @@ def relatorio_financeiro(request):
     
     lucro_geral = total_venda - total_compra
     
+    # Obter usuário logado
+    usuario_logado = None
+    if 'usuario_logado' in request.session:
+        try:
+            usuario_logado = Usuario.objects.get(id=request.session['usuario_logado'])
+        except Usuario.DoesNotExist:
+            pass
+    
     return render(request, 'relatorio_financeiro.html', {
         'produtos': produtos_financeiros,
         'total_compra': f"{total_compra:.2f}".replace('.', ','),
         'total_venda': f"{total_venda:.2f}".replace('.', ','),
         'lucro_geral': f"{lucro_geral:.2f}".replace('.', ','),
-        'periodo': periodo
+        'periodo': periodo,
+        'usuario_logado': usuario_logado,
+        'data_hora_relatorio': timezone.now()
     })
 
 # ----- BALANCETE PDF/EMAIL -----
@@ -2291,6 +2377,14 @@ def exportar_financeiro_pdf(request):
     from datetime import datetime
     static_root = getattr(settings, 'STATIC_ROOT', None) or os.path.join(settings.BASE_DIR, 'static')
     
+    # Obter usuário logado
+    usuario_logado = None
+    if 'usuario_logado' in request.session:
+        try:
+            usuario_logado = Usuario.objects.get(id=request.session['usuario_logado'])
+        except Usuario.DoesNotExist:
+            pass
+    
     context = {
         'produtos': produtos_financeiros,
         'total_compra': f"{total_compra:.2f}".replace('.', ','),
@@ -2298,6 +2392,7 @@ def exportar_financeiro_pdf(request):
         'lucro_geral': f"{lucro_geral:.2f}".replace('.', ','),
         'periodo': periodo,
         'data_atual': datetime.now().strftime('%d/%m/%Y %H:%M'),
+        'usuario_logado': usuario_logado,
         'STATIC_ROOT': static_root
     }
     
@@ -2363,6 +2458,14 @@ def enviar_financeiro_email(request):
             from datetime import datetime
             static_root = getattr(settings, 'STATIC_ROOT', None) or os.path.join(settings.BASE_DIR, 'static')
             
+            # Obter usuário logado
+            usuario_logado = None
+            if 'usuario_logado' in request.session:
+                try:
+                    usuario_logado = Usuario.objects.get(id=request.session['usuario_logado'])
+                except Usuario.DoesNotExist:
+                    pass
+            
             context = {
                 'produtos': produtos_financeiros,
                 'total_compra': f"{total_compra:.2f}".replace('.', ','),
@@ -2370,6 +2473,7 @@ def enviar_financeiro_email(request):
                 'lucro_geral': f"{lucro_geral:.2f}".replace('.', ','),
                 'periodo': periodo,
                 'data_atual': datetime.now().strftime('%d/%m/%Y %H:%M'),
+                'usuario_logado': usuario_logado,
                 'STATIC_ROOT': static_root
             }
             

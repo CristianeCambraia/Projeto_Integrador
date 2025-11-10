@@ -31,7 +31,6 @@
     
     <div class="print-info" style="display: none;">
         <h3 style="text-align: center; margin: 0 0 10px 0; color: #026a84; font-size: 24px;">Relatório Financeiro</h3>
-        <p id="data-geracao-print" style="text-align: center; margin: 0; color: #026a84;"></p>
         {% if periodo %}<p style="text-align: center; margin: 5px 0 0 0; color: #026a84;">Período: {{ periodo }} dias</p>{% endif %}
     </div>
 
@@ -91,6 +90,11 @@
     <div class="data-section">
         <div class="section-header">
             <h3>💰 Dados Financeiros</h3>
+            {% if usuario_logado %}
+            <p style="margin: 5px 0 0 0; font-size: 14px; color: #666;">
+                Gerado por: {{ usuario_logado.nome }} | Data/Hora: {{ data_hora_relatorio|date:"d/m/Y H:i" }}
+            </p>
+            {% endif %}
         </div>
 
         <div class="table-responsive">
