@@ -150,12 +150,17 @@
                     <tr>
                         <td>
                             <select name="unidade_1" style="width: 120px;">
+                                <option value="">Selecione a unidade</option>
                                 <option value="Unidade">Unidade</option>
                                 <option value="Caixa">Caixa</option>
                                 <option value="Serviço">Serviço</option>
                             </select>
                         </td>
-                        <td><input type="text" name="descricao_1"></td>
+                        <td>
+                            <select name="descricao_1" style="width: 120px;">
+                                <option value="">Selecione</option>
+                            </select>
+                        </td>
                         <td><input type="number" name="quantidade_1" min="1" oninput="calcularTotal()"></td>
                         <td><input type="text" name="valor_1" oninput="calcularTotal()"></td>
                     </tr>
@@ -273,17 +278,79 @@ function adicionarLinha() {
     novaLinha.innerHTML = `
         <td>
             <select name="unidade_${contadorItens}" style="width: 120px;">
+                <option value="">Selecione a unidade</option>
                 <option value="Unidade">Unidade</option>
                 <option value="Caixa">Caixa</option>
                 <option value="Serviço">Serviço</option>
             </select>
         </td>
-        <td><input type="text" name="descricao_${contadorItens}"></td>
+        <td>
+            <select name="descricao_${contadorItens}" style="width: 120px;">
+                <option value="">Selecione</option>
+            </select>
+        </td>
         <td><input type="number" name="quantidade_${contadorItens}" min="1" oninput="calcularTotal()"></td>
         <td><input type="text" name="valor_${contadorItens}" oninput="calcularTotal()"></td>
     `;
     
     tbody.appendChild(novaLinha);
+    
+    // Configurar select para a nova linha
+    configurarSelectProdutos(novaLinha);
+}
+
+// Função para configurar select de produtos
+function configurarSelectProdutos(linha) {
+    const selectUnidade = linha.querySelector('select[name*="unidade"]');
+    const selectDescricao = linha.querySelector('select[name*="descricao"]');
+    const inputValor = linha.querySelector('input[name*="valor"]');
+    
+    // Evento para mudança de unidade
+    selectUnidade.addEventListener('change', function() {
+        const unidade = this.value;
+        
+        // Limpar select de descrição e campo de valor
+        selectDescricao.innerHTML = '<option value="">Carregando produtos...</option>';
+        inputValor.value = '';
+        inputValor.readOnly = false;
+        inputValor.style.backgroundColor = '';
+        
+        if (unidade) {
+            // Buscar produtos da unidade selecionada
+            fetch(`/buscar-produtos-por-unidade/?unidade=${encodeURIComponent(unidade)}`)
+                .then(response => response.json())
+                .then(data => {
+                    selectDescricao.innerHTML = '<option value="">Selecione o produto</option>';
+                    
+                    data.produtos.forEach(produto => {
+                        const option = document.createElement('option');
+                        option.value = produto.nome;
+                        option.textContent = `${produto.nome} - R$ ${produto.preco}`;
+                        option.dataset.preco = produto.preco;
+                        selectDescricao.appendChild(option);
+                    });
+                })
+                .catch(() => {
+                    selectDescricao.innerHTML = '<option value="">Erro ao carregar produtos</option>';
+                });
+        } else {
+            selectDescricao.innerHTML = '<option value="">Selecione a unidade primeiro</option>';
+        }
+    });
+    
+    // Evento para mudança de produto
+    selectDescricao.addEventListener('change', function() {
+        const selectedOption = this.options[this.selectedIndex];
+        if (selectedOption.dataset.preco) {
+            inputValor.value = selectedOption.dataset.preco;
+            inputValor.readOnly = true;
+            inputValor.style.backgroundColor = '#f0f0f0';
+            calcularTotal();
+        } else {
+            inputValor.readOnly = false;
+            inputValor.style.backgroundColor = '';
+        }
+    });
 }
 
 // Função para calcular o valor total
@@ -370,6 +437,12 @@ document.addEventListener('DOMContentLoaded', function() {
             suggestions.style.display = 'none';
         }
     });
+    
+    // Configurar select para a primeira linha
+    const primeiraLinha = document.querySelector('#itens-tbody tr');
+    if (primeiraLinha) {
+        configurarSelectProdutos(primeiraLinha);
+    }
 });
 </script>
 
@@ -537,6 +610,26 @@ select#uf_cliente {
     overflow-y: auto;
     z-index: 1000;
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.descricao-autocomplete {
+    position: relative;
+    width: 100%;
+}
+
+.produto-suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    max-height: 150px;
+    overflow-y: auto;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    margin-top: 1px;
 }
 
 .itens-orcamento {

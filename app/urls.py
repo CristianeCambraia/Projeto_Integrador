@@ -75,6 +75,9 @@ urlpatterns = [
     # ----- BUSCAR CLIENTES -----
     path('buscar-clientes/', views.buscar_clientes, name='buscar_clientes'),
     
+    # ----- BUSCAR PRODUTOS POR UNIDADE -----
+    path('buscar-produtos-por-unidade/', views.buscar_produtos_por_unidade, name='buscar_produtos_por_unidade'),
+    
     # ----- EXPORTAR PDF -----
     path('orcamento/<int:orcamento_id>/pdf/', views.exportar_pdf_orcamento, name='exportar_pdf_orcamento'),
     

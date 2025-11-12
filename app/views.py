@@ -1116,6 +1116,52 @@ def buscar_clientes(request):
             return JsonResponse({'clientes': resultados})
     return JsonResponse({'clientes': []})
 
+# ----- BUSCAR PRODUTOS POR UNIDADE -----
+def buscar_produtos_por_unidade(request):
+    if request.method == 'GET':
+        unidade = request.GET.get('unidade', '').strip()
+        termo = request.GET.get('termo', '').strip()
+        
+        if unidade:
+            resultados = []
+            
+            if unidade == 'Serviço':
+                # Buscar na tabela Servico
+                servicos = Servico.objects.all()
+                
+                if termo:
+                    servicos = servicos.filter(nome__icontains=termo)
+                
+                servicos = servicos[:10]
+                
+                for servico in servicos:
+                    resultados.append({
+                        'nome': servico.nome,
+                        'preco': str(servico.preco),
+                        'descricao': servico.descricao or '',
+                        'unidade': servico.unidade
+                    })
+            else:
+                # Buscar na tabela Produto para Unidade e Caixa
+                produtos = Produto.objects.filter(unidade=unidade)
+                
+                if termo:
+                    produtos = produtos.filter(nome__icontains=termo)
+                
+                produtos = produtos[:10]
+                
+                for produto in produtos:
+                    resultados.append({
+                        'nome': produto.nome,
+                        'preco': str(produto.preco),
+                        'descricao': produto.descricao or '',
+                        'unidade': produto.unidade
+                    })
+            
+            return JsonResponse({'produtos': resultados})
+    
+    return JsonResponse({'produtos': []})
+
 # ----- EXPORTAR PDF ORÇAMENTO -----
 from django.template.loader import get_template
 from xhtml2pdf import pisa
