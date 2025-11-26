@@ -32,6 +32,9 @@ def pagina_home(request):
 
 # Página Sobre Nós
 def sobre_nos(request):
+    # Limpar TODAS as mensagens antigas da sessão
+    storage = messages.get_messages(request)
+    storage.used = True  # Forçar limpeza completa
     return render(request, 'sobre_nos.html')
 
 
@@ -698,7 +701,7 @@ def relatorio_saida(request):
         try:
             dias = int(periodo)
             data_limite = timezone.now() - timedelta(days=dias)
-            produtos = produtos.filter(data_cadastro__gte=data_limite)
+            produtos = produtos.filter(data_hora__gte=data_limite)
         except ValueError:
             pass
     
@@ -713,6 +716,10 @@ def relatorio_saida(request):
 
 # ----- SUPORTE -----
 def criar_suporte(request):
+    # Limpar TODAS as mensagens antigas da sessão
+    storage = messages.get_messages(request)
+    storage.used = True  # Forçar limpeza completa
+    
     if request.method == "POST":
         form = SuporteForm(request.POST)
         if form.is_valid():
@@ -728,11 +735,11 @@ def criar_suporte(request):
                     [settings.EMAIL_HOST_USER],
                     fail_silently=False,
                 )
+                # Redirecionar para uma página de sucesso sem mensagens
+                return redirect('sobre_nos')  # Redirecionar para outra página
             except Exception as e:
-                messages.warning(request, f'Solicitação salva, mas erro no email: {str(e)}')
-            
-            messages.success(request, 'Solicitação enviada por email com sucesso!')
-            return redirect("criar_suporte")
+                # Não mostrar mensagem de erro, apenas redirecionar
+                return redirect('sobre_nos')
     else:
         form = SuporteForm()
 
@@ -784,15 +791,10 @@ def cadastrar_usuario(request):
             form = UsuarioForm(request.POST)
             if form.is_valid():
                 usuario = form.save()
-                messages.success(request, f'Usuário {usuario.nome} cadastrado com sucesso!')
-                return redirect('home')
-            else:
-                # Mostrar erros específicos do formulário
-                for field, errors in form.errors.items():
-                    for error in errors:
-                        messages.error(request, f'{field}: {error}')
+                return redirect('login')
+            # Não mostrar mensagens de erro
         except Exception as e:
-            messages.error(request, f'Erro ao cadastrar usuário: {str(e)}')
+            pass
     else:
         form = UsuarioForm()
         form.fields['cidade'].initial = ''
@@ -812,27 +814,16 @@ def login_view(request):
             email = form.cleaned_data['email'].strip()
             senha = form.cleaned_data['senha']
             
-            # Validação adicional
             if not email or not senha:
-                messages.error(request, 'Email e senha são obrigatórios')
                 return render(request, 'login.html', {'form': form})
             
             try:
                 usuario = Usuario.objects.get(email=email)
                 
-                # Verificar se o usuário está bloqueado
-                if usuario.bloqueado:
-                    messages.error(request, 'Usuário bloqueado por excesso de tentativas. Entre em contato com o suporte.')
+                if usuario.bloqueado or not usuario.ativo:
                     return render(request, 'login.html', {'form': form})
                 
-                # Verificar se o usuário está ativo
-                if not usuario.ativo:
-                    messages.error(request, 'Usuário bloqueado. Contate o administrador.')
-                    return render(request, 'login.html', {'form': form})
-                
-                # Verificar senha
                 if usuario.senha == senha:
-                    # Login correto - resetar tentativas
                     usuario.tentativas_login = 0
                     usuario.save()
                     
@@ -840,28 +831,21 @@ def login_view(request):
                     
                     remember = form.cleaned_data.get('remember', False)
                     if remember:
-                        request.session.set_expiry(None)  # Não expira
+                        request.session.set_expiry(None)
                     else:
-                        request.session.set_expiry(86400)  # 24 horas
-                        
+                        request.session.set_expiry(86400)
+                    
                     messages.success(request, f'Bem-vindo, {usuario.nome}!')
                     return redirect('home')
                 else:
-                    # Senha incorreta - incrementar tentativas
                     usuario.tentativas_login += 1
                     if usuario.tentativas_login >= 5:
                         usuario.bloqueado = True
                         usuario.data_bloqueio = timezone.now()
-                        messages.error(request, 'Usuário bloqueado por excesso de tentativas. Entre em contato com o suporte.')
-                    else:
-                        tentativas_restantes = 5 - usuario.tentativas_login
-                        messages.error(request, f'Senha incorreta. Restam {tentativas_restantes} tentativas.')
                     usuario.save()
                     
             except Usuario.DoesNotExist:
-                messages.error(request, 'Email não encontrado')
-        else:
-            messages.error(request, 'Dados inválidos')
+                pass
     else:
         form = LoginForm()
     
@@ -893,6 +877,11 @@ def editar_produto(request, produto_id):
                 return redirect('lista_produtos')
             except Exception as e:
                 messages.error(request, f'Erro ao salvar produto: {str(e)}')
+                return render(request, 'Produtos/editar_produto.html', {
+                    'form': form,
+                    'produto': produto,
+                    'titulo_pagina': 'Editar Produto'
+                })
     else:
         form = EditarProdutoForm(instance=produto)
     return render(request, 'Produtos/editar_produto.html', {
@@ -902,7 +891,12 @@ def editar_produto(request, produto_id):
     })
 @login_required_custom
 def editar_fornecedor(request, fornecedor_id):
-    fornecedor = Fornecedor.objects.get(id=fornecedor_id)
+    try:
+        fornecedor = Fornecedor.objects.get(id=fornecedor_id)
+    except Fornecedor.DoesNotExist:
+        messages.error(request, 'Fornecedor não encontrado')
+        return redirect('lista_fornecedores')
+    
     if request.method == "POST":
         form = FornecedorForm(request.POST, instance=fornecedor)
         if form.is_valid():
@@ -910,7 +904,11 @@ def editar_fornecedor(request, fornecedor_id):
             messages.success(request, 'Fornecedor atualizado com sucesso!')
             return redirect('lista_fornecedores')
     else:
-        form = FornecedorForm(instance=fornecedor)
+        # Criar dados iniciais com a data formatada
+        initial_data = {
+            'data_nascimento': fornecedor.data_nascimento
+        }
+        form = FornecedorForm(instance=fornecedor, initial=initial_data)
     return render(request, 'editar_fornecedor.html', {
         'form': form,
         'fornecedor': fornecedor,

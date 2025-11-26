@@ -16,6 +16,15 @@ class FornecedorForm(forms.ModelForm):
         input_formats=['%Y-%m-%d', '%d/%m/%Y'],  # aceita formato ISO e BR
         widget=forms.DateInput(attrs={'placeholder': 'Data de Nascimento', 'type': 'date'})
     )
+    
+    def clean_cnpj(self):
+        cnpj = self.cleaned_data.get('cnpj')
+        if cnpj:
+            # Remove formatação
+            cnpj_limpo = ''.join(filter(str.isdigit, cnpj))
+            if len(cnpj_limpo) != 14:
+                raise forms.ValidationError('CNPJ deve ter exatamente 14 dígitos')
+        return cnpj
 
     class Meta:
         model = Fornecedor
@@ -26,7 +35,7 @@ class FornecedorForm(forms.ModelForm):
 
         widgets = {
             'nome': forms.TextInput(attrs={'placeholder': 'Nome'}),
-            'cnpj': forms.TextInput(attrs={'placeholder': 'CNPJ'}),
+            'cnpj': forms.TextInput(attrs={'placeholder': 'CNPJ', 'minlength': '18', 'maxlength': '18'}),
             'endereco': forms.TextInput(attrs={'placeholder': 'Endereço'}),
             'bairro': forms.TextInput(attrs={'placeholder': 'Bairro'}),
             'complemento': forms.TextInput(attrs={'placeholder': 'Complemento'}),
@@ -35,7 +44,7 @@ class FornecedorForm(forms.ModelForm):
             'uf': forms.TextInput(attrs={'placeholder': 'UF'}),
             'cep': forms.TextInput(attrs={'placeholder': 'CEP'}),
             'email': forms.EmailInput(attrs={'placeholder': 'E-mail'}),
-            'telefone': forms.TextInput(attrs={'placeholder': 'Telefone', 'pattern': '[0-9]*', 'inputmode': 'numeric', 'onkeypress': 'return event.charCode >= 48 && event.charCode <= 57', 'oninput': 'this.value = this.value.replace(/[^0-9]/g, "")'}),
+            'telefone': forms.TextInput(attrs={'placeholder': 'Telefone', 'inputmode': 'numeric'}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -44,8 +53,9 @@ class FornecedorForm(forms.ModelForm):
             field.label = ''
         
         # Preencher data de nascimento ao editar
-        if self.instance and hasattr(self.instance, 'data_nascimento') and self.instance.data_nascimento:
+        if self.instance and self.instance.pk and self.instance.data_nascimento:
             self.initial['data_nascimento'] = self.instance.data_nascimento
+            self.fields['data_nascimento'].widget.attrs['value'] = self.instance.data_nascimento.strftime('%Y-%m-%d')
 
 
 # Formulário de Produto

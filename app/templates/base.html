@@ -869,6 +869,18 @@
             }
         }
         
+        /* Ocultar mensagens automaticamente */
+        .message, .alert, .success-message, .error {
+            animation: fadeInOut 6s ease-in-out forwards;
+        }
+        
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateY(-20px); }
+            10% { opacity: 1; transform: translateY(0); }
+            90% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-20px); display: none; }
+        }
+        
         /* Correções para iPhone específicos */
         @media screen and (max-width: 428px) {
             .mobile-nav {
@@ -1824,11 +1836,42 @@
             const dropdowns = document.querySelectorAll('.dropdown');
             dropdowns.forEach(dropdown => {
                 dropdown.addEventListener('mouseenter', function() {
-                    const messages = document.querySelectorAll('.message');
+                    const messages = document.querySelectorAll('.message, .alert, .success-message, .error');
                     messages.forEach(msg => {
                         msg.style.display = 'none';
                     });
                 });
+            });
+            
+            // Adicionar botão X para fechar mensagens manualmente
+            const allMessages = document.querySelectorAll('.message, .alert, .success-message, .error');
+            allMessages.forEach(function(message) {
+                if (!message.querySelector('.close-btn')) {
+                    const closeBtn = document.createElement('span');
+                    closeBtn.innerHTML = '×';
+                    closeBtn.className = 'close-btn';
+                    closeBtn.style.cssText = 'position: absolute; top: 5px; right: 10px; cursor: pointer; font-size: 20px; font-weight: bold; color: #666;';
+                    closeBtn.onclick = function() {
+                        message.style.display = 'none';
+                    };
+                    message.style.position = 'relative';
+                    message.appendChild(closeBtn);
+                }
+            });
+            
+            // Auto-ocultar mensagens após 8 segundos
+            const messages = document.querySelectorAll('.message, .alert, .success-message, .error');
+            messages.forEach(function(message) {
+                setTimeout(function() {
+                    if (message.style.display !== 'none') {
+                        message.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                        message.style.opacity = '0';
+                        message.style.transform = 'translateY(-20px)';
+                        setTimeout(function() {
+                            message.style.display = 'none';
+                        }, 500);
+                    }
+                }, 8000);
             });
         });
         

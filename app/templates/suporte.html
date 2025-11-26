@@ -1,6 +1,17 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<!-- Limpar mensagens antigas -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Ocultar todas as mensagens imediatamente nesta página
+    const messages = document.querySelectorAll('.message, .alert, .success-message, .error');
+    messages.forEach(function(message) {
+        message.style.display = 'none';
+    });
+});
+</script>
+
 <div class="cliente-container">
     <div class="header-section">
         <div class="icon-title">
@@ -271,6 +282,16 @@
         left: 0 !important;
         right: 0 !important;
     }
+}
+
+/* Ocultar mensagens nas páginas de contato/suporte */
+.message,
+.alert,
+.success-message,
+.error {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
 }
 </style>
 

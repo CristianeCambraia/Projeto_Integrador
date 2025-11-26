@@ -37,7 +37,7 @@
             <div class="form-row">
                 <div class="form-group">
                     <label for="{{ form.data_nascimento.id_for_label }}">Data de Fundação *</label>
-                    {{ form.data_nascimento }}
+                    <input type="date" name="data_nascimento" id="id_data_nascimento" value="{{ fornecedor.data_nascimento|date:'Y-m-d' }}" required>
                 </div>
                 <div class="form-group">
                     <label for="{{ form.email.id_for_label }}">E-mail Corporativo *</label>
@@ -123,6 +123,23 @@ function formatCNPJ(input) {
     if (v.length > 8) v = v.replace(/(\d{2})\.(\d{3})\.(\d{3})(\d)/, '$1.$2.$3/$4');
     if (v.length > 12) v = v.replace(/(\d{2})\.(\d{3})\.(\d{3})\/(\d{4})(\d)/, '$1.$2.$3/$4-$5');
     input.value = v;
+    
+    // Verificar se tem 14 dígitos
+    const digitos = v.replace(/\D/g, '');
+    const mensagem = document.getElementById('cnpj-erro');
+    if (digitos.length > 0 && digitos.length < 14) {
+        if (!mensagem) {
+            const erro = document.createElement('div');
+            erro.id = 'cnpj-erro';
+            erro.style.color = 'red';
+            erro.style.fontSize = '12px';
+            erro.style.marginTop = '5px';
+            erro.textContent = 'CNPJ deve ter 14 dígitos';
+            input.parentNode.appendChild(erro);
+        }
+    } else if (mensagem) {
+        mensagem.remove();
+    }
 }
 
 function formatCEP(input) {

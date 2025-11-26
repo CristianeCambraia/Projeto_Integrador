@@ -2,11 +2,16 @@
 {% load static %}
 
 {% block content %}
-{% if messages %}
-  {% for message in messages %}
-    <div class="message success-message">{{ message }}</div>
-  {% endfor %}
-{% endif %}
+<!-- Remover exibição de mensagens nesta página -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Ocultar todas as mensagens imediatamente nesta página
+    const messages = document.querySelectorAll('.message, .alert, .success-message, .error');
+    messages.forEach(function(message) {
+        message.style.display = 'none';
+    });
+});
+</script>
 
 <div class="cliente-container">
     <div class="header-section">
@@ -359,6 +364,16 @@
         justify-content: center !important;
         text-align: center !important;
     }
+}
+
+/* Ocultar mensagens nas páginas de contato/suporte */
+.message,
+.alert,
+.success-message,
+.error {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
 }
 </style>
 {% endblock %}
