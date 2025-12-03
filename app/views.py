@@ -677,7 +677,7 @@ def relatorio_saida(request):
                         # Registrar movimentação
                         MovimentacaoEstoque.objects.create(
                             produto=produto,
-                            tipo='saida',
+                            tipo='SAIDA',
                             quantidade=quantidade,
                             usuario=usuario
                         )
@@ -709,7 +709,7 @@ def relatorio_saida(request):
     for produto in produtos:
         produto.ultima_saida = MovimentacaoEstoque.objects.filter(
             produto=produto, 
-            tipo='saida'
+            tipo='SAIDA'
         ).order_by('-data_hora').first()
     
     return render(request, 'relatorio_saida.html', {'produtos': produtos})
