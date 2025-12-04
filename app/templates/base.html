@@ -1799,29 +1799,32 @@
             {% endif %}
         }
         
-        // Mostrar mensagem de boas-vindas para usuário logado
+        // Mostrar mensagem de boas-vindas para usuário logado APENAS na home
         function mostrarBoasVindas() {
             {% if usuario_logado %}
-            const welcomeDiv = document.createElement('div');
-            welcomeDiv.className = 'welcome-message';
-            welcomeDiv.innerHTML = 'Bem-vindo, {{ usuario_logado.nome }}!';
-            document.body.appendChild(welcomeDiv);
-            
-            // Mostrar com animação
-            setTimeout(() => {
-                welcomeDiv.style.display = 'block';
-            }, 100);
-            
-            // Ocultar após 4 segundos
-            setTimeout(() => {
-                welcomeDiv.style.opacity = '0';
-                welcomeDiv.style.transform = 'translateX(-50%) translateY(-20px)';
+            // Verificar se está na página home
+            if (window.location.pathname === '/' || window.location.pathname === '/home/') {
+                const welcomeDiv = document.createElement('div');
+                welcomeDiv.className = 'welcome-message';
+                welcomeDiv.innerHTML = 'Bem-vindo, {{ usuario_logado.nome }}!';
+                document.body.appendChild(welcomeDiv);
+                
+                // Mostrar com animação
                 setTimeout(() => {
-                    if (welcomeDiv.parentNode) {
-                        welcomeDiv.parentNode.removeChild(welcomeDiv);
-                    }
-                }, 500);
-            }, 4000);
+                    welcomeDiv.style.display = 'block';
+                }, 100);
+                
+                // Ocultar após 4 segundos
+                setTimeout(() => {
+                    welcomeDiv.style.opacity = '0';
+                    welcomeDiv.style.transform = 'translateX(-50%) translateY(-20px)';
+                    setTimeout(() => {
+                        if (welcomeDiv.parentNode) {
+                            welcomeDiv.parentNode.removeChild(welcomeDiv);
+                        }
+                    }, 500);
+                }, 4000);
+            }
             {% endif %}
         }
         
