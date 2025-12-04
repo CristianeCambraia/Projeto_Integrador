@@ -1794,19 +1794,19 @@ footer p {
     margin: 20px auto;
     border-radius: 8px;
     text-align: center;
-    max-width: 500px;
+    max-width: 320px;
     font-weight: bold;
     font-size: 16px;
     position: fixed;
     top: 80px;
-    left: 18% !important;
-    transform: translateX(-50%) !important;
+    left: -100%;
+    transform: translateX(-50%);
     z-index: 1000;
     box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
 
-.message.success,
-.success-message {
+.messege.sucess,
+.sucess-messege {
     background: #fff;
     color: #28a745;
     border: 2px solid #28a745;
@@ -1817,24 +1817,48 @@ footer p {
     max-width: 500px;
     margin: 20px auto;
     text-align: center;
+    position: fixed;
+    top: 80px;
+    left: -100%;
 }
 
 
 
-.success {
-    background: #d4edda;
-    color: #155724;
-    border: 2px solid #28a745;
-    padding: 15px;
-    border-radius: 8px;
-    margin: 15px 0;
-    text-align: center;
-    font-weight: bold;
-    font-size: 16px;
+.welcome-message {
+    background: white;
+    color: #04bafc;
+    padding: 15px 30px;
+    border-radius: 25px;
+    font-weight: 600;
+    font-size: 18px;
     position: fixed;
-    top: 80px;
+    top: 100px;
     left: 50%;
     transform: translateX(-50%);
+    z-index: 1000;
+    box-shadow: 0 4px 15px rgba(4, 186, 252, 0.3);
+    animation: slideIn 0.5s ease-out;
+    text-align: center;
+    max-width: 90%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+@media (max-width: 768px) {
+    .welcome-message {
+        top: 80px;
+        padding: 12px 20px;
+        font-size: 16px;
+        max-width: 95%;
+        white-space: normal;
+        word-wrap: break-word;
+    }
+}
+
+@keyframes slideIn {
+    from { transform: translateX(-50%) translateY(-20px); opacity: 0; }
+    to { transform: translateX(-50%) translateY(0); opacity: 1; }
 }
 
 .estoque-container .botoes {

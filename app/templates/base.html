@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}INSUMED{% endblock %}</title>
     {% load static %}
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=2.0">
     <link rel="icon" href="{% static 'images/insumed_icon.png' %}" type="image/png">
     <style>
         /* Responsividade geral */
@@ -1799,8 +1799,35 @@
             {% endif %}
         }
         
+        // Mostrar mensagem de boas-vindas para usuário logado
+        function mostrarBoasVindas() {
+            {% if usuario_logado %}
+            const welcomeDiv = document.createElement('div');
+            welcomeDiv.className = 'welcome-message';
+            welcomeDiv.innerHTML = 'Bem-vindo, {{ usuario_logado.nome }}!';
+            document.body.appendChild(welcomeDiv);
+            
+            // Mostrar com animação
+            setTimeout(() => {
+                welcomeDiv.style.display = 'block';
+            }, 100);
+            
+            // Ocultar após 4 segundos
+            setTimeout(() => {
+                welcomeDiv.style.opacity = '0';
+                welcomeDiv.style.transform = 'translateX(-50%) translateY(-20px)';
+                setTimeout(() => {
+                    if (welcomeDiv.parentNode) {
+                        welcomeDiv.parentNode.removeChild(welcomeDiv);
+                    }
+                }, 500);
+            }, 4000);
+            {% endif %}
+        }
+        
         // Inicializar ao carregar a página
         document.addEventListener('DOMContentLoaded', function() {
+            mostrarBoasVindas();
             initializeNotifications();
             
             // Verificar status do usuário a cada 5 segundos
